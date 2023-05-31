@@ -1,0 +1,1 @@
+library sagase_dictionary;
