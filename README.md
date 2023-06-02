@@ -1,39 +1,35 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Sagase 探せ Dictionary
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Creates the dictionary for the [Sagase Japanese-English dictionary app](https://github.com/Moseco/sagase).
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Prepare source files to be placed in ```example/input_files/```
+
+### Externally managed files
+
+- [JMdict_e_examp](https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project)
+    - Version used: English only with examples sentences
+- [kanjidic2.xml](https://www.edrdg.org/wiki/index.php/KANJIDIC_Project)
+    - Version used: kanjidic2 containing all 13,108 kanji
+- [accents.txt](https://github.com/mifunetoshiro/kanjium/blob/master/data/source_files/raw/accents.txt)
+
+### Self-managed files
+
+- kanji_radicals.json
+- kanji_components.json
+- kanji_strokes.json
+- vocab_lists.json
+- kanji_lists.json
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+```dart run example/sagase_dictionary_example.dart```
 
-```dart
-const like = 'sample';
-```
+## Special thanks
 
-## Additional information
+Thanks to [Electronic Dictionary Research and Development Group](http://www.edrdg.org/) for managing the source vocab and kanji dictionary files.
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+Thanks to the [KanjiVG project](http://kanjivg.tagaini.net/) for the kanji stroke order and kanji component data.
+
+Thanks to [mifunetoshiro on Github](https://github.com/mifunetoshiro/kanjium) for providing the pitch accent data.

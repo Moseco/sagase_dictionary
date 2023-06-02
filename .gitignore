@@ -5,3 +5,12 @@
 # Avoid committing pubspec.lock for library packages; see
 # https://dart.dev/guides/libraries/private-files#pubspeclock.
 pubspec.lock
+
+# Externally managed source files
+example/input_files/JMdict_e_examp
+example/input_files/kanjidic2.xml
+example/input_files/pitch_accents.txt
+
+# Temporary and output files
+example/temp_files/
+example/output_files/

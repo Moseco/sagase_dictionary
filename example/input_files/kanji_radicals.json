@@ -1,0 +1,1808 @@
+{
+    "一": {
+        "strokes": 1,
+        "kanjix": 1,
+        "meaning": "one",
+        "importance": 2,
+        "reading": "イチ"
+    },
+    "丨": {
+        "strokes": 1,
+        "kanjix": 2,
+        "meaning": "line",
+        "reading": "ぼう, たてぼう"
+    },
+    "丶": {
+        "strokes": 1,
+        "kanjix": 3,
+        "meaning": "dot",
+        "reading": "てん"
+    },
+    "丿": {
+        "strokes": 1,
+        "kanjix": 4,
+        "meaning": "slash",
+        "reading": "の, はらいぼう"
+    },
+    "乙": {
+        "strokes": 1,
+        "kanjix": 5,
+        "meaning": "second",
+        "reading": "オツ, おつにょう, つりばり",
+        "variants": [
+            "乚"
+        ]
+    },
+    "乚": {
+        "strokes": 1,
+        "meaning": "second",
+        "reading": "オツ, おつにょう, つりばり",
+        "variant_of": "乙"
+    },
+    "亅": {
+        "strokes": 1,
+        "kanjix": 6,
+        "meaning": "hook",
+        "reading": "はねぼう, ケツ, かぎ"
+    },
+    "二": {
+        "strokes": 2,
+        "kanjix": 7,
+        "meaning": "two",
+        "reading": "ニ"
+    },
+    "亠": {
+        "strokes": 2,
+        "kanjix": 8,
+        "meaning": "lid",
+        "reading": "けいさんかんむり, なべぶた, けさんかんむり",
+        "position": 0
+    },
+    "人": {
+        "strokes": 2,
+        "kanjix": 9,
+        "meaning": "person",
+        "reading": "ひと, にんべん, ひとがしら, ひとやね",
+        "importance": 0,
+        "variants": [
+            "亻",
+            "𠆢"
+        ]
+    },
+    "亻": {
+        "strokes": 2,
+        "meaning": "person",
+        "reading": "ひと, にんべん, ひとがしら, ひとやね",
+        "position": 1,
+        "variant_of": "人"
+    },
+    "𠆢": {
+        "strokes": 2,
+        "meaning": "person",
+        "reading": "ひと, にんべん, ひとがしら, ひとやね",
+        "position": 0,
+        "variant_of": "人"
+    },
+    "儿": {
+        "strokes": 2,
+        "kanjix": 10,
+        "meaning": "legs",
+        "reading": "にんにょう, ひとあし",
+        "position": 3
+    },
+    "入": {
+        "strokes": 2,
+        "kanjix": 11,
+        "meaning": "enter",
+        "reading": "いる, いりがしら, いりやね, ニュウ"
+    },
+    "八": {
+        "strokes": 2,
+        "kanjix": 12,
+        "meaning": "eight",
+        "reading": "ハチ, はちがしら"
+    },
+    "冂": {
+        "strokes": 2,
+        "kanjix": 13,
+        "meaning": "Upside-down box",
+        "reading": "けいがまえ, まきがまえ, どうがまえ, えんがまえ",
+        "position": 4
+    },
+    "冖": {
+        "strokes": 2,
+        "kanjix": 14,
+        "meaning": "cover",
+        "reading": "わかんむり, べきかんむり",
+        "position": 0
+    },
+    "冫": {
+        "strokes": 2,
+        "kanjix": 15,
+        "meaning": "ice",
+        "reading": "にすい",
+        "position": 1
+    },
+    "几": { 
+        "strokes": 2,
+        "kanjix": 16,
+        "meaning": "table",
+        "reading": "つくえ, きにょう, つくえきにょう, かぜかんむり, かぜがまえ"
+    },
+    "凵": {
+        "strokes": 2,
+        "kanjix": 17,
+        "meaning": "container",
+        "reading": "かんにょう, うけばこ",
+        "position": 3
+    },
+    "刀": {
+        "strokes": 2,
+        "kanjix": 18,
+        "meaning": "sword",
+        "reading": "かたな, りっとう",
+        "importance": 2,
+        "variants": [
+            "刂"
+        ]
+    },
+    "刂": {
+        "strokes": 2,
+        "meaning": "sword",
+        "reading": "かたな, りっとう",
+        "position": 2,
+        "variant_of": "刀"
+    },
+    "力": {
+        "strokes": 2,
+        "kanjix": 19,
+        "meaning": "power, force",
+        "reading": "ちから",
+        "importance": 2
+    },
+    "勹": {
+        "strokes": 2,
+        "kanjix": 20,
+        "meaning": "wrap",
+        "reading": "つつみがまえ",
+        "position": 4
+    },
+    "匕": {
+        "strokes": 2,
+        "kanjix": 21,
+        "meaning": "spoon",
+        "reading": "ヒ, さじ, さじのひ",
+        "position": 2
+    },
+    "匚": {
+        "strokes": 2,
+        "kanjix": 22,
+        "meaning": "box",
+        "reading": "はこがまえ",
+        "position": 4
+    },
+    "匸": {
+        "strokes": 2,
+        "kanjix": 23,
+        "meaning": "hiding enclosure",
+        "reading": "かくしがまえ",
+        "position": 4
+    },
+    "十": {
+        "strokes": 2,
+        "kanjix": 24,
+        "meaning": "ten",
+        "reading": "ジュウ",
+        "importance": 2
+    },
+    "卜": {
+        "strokes": 2,
+        "kanjix": 25,
+        "meaning": "divination",
+        "reading": "ボク, ぼくのと, うらない"
+    },
+    "卩": {
+        "strokes": 2,
+        "kanjix": 26,
+        "meaning": "seal",
+        "reading": "ふしづくり, まげわりふ, わりふ",
+        "position": 2,
+        "variants": [
+            "⺋"
+        ]
+    },
+    "⺋": {
+        "strokes": 2,
+        "meaning": "seal",
+        "reading": "ふしづくり, まげわりふ, わりふ",
+        "position": 2,
+        "variant_of": "卩"
+    },
+    "厂": {
+        "strokes": 2,
+        "kanjix": 27,
+        "meaning": "cliff",
+        "reading": "がんだれ",
+        "position": 5
+    },
+    "厶": {
+        "strokes": 2,
+        "kanjix": 28,
+        "meaning": "private",
+        "reading": "む"
+    },
+    "又": {
+        "strokes": 2,
+        "kanjix": 29,
+        "meaning": "again",
+        "reading": "また",
+        "importance": 2
+    },
+    "口": {
+        "strokes": 3,
+        "kanjix": 30,
+        "meaning": "mouth",
+        "reading": "くち, くちへん",
+        "importance": 0
+    },
+    "囗": {
+        "strokes": 3,
+        "kanjix": 31,
+        "meaning": "enclosure",
+        "reading": "くにがまえ",
+        "position": 4,
+        "importance": 2
+    },
+    "土": {
+        "strokes": 3,
+        "kanjix": 32,
+        "meaning": "earth",
+        "reading": "つち, つちへん",
+        "importance": 1
+    },
+    "士": {
+        "strokes": 3,
+        "kanjix": 33,
+        "meaning": "scholar",
+        "reading": "さむらい, さむらいかんむり"
+    },
+    "夂": {
+        "strokes": 3,
+        "kanjix": 34,
+        "meaning": "go",
+        "reading": "ふゆがしら, ちかんむり, のまたかんむり",
+        "importance": 2
+    },
+    "夊": {
+        "strokes": 3,
+        "kanjix": 35,
+        "meaning": "go slowly",
+        "reading": "すいにょう, なつあし",
+        "position": 3
+    },
+    "夕": {
+        "strokes": 3,
+        "kanjix": 36,
+        "meaning": "evening",
+        "reading": "ゆう, ゆうべ, た"
+    },
+    "大": {
+        "strokes": 3,
+        "kanjix": 37,
+        "meaning": "big",
+        "reading": "ダイ, だいかんむり, だいかしら",
+        "importance": 2
+    },
+    "女": {
+        "strokes": 3,
+        "kanjix": 38,
+        "meaning": "woman",
+        "reading": "おんな, おんなへん",
+        "importance": 1
+    },
+    "子": {
+        "strokes": 3,
+        "kanjix": 39,
+        "meaning": "child",
+        "reading": "こ, こへん, こども, こどもへん"
+    },
+    "宀": {
+        "strokes": 3,
+        "kanjix": 40,
+        "meaning": "roof",
+        "reading": "うかんむり",
+        "position": 0,
+        "importance": 1
+    },
+    "寸": {
+        "strokes": 3,
+        "kanjix": 41,
+        "meaning": "inch",
+        "reading": "スン",
+        "importance": 2
+    },
+    "小": {
+        "strokes": 3,
+        "kanjix": 42,
+        "meaning": "small",
+        "reading": "ショウ, ちいさい, しょうがしら, なおがしら",
+        "variants": [
+            "⺌"
+        ]
+    },
+    "⺌": {
+        "strokes": 3,
+        "meaning": "small",
+        "reading": "ショウ, ちいさい, しょうがしら, なおがしら",
+        "position": 0,
+        "variant_of": "小"
+    },
+    "尢": {
+        "strokes": 3,
+        "kanjix": 43,
+        "meaning": "lame",
+        "reading": "だいのまげあし, まげあし, おうにょう, オウ",
+        "variants": [
+            "尣"
+        ]
+    },
+    "尸": {
+        "strokes": 3,
+        "kanjix": 44,
+        "meaning": "corpse",
+        "reading": "しかばね, しかばねかんむり, かばね, かばねだれ",
+        "position": 5,
+        "importance": 2
+    },
+    "屮": {
+        "strokes": 3,
+        "kanjix": 45,
+        "meaning": "sprout",
+        "reading": "テツ, くさのめ, めばえ"
+    },
+    "山": {
+        "strokes": 3,
+        "kanjix": 46,
+        "meaning": "mountain",
+        "reading": "やま, やまへん",
+        "importance": 2
+    },
+    "巛": {
+        "strokes": 3,
+        "kanjix": 47,
+        "meaning": "river",
+        "reading": "まがりかわ, かわ, さんぽがわ",
+        "variants": [
+            "川"
+        ]
+    },
+    "川": {
+        "strokes": 3,
+        "meaning": "river",
+        "reading": "まがりかわ, かわ, さんぽがわ",
+        "variant_of": "巛"
+    },
+    "工": {
+        "strokes": 3,
+        "kanjix": 48,
+        "meaning": "work",
+        "reading": "コウ, たくみへん, たくみ"
+    },
+    "己": {
+        "strokes": 3,
+        "kanjix": 49,
+        "meaning": "oneself",
+        "reading": "コ, キ, おのれ, イ, すでに, シ, み",
+        "variants": [
+            "巳"
+        ]
+    },
+    "巳": {
+        "strokes": 3,
+        "meaning": "oneself",
+        "reading": "コ, キ, おのれ, イ, すでに, シ, み",
+        "variant_of": "己"
+    },
+    "巾": {
+        "strokes": 3,
+        "kanjix": 50,
+        "meaning": "cloth",
+        "reading": "はば, はばへん, きんへん, きんべん",
+        "importance": 2
+    },
+    "干": {
+        "strokes": 3,
+        "kanjix": 51,
+        "meaning": "dry",
+        "reading": "カン, いちじゅう, ほす"
+    },
+    "幺": {
+        "strokes": 3,
+        "kanjix": 52,
+        "meaning": "short thread",
+        "reading": "ヨウ, いとがしら",
+        "importance": 1
+    },
+    "广": {
+        "strokes": 3,
+        "kanjix": 53,
+        "meaning": "dotted cliff",
+        "reading": "まだれ",
+        "position": 5,
+        "importance": 2
+    },
+    "廴": {
+        "strokes": 3,
+        "kanjix": 54,
+        "meaning": "long stride",
+        "reading": "えんにょう, えんにゅう, いんにょう",
+        "position": 6
+    },
+    "廾": {
+        "strokes": 3,
+        "kanjix": 55,
+        "meaning": "two hands",
+        "reading": "キョウ, こまぬき, にじゅうあし",
+        "position": 3
+    },
+    "弋": {
+        "strokes": 3,
+        "kanjix": 56,
+        "meaning": "shoot, arrow",
+        "reading": "ヨク, しきがまえ, いぐるみ"
+    },
+    "弓": {
+        "strokes": 3,
+        "kanjix": 57,
+        "meaning": "bow",
+        "reading": "ゆみ, ゆみへん",
+        "importance": 2
+    },
+    "彐": {
+        "strokes": 3,
+        "kanjix": 58,
+        "meaning": "snout",
+        "reading": "けいがしら, いのこがしら",
+        "variants": [
+            "彑"
+        ]
+    },
+    "彑": {
+        "strokes": 3,
+        "meaning": "snout",
+        "reading": "けいがしら, いのこがしら",
+        "variant_of": "彐"
+    },
+    "彡": {
+        "strokes": 3,
+        "kanjix": 59,
+        "meaning": "bristle",
+        "reading": "さんづくり, けかざり, かみかざり",
+        "position": 2
+    },
+    "彳": {
+        "strokes": 3,
+        "kanjix": 60,
+        "meaning": "step",
+        "reading": "ぎょうにんべん",
+        "position": 1,
+        "importance": 2
+    },
+    "忄": {
+        "strokes": 3,
+        "meaning": "heart",
+        "reading": "こころ, りっしんべん, したごころ",
+        "variant_of": "心"
+    },
+    "扌": {
+        "strokes": 3,
+        "meaning": "hand",
+        "reading": "て, てへん",
+        "variant_of": "手"
+    },
+    "氵": {
+        "strokes": 3,
+        "meaning": "water",
+        "reading": "みず, さんずい, したみず",
+        "position": 1,
+        "variant_of": "水"
+    },
+    "丬": {
+        "strokes": 3,
+        "meaning": "split wood",
+        "reading": "ショウ, しょうへん",
+        "variant_of": "爿"
+    },
+    "犭": {
+        "strokes": 3,
+        "meaning": "dog",
+        "reading": "いぬ, けものへん",
+        "position": 1,
+        "variant_of": "犬"
+    },
+    "艹": {
+        "strokes": 3,
+        "meaning": "grass",
+        "reading": "くさ, くさかんむり, そうこう",
+        "position": 0,
+        "variant_of": "艸"
+    },
+    "⻏": {
+        "strokes": 3,
+        "meaning": "city",
+        "reading": "むら, おおざと",
+        "variant_of": "邑"
+    },
+    "心": {
+        "strokes": 4,
+        "kanjix": 61,
+        "meaning": "heart",
+        "reading": "こころ, りっしんべん, したごころ",
+        "importance": 0,
+        "variants": [
+            "忄",
+            "㣺"
+        ]
+    },
+    "㣺": {
+        "strokes": 4,
+        "meaning": "heart",
+        "reading": "こころ, りっしんべん, したごころ",
+        "variant_of": "心"
+    },
+    "戈": {
+        "strokes": 4,
+        "kanjix": 62,
+        "meaning": "halberd",
+        "reading": "ほこ, ほこづくり, ほこがまえ, たすき, かのほこ"
+    },
+    "戶": {
+        "strokes": 4,
+        "kanjix": 63,
+        "meaning": "door",
+        "reading": "と, とかんむり, とだれ, とびらのと",
+        "variants": [
+            "戸"
+        ]
+    },
+    "戸": {
+        "strokes": 4,
+        "meaning": "door",
+        "reading": "と, とかんむり, とだれ, とびらのと",
+        "variant_of": "戶"
+    },
+    "手": {
+        "strokes": 4,
+        "kanjix": 64,
+        "meaning": "hand",
+        "reading": "て, てへん",
+        "importance": 0,
+        "variants": [
+            "扌"
+        ]
+    },
+    "支": {
+        "strokes": 4,
+        "kanjix": 65,
+        "meaning": "branch",
+        "reading": "しにょう, えだにょう, じゅうまた"
+    },
+    "攴": {
+        "strokes": 4,
+        "kanjix": 66,
+        "meaning": "strike",
+        "reading": "ぼくづくり、ぼくにょう、のぶん、しぶん、とまた",
+        "position": 2,
+        "importance": 2,
+        "variants": [
+            "攵"
+        ]
+    },
+    "攵": {
+        "strokes": 4,
+        "meaning": "strike",
+        "reading": "ぼくづくり、ぼくにょう、のぶん、しぶん、とまた",
+        "position": 2,
+        "variant_of": "攴"
+    },
+    "文": {
+        "strokes": 4,
+        "kanjix": 67,
+        "meaning": "writing",
+        "reading": "ブン, ぶんにょう, ふみつくり"
+    },
+    "斗": {
+        "strokes": 4,
+        "kanjix": 68,
+        "meaning": "dipper",
+        "reading": "とます, ます, ト",
+        "position": 2
+    },
+    "斤": {
+        "strokes": 4,
+        "kanjix": 69,
+        "meaning": "axe",
+        "reading": "おの, おのづくり, キン",
+        "position": 2
+    },
+    "方": {
+        "strokes": 4,
+        "kanjix": 70,
+        "meaning": "square",
+        "reading": "ホウ, ほうへん, かたへん"
+    },
+    "无": {
+        "strokes": 4,
+        "kanjix": 71,
+        "meaning": "not",
+        "reading": "なし, ブ, むにょう, すでのつくり",
+        "variants": [
+            "旡"
+        ]
+    },
+    "旡": {
+        "strokes": 4,
+        "meaning": "not",
+        "reading": "なし, ブ, むにょう, すでのつくり",
+        "variant_of": "无"
+    },
+    "日": {
+        "strokes": 4,
+        "kanjix": 72,
+        "meaning": "day",
+        "reading": "ひ, にち, ひへん, にちへん",
+        "importance": 1
+    },
+    "曰": {
+        "strokes": 4,
+        "kanjix": 73,
+        "meaning": "say",
+        "reading": "ひらび, いわく"
+    },
+    "月": {
+        "strokes": 4,
+        "kanjix": 74,
+        "meaning": "moon",
+        "reading": "つき, つきへん, ふなづき",
+        "importance": 1
+    },
+    "木": {
+        "strokes": 4,
+        "kanjix": 75,
+        "meaning": "tree",
+        "reading": "き, きへん",
+        "importance": 0
+    },
+    "欠": {
+        "strokes": 4,
+        "kanjix": 76,
+        "meaning": "lack",
+        "reading": "あくび, かける, けんづくり"
+    },
+    "止": {
+        "strokes": 4,
+        "kanjix": 77,
+        "meaning": "stop",
+        "reading": "とめる, とめへん"
+    },
+    "歹": {
+        "strokes": 4,
+        "kanjix": 78,
+        "meaning": "death",
+        "reading": "ガツ, がつへん, かばねへん, しにがまえ, いちたへん"
+    },
+    "殳": {
+        "strokes": 4,
+        "kanjix": 79,
+        "meaning": "weapon",
+        "reading": "ほこづくり, ほこ, るまた",
+        "position": 2
+    },
+    "毋": {
+        "strokes": 4,
+        "kanjix": 80,
+        "meaning": "do not",
+        "reading": "なかれ, はは, ははのかん"
+    },
+    "比": {
+        "strokes": 4,
+        "kanjix": 81,
+        "meaning": "compare", 
+        "reading": "ヒ, ならびひ, くらべる"
+    },
+    "毛": {
+        "strokes": 4,
+        "kanjix": 82,
+        "meaning": "hair",
+        "reading": "け"
+    },
+    "氏": {
+        "strokes": 4,
+        "kanjix": 83,
+        "meaning": "clan",
+        "reading": "うじ"
+    },
+    "气": {
+        "strokes": 4,
+        "kanjix": 84,
+        "meaning": "air",
+        "reading": "きがまえ",
+        "position": 4
+    },
+    "水": {
+        "strokes": 4,
+        "kanjix": 85,
+        "meaning": "water",
+        "reading": "みず, さんずい, したみず",
+        "importance": 0,
+        "variants": [
+            "氵",
+            "氺"
+        ]
+    },
+    "火": {
+        "strokes": 4,
+        "kanjix": 86,
+        "meaning": "fire",
+        "reading": "ひ, ひへん, れっか, れんが",
+        "importance": 2,
+        "variants": [
+            "灬"
+        ]
+    },
+    "灬": {
+        "strokes": 4,
+        "meaning": "fire",
+        "reading": "ひ, ひへん, れっか, れんが",
+        "position": 3,
+        "variant_of": "火"
+    },
+    "爪": {
+        "strokes": 4,
+        "kanjix": 87,
+        "meaning": "nail",
+        "reading": "つめ, そうにょう, つめかんむり",
+        "variants": [
+            "爫"
+        ]
+    },
+    "爫": {
+        "strokes": 4,
+        "meaning": "nail",
+        "reading": "つめ, そうにょう, つめかんむり",
+        "position": 0,
+        "variant_of": "爪"
+    },
+    "父": {
+        "strokes": 4,
+        "kanjix": 88,
+        "meaning": "father",
+        "reading": "ちち"
+    },
+    "爻": {
+        "strokes": 4,
+        "kanjix": 89,
+        "meaning": "mix",
+        "reading": "コウ"
+    },
+    "爿": {
+        "strokes": 4,
+        "kanjix": 90,
+        "meaning": "split wood",
+        "reading": "ショウ, しょうへん",
+        "position": 1,
+        "variants": [
+            "丬"
+        ]
+    },
+    "片": {
+        "strokes": 4,
+        "kanjix": 91,
+        "meaning": "slice",
+        "reading": "かた, かたへん"
+    },
+    "牙": {
+        "strokes": 4,
+        "kanjix": 92,
+        "meaning": "fang",
+        "reading": "きば, きばへん"
+    },
+    "牛": {
+        "strokes": 4,
+        "kanjix": 93,
+        "meaning": "cow",
+        "reading": "うし, うしへん",
+        "variants": [
+            "牜"
+        ]
+    },
+    "牜": {
+        "strokes": 4,
+        "meaning": "cow",
+        "reading": "うし, うしへん",
+        "position": 1,
+        "variant_of": "牛"
+    },
+    "犬": {
+        "strokes": 4,
+        "kanjix": 94,
+        "meaning": "dog",
+        "reading": "いぬ, けものへん",
+        "importance": 2,
+        "variants": [
+            "犭"
+        ]
+    },
+    "尣": {
+        "strokes": 4,
+        "meaning": "lame",
+        "reading": "だいのまげあし, まげあし, おうにょう, オウ",
+        "variant_of": "尢"
+    },
+    "王": {
+        "strokes": 4,
+        "meaning": "jade",
+        "reading": "たま, たまへん, おうへん",
+        "variant_of": "玉"
+    },
+    "礻": {
+        "strokes": 4,
+        "meaning": "altar",
+        "reading": "しめす, しめすへん, ねへん",
+        "position": 1,
+        "variant_of": "示"
+    },
+    "罓": {
+        "strokes": 4,
+        "meaning": "net",
+        "reading": "あみめ, あみがしら, よんがしら",
+        "variant_of": "网"
+    },
+    "㓁": {
+        "strokes": 4,
+        "meaning": "net",
+        "reading": "あみめ, あみがしら, よんがしら",
+        "variant_of": "网"
+    },
+    "耂": {
+        "strokes": 4,
+        "meaning": "old",
+        "reading": "おいる, おいかんむり, おいがしら",
+        "position": 0,
+        "variant_of": "老"
+    },
+    "辶": {
+        "strokes": 4,
+        "meaning": "walk",
+        "reading": "しんにょう, しんにゅう",
+        "position": 6,
+        "variant_of": "辵"
+    },
+    "玄": {
+        "strokes": 5,
+        "kanjix": 95,
+        "meaning": "profound",
+        "reading": "ゲン"
+    },
+    "玉": {
+        "strokes": 5,
+        "kanjix": 96,
+        "meaning": "jade",
+        "reading": "たま, たまへん, おうへん",
+        "importance": 2,
+        "variants": [
+            "王"
+        ]
+    },
+    "瓜": {
+        "strokes": 5,
+        "kanjix": 97,
+        "meaning": "melon",
+        "reading": "うり"
+    },
+    "瓦": {
+        "strokes": 5,
+        "kanjix": 98,
+        "meaning": "tile",
+        "reading": "かわら"
+    },
+    "甘": {
+        "strokes": 5,
+        "kanjix": 99,
+        "meaning": "sweet",
+        "reading": "あまい, カン"
+    },
+    "生": {
+        "strokes": 5,
+        "kanjix": 100,
+        "meaning": "life",
+        "reading": "セイ, ショウ, いきる, うまれる"
+    },
+    "用": {
+        "strokes": 5,
+        "kanjix": 101,
+        "meaning": "use",
+        "reading": "ヨウ, もちいる"
+    },
+    "田": {
+        "strokes": 5,
+        "kanjix": 102,
+        "meaning": "field",
+        "reading": "た, たへん",
+        "importance": 2
+    },
+    "疋": {
+        "strokes": 5,
+        "kanjix": 103,
+        "meaning": "bolt of cloth",
+        "reading": "ヒキ, ひきへん"
+    },
+    "疒": {
+        "strokes": 5,
+        "kanjix": 104,
+        "meaning": "disease",
+        "reading": "やまいだれ",
+        "position": 5,
+        "importance": 2
+    },
+    "癶": {
+        "strokes": 5,
+        "kanjix": 105,
+        "meaning": "footsteps",
+        "reading": "はつがしら",
+        "position": 0
+    },
+    "白": {
+        "strokes": 5,
+        "kanjix": 106,
+        "meaning": "white",
+        "reading": "しろ, しろへん"
+    },
+    "皮": {
+        "strokes": 5,
+        "kanjix": 107,
+        "meaning": "skin",
+        "reading": "けがわ, ひのかわ"
+    },
+    "皿": {
+        "strokes": 5,
+        "kanjix": 108,
+        "meaning": "plate",
+        "reading": "さら"
+    },
+    "目": { 
+        "strokes": 5,
+        "kanjix": 109,
+        "meaning": "eye",
+        "reading": "め, めへん, よこめ",
+        "importance": 2
+    },
+    "矛": {
+        "strokes": 5,
+        "kanjix": 110,
+        "meaning": "spear",
+        "reading": "ほこ, ほこへん"
+    },
+    "矢": {
+        "strokes": 5,
+        "kanjix": 111,
+        "meaning": "arrow",
+        "reading": "や, やへん"
+    },
+    "石": {
+        "strokes": 5,
+        "kanjix": 112,
+        "meaning": "stone",
+        "reading": "いし, いしへん",
+        "importance": 2
+    },
+    "示": {
+        "strokes": 5,
+        "kanjix": 113,
+        "meaning": "altar",
+        "reading": "しめす, しめすへん, ねへん",
+        "importance": 2,
+        "variants": [
+            "礻"
+        ]
+    },
+    "禸": {
+        "strokes": 5,
+        "kanjix": 114,
+        "meaning": "track",
+        "reading": "ぐうのあし"
+    },
+    "禾": {
+        "strokes": 5,
+        "kanjix": 115,
+        "meaning": "grain",
+        "reading": "いね, いねへん, のぎ, のぎへん",
+        "position": 1,
+        "importance": 2
+    },
+    "穴": {
+        "strokes": 5,
+        "kanjix": 116,
+        "meaning": "cave",
+        "reading": "あな、あなかんむり"
+    },
+    "立": {
+        "strokes": 5,
+        "kanjix": 117,
+        "meaning": "stand",
+        "reading": "たつ, たつへん"
+    },
+    "氺": {
+        "strokes": 5,
+        "meaning": "water",
+        "reading": "みず, さんずい, したみず",
+        "variant_of": "水"
+    },
+    "罒": {
+        "strokes": 5,
+        "meaning": "net",
+        "reading": "あみめ, あみがしら, よんがしら",
+        "position": 0,
+        "variant_of": "网"
+    },
+    "衤": {
+        "strokes": 5,
+        "meaning": "clothes",
+        "reading": "ころも, ころもへん",
+        "position": 1,
+        "variant_of": "衣"
+        
+    },
+    "竹": {
+        "strokes": 6,
+        "kanjix": 118,
+        "meaning": "bamboo",
+        "reading": "たけ, たけかんむり",
+        "importance": 2,
+        "variants": [
+            "⺮"
+        ]
+    },
+    "⺮": {
+        "strokes": 6,
+        "meaning": "bamboo",
+        "reading": "たけ, たけかんむり",
+        "position": 0,
+        "variant_of": "竹"
+    },
+    "米": {
+        "strokes": 6,
+        "kanjix": 119,
+        "meaning": "rice",
+        "reading": "こめ, こめへん"
+    },
+    "糸": {
+        "strokes": 6,
+        "kanjix": 120,
+        "meaning": "thread",
+        "reading": "いと, いとへん",
+        "importance": 1,
+        "variants": [
+            "糹"
+        ]
+    },
+    "糹": {
+        "strokes": 6,
+        "meaning": "thread",
+        "reading": "いと, いとへん",
+        "position": 1,
+        "variant_of": "糸"
+    },
+    "缶": {
+        "strokes": 6,
+        "kanjix": 121,
+        "meaning": "jar",
+        "reading": "ほとぎ, ほとぎへん, フ, カン"
+    },
+    "网": {
+        "strokes": 6,
+        "kanjix": 122,
+        "meaning": "net",
+        "reading": "あみめ, あみがしら, よんがしら",
+        "variants": [
+            "罒",
+            "罓",
+            "㓁"
+        ]
+    },
+    "羊": {
+        "strokes": 6,
+        "kanjix": 123,
+        "meaning": "sheep",
+        "reading": "ひつじ, ひつじへん",
+        "variants": [
+            "⺷"
+        ]
+    },
+    "⺷": {
+        "strokes": 6,
+        "meaning": "sheep",
+        "reading": "ひつじ, ひつじへん",
+        "variant_of": "羊"
+    },
+    "羽": {
+        "strokes": 6,
+        "kanjix": 124,
+        "meaning": "wing",
+        "reading": "はね"
+    },
+    "老": {
+        "strokes": 6,
+        "kanjix": 125,
+        "meaning": "old",
+        "reading": "おいる, おいかんむり, おいがしら",
+        "variants": [
+            "耂"
+        ]
+    },
+    "而": {
+        "strokes": 6,
+        "kanjix": 126,
+        "meaning": "and",
+        "reading": "しこうして, しかして"
+    },
+    "耒": {
+        "strokes": 6,
+        "kanjix": 127,
+        "meaning": "plow",
+        "reading": "らいすき, すきへん",
+        "position": 1
+    },
+    "耳": {
+        "strokes": 6,
+        "kanjix": 128,
+        "meaning": "ear",
+        "reading": "みみ, みみへん"
+    },
+    "聿": {
+        "strokes": 6,
+        "kanjix": 129,
+        "meaning": "brush",
+        "reading": "イツ, ふでづくり"
+    },
+    "肉": {
+        "strokes": 6,
+        "kanjix": 130,
+        "meaning": "meat",
+        "reading": "ニク, にくづき",
+        "importance": 1
+    },
+    "臣": {
+        "strokes": 6,
+        "kanjix": 131,
+        "meaning": "minister",
+        "reading": "シン"
+    },
+    "自": {
+        "strokes": 6,
+        "kanjix": 132,
+        "meaning": "oneself",
+        "reading": "ジ, みずから"
+    },
+    "至": {
+        "strokes": 6,
+        "kanjix": 133,
+        "meaning": "arrive",
+        "reading": "いたる, いたるへん"
+    },
+    "臼": {
+        "strokes": 6,
+        "kanjix": 134,
+        "meaning": "mortar",
+        "reading": "うす"
+    },
+    "舌": {
+        "strokes": 6,
+        "kanjix": 135,
+        "meaning": "tongue",
+        "reading": "した, したへん"
+    },
+    "舛": {
+        "strokes": 6,
+        "kanjix": 136,
+        "meaning": "oppose",
+        "reading": "まいあし, ます"
+    },
+    "舟": {
+        "strokes": 6,
+        "kanjix": 137,
+        "meaning": "boat",
+        "reading": "ふね, ふねへん"
+    },
+    "艮": {
+        "strokes": 6,
+        "kanjix": 138,
+        "meaning": "stopping",
+        "reading": "コン, ゴン, こんづくり, ごんづくり, ねづくり, うしとら"
+    },
+    "色": {
+        "strokes": 6,
+        "kanjix": 139,
+        "meaning": "color",
+        "reading": "いろ"
+    },
+    "艸": {
+        "strokes": 6,
+        "kanjix": 140,
+        "meaning": "grass",
+        "reading": "くさ, くさかんむり, そうこう",
+        "importance": 1,
+        "variants": [
+            "艹"
+        ]
+    },
+    "虍": {
+        "strokes": 6,
+        "kanjix": 141,
+        "meaning": "tiger",
+        "reading": "とらかんむり, とらがしら",
+        "position": 0
+    },
+    "虫": {
+        "strokes": 6,
+        "kanjix": 142,
+        "meaning": "bug",
+        "reading": "むし, むしへん"
+    },
+    "血": {
+        "strokes": 6,
+        "kanjix": 143,
+        "meaning": "blood",
+        "reading": "ち"
+    },
+    "行": {
+        "strokes": 6,
+        "kanjix": 144,
+        "meaning": "to go",
+        "reading": "ゆきがまえ, ぎょうがまえ",
+        "position": 4
+    },
+    "衣": {
+        "strokes": 6,
+        "kanjix": 145,
+        "meaning": "clothes",
+        "reading": "ころも, ころもへん",
+        "importance": 2,
+        "variants": [
+            "衤"
+        ]
+    },
+    "襾": {
+        "strokes": 6,
+        "kanjix": 146,
+        "meaning": "west",
+        "reading": "おおいかんむり, にし",
+        "variants": [
+            "覀",
+            "西"
+        ]
+    },
+    "覀": {
+        "strokes": 6,
+        "meaning": "west",
+        "reading": "おおいかんむり, にし",
+        "variant_of": "襾"
+    },
+    "西": {
+        "strokes": 6,
+        "meaning": "west",
+        "reading": "おおいかんむり, にし",
+        "variant_of": "襾"
+    },
+    "見": {
+        "strokes": 7,
+        "kanjix": 147,
+        "meaning": "see",
+        "reading": "みる"
+    },
+    "角": {
+        "strokes": 7,
+        "kanjix": 148,
+        "meaning": "horn",
+        "reading": "つの, つのへん"
+    },
+    "言": {
+        "strokes": 7,
+        "kanjix": 149,
+        "meaning": "talk",
+        "reading": "ことば, ゲン, ごんべん",
+        "importance": 1
+    },
+    "谷": {
+        "strokes": 7,
+        "kanjix": 150,
+        "meaning": "valley",
+        "reading": "たに, たにへん"
+    },
+    "豆": {
+        "strokes": 7,
+        "kanjix": 151,
+        "meaning": "bean",
+        "reading": "まめ, まめへん"
+    },
+    "豕": {
+        "strokes": 7,
+        "kanjix": 152,
+        "meaning": "pig",
+        "reading": "いのこ, いのこへん, ぶた"
+    },
+    "豸": {
+        "strokes": 7,
+        "kanjix": 153,
+        "meaning": "badger",
+        "reading": "むじなへん",
+        "position": 1
+    },
+    "貝": {
+        "strokes": 7,
+        "kanjix": 154,
+        "meaning": "shell",
+        "importance": 1,
+        "reading": "かい, かいへん, こがい"
+    },
+    "赤": {
+        "strokes": 7,
+        "kanjix": 155,
+        "meaning": "red",
+        "reading": "あか, あかへん"
+    },
+    "走": {
+        "strokes": 7,
+        "kanjix": 156,
+        "meaning": "run",
+        "reading": "はしる, そうにょう"
+    },
+    "足": {
+        "strokes": 7,
+        "kanjix": 157,
+        "meaning": "foot",
+        "reading": "あし, あしへん"
+    },
+    "身": {
+        "strokes": 7,
+        "kanjix": 158,
+        "meaning": "body",
+        "reading": "み, みへん"
+    },
+    "車": {
+        "strokes": 7,
+        "kanjix": 159,
+        "meaning": "vehicle",
+        "importance": 2,
+        "reading": "くるま, くるまへん"
+    },
+    "辛": {
+        "strokes": 7,
+        "kanjix": 160,
+        "meaning": "bitter",
+        "reading": "シン, からい"
+    },
+    "辰": {
+        "strokes": 7,
+        "kanjix": 161,
+        "meaning": "morning",
+        "reading": "しんのたつ"
+    },
+    "辵": {
+        "strokes": 7,
+        "kanjix": 162,
+        "meaning": "walk",
+        "reading": "しんにょう, しんにゅう",
+        "importance": 1,
+        "variants": [
+            "辶"
+        ]
+    },
+    "邑": {
+        "strokes": 7,
+        "kanjix": 163,
+        "meaning": "city",
+        "reading": "むら, おおざと",
+        "importance": 1,
+        "variants": [
+            "⻏"
+        ]
+    },
+    "酉": {
+        "strokes": 7,
+        "kanjix": 164,
+        "meaning": "sake",
+        "reading": "とりへん, ひよみのとり, さけのとり, とり",
+        "importance": 2
+    },
+    "釆": {
+        "strokes": 7,
+        "kanjix": 165,
+        "meaning": "distinguish",
+        "reading": "のごめ, のごめへん"
+    },
+    "里": {
+        "strokes": 7,
+        "kanjix": 166,
+        "meaning": "village",
+        "reading": "さと, さとへん"
+    },
+    "麦": {
+        "strokes": 7,
+        "meaning": "wheat",
+        "reading": "むぎ, ばくにょう",
+        "variant_of": "麥"
+    },
+    "金": {
+        "strokes": 8,
+        "kanjix": 167,
+        "meaning": "gold",
+        "reading": "かね, かねへん",
+        "importance": 1
+    },
+    "長": {
+        "strokes": 8,
+        "kanjix": 168,
+        "meaning": "long",
+        "reading": "ながい"
+    },
+    "門": {
+        "strokes": 8,
+        "kanjix": 169,
+        "meaning": "gate",
+        "reading": "モン, もんがまえ, かどがまえ",
+        "position": 4
+    },
+    "阜": {
+        "strokes": 8,
+        "kanjix": 170,
+        "meaning": "mound",
+        "reading": "おか, こざとへん",
+        "variants": [
+            "阝"
+        ]
+    },
+    "阝": {
+        "strokes": 8,
+        "meaning": "mound",
+        "reading": "おか, こざとへん",
+        "position": 1,
+        "variant_of": "阜"
+    },
+    "隶": {
+        "strokes": 8,
+        "kanjix": 171,
+        "meaning": "slave",
+        "reading": "れいづくり",
+        "position": 2
+    },
+    "隹": {
+        "strokes": 8,
+        "kanjix": 172,
+        "meaning": "small bird",
+        "reading": "ふるとり"
+    },
+    "雨": {
+        "strokes": 8,
+        "kanjix": 173,
+        "meaning": "rain",
+        "reading": "あめ, あめかんむり",
+        "importance": 2
+    },
+    "靑": {
+        "strokes": 8,
+        "kanjix": 174,
+        "meaning": "blue",
+        "reading": "あお",
+        "variants": [
+            "青"
+        ]
+    },
+    "青": {
+        "strokes": 8,
+        "meaning": "blue",
+        "reading": "あお",
+        "variant_of": "靑"
+    },
+    "非": {
+        "strokes": 8,
+        "kanjix": 175,
+        "meaning": "wrong",
+        "reading": "あらず, ヒ"
+    },
+    "斉": {
+        "strokes": 8,
+        "meaning": "even",
+        "reading": "セイ",
+        "variant_of": "齊"
+    },
+    "面": {
+        "strokes": 9,
+        "kanjix": 176,
+        "meaning": "face",
+        "reading": "メン"
+    },
+    "革": {
+        "strokes": 9,
+        "kanjix": 177,
+        "meaning": "leather",
+        "reading": "かわへん, つくりがわ"
+    },
+    "韋": {
+        "strokes": 9,
+        "kanjix": 178,
+        "meaning": "tanned leather",
+        "reading": "なめしがわ"
+    },
+    "韭": {
+        "strokes": 9,
+        "kanjix": 179,
+        "meaning": "leek",
+        "reading": "にら"
+    },
+    "音": {
+        "strokes": 9,
+        "kanjix": 180,
+        "meaning": "sound",
+        "reading": "おと, おとへん"
+    },
+    "頁": {
+        "strokes": 9,
+        "kanjix": 181,
+        "meaning": "leaf",
+        "reading": "おおがい, いちのかい",
+        "position": 2
+    },
+    "風": {
+        "strokes": 9,
+        "kanjix": 182,
+        "meaning": "wind",
+        "reading": "かぜ"
+    },
+    "飛": {
+        "strokes": 9,
+        "kanjix": 183,
+        "meaning": "fly",
+        "reading": "とぶ"
+    },
+    "食": { 
+        "strokes": 9,
+        "kanjix": 184,
+        "meaning": "food",
+        "reading": "ショク, しょくへん",
+        "importance": 2
+    },
+    "首": {
+        "strokes": 9,
+        "kanjix": 185,
+        "meaning": "neck",
+        "reading": "くび"
+    },
+    "香": {
+        "strokes": 9,
+        "kanjix": 186,
+        "meaning": "smell",
+        "reading": "かおり, カ"
+    },
+    "馬": {
+        "strokes": 10,
+        "kanjix": 187,
+        "meaning": "horse",
+        "reading": "うま, うまへん"
+    },
+    "骨": {
+        "strokes": 10,
+        "kanjix": 188,
+        "meaning": "bone",
+        "reading": "ほね, ほねへん"
+    },
+    "高": {
+        "strokes": 10,
+        "kanjix": 189,
+        "meaning": "tall",
+        "reading": "たかい"
+    },
+    "髟": {
+        "strokes": 10,
+        "kanjix": 190,
+        "meaning": "long hair",
+        "reading": "かみかんむり, かみがしら",
+        "position": 0
+    },
+    "鬥": {
+        "strokes": 10,
+        "kanjix": 191,
+        "meaning": "fight",
+        "reading": "とうがまえ, たたかいがまえ",
+        "position": 4
+    },
+    "鬯": {
+        "strokes": 10,
+        "kanjix": 192,
+        "meaning": "sacrificial wine",
+        "reading": "チョウ, においざけ"
+    },
+    "鬲": {
+        "strokes": 10,
+        "kanjix": 193,
+        "meaning": "cauldron",
+        "reading": "かなえ, レキ"
+    },
+    "鬼": {
+        "strokes": 10,
+        "kanjix": 194,
+        "meaning": "demon",
+        "reading": "おに, きにょう"
+    },
+    "竜": {
+        "strokes": 10,
+        "meaning": "dragon",
+        "reading": "リュウ",
+        "variant_of": "龍"
+    },
+    "魚": {
+        "strokes": 11,
+        "kanjix": 195,
+        "meaning": "fish",
+        "reading": "うお, さかな, うおへん"
+    },
+    "鳥": {
+        "strokes": 11,
+        "kanjix": 196,
+        "meaning": "bird",
+        "reading": "とり, とりへん"
+    },
+    "鹵": {
+        "strokes": 11,
+        "kanjix": 197,
+        "meaning": "salt",
+        "reading": "しお, ロ"
+    },
+    "鹿": {
+        "strokes": 11,
+        "kanjix": 198,
+        "meaning": "dear",
+        "reading": "しか"
+    },
+    "麥": {
+        "strokes": 11,
+        "kanjix": 199,
+        "meaning": "wheat",
+        "reading": "むぎ, ばくにょう",
+        "variants": [
+            "麦"
+        ]
+    },
+    "麻": {
+        "strokes": 11,
+        "kanjix": 200,
+        "meaning": "hemp",
+        "reading": "あさ, あさかんむり"
+    },
+    "亀": {
+        "strokes": 11,
+        "meaning": "turtle",
+        "reading": "かめ",
+        "variant_of": "龜"
+    },
+    "黃": {
+        "strokes": 12,
+        "kanjix": 201,
+        "meaning": "yellow",
+        "reading": "き",
+        "variants": [
+            "黄"
+        ]
+    },
+    "黄": {
+        "strokes": 12,
+        "meaning": "yellow",
+        "reading": "き",
+        "variant_of": "黃"
+    },
+    "黍": {
+        "strokes": 12,
+        "kanjix": 202,
+        "meaning": "millet",
+        "reading": "きび"
+    },
+    "黑": {
+        "strokes": 12,
+        "kanjix": 203,
+        "meaning": "black",
+        "reading": "くろ",
+        "variants": [
+            "黒"
+        ]
+    },
+    "黒": {
+        "strokes": 12,
+        "meaning": "black",
+        "reading": "くろ",
+        "variant_of": "黑"
+    },
+    "黹": {
+        "strokes": 12,
+        "kanjix": 204,
+        "meaning": "embroidery",
+        "reading": "ぬいとり, ふつへん, チ"
+    },
+    "歯": {
+        "strokes": 12,
+        "meaning": "tooth",
+        "reading": "は、はへん",
+        "variant_of": "齒"
+    },
+    "黽": {
+        "strokes": 13,
+        "kanjix": 205,
+        "meaning": "frog",
+        "reading": "べんあし, かえる, ベン"
+    },
+    "鼎": {
+        "strokes": 13,
+        "kanjix": 206,
+        "meaning": "tripod",
+        "reading": "かなえ, テイ"
+    },
+    "鼓": {
+        "strokes": 13,
+        "kanjix": 207,
+        "meaning": "drum",
+        "reading": "つづみ"
+    },
+    "鼠": {
+        "strokes": 13,
+        "kanjix": 208,
+        "meaning": "mouse",
+        "reading": "ねずみ, ねずみへん"
+    },
+    "鼻": {
+        "strokes": 14,
+        "kanjix": 209,
+        "meaning": "nose",
+        "reading": "はな, はなへん"
+    },
+    "齊": {
+        "strokes": 14,
+        "kanjix": 210,
+        "meaning": "even",
+        "reading": "セイ",
+        "variants": [
+            "斉"
+        ]
+    },
+    "齒": {
+        "strokes": 15,
+        "kanjix": 211,
+        "meaning": "tooth",
+        "reading": "は、はへん",
+        "variants": [
+            "歯"
+        ]
+    },
+    "龍": {
+        "strokes": 16,
+        "kanjix": 212,
+        "meaning": "dragon",
+        "reading": "リュウ",
+        "variants": [
+            "竜"
+        ]
+    },
+    "龜": {
+        "strokes": 16,
+        "kanjix": 213,
+        "meaning": "turtle",
+        "reading": "かめ",
+        "variants": [
+            "亀"
+        ]
+    },
+    "龠": {
+        "strokes": 17,
+        "kanjix": 214,
+        "meaning": "flute",
+        "reading": "ヤク, ふえ"
+    }
+}
