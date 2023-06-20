@@ -117,6 +117,7 @@ const VocabSchema = CollectionSchema(
     r'VocabReading': VocabReadingSchema,
     r'VocabDefinition': VocabDefinitionSchema,
     r'VocabExample': VocabExampleSchema,
+    r'LoanWordInfo': LoanWordInfoSchema,
     r'SpacedRepetitionData': SpacedRepetitionDataSchema
   },
   getId: _vocabGetId,
@@ -3329,14 +3330,20 @@ const VocabDefinitionSchema = Schema(
       type: IsarType.byteList,
       enumMap: _VocabDefinitionfieldsEnumValueMap,
     ),
-    r'miscInfo': PropertySchema(
+    r'loanWordInfo': PropertySchema(
       id: 6,
+      name: r'loanWordInfo',
+      type: IsarType.object,
+      target: r'LoanWordInfo',
+    ),
+    r'miscInfo': PropertySchema(
+      id: 7,
       name: r'miscInfo',
       type: IsarType.byteList,
       enumMap: _VocabDefinitionmiscInfoEnumValueMap,
     ),
     r'pos': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'pos',
       type: IsarType.byteList,
       enumMap: _VocabDefinitionposEnumValueMap,
@@ -3400,6 +3407,14 @@ int _vocabDefinitionEstimateSize(
     }
   }
   {
+    final value = object.loanWordInfo;
+    if (value != null) {
+      bytesCount += 3 +
+          LoanWordInfoSchema.estimateSize(
+              value, allOffsets[LoanWordInfo]!, allOffsets);
+    }
+  }
+  {
     final value = object.miscInfo;
     if (value != null) {
       bytesCount += 3 + value.length;
@@ -3432,9 +3447,15 @@ void _vocabDefinitionSerialize(
     object.examples,
   );
   writer.writeByteList(offsets[5], object.fields?.map((e) => e.index).toList());
+  writer.writeObject<LoanWordInfo>(
+    offsets[6],
+    allOffsets,
+    LoanWordInfoSchema.serialize,
+    object.loanWordInfo,
+  );
   writer.writeByteList(
-      offsets[6], object.miscInfo?.map((e) => e.index).toList());
-  writer.writeByteList(offsets[7], object.pos?.map((e) => e.index).toList());
+      offsets[7], object.miscInfo?.map((e) => e.index).toList());
+  writer.writeByteList(offsets[8], object.pos?.map((e) => e.index).toList());
 }
 
 VocabDefinition _vocabDefinitionDeserialize(
@@ -3461,14 +3482,19 @@ VocabDefinition _vocabDefinitionDeserialize(
       .readByteList(offsets[5])
       ?.map((e) => _VocabDefinitionfieldsValueEnumMap[e] ?? Field.agriculture)
       .toList();
+  object.loanWordInfo = reader.readObjectOrNull<LoanWordInfo>(
+    offsets[6],
+    LoanWordInfoSchema.deserialize,
+    allOffsets,
+  );
   object.miscInfo = reader
-      .readByteList(offsets[6])
+      .readByteList(offsets[7])
       ?.map((e) =>
           _VocabDefinitionmiscInfoValueEnumMap[e] ??
           MiscellaneousInfo.abbreviation)
       .toList();
   object.pos = reader
-      .readByteList(offsets[7])
+      .readByteList(offsets[8])
       ?.map(
           (e) => _VocabDefinitionposValueEnumMap[e] ?? PartOfSpeech.adjectiveF)
       .toList();
@@ -3508,13 +3534,19 @@ P _vocabDefinitionDeserializeProp<P>(
               (e) => _VocabDefinitionfieldsValueEnumMap[e] ?? Field.agriculture)
           .toList()) as P;
     case 6:
+      return (reader.readObjectOrNull<LoanWordInfo>(
+        offset,
+        LoanWordInfoSchema.deserialize,
+        allOffsets,
+      )) as P;
+    case 7:
       return (reader
           .readByteList(offset)
           ?.map((e) =>
               _VocabDefinitionmiscInfoValueEnumMap[e] ??
               MiscellaneousInfo.abbreviation)
           .toList()) as P;
-    case 7:
+    case 8:
       return (reader
           .readByteList(offset)
           ?.map((e) =>
@@ -5001,6 +5033,24 @@ extension VocabDefinitionQueryFilter
   }
 
   QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      loanWordInfoIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'loanWordInfo',
+      ));
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      loanWordInfoIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'loanWordInfo',
+      ));
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
       miscInfoIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -5333,6 +5383,13 @@ extension VocabDefinitionQueryObject
       examplesElement(FilterQuery<VocabExample> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'examples');
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      loanWordInfo(FilterQuery<LoanWordInfo> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'loanWordInfo');
     });
   }
 }
@@ -5687,3 +5744,388 @@ extension VocabExampleQueryFilter
 
 extension VocabExampleQueryObject
     on QueryBuilder<VocabExample, VocabExample, QFilterCondition> {}
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+
+const LoanWordInfoSchema = Schema(
+  name: r'LoanWordInfo',
+  id: 3920775525188283511,
+  properties: {
+    r'languageSource': PropertySchema(
+      id: 0,
+      name: r'languageSource',
+      type: IsarType.byteList,
+      enumMap: _LoanWordInfolanguageSourceEnumValueMap,
+    ),
+    r'waseieigo': PropertySchema(
+      id: 1,
+      name: r'waseieigo',
+      type: IsarType.bool,
+    )
+  },
+  estimateSize: _loanWordInfoEstimateSize,
+  serialize: _loanWordInfoSerialize,
+  deserialize: _loanWordInfoDeserialize,
+  deserializeProp: _loanWordInfoDeserializeProp,
+);
+
+int _loanWordInfoEstimateSize(
+  LoanWordInfo object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.languageSource.length;
+  return bytesCount;
+}
+
+void _loanWordInfoSerialize(
+  LoanWordInfo object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeByteList(
+      offsets[0], object.languageSource.map((e) => e.index).toList());
+  writer.writeBool(offsets[1], object.waseieigo);
+}
+
+LoanWordInfo _loanWordInfoDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = LoanWordInfo();
+  object.languageSource = reader
+          .readByteList(offsets[0])
+          ?.map((e) =>
+              _LoanWordInfolanguageSourceValueEnumMap[e] ?? LanguageSource.afr)
+          .toList() ??
+      [];
+  object.waseieigo = reader.readBool(offsets[1]);
+  return object;
+}
+
+P _loanWordInfoDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader
+              .readByteList(offset)
+              ?.map((e) =>
+                  _LoanWordInfolanguageSourceValueEnumMap[e] ??
+                  LanguageSource.afr)
+              .toList() ??
+          []) as P;
+    case 1:
+      return (reader.readBool(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+const _LoanWordInfolanguageSourceEnumValueMap = {
+  'afr': 0,
+  'ain': 1,
+  'alg': 2,
+  'amh': 3,
+  'ara': 4,
+  'arn': 5,
+  'bnt': 6,
+  'bre': 7,
+  'bul': 8,
+  'bur': 9,
+  'chi': 10,
+  'chn': 11,
+  'cze': 12,
+  'dan': 13,
+  'dut': 14,
+  'eng': 15,
+  'epo': 16,
+  'est': 17,
+  'fil': 18,
+  'fin': 19,
+  'fre': 20,
+  'geo': 21,
+  'ger': 22,
+  'glg': 23,
+  'grc': 24,
+  'gre': 25,
+  'haw': 26,
+  'heb': 27,
+  'hin': 28,
+  'hun': 29,
+  'ice': 30,
+  'ind': 31,
+  'ita': 32,
+  'khm': 33,
+  'kor': 34,
+  'kur': 35,
+  'lat': 36,
+  'mal': 37,
+  'mao': 38,
+  'may': 39,
+  'mnc': 40,
+  'mol': 41,
+  'mon': 42,
+  'nor': 43,
+  'per': 44,
+  'pol': 45,
+  'por': 46,
+  'rum': 47,
+  'rus': 48,
+  'san': 49,
+  'scr': 50,
+  'slo': 51,
+  'slv': 52,
+  'som': 53,
+  'spa': 54,
+  'swa': 55,
+  'swe': 56,
+  'tah': 57,
+  'tam': 58,
+  'tgl': 59,
+  'tha': 60,
+  'tib': 61,
+  'tur': 62,
+  'ukr': 63,
+  'urd': 64,
+  'vie': 65,
+  'yid': 66,
+};
+const _LoanWordInfolanguageSourceValueEnumMap = {
+  0: LanguageSource.afr,
+  1: LanguageSource.ain,
+  2: LanguageSource.alg,
+  3: LanguageSource.amh,
+  4: LanguageSource.ara,
+  5: LanguageSource.arn,
+  6: LanguageSource.bnt,
+  7: LanguageSource.bre,
+  8: LanguageSource.bul,
+  9: LanguageSource.bur,
+  10: LanguageSource.chi,
+  11: LanguageSource.chn,
+  12: LanguageSource.cze,
+  13: LanguageSource.dan,
+  14: LanguageSource.dut,
+  15: LanguageSource.eng,
+  16: LanguageSource.epo,
+  17: LanguageSource.est,
+  18: LanguageSource.fil,
+  19: LanguageSource.fin,
+  20: LanguageSource.fre,
+  21: LanguageSource.geo,
+  22: LanguageSource.ger,
+  23: LanguageSource.glg,
+  24: LanguageSource.grc,
+  25: LanguageSource.gre,
+  26: LanguageSource.haw,
+  27: LanguageSource.heb,
+  28: LanguageSource.hin,
+  29: LanguageSource.hun,
+  30: LanguageSource.ice,
+  31: LanguageSource.ind,
+  32: LanguageSource.ita,
+  33: LanguageSource.khm,
+  34: LanguageSource.kor,
+  35: LanguageSource.kur,
+  36: LanguageSource.lat,
+  37: LanguageSource.mal,
+  38: LanguageSource.mao,
+  39: LanguageSource.may,
+  40: LanguageSource.mnc,
+  41: LanguageSource.mol,
+  42: LanguageSource.mon,
+  43: LanguageSource.nor,
+  44: LanguageSource.per,
+  45: LanguageSource.pol,
+  46: LanguageSource.por,
+  47: LanguageSource.rum,
+  48: LanguageSource.rus,
+  49: LanguageSource.san,
+  50: LanguageSource.scr,
+  51: LanguageSource.slo,
+  52: LanguageSource.slv,
+  53: LanguageSource.som,
+  54: LanguageSource.spa,
+  55: LanguageSource.swa,
+  56: LanguageSource.swe,
+  57: LanguageSource.tah,
+  58: LanguageSource.tam,
+  59: LanguageSource.tgl,
+  60: LanguageSource.tha,
+  61: LanguageSource.tib,
+  62: LanguageSource.tur,
+  63: LanguageSource.ukr,
+  64: LanguageSource.urd,
+  65: LanguageSource.vie,
+  66: LanguageSource.yid,
+};
+
+extension LoanWordInfoQueryFilter
+    on QueryBuilder<LoanWordInfo, LoanWordInfo, QFilterCondition> {
+  QueryBuilder<LoanWordInfo, LoanWordInfo, QAfterFilterCondition>
+      languageSourceElementEqualTo(LanguageSource value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'languageSource',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LoanWordInfo, LoanWordInfo, QAfterFilterCondition>
+      languageSourceElementGreaterThan(
+    LanguageSource value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'languageSource',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LoanWordInfo, LoanWordInfo, QAfterFilterCondition>
+      languageSourceElementLessThan(
+    LanguageSource value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'languageSource',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LoanWordInfo, LoanWordInfo, QAfterFilterCondition>
+      languageSourceElementBetween(
+    LanguageSource lower,
+    LanguageSource upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'languageSource',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<LoanWordInfo, LoanWordInfo, QAfterFilterCondition>
+      languageSourceLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'languageSource',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<LoanWordInfo, LoanWordInfo, QAfterFilterCondition>
+      languageSourceIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'languageSource',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<LoanWordInfo, LoanWordInfo, QAfterFilterCondition>
+      languageSourceIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'languageSource',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<LoanWordInfo, LoanWordInfo, QAfterFilterCondition>
+      languageSourceLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'languageSource',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<LoanWordInfo, LoanWordInfo, QAfterFilterCondition>
+      languageSourceLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'languageSource',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<LoanWordInfo, LoanWordInfo, QAfterFilterCondition>
+      languageSourceLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'languageSource',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<LoanWordInfo, LoanWordInfo, QAfterFilterCondition>
+      waseieigoEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'waseieigo',
+        value: value,
+      ));
+    });
+  }
+}
+
+extension LoanWordInfoQueryObject
+    on QueryBuilder<LoanWordInfo, LoanWordInfo, QFilterCondition> {}

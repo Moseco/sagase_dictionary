@@ -424,6 +424,7 @@ class DictionaryBuilder {
     List<MiscellaneousInfo>? miscInfo;
     List<Dialect>? dialects;
     List<VocabExample>? examples;
+    LoanWordInfo? loanWordInfo;
 
     for (var senseElement in xmlElement.childElements) {
       switch (senseElement.name.local) {
@@ -459,7 +460,8 @@ class DictionaryBuilder {
           additionalInfo = senseElement.text;
           break;
         case 'lsource':
-          // Indicates the source language of a loan-word/gairaigo
+          loanWordInfo ??= LoanWordInfo();
+          _handleLanguageSourceElement(loanWordInfo, senseElement);
           break;
         case 'dial':
           final dialect = _handleDialectElement(senseElement.text);
@@ -492,7 +494,8 @@ class DictionaryBuilder {
         ..fields = fields
         ..miscInfo = miscInfo
         ..dialects = dialects
-        ..examples = examples,
+        ..examples = examples
+        ..loanWordInfo = loanWordInfo,
     );
 
     return definitions;
@@ -1031,6 +1034,226 @@ class DictionaryBuilder {
         return Dialect.tsugaruBen;
       default:
         return null;
+    }
+  }
+
+  static void _handleLanguageSourceElement(
+    LoanWordInfo loanVocabInfo,
+    XmlElement xmlElement,
+  ) {
+    switch (xmlElement.getAttribute('xml:lang')) {
+      case 'afr':
+        loanVocabInfo.languageSource.add(LanguageSource.afr);
+        break;
+      case 'ain':
+        loanVocabInfo.languageSource.add(LanguageSource.ain);
+        break;
+      case 'alg':
+        loanVocabInfo.languageSource.add(LanguageSource.alg);
+        break;
+      case 'amh':
+        loanVocabInfo.languageSource.add(LanguageSource.amh);
+        break;
+      case 'ara':
+        loanVocabInfo.languageSource.add(LanguageSource.ara);
+        break;
+      case 'arn':
+        loanVocabInfo.languageSource.add(LanguageSource.arn);
+        break;
+      case 'bnt':
+        loanVocabInfo.languageSource.add(LanguageSource.bnt);
+        break;
+      case 'bre':
+        loanVocabInfo.languageSource.add(LanguageSource.bre);
+        break;
+      case 'bul':
+        loanVocabInfo.languageSource.add(LanguageSource.bul);
+        break;
+      case 'bur':
+        loanVocabInfo.languageSource.add(LanguageSource.bur);
+        break;
+      case 'chi':
+        loanVocabInfo.languageSource.add(LanguageSource.chi);
+        break;
+      case 'chn':
+        loanVocabInfo.languageSource.add(LanguageSource.chn);
+        break;
+      case 'cze':
+        loanVocabInfo.languageSource.add(LanguageSource.cze);
+        break;
+      case 'dan':
+        loanVocabInfo.languageSource.add(LanguageSource.dan);
+        break;
+      case 'dut':
+        loanVocabInfo.languageSource.add(LanguageSource.dut);
+        break;
+      case 'eng':
+        loanVocabInfo.languageSource.add(LanguageSource.eng);
+        break;
+      case 'epo':
+        loanVocabInfo.languageSource.add(LanguageSource.epo);
+        break;
+      case 'est':
+        loanVocabInfo.languageSource.add(LanguageSource.est);
+        break;
+      case 'fil':
+        loanVocabInfo.languageSource.add(LanguageSource.fil);
+        break;
+      case 'fin':
+        loanVocabInfo.languageSource.add(LanguageSource.fin);
+        break;
+      case 'fre':
+        loanVocabInfo.languageSource.add(LanguageSource.fre);
+        break;
+      case 'geo':
+        loanVocabInfo.languageSource.add(LanguageSource.geo);
+        break;
+      case 'ger':
+        loanVocabInfo.languageSource.add(LanguageSource.ger);
+        break;
+      case 'glg':
+        loanVocabInfo.languageSource.add(LanguageSource.glg);
+        break;
+      case 'grc':
+        loanVocabInfo.languageSource.add(LanguageSource.grc);
+        break;
+      case 'gre':
+        loanVocabInfo.languageSource.add(LanguageSource.gre);
+        break;
+      case 'haw':
+        loanVocabInfo.languageSource.add(LanguageSource.haw);
+        break;
+      case 'heb':
+        loanVocabInfo.languageSource.add(LanguageSource.heb);
+        break;
+      case 'hin':
+        loanVocabInfo.languageSource.add(LanguageSource.hin);
+        break;
+      case 'hun':
+        loanVocabInfo.languageSource.add(LanguageSource.hun);
+        break;
+      case 'ice':
+        loanVocabInfo.languageSource.add(LanguageSource.ice);
+        break;
+      case 'ind':
+        loanVocabInfo.languageSource.add(LanguageSource.ind);
+        break;
+      case 'ita':
+        loanVocabInfo.languageSource.add(LanguageSource.ita);
+        break;
+      case 'khm':
+        loanVocabInfo.languageSource.add(LanguageSource.khm);
+        break;
+      case 'kor':
+        loanVocabInfo.languageSource.add(LanguageSource.kor);
+        break;
+      case 'kur':
+        loanVocabInfo.languageSource.add(LanguageSource.kur);
+        break;
+      case 'lat':
+        loanVocabInfo.languageSource.add(LanguageSource.lat);
+        break;
+      case 'mal':
+        loanVocabInfo.languageSource.add(LanguageSource.mal);
+        break;
+      case 'mao':
+        loanVocabInfo.languageSource.add(LanguageSource.mao);
+        break;
+      case 'may':
+        loanVocabInfo.languageSource.add(LanguageSource.may);
+        break;
+      case 'mnc':
+        loanVocabInfo.languageSource.add(LanguageSource.mnc);
+        break;
+      case 'mol':
+        loanVocabInfo.languageSource.add(LanguageSource.mol);
+        break;
+      case 'mon':
+        loanVocabInfo.languageSource.add(LanguageSource.mon);
+        break;
+      case 'nor':
+        loanVocabInfo.languageSource.add(LanguageSource.nor);
+        break;
+      case 'per':
+        loanVocabInfo.languageSource.add(LanguageSource.per);
+        break;
+      case 'pol':
+        loanVocabInfo.languageSource.add(LanguageSource.pol);
+        break;
+      case 'por':
+        loanVocabInfo.languageSource.add(LanguageSource.por);
+        break;
+      case 'rum':
+        loanVocabInfo.languageSource.add(LanguageSource.rum);
+        break;
+      case 'rus':
+        loanVocabInfo.languageSource.add(LanguageSource.rus);
+        break;
+      case 'san':
+        loanVocabInfo.languageSource.add(LanguageSource.san);
+        break;
+      case 'scr':
+        loanVocabInfo.languageSource.add(LanguageSource.scr);
+        break;
+      case 'slo':
+        loanVocabInfo.languageSource.add(LanguageSource.slo);
+        break;
+      case 'slv':
+        loanVocabInfo.languageSource.add(LanguageSource.slv);
+        break;
+      case 'som':
+        loanVocabInfo.languageSource.add(LanguageSource.som);
+        break;
+      case 'spa':
+        loanVocabInfo.languageSource.add(LanguageSource.spa);
+        break;
+      case 'swa':
+        loanVocabInfo.languageSource.add(LanguageSource.swa);
+        break;
+      case 'swe':
+        loanVocabInfo.languageSource.add(LanguageSource.swe);
+        break;
+      case 'tah':
+        loanVocabInfo.languageSource.add(LanguageSource.tah);
+        break;
+      case 'tam':
+        loanVocabInfo.languageSource.add(LanguageSource.tam);
+        break;
+      case 'tgl':
+        loanVocabInfo.languageSource.add(LanguageSource.tgl);
+        break;
+      case 'tha':
+        loanVocabInfo.languageSource.add(LanguageSource.tha);
+        break;
+      case 'tib':
+        loanVocabInfo.languageSource.add(LanguageSource.tib);
+        break;
+      case 'tur':
+        loanVocabInfo.languageSource.add(LanguageSource.tur);
+        break;
+      case 'ukr':
+        loanVocabInfo.languageSource.add(LanguageSource.ukr);
+        break;
+      case 'urd':
+        loanVocabInfo.languageSource.add(LanguageSource.urd);
+        break;
+      case 'vie':
+        loanVocabInfo.languageSource.add(LanguageSource.vie);
+        break;
+      case 'yid':
+        loanVocabInfo.languageSource.add(LanguageSource.yid);
+        break;
+      case null:
+        loanVocabInfo.languageSource.add(LanguageSource.eng);
+        break;
+      default:
+        print(
+            'Unsupported language source ${xmlElement.getAttribute('xml:lang')}');
+        break;
+    }
+
+    if (xmlElement.getAttribute('ls_wasei') == 'y') {
+      loanVocabInfo.waseieigo = true;
     }
   }
 

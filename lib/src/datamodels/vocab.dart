@@ -73,6 +73,7 @@ class VocabDefinition {
   @enumerated
   List<Dialect>? dialects;
   List<VocabExample>? examples;
+  LoanWordInfo? loanWordInfo;
 }
 
 @embedded
@@ -81,6 +82,13 @@ class VocabExample {
   late String english;
   @ignore
   late List<JapaneseTextToken> tokens;
+}
+
+@embedded
+class LoanWordInfo {
+  @enumerated
+  List<LanguageSource> languageSource = [];
+  bool waseieigo = false;
 }
 
 enum KanjiInfo {
@@ -355,4 +363,74 @@ enum Dialect {
   touhokuBen,
   tosaBen,
   tsugaruBen,
+}
+
+enum LanguageSource {
+  afr,
+  ain,
+  alg,
+  amh,
+  ara,
+  arn,
+  bnt,
+  bre,
+  bul,
+  bur,
+  chi,
+  chn,
+  cze,
+  dan,
+  dut,
+  eng,
+  epo,
+  est,
+  fil,
+  fin,
+  fre,
+  geo,
+  ger,
+  glg,
+  grc,
+  gre,
+  haw,
+  heb,
+  hin,
+  hun,
+  ice,
+  ind,
+  ita,
+  khm,
+  kor,
+  kur,
+  lat,
+  mal,
+  mao,
+  may,
+  mnc,
+  mol,
+  mon,
+  nor,
+  per,
+  pol,
+  por,
+  rum,
+  rus,
+  san,
+  scr,
+  slo,
+  slv,
+  som,
+  spa,
+  swa,
+  swe,
+  tah,
+  tam,
+  tgl,
+  tha,
+  tib,
+  tur,
+  ukr,
+  urd,
+  vie,
+  yid,
 }
