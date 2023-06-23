@@ -63,6 +63,7 @@ void main() async {
     File(path.join(inputFilesPath, 'vocab_lists.json')).readAsStringSync(),
     File(path.join(inputFilesPath, 'kanji_lists.json')).readAsStringSync(),
     File(path.join(inputFilesPath, 'pitch_accents.txt')).readAsStringSync(),
+    File(path.join(inputFilesPath, 'frequency_list.txt')).readAsStringSync(),
   );
 
   // Export isar to file and close isar

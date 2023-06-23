@@ -33,24 +33,29 @@ const VocabSchema = CollectionSchema(
       type: IsarType.objectList,
       target: r'VocabDefinition',
     ),
-    r'japaneseTextIndex': PropertySchema(
+    r'frequencyScore': PropertySchema(
       id: 3,
+      name: r'frequencyScore',
+      type: IsarType.long,
+    ),
+    r'japaneseTextIndex': PropertySchema(
+      id: 4,
       name: r'japaneseTextIndex',
       type: IsarType.stringList,
     ),
     r'kanjiReadingPairs': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'kanjiReadingPairs',
       type: IsarType.objectList,
       target: r'KanjiReadingPair',
     ),
     r'romajiTextIndex': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'romajiTextIndex',
       type: IsarType.stringList,
     ),
     r'spacedRepetitionData': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'spacedRepetitionData',
       type: IsarType.object,
       target: r'SpacedRepetitionData',
@@ -196,16 +201,17 @@ void _vocabSerialize(
     VocabDefinitionSchema.serialize,
     object.definitions,
   );
-  writer.writeStringList(offsets[3], object.japaneseTextIndex);
+  writer.writeLong(offsets[3], object.frequencyScore);
+  writer.writeStringList(offsets[4], object.japaneseTextIndex);
   writer.writeObjectList<KanjiReadingPair>(
-    offsets[4],
+    offsets[5],
     allOffsets,
     KanjiReadingPairSchema.serialize,
     object.kanjiReadingPairs,
   );
-  writer.writeStringList(offsets[5], object.romajiTextIndex);
+  writer.writeStringList(offsets[6], object.romajiTextIndex);
   writer.writeObject<SpacedRepetitionData>(
-    offsets[6],
+    offsets[7],
     allOffsets,
     SpacedRepetitionDataSchema.serialize,
     object.spacedRepetitionData,
@@ -228,18 +234,19 @@ Vocab _vocabDeserialize(
         VocabDefinition(),
       ) ??
       [];
+  object.frequencyScore = reader.readLong(offsets[3]);
   object.id = id;
-  object.japaneseTextIndex = reader.readStringList(offsets[3]) ?? [];
+  object.japaneseTextIndex = reader.readStringList(offsets[4]) ?? [];
   object.kanjiReadingPairs = reader.readObjectList<KanjiReadingPair>(
-        offsets[4],
+        offsets[5],
         KanjiReadingPairSchema.deserialize,
         allOffsets,
         KanjiReadingPair(),
       ) ??
       [];
-  object.romajiTextIndex = reader.readStringList(offsets[5]) ?? [];
+  object.romajiTextIndex = reader.readStringList(offsets[6]) ?? [];
   object.spacedRepetitionData = reader.readObjectOrNull<SpacedRepetitionData>(
-    offsets[6],
+    offsets[7],
     SpacedRepetitionDataSchema.deserialize,
     allOffsets,
   );
@@ -266,8 +273,10 @@ P _vocabDeserializeProp<P>(
           ) ??
           []) as P;
     case 3:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readLong(offset)) as P;
     case 4:
+      return (reader.readStringList(offset) ?? []) as P;
+    case 5:
       return (reader.readObjectList<KanjiReadingPair>(
             offset,
             KanjiReadingPairSchema.deserialize,
@@ -275,9 +284,9 @@ P _vocabDeserializeProp<P>(
             KanjiReadingPair(),
           ) ??
           []) as P;
-    case 5:
-      return (reader.readStringList(offset) ?? []) as P;
     case 6:
+      return (reader.readStringList(offset) ?? []) as P;
+    case 7:
       return (reader.readObjectOrNull<SpacedRepetitionData>(
         offset,
         SpacedRepetitionDataSchema.deserialize,
@@ -1142,6 +1151,59 @@ extension VocabQueryFilter on QueryBuilder<Vocab, Vocab, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> frequencyScoreEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'frequencyScore',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> frequencyScoreGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'frequencyScore',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> frequencyScoreLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'frequencyScore',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> frequencyScoreBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'frequencyScore',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Vocab, Vocab, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1854,6 +1916,18 @@ extension VocabQuerySortBy on QueryBuilder<Vocab, Vocab, QSortBy> {
       return query.addSortBy(r'commonWord', Sort.desc);
     });
   }
+
+  QueryBuilder<Vocab, Vocab, QAfterSortBy> sortByFrequencyScore() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'frequencyScore', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterSortBy> sortByFrequencyScoreDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'frequencyScore', Sort.desc);
+    });
+  }
 }
 
 extension VocabQuerySortThenBy on QueryBuilder<Vocab, Vocab, QSortThenBy> {
@@ -1866,6 +1940,18 @@ extension VocabQuerySortThenBy on QueryBuilder<Vocab, Vocab, QSortThenBy> {
   QueryBuilder<Vocab, Vocab, QAfterSortBy> thenByCommonWordDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'commonWord', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterSortBy> thenByFrequencyScore() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'frequencyScore', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterSortBy> thenByFrequencyScoreDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'frequencyScore', Sort.desc);
     });
   }
 
@@ -1892,6 +1978,12 @@ extension VocabQueryWhereDistinct on QueryBuilder<Vocab, Vocab, QDistinct> {
   QueryBuilder<Vocab, Vocab, QDistinct> distinctByDefinitionIndex() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'definitionIndex');
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QDistinct> distinctByFrequencyScore() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'frequencyScore');
     });
   }
 
@@ -1932,6 +2024,12 @@ extension VocabQueryProperty on QueryBuilder<Vocab, Vocab, QQueryProperty> {
       definitionsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'definitions');
+    });
+  }
+
+  QueryBuilder<Vocab, int, QQueryOperations> frequencyScoreProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'frequencyScore');
     });
   }
 

@@ -1239,3 +1239,5 @@ const pitchAccentsTest = '''明白	めいはく	0
 屹度	きっと	0,1
 御田	おでん	2
 かさかさ		(副)1,(形動)0''';
+
+const frequencyListTest = '15145	明白';

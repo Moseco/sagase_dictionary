@@ -35,6 +35,7 @@ class DictionaryBuilder {
     String vocabLists,
     String kanjiLists,
     String pitchAccents,
+    String frequencyList,
   ) async {
     // Set up
     await isar.writeTxn(() async {
@@ -46,7 +47,7 @@ class DictionaryBuilder {
 
     // Vocab
     await DictionaryBuilder.createVocabDictionary(
-        isar, vocabDict, pitchAccents);
+        isar, vocabDict, pitchAccents, frequencyList);
 
     // Kanji radicals
     await DictionaryBuilder.createRadicalDictionary(
@@ -77,6 +78,7 @@ class DictionaryBuilder {
     Isar isar,
     String vocabDict,
     String pitchAccents,
+    String frequencyList,
   ) async {
     final kanaKit = const KanaKit().copyWithConfig(passRomaji: true);
 
@@ -286,6 +288,63 @@ class DictionaryBuilder {
                   .add(int.parse(pitchAccent.trim()));
             }
             await isar.vocabs.put(result);
+          }
+        }
+      }
+    });
+
+    // Add frequency information to vocab
+    await isar.writeTxn(() async {
+      List<String> lines = frequencyList.split('\n');
+
+      for (var line in lines) {
+        List<String> parts = line.split('\t');
+
+        int score = int.parse(parts[0].trim());
+        String lemma = parts[1].trim();
+
+        List<Vocab> results = await isar.vocabs
+            .where()
+            .japaneseTextIndexElementEqualTo(
+                kanaKit.toHiragana(lemma.toLowerCase().romajiToHalfWidth()))
+            .findAll();
+
+        for (var vocab in results) {
+          // Don't replace a higher score
+          if (vocab.frequencyScore > score) continue;
+
+          if (kanaKit.isKana(lemma)) {
+            if (vocab.isUsuallyKanaAlone() ||
+                vocab.kanjiReadingPairs[0].kanjiWritings == null) {
+              // Confirm lemma shows up in reading (prevent kana conversion problems)
+              for (var pair in vocab.kanjiReadingPairs) {
+                bool found = false;
+                for (var reading in pair.readings) {
+                  if (reading.reading == lemma) {
+                    vocab.frequencyScore = score;
+                    await isar.vocabs.put(vocab);
+                    found = true;
+                    break;
+                  }
+                }
+                if (found) break;
+              }
+            }
+          } else {
+            // Confirm lemma shows up in kanji writing (prevent kana conversion problems)
+            for (var pair in vocab.kanjiReadingPairs) {
+              bool found = false;
+              if (pair.kanjiWritings == null) continue;
+              for (var kanjiWriting in pair.kanjiWritings!) {
+                if (kanjiWriting.kanji == lemma) {
+                  vocab.frequencyScore = score;
+                  await isar.vocabs.put(vocab);
+                  found = true;
+                  break;
+                }
+              }
+              if (found) break;
+            }
           }
         }
       }

@@ -23,6 +23,7 @@ class Vocab extends DictionaryItem {
   List<String> definitionIndex = [];
 
   bool commonWord = false;
+  int frequencyScore = 0;
 
   @Backlink(to: 'vocabLinks')
   final myDictionaryListLinks = IsarLinks<MyDictionaryList>();

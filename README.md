@@ -13,6 +13,8 @@ Prepare source files to be placed in ```example/input_files/```
 - [kanjidic2.xml](https://www.edrdg.org/wiki/index.php/KANJIDIC_Project)
     - Version used: kanjidic2 containing all 13,108 kanji
 - [accents.txt](https://github.com/mifunetoshiro/kanjium/blob/master/data/source_files/raw/accents.txt)
+- frequency_list.txt
+    - Frequency list file in the format frequency score (higher is more frequent), tab, and then the lemma (e.g., "22100273	月")
 
 ### Self-managed files
 
@@ -33,3 +35,5 @@ Thanks to [Electronic Dictionary Research and Development Group](http://www.edrd
 Thanks to the [KanjiVG project](http://kanjivg.tagaini.net/) for the kanji stroke order and kanji component data.
 
 Thanks to [mifunetoshiro on Github](https://github.com/mifunetoshiro/kanjium) for providing the pitch accent data.
+
+Thank to [Wiktionary and Wikipedia](https://en.wiktionary.org/wiki/Wiktionary:Frequency_lists/Japanese) for the frequency data.

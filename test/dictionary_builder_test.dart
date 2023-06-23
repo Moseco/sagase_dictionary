@@ -60,6 +60,7 @@ void main() {
         isar,
         shortJMdict,
         pitchAccentsTest,
+        frequencyListTest,
       );
 
       final vocab0 = await isar.vocabs.get(1000220);
@@ -74,6 +75,7 @@ void main() {
       expect(vocab0.kanjiReadingPairs[0].readings[0].reading, 'めいはく');
       expect(vocab0.kanjiReadingPairs[0].readings[0].info, null);
       expect(vocab0.kanjiReadingPairs[0].readings[0].pitchAccents, [0]);
+      expect(vocab0.frequencyScore, 15145);
       // Definition
       expect(vocab0.definitions.length, 1);
       expect(vocab0.definitions[0].definition,
