@@ -1,5 +1,5 @@
 class SagaseDictionaryConstants {
-  static const int dictionaryVersion = 5;
+  static const int dictionaryVersion = 6;
 
   static const int dictionaryListIdJouyou = 0;
   static const int dictionaryListIdJlptVocabN1 = 1;
@@ -19,6 +19,18 @@ class SagaseDictionaryConstants {
   static const int dictionaryListIdGradeLevel5 = 15;
   static const int dictionaryListIdGradeLevel6 = 16;
   static const int dictionaryListIdJinmeiyou = 17;
+  static const int dictionaryListIdKenteiLevel10 = 18;
+  static const int dictionaryListIdKenteiLevel9 = 19;
+  static const int dictionaryListIdKenteiLevel8 = 20;
+  static const int dictionaryListIdKenteiLevel7 = 21;
+  static const int dictionaryListIdKenteiLevel6 = 22;
+  static const int dictionaryListIdKenteiLevel5 = 23;
+  static const int dictionaryListIdKenteiLevel4 = 24;
+  static const int dictionaryListIdKenteiLevel3 = 25;
+  static const int dictionaryListIdKenteiLevelPre2 = 26;
+  static const int dictionaryListIdKenteiLevel2 = 27;
+  static const int dictionaryListIdKenteiLevelPre1 = 28;
+  static const int dictionaryListIdKenteiLevel1 = 29;
 
   static const backupDictionaryVersion = 'dictionary_version';
   static const backupTimestamp = 'timestamp';
