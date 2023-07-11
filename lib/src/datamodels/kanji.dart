@@ -19,10 +19,16 @@ class Kanji extends DictionaryItem {
   int? frequency;
   byte jlpt = 255;
 
-  String? meanings;
+  @Index(type: IndexType.value)
+  List<String>? meanings;
+
   List<String>? onReadings;
   List<String>? kunReadings;
   List<String>? nanori;
+
+  @Index(type: IndexType.value)
+  List<String>? readingIndex;
+
   List<String>? strokes;
 
   final compounds = IsarLinks<Vocab>();

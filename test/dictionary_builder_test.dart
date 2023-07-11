@@ -597,7 +597,7 @@ void main() {
       expect(kanji1.strokeCount, 7);
       expect(kanji1.frequency, 1509);
       expect(kanji1.jlpt, 1);
-      expect(kanji1.meanings, 'Asia, rank next, come after, -ous');
+      expect(kanji1.meanings, ['Asia', 'rank next', 'come after', '-ous']);
       expect(kanji1.onReadings!.length, 1);
       expect(kanji1.onReadings![0], 'ア');
       expect(kanji1.kunReadings!.length, 1);
@@ -620,7 +620,8 @@ void main() {
       expect(kanji2.strokeCount, 11);
       expect(kanji2.frequency, 530);
       expect(kanji2.jlpt, 3);
-      expect(kanji2.meanings, 'bad, vice, rascal, false, evil, wrong');
+      expect(
+          kanji2.meanings, ['bad', 'vice', 'rascal', 'false', 'evil', 'wrong']);
       expect(kanji2.onReadings!.length, 2);
       expect(kanji2.onReadings![0], 'アク');
       expect(kanji2.onReadings![1], 'オ');
@@ -647,7 +648,7 @@ void main() {
       expect(kanji3.strokeCount, 8);
       expect(kanji3.frequency, null);
       expect(kanji3.jlpt, 255);
-      expect(kanji3.meanings, 'rank, follow');
+      expect(kanji3.meanings, ['rank', 'follow']);
       expect(kanji3.onReadings!.length, 1);
       expect(kanji3.onReadings![0], 'ア');
       expect(kanji3.kunReadings!.length, 1);

@@ -45,7 +45,7 @@ const KanjiSchema = CollectionSchema(
     r'meanings': PropertySchema(
       id: 5,
       name: r'meanings',
-      type: IsarType.string,
+      type: IsarType.stringList,
     ),
     r'nanori': PropertySchema(
       id: 6,
@@ -57,19 +57,24 @@ const KanjiSchema = CollectionSchema(
       name: r'onReadings',
       type: IsarType.stringList,
     ),
-    r'spacedRepetitionData': PropertySchema(
+    r'readingIndex': PropertySchema(
       id: 8,
+      name: r'readingIndex',
+      type: IsarType.stringList,
+    ),
+    r'spacedRepetitionData': PropertySchema(
+      id: 9,
       name: r'spacedRepetitionData',
       type: IsarType.object,
       target: r'SpacedRepetitionData',
     ),
     r'strokeCount': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'strokeCount',
       type: IsarType.byte,
     ),
     r'strokes': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'strokes',
       type: IsarType.stringList,
     )
@@ -89,6 +94,32 @@ const KanjiSchema = CollectionSchema(
         IndexPropertySchema(
           name: r'kanji',
           type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    ),
+    r'meanings': IndexSchema(
+      id: 8219783416830359807,
+      name: r'meanings',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'meanings',
+          type: IndexType.value,
+          caseSensitive: true,
+        )
+      ],
+    ),
+    r'readingIndex': IndexSchema(
+      id: -5711563875198595583,
+      name: r'readingIndex',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'readingIndex',
+          type: IndexType.value,
           caseSensitive: true,
         )
       ],
@@ -148,9 +179,15 @@ int _kanjiEstimateSize(
     }
   }
   {
-    final value = object.meanings;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
+    final list = object.meanings;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount += value.length * 3;
+        }
+      }
     }
   }
   {
@@ -167,6 +204,18 @@ int _kanjiEstimateSize(
   }
   {
     final list = object.onReadings;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount += value.length * 3;
+        }
+      }
+    }
+  }
+  {
+    final list = object.readingIndex;
     if (list != null) {
       bytesCount += 3 + list.length * 3;
       {
@@ -211,17 +260,18 @@ void _kanjiSerialize(
   writer.writeByte(offsets[2], object.jlpt);
   writer.writeString(offsets[3], object.kanji);
   writer.writeStringList(offsets[4], object.kunReadings);
-  writer.writeString(offsets[5], object.meanings);
+  writer.writeStringList(offsets[5], object.meanings);
   writer.writeStringList(offsets[6], object.nanori);
   writer.writeStringList(offsets[7], object.onReadings);
+  writer.writeStringList(offsets[8], object.readingIndex);
   writer.writeObject<SpacedRepetitionData>(
-    offsets[8],
+    offsets[9],
     allOffsets,
     SpacedRepetitionDataSchema.serialize,
     object.spacedRepetitionData,
   );
-  writer.writeByte(offsets[9], object.strokeCount);
-  writer.writeStringList(offsets[10], object.strokes);
+  writer.writeByte(offsets[10], object.strokeCount);
+  writer.writeStringList(offsets[11], object.strokes);
 }
 
 Kanji _kanjiDeserialize(
@@ -237,16 +287,17 @@ Kanji _kanjiDeserialize(
   object.jlpt = reader.readByte(offsets[2]);
   object.kanji = reader.readString(offsets[3]);
   object.kunReadings = reader.readStringList(offsets[4]);
-  object.meanings = reader.readStringOrNull(offsets[5]);
+  object.meanings = reader.readStringList(offsets[5]);
   object.nanori = reader.readStringList(offsets[6]);
   object.onReadings = reader.readStringList(offsets[7]);
+  object.readingIndex = reader.readStringList(offsets[8]);
   object.spacedRepetitionData = reader.readObjectOrNull<SpacedRepetitionData>(
-    offsets[8],
+    offsets[9],
     SpacedRepetitionDataSchema.deserialize,
     allOffsets,
   );
-  object.strokeCount = reader.readByte(offsets[9]);
-  object.strokes = reader.readStringList(offsets[10]);
+  object.strokeCount = reader.readByte(offsets[10]);
+  object.strokes = reader.readStringList(offsets[11]);
   return object;
 }
 
@@ -268,20 +319,22 @@ P _kanjiDeserializeProp<P>(
     case 4:
       return (reader.readStringList(offset)) as P;
     case 5:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringList(offset)) as P;
     case 6:
       return (reader.readStringList(offset)) as P;
     case 7:
       return (reader.readStringList(offset)) as P;
     case 8:
+      return (reader.readStringList(offset)) as P;
+    case 9:
       return (reader.readObjectOrNull<SpacedRepetitionData>(
         offset,
         SpacedRepetitionDataSchema.deserialize,
         allOffsets,
       )) as P;
-    case 9:
-      return (reader.readByte(offset)) as P;
     case 10:
+      return (reader.readByte(offset)) as P;
+    case 11:
       return (reader.readStringList(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -370,6 +423,22 @@ extension KanjiQueryWhereSort on QueryBuilder<Kanji, Kanji, QWhere> {
   QueryBuilder<Kanji, Kanji, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhere> anyMeaningsElement() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'meanings'),
+      );
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhere> anyReadingIndexElement() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'readingIndex'),
+      );
     });
   }
 }
@@ -478,6 +547,279 @@ extension KanjiQueryWhere on QueryBuilder<Kanji, Kanji, QWhereClause> {
               lower: [],
               upper: [kanji],
               includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> meaningsElementEqualTo(
+      String meaningsElement) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'meanings',
+        value: [meaningsElement],
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> meaningsElementNotEqualTo(
+      String meaningsElement) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'meanings',
+              lower: [],
+              upper: [meaningsElement],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'meanings',
+              lower: [meaningsElement],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'meanings',
+              lower: [meaningsElement],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'meanings',
+              lower: [],
+              upper: [meaningsElement],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> meaningsElementGreaterThan(
+    String meaningsElement, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'meanings',
+        lower: [meaningsElement],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> meaningsElementLessThan(
+    String meaningsElement, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'meanings',
+        lower: [],
+        upper: [meaningsElement],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> meaningsElementBetween(
+    String lowerMeaningsElement,
+    String upperMeaningsElement, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'meanings',
+        lower: [lowerMeaningsElement],
+        includeLower: includeLower,
+        upper: [upperMeaningsElement],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> meaningsElementStartsWith(
+      String MeaningsElementPrefix) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'meanings',
+        lower: [MeaningsElementPrefix],
+        upper: ['$MeaningsElementPrefix\u{FFFFF}'],
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> meaningsElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'meanings',
+        value: [''],
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> meaningsElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.lessThan(
+              indexName: r'meanings',
+              upper: [''],
+            ))
+            .addWhereClause(IndexWhereClause.greaterThan(
+              indexName: r'meanings',
+              lower: [''],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.greaterThan(
+              indexName: r'meanings',
+              lower: [''],
+            ))
+            .addWhereClause(IndexWhereClause.lessThan(
+              indexName: r'meanings',
+              upper: [''],
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> readingIndexElementEqualTo(
+      String readingIndexElement) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'readingIndex',
+        value: [readingIndexElement],
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> readingIndexElementNotEqualTo(
+      String readingIndexElement) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'readingIndex',
+              lower: [],
+              upper: [readingIndexElement],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'readingIndex',
+              lower: [readingIndexElement],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'readingIndex',
+              lower: [readingIndexElement],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'readingIndex',
+              lower: [],
+              upper: [readingIndexElement],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> readingIndexElementGreaterThan(
+    String readingIndexElement, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'readingIndex',
+        lower: [readingIndexElement],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> readingIndexElementLessThan(
+    String readingIndexElement, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'readingIndex',
+        lower: [],
+        upper: [readingIndexElement],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> readingIndexElementBetween(
+    String lowerReadingIndexElement,
+    String upperReadingIndexElement, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'readingIndex',
+        lower: [lowerReadingIndexElement],
+        includeLower: includeLower,
+        upper: [upperReadingIndexElement],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> readingIndexElementStartsWith(
+      String ReadingIndexElementPrefix) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'readingIndex',
+        lower: [ReadingIndexElementPrefix],
+        upper: ['$ReadingIndexElementPrefix\u{FFFFF}'],
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause> readingIndexElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'readingIndex',
+        value: [''],
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterWhereClause>
+      readingIndexElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.lessThan(
+              indexName: r'readingIndex',
+              upper: [''],
+            ))
+            .addWhereClause(IndexWhereClause.greaterThan(
+              indexName: r'readingIndex',
+              lower: [''],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.greaterThan(
+              indexName: r'readingIndex',
+              lower: [''],
+            ))
+            .addWhereClause(IndexWhereClause.lessThan(
+              indexName: r'readingIndex',
+              upper: [''],
             ));
       }
     });
@@ -1089,8 +1431,8 @@ extension KanjiQueryFilter on QueryBuilder<Kanji, Kanji, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsEqualTo(
-    String? value, {
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsElementEqualTo(
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1102,8 +1444,8 @@ extension KanjiQueryFilter on QueryBuilder<Kanji, Kanji, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsGreaterThan(
-    String? value, {
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsElementGreaterThan(
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1117,8 +1459,8 @@ extension KanjiQueryFilter on QueryBuilder<Kanji, Kanji, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsLessThan(
-    String? value, {
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsElementLessThan(
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1132,9 +1474,9 @@ extension KanjiQueryFilter on QueryBuilder<Kanji, Kanji, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsBetween(
-    String? lower,
-    String? upper, {
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsElementBetween(
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -1151,7 +1493,7 @@ extension KanjiQueryFilter on QueryBuilder<Kanji, Kanji, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsStartsWith(
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsElementStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1164,7 +1506,7 @@ extension KanjiQueryFilter on QueryBuilder<Kanji, Kanji, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsEndsWith(
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsElementEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1177,7 +1519,7 @@ extension KanjiQueryFilter on QueryBuilder<Kanji, Kanji, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsContains(
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsElementContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1189,7 +1531,7 @@ extension KanjiQueryFilter on QueryBuilder<Kanji, Kanji, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsMatches(
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsElementMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1201,7 +1543,7 @@ extension KanjiQueryFilter on QueryBuilder<Kanji, Kanji, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsIsEmpty() {
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsElementIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'meanings',
@@ -1210,12 +1552,97 @@ extension KanjiQueryFilter on QueryBuilder<Kanji, Kanji, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsIsNotEmpty() {
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition>
+      meaningsElementIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'meanings',
         value: '',
       ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'meanings',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'meanings',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'meanings',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'meanings',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'meanings',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> meaningsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'meanings',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -1673,6 +2100,241 @@ extension KanjiQueryFilter on QueryBuilder<Kanji, Kanji, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
         r'onReadings',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> readingIndexIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'readingIndex',
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> readingIndexIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'readingIndex',
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> readingIndexElementEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'readingIndex',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition>
+      readingIndexElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'readingIndex',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> readingIndexElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'readingIndex',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> readingIndexElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'readingIndex',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition>
+      readingIndexElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'readingIndex',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> readingIndexElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'readingIndex',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> readingIndexElementContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'readingIndex',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> readingIndexElementMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'readingIndex',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition>
+      readingIndexElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'readingIndex',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition>
+      readingIndexElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'readingIndex',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> readingIndexLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'readingIndex',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> readingIndexIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'readingIndex',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> readingIndexIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'readingIndex',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> readingIndexLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'readingIndex',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition>
+      readingIndexLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'readingIndex',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> readingIndexLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'readingIndex',
         lower,
         includeLower,
         upper,
@@ -2234,18 +2896,6 @@ extension KanjiQuerySortBy on QueryBuilder<Kanji, Kanji, QSortBy> {
     });
   }
 
-  QueryBuilder<Kanji, Kanji, QAfterSortBy> sortByMeanings() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'meanings', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Kanji, Kanji, QAfterSortBy> sortByMeaningsDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'meanings', Sort.desc);
-    });
-  }
-
   QueryBuilder<Kanji, Kanji, QAfterSortBy> sortByStrokeCount() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'strokeCount', Sort.asc);
@@ -2320,18 +2970,6 @@ extension KanjiQuerySortThenBy on QueryBuilder<Kanji, Kanji, QSortThenBy> {
     });
   }
 
-  QueryBuilder<Kanji, Kanji, QAfterSortBy> thenByMeanings() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'meanings', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Kanji, Kanji, QAfterSortBy> thenByMeaningsDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'meanings', Sort.desc);
-    });
-  }
-
   QueryBuilder<Kanji, Kanji, QAfterSortBy> thenByStrokeCount() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'strokeCount', Sort.asc);
@@ -2377,10 +3015,9 @@ extension KanjiQueryWhereDistinct on QueryBuilder<Kanji, Kanji, QDistinct> {
     });
   }
 
-  QueryBuilder<Kanji, Kanji, QDistinct> distinctByMeanings(
-      {bool caseSensitive = true}) {
+  QueryBuilder<Kanji, Kanji, QDistinct> distinctByMeanings() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'meanings', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'meanings');
     });
   }
 
@@ -2393,6 +3030,12 @@ extension KanjiQueryWhereDistinct on QueryBuilder<Kanji, Kanji, QDistinct> {
   QueryBuilder<Kanji, Kanji, QDistinct> distinctByOnReadings() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'onReadings');
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QDistinct> distinctByReadingIndex() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'readingIndex');
     });
   }
 
@@ -2446,7 +3089,7 @@ extension KanjiQueryProperty on QueryBuilder<Kanji, Kanji, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Kanji, String?, QQueryOperations> meaningsProperty() {
+  QueryBuilder<Kanji, List<String>?, QQueryOperations> meaningsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'meanings');
     });
@@ -2461,6 +3104,12 @@ extension KanjiQueryProperty on QueryBuilder<Kanji, Kanji, QQueryProperty> {
   QueryBuilder<Kanji, List<String>?, QQueryOperations> onReadingsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'onReadings');
+    });
+  }
+
+  QueryBuilder<Kanji, List<String>?, QQueryOperations> readingIndexProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'readingIndex');
     });
   }
 

@@ -1360,6 +1360,8 @@ class DictionaryBuilder {
     String kanjiComponentData,
     String strokeData,
   ) async {
+    final kanaKit = const KanaKit().copyWithConfig(passRomaji: true);
+
     final List<Kanji> kanjiList = [];
 
     final kanjidic2Doc = XmlDocument.parse(kanjiDict);
@@ -1422,6 +1424,42 @@ class DictionaryBuilder {
           .findAll();
       for (var vocab in vocabList) {
         kanji.compounds.add(vocab);
+      }
+
+      // Create reading index
+      final simplifyRegex = RegExp(r'(?<=.{1})(う|っ|ー)');
+      List<String> readingIndex = [];
+      if (kanji.kunReadings != null) {
+        for (var reading in kanji.kunReadings!) {
+          String cleaned = reading.replaceAll('.', '');
+          readingIndex.add(kanaKit.toHiragana(cleaned));
+          readingIndex.add(kanaKit.toRomaji(cleaned).toLowerCase());
+          readingIndex.add(kanaKit
+              .toRomaji(cleaned.replaceAll(simplifyRegex, ''))
+              .toLowerCase());
+        }
+      }
+      if (kanji.onReadings != null) {
+        for (var reading in kanji.onReadings!) {
+          readingIndex.add(kanaKit.toHiragana(reading));
+          readingIndex.add(kanaKit.toRomaji(reading).toLowerCase());
+          readingIndex.add(kanaKit
+              .toRomaji(reading.replaceAll(simplifyRegex, ''))
+              .toLowerCase());
+        }
+      }
+      if (kanji.nanori != null) {
+        for (var reading in kanji.nanori!) {
+          readingIndex.add(kanaKit.toHiragana(reading));
+          readingIndex.add(kanaKit.toRomaji(reading).toLowerCase());
+          readingIndex.add(kanaKit
+              .toRomaji(reading.replaceAll(simplifyRegex, ''))
+              .toLowerCase());
+        }
+      }
+      if (readingIndex.isNotEmpty) {
+        readingIndex = readingIndex.toSet().toList();
+        kanji.readingIndex = readingIndex;
       }
 
       // Finally, add kanji to list
@@ -1604,16 +1642,7 @@ class DictionaryBuilder {
       }
     }
 
-    // Construct meaning
-    final meaningBuffer = StringBuffer();
-    if (meanings.isNotEmpty) {
-      meaningBuffer.write(meanings.first);
-      for (int i = 1; i < meanings.length; i++) {
-        meaningBuffer.write(', ${meanings[i]}');
-      }
-    }
-
-    kanji.meanings = meaningBuffer.isEmpty ? null : meaningBuffer.toString();
+    kanji.meanings = meanings.isEmpty ? null : meanings;
     kanji.onReadings = onReadings.isEmpty ? null : onReadings;
     kanji.kunReadings = kunReadings.isEmpty ? null : kunReadings;
   }
