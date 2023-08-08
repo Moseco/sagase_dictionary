@@ -1,12 +1,22 @@
+import 'package:sagase_dictionary/src/datamodels/vocab.dart';
+
 class JapaneseTextToken {
   final String original;
   final String base;
+  final String baseReading;
   final List<RubyTextPair> rubyTextPairs;
+  List<JapaneseTextToken>? trailing;
+  PartOfSpeech? pos;
+  List<Vocab>? associatedVocab;
 
-  const JapaneseTextToken({
+  JapaneseTextToken({
     required this.original,
     required this.base,
+    required this.baseReading,
     required this.rubyTextPairs,
+    this.trailing,
+    this.pos,
+    this.associatedVocab,
   });
 }
 
