@@ -533,6 +533,13 @@
         "reading": "むら, おおざと",
         "variant_of": "邑"
     },
+    "辶": {
+        "strokes": 3,
+        "meaning": "walk",
+        "reading": "しんにょう",
+        "position": 6,
+        "variant_of": "辵"
+    },
     "心": {
         "strokes": 4,
         "kanjix": 61,
@@ -1170,7 +1177,10 @@
         "kanjix": 130,
         "meaning": "meat",
         "reading": "ニク, にくづき",
-        "importance": 1
+        "importance": 1,
+        "variants": [
+            "月"
+        ]
     },
     "臣": {
         "strokes": 6,
@@ -1395,6 +1405,7 @@
         "reading": "しんにょう, しんにゅう",
         "importance": 1,
         "variants": [
+            "辶",
             "辶"
         ]
     },
@@ -1516,6 +1527,13 @@
         "reading": "セイ",
         "variant_of": "齊"
     },
+    "飠": {
+        "strokes": 8,
+        "meaning": "food",
+        "reading": "しょくへん",
+        "position": 1,
+        "variant_of": "食"
+    },
     "面": {
         "strokes": 9,
         "kanjix": 176,
@@ -1570,7 +1588,11 @@
         "kanjix": 184,
         "meaning": "food",
         "reading": "ショク, しょくへん",
-        "importance": 2
+        "importance": 2,
+        "variants": [
+            "飠",
+            "𩙿"
+        ]
     },
     "首": {
         "strokes": 9,
@@ -1583,6 +1605,13 @@
         "kanjix": 186,
         "meaning": "smell",
         "reading": "かおり, カ"
+    },
+    "𩙿": {
+        "strokes": 9,
+        "meaning": "food",
+        "reading": "しょくへん",
+        "position": 1,
+        "variant_of": "食"
     },
     "馬": {
         "strokes": 10,
