@@ -9,6 +9,7 @@ import 'package:sagase_dictionary/src/datamodels/dictionary_info.dart';
 import 'package:sagase_dictionary/src/datamodels/kanji.dart';
 import 'package:sagase_dictionary/src/datamodels/my_dictionary_list.dart';
 import 'package:sagase_dictionary/src/datamodels/predefined_dictionary_list.dart';
+import 'package:sagase_dictionary/src/datamodels/proper_noun.dart';
 import 'package:sagase_dictionary/src/datamodels/vocab.dart';
 import 'package:xml/xml.dart';
 import 'package:sagase_dictionary/src/utils/constants.dart';
@@ -22,6 +23,7 @@ class DictionaryBuilder {
     PredefinedDictionaryListSchema,
     MyDictionaryListSchema,
     KanjiRadicalSchema,
+    ProperNounSchema,
   ];
 
   // Entry point for creating the dictionary
@@ -2089,5 +2091,103 @@ class DictionaryBuilder {
           ..timestamp = DateTime.now(),
       );
     });
+  }
+
+  // Creates the proper noun database from the raw dictionary file
+  static Future<void> createProperNounDictionary(
+    Isar isar,
+    String enamdictString,
+  ) async {
+    // Set up
+    await isar.writeTxn(() async {
+      await isar.clear();
+    });
+
+    // Create
+    await isar.writeTxn(() async {
+      final lines = enamdictString.split('\n');
+      for (var line in lines) {
+        String writing = line.substring(0, line.indexOf(' '));
+        line = line.substring(writing.length + 1);
+        String? reading;
+        if (line[0] == '[') {
+          reading = line.substring(1, line.indexOf(' ') - 1);
+          line = line.substring(reading.length + 3);
+        }
+        String typesString = line.substring(2, line.indexOf(')'));
+        line = line.substring(typesString.length + 4);
+        String romaji = line.substring(0, line.length - 1);
+
+        List<ProperNounType> types = [];
+        for (var typeString in typesString.split(',')) {
+          types.add(_properNounTypeStringToEnum(typeString));
+        }
+
+        ProperNoun current = ProperNoun()
+          ..writing = writing
+          ..reading = reading
+          ..romaji = romaji
+          ..types = types;
+
+        await isar.properNouns.put(current);
+      }
+    });
+  }
+
+  static ProperNounType _properNounTypeStringToEnum(String type) {
+    switch (type) {
+      case 's':
+        return ProperNounType.surname;
+      case 'p':
+        return ProperNounType.placeName;
+      case 'u':
+        return ProperNounType.personName;
+      case 'g':
+        return ProperNounType.givenName;
+      case 'f':
+        return ProperNounType.femaleName;
+      case 'm':
+        return ProperNounType.maleName;
+      case 'h':
+        return ProperNounType.fullName;
+      case 'pr':
+        return ProperNounType.product;
+      case 'c':
+        return ProperNounType.company;
+      case 'o':
+        return ProperNounType.organization;
+      case 'st':
+        return ProperNounType.station;
+      case 'wk':
+        return ProperNounType.workOfArt;
+      case 'group':
+        return ProperNounType.group;
+      case 'obj':
+        return ProperNounType.object;
+      case 'serv':
+        return ProperNounType.service;
+      case 'ch':
+        return ProperNounType.character;
+      case 'leg':
+        return ProperNounType.legend;
+      case 'cr':
+        return ProperNounType.creature;
+      case 'ev':
+        return ProperNounType.event;
+      case 'myth':
+        return ProperNounType.myth;
+      case 'fic':
+        return ProperNounType.fiction;
+      case 'dei':
+        return ProperNounType.deity;
+      case 'ship':
+        return ProperNounType.ship;
+      case 'document':
+        return ProperNounType.document;
+      case 'rel':
+        return ProperNounType.religion;
+      default:
+        return ProperNounType.unknown;
+    }
   }
 }

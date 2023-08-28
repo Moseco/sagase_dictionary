@@ -11,6 +11,7 @@ example/input_files/JMdict_e_examp
 example/input_files/kanjidic2.xml
 example/input_files/pitch_accents.txt
 example/input_files/frequency_list.txt
+example/input_files/enamdict_utf-8
 
 # Temporary and output files
 example/temp_files/

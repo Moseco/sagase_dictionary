@@ -13,8 +13,11 @@ Prepare source files to be placed in ```example/input_files/```
 - [kanjidic2.xml](https://www.edrdg.org/wiki/index.php/KANJIDIC_Project)
     - Version used: kanjidic2 containing all 13,108 kanji
 - [accents.txt](https://github.com/mifunetoshiro/kanjium/blob/master/data/source_files/raw/accents.txt)
+    - Pitch accent information
 - frequency_list.txt
     - Frequency list file in the format frequency score (higher is more frequent), tab, and then the lemma (e.g., "22100273	月")
+- [enamdict_utf-8](http://www.edrdg.org/enamdict/enamdict_doc.html)
+    - Proper nouns
 
 ### Self-managed files
 
