@@ -92,8 +92,8 @@ void main() {
           'It is clear what must be done.');
       // Japanese text index
       expect(vocab0.japaneseTextIndex.length, 2);
-      expect(vocab0.japaneseTextIndex[0], 'めいはく');
-      expect(vocab0.japaneseTextIndex[1], '明白');
+      expect(vocab0.japaneseTextIndex[0], '明白');
+      expect(vocab0.japaneseTextIndex[1], 'めいはく');
       // Romaji text index
       expect(vocab0.romajiTextIndex.length, 1);
       expect(vocab0.romajiTextIndex[0], 'meihaku');
@@ -132,8 +132,8 @@ void main() {
       expect(vocab1.japaneseTextIndex[3], 'あっとゆう間に');
       // Romaji text index
       expect(vocab1.romajiTextIndex.length, 2);
-      expect(vocab1.romajiTextIndex[0], 'attoiumani');
-      expect(vocab1.romajiTextIndex[1], 'atoimani');
+      expect(vocab1.romajiTextIndex[0], 'atoimani');
+      expect(vocab1.romajiTextIndex[1], 'attoiumani');
 
       final vocab2 = await isar.vocabs.get(1003430);
       expect(vocab2!.commonWord, true);
@@ -206,13 +206,13 @@ void main() {
       expect(vocab2.definitions[3].miscInfo![2], MiscellaneousInfo.archaism);
       // Japanese text index
       expect(vocab2.japaneseTextIndex.length, 3);
-      expect(vocab2.japaneseTextIndex[0], 'きっと');
-      expect(vocab2.japaneseTextIndex[1], '屹度');
-      expect(vocab2.japaneseTextIndex[2], '急度');
+      expect(vocab2.japaneseTextIndex[0], '屹度');
+      expect(vocab2.japaneseTextIndex[1], '急度');
+      expect(vocab2.japaneseTextIndex[2], 'きっと');
       // Romaji text index
       expect(vocab2.romajiTextIndex.length, 2);
-      expect(vocab2.romajiTextIndex[0], 'kitto');
-      expect(vocab2.romajiTextIndex[1], 'kito');
+      expect(vocab2.romajiTextIndex[0], 'kito');
+      expect(vocab2.romajiTextIndex[1], 'kitto');
 
       final vocab3 = await isar.vocabs.get(1578850);
       expect(vocab3!.commonWord, true);
@@ -372,8 +372,8 @@ void main() {
       expect(vocab4.japaneseTextIndex[1], 'うーん');
       // Romaji text index
       expect(vocab4.romajiTextIndex.length, 3);
-      expect(vocab4.romajiTextIndex[0], 'uun');
-      expect(vocab4.romajiTextIndex[1], 'un');
+      expect(vocab4.romajiTextIndex[0], 'un');
+      expect(vocab4.romajiTextIndex[1], 'uun');
       expect(vocab4.romajiTextIndex[2], 'u-n');
 
       final vocab5 = await isar.vocabs.get(1002360);
@@ -422,20 +422,21 @@ void main() {
       expect(vocab5.definitions[0].pos![0], PartOfSpeech.expressions);
       // Japanese text index
       expect(vocab5.japaneseTextIndex.length, 9);
-      expect(vocab5.japaneseTextIndex[0], 'おまちどおさま');
-      expect(vocab5.japaneseTextIndex[1], 'お待ちどおさま');
+      expect(vocab5.japaneseTextIndex[0], 'お待ち遠様');
+      expect(vocab5.japaneseTextIndex[1], '御待ち遠様');
       expect(vocab5.japaneseTextIndex[2], 'お待ちどお様');
-      expect(vocab5.japaneseTextIndex[3], 'おまちどうさま');
-      expect(vocab5.japaneseTextIndex[4], 'お待ち遠様');
-      expect(vocab5.japaneseTextIndex[5], '御待ち遠様');
-      expect(vocab5.japaneseTextIndex[6], 'お待ち遠さま');
-      expect(vocab5.japaneseTextIndex[7], 'お待ちどうさま');
-      expect(vocab5.japaneseTextIndex[8], 'お待ちどう様');
+      expect(vocab5.japaneseTextIndex[3], 'お待ち遠さま');
+      expect(vocab5.japaneseTextIndex[4], 'お待ちどう様');
+      expect(vocab5.japaneseTextIndex[5], 'おまちどおさま');
+      expect(vocab5.japaneseTextIndex[6], 'お待ちどおさま');
+      expect(vocab5.japaneseTextIndex[7], 'おまちどうさま');
+      expect(vocab5.japaneseTextIndex[8], 'お待ちどうさま');
+
       // Romaji text index
       expect(vocab5.romajiTextIndex.length, 3);
-      expect(vocab5.romajiTextIndex[0], 'omachidoosama');
-      expect(vocab5.romajiTextIndex[1], 'omachidousama');
-      expect(vocab5.romajiTextIndex[2], 'omachidosama');
+      expect(vocab5.romajiTextIndex[0], 'omachidosama');
+      expect(vocab5.romajiTextIndex[1], 'omachidoosama');
+      expect(vocab5.romajiTextIndex[2], 'omachidousama');
 
       final vocab6 = await isar.vocabs.get(1001390);
       expect(vocab6!.commonWord, true);
@@ -467,9 +468,9 @@ void main() {
           MiscellaneousInfo.usuallyKanaAlone);
       // Japanese text index
       expect(vocab6.japaneseTextIndex.length, 3);
-      expect(vocab6.japaneseTextIndex[0], 'おでん');
-      expect(vocab6.japaneseTextIndex[1], '御田');
-      expect(vocab6.japaneseTextIndex[2], 'お田');
+      expect(vocab6.japaneseTextIndex[0], '御田');
+      expect(vocab6.japaneseTextIndex[1], 'お田');
+      expect(vocab6.japaneseTextIndex[2], 'おでん');
       // Romaji text index
       expect(vocab6.romajiTextIndex.length, 1);
       expect(vocab6.romajiTextIndex[0], 'oden');
@@ -494,13 +495,13 @@ void main() {
       expect(vocab7.definitions[0].dialects![1], Dialect.hokkaidoBen);
       // Japanese text index
       expect(vocab7.japaneseTextIndex.length, 3);
-      expect(vocab7.japaneseTextIndex[0], 'めんこい');
-      expect(vocab7.japaneseTextIndex[1], 'めごい');
+      expect(vocab7.japaneseTextIndex[0], 'めごい');
+      expect(vocab7.japaneseTextIndex[1], 'めんこい');
       expect(vocab7.japaneseTextIndex[2], 'めんごい');
       // Romaji text index
       expect(vocab7.romajiTextIndex.length, 3);
-      expect(vocab7.romajiTextIndex[0], 'menkoi');
-      expect(vocab7.romajiTextIndex[1], 'megoi');
+      expect(vocab7.romajiTextIndex[0], 'megoi');
+      expect(vocab7.romajiTextIndex[1], 'menkoi');
       expect(vocab7.romajiTextIndex[2], 'mengoi');
 
       final vocab8 = await isar.vocabs.get(1000160);
@@ -519,12 +520,12 @@ void main() {
       expect(vocab8.definitions[0].pos![0], PartOfSpeech.noun);
       // Japanese text index
       expect(vocab8.japaneseTextIndex.length, 2);
-      expect(vocab8.japaneseTextIndex[0], 'てぃいしゃつ');
-      expect(vocab8.japaneseTextIndex[1], 'tしゃつ');
+      expect(vocab8.japaneseTextIndex[0], 'tしゃつ');
+      expect(vocab8.japaneseTextIndex[1], 'てぃいしゃつ');
       // Romaji text index
       expect(vocab8.romajiTextIndex.length, 2);
-      expect(vocab8.romajiTextIndex[0], 'teiishatsu');
-      expect(vocab8.romajiTextIndex[1], 'teishatsu');
+      expect(vocab8.romajiTextIndex[0], 'teishatsu');
+      expect(vocab8.romajiTextIndex[1], 'teiishatsu');
     });
 
     test('Kanji radicals database creation with short source', () async {

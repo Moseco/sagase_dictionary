@@ -226,6 +226,10 @@ class DictionaryBuilder {
       vocab.japaneseTextIndex = vocab.japaneseTextIndex.toSet().toList();
       vocab.romajiTextIndex = vocab.romajiTextIndex.toSet().toList();
       vocab.definitionIndex = vocab.definitionIndex.toSet().toList();
+
+      // Sort text indexes by length
+      vocab.japaneseTextIndex.sort((a, b) => a.length.compareTo(b.length));
+      vocab.romajiTextIndex.sort((a, b) => a.length.compareTo(b.length));
     }
 
     // Write the remaining vocab
