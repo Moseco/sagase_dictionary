@@ -176,8 +176,29 @@ class DictionaryBuilder {
         }
       }
 
-      // Finally, add vocab to list
-      vocabList.add(vocab);
+      // Extract pos to general list if shared by all definitions (skip if single definition)
+      if (vocab.definitions.length > 1) {
+        if (vocab.definitions[0].pos != null) {
+          outer:
+          for (var pos in vocab.definitions[0].pos!) {
+            for (int i = 1; i < vocab.definitions.length; i++) {
+              if (!(vocab.definitions[i].pos?.contains(pos) ?? false)) {
+                continue outer;
+              }
+            }
+            vocab.pos ??= [];
+            vocab.pos!.add(pos);
+          }
+          if (vocab.pos != null) {
+            for (var pos in vocab.pos!) {
+              for (var definition in vocab.definitions) {
+                definition.pos?.remove(pos);
+                if (definition.pos?.isEmpty ?? false) definition.pos = null;
+              }
+            }
+          }
+        }
+      }
 
       // Create index strings
       final simplifyNonVerbRegex = RegExp(r'(?<=.{1})(う|っ|ー)');
@@ -238,6 +259,9 @@ class DictionaryBuilder {
       // Sort text indexes by length
       vocab.japaneseTextIndex.sort((a, b) => a.length.compareTo(b.length));
       vocab.romajiTextIndex.sort((a, b) => a.length.compareTo(b.length));
+
+      // Finally, add vocab to list
+      vocabList.add(vocab);
     }
 
     // Write the remaining vocab

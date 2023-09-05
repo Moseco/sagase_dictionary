@@ -11,6 +11,8 @@ part 'vocab.g.dart';
 class Vocab extends DictionaryItem {
   List<KanjiReadingPair> kanjiReadingPairs = [];
 
+  @enumerated
+  List<PartOfSpeech>? pos;
   List<VocabDefinition> definitions = [];
 
   @Index(type: IndexType.value)

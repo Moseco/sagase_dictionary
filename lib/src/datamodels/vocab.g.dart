@@ -49,13 +49,19 @@ const VocabSchema = CollectionSchema(
       type: IsarType.objectList,
       target: r'KanjiReadingPair',
     ),
-    r'romajiTextIndex': PropertySchema(
+    r'pos': PropertySchema(
       id: 6,
+      name: r'pos',
+      type: IsarType.byteList,
+      enumMap: _VocabposEnumValueMap,
+    ),
+    r'romajiTextIndex': PropertySchema(
+      id: 7,
       name: r'romajiTextIndex',
       type: IsarType.stringList,
     ),
     r'spacedRepetitionData': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'spacedRepetitionData',
       type: IsarType.object,
       target: r'SpacedRepetitionData',
@@ -169,6 +175,12 @@ int _vocabEstimateSize(
           KanjiReadingPairSchema.estimateSize(value, offsets, allOffsets);
     }
   }
+  {
+    final value = object.pos;
+    if (value != null) {
+      bytesCount += 3 + value.length;
+    }
+  }
   bytesCount += 3 + object.romajiTextIndex.length * 3;
   {
     for (var i = 0; i < object.romajiTextIndex.length; i++) {
@@ -209,9 +221,10 @@ void _vocabSerialize(
     KanjiReadingPairSchema.serialize,
     object.kanjiReadingPairs,
   );
-  writer.writeStringList(offsets[6], object.romajiTextIndex);
+  writer.writeByteList(offsets[6], object.pos?.map((e) => e.index).toList());
+  writer.writeStringList(offsets[7], object.romajiTextIndex);
   writer.writeObject<SpacedRepetitionData>(
-    offsets[7],
+    offsets[8],
     allOffsets,
     SpacedRepetitionDataSchema.serialize,
     object.spacedRepetitionData,
@@ -244,9 +257,13 @@ Vocab _vocabDeserialize(
         KanjiReadingPair(),
       ) ??
       [];
-  object.romajiTextIndex = reader.readStringList(offsets[6]) ?? [];
+  object.pos = reader
+      .readByteList(offsets[6])
+      ?.map((e) => _VocabposValueEnumMap[e] ?? PartOfSpeech.adjectiveF)
+      .toList();
+  object.romajiTextIndex = reader.readStringList(offsets[7]) ?? [];
   object.spacedRepetitionData = reader.readObjectOrNull<SpacedRepetitionData>(
-    offsets[7],
+    offsets[8],
     SpacedRepetitionDataSchema.deserialize,
     allOffsets,
   );
@@ -285,8 +302,13 @@ P _vocabDeserializeProp<P>(
           ) ??
           []) as P;
     case 6:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader
+          .readByteList(offset)
+          ?.map((e) => _VocabposValueEnumMap[e] ?? PartOfSpeech.adjectiveF)
+          .toList()) as P;
     case 7:
+      return (reader.readStringList(offset) ?? []) as P;
+    case 8:
       return (reader.readObjectOrNull<SpacedRepetitionData>(
         offset,
         SpacedRepetitionDataSchema.deserialize,
@@ -296,6 +318,197 @@ P _vocabDeserializeProp<P>(
       throw IsarError('Unknown property with id $propertyId');
   }
 }
+
+const _VocabposEnumValueMap = {
+  'adjectiveF': 0,
+  'adjectiveI': 1,
+  'adjectiveIx': 2,
+  'adjectiveKari': 3,
+  'adjectiveKu': 4,
+  'adjectiveNa': 5,
+  'adjectiveNari': 6,
+  'adjectiveNo': 7,
+  'adjectivePn': 8,
+  'adjectiveShiku': 9,
+  'adjectiveT': 10,
+  'adverb': 11,
+  'adverbTo': 12,
+  'auxiliary': 13,
+  'auxiliaryAdj': 14,
+  'auxiliaryV': 15,
+  'conjunction': 16,
+  'copula': 17,
+  'counter': 18,
+  'expressions': 19,
+  'interjection': 20,
+  'noun': 21,
+  'nounAdverbial': 22,
+  'nounProper': 23,
+  'nounPrefix': 24,
+  'nounSuffix': 25,
+  'nounTemporal': 26,
+  'numeric': 27,
+  'pronoun': 28,
+  'prefix': 29,
+  'particle': 30,
+  'suffix': 31,
+  'unclassified': 32,
+  'verb': 33,
+  'verbIchidan': 34,
+  'verbIchidanS': 35,
+  'verbNidanAS': 36,
+  'verbNidanBK': 37,
+  'verbNidanBS': 38,
+  'verbNidanDK': 39,
+  'verbNidanDS': 40,
+  'verbNidanGK': 41,
+  'verbNidanGS': 42,
+  'verbNidanHK': 43,
+  'verbNidanHS': 44,
+  'verbNidanKK': 45,
+  'verbNidanKS': 46,
+  'verbNidanMK': 47,
+  'verbNidanMS': 48,
+  'verbNidanNS': 49,
+  'verbNidanRK': 50,
+  'verbNidanRS': 51,
+  'verbNidanSS': 52,
+  'verbNidanTK': 53,
+  'verbNidanTS': 54,
+  'verbNidanWS': 55,
+  'verbNidanYK': 56,
+  'verbNidanYS': 57,
+  'verbNidanZS': 58,
+  'verbYodanB': 59,
+  'verbYodanG': 60,
+  'verbYodanH': 61,
+  'verbYodanK': 62,
+  'verbYodanM': 63,
+  'verbYodanN': 64,
+  'verbYodanR': 65,
+  'verbYodanS': 66,
+  'verbYodanT': 67,
+  'verbGodanAru': 68,
+  'verbGodanB': 69,
+  'verbGodanG': 70,
+  'verbGodanK': 71,
+  'verbGodanKS': 72,
+  'verbGodanM': 73,
+  'verbGodanN': 74,
+  'verbGodanR': 75,
+  'verbGodanRI': 76,
+  'verbGodanS': 77,
+  'verbGodanT': 78,
+  'verbGodanU': 79,
+  'verbGodanUS': 80,
+  'verbGodanUru': 81,
+  'verbIntransitive': 82,
+  'verbKuru': 83,
+  'verbIrregularN': 84,
+  'verbIrregularR': 85,
+  'verbSuru': 86,
+  'verbSu': 87,
+  'verbSuruIncluded': 88,
+  'verbSuruSpecial': 89,
+  'verbTransitive': 90,
+  'verbIchidanZuru': 91,
+  'unknown': 92,
+};
+const _VocabposValueEnumMap = {
+  0: PartOfSpeech.adjectiveF,
+  1: PartOfSpeech.adjectiveI,
+  2: PartOfSpeech.adjectiveIx,
+  3: PartOfSpeech.adjectiveKari,
+  4: PartOfSpeech.adjectiveKu,
+  5: PartOfSpeech.adjectiveNa,
+  6: PartOfSpeech.adjectiveNari,
+  7: PartOfSpeech.adjectiveNo,
+  8: PartOfSpeech.adjectivePn,
+  9: PartOfSpeech.adjectiveShiku,
+  10: PartOfSpeech.adjectiveT,
+  11: PartOfSpeech.adverb,
+  12: PartOfSpeech.adverbTo,
+  13: PartOfSpeech.auxiliary,
+  14: PartOfSpeech.auxiliaryAdj,
+  15: PartOfSpeech.auxiliaryV,
+  16: PartOfSpeech.conjunction,
+  17: PartOfSpeech.copula,
+  18: PartOfSpeech.counter,
+  19: PartOfSpeech.expressions,
+  20: PartOfSpeech.interjection,
+  21: PartOfSpeech.noun,
+  22: PartOfSpeech.nounAdverbial,
+  23: PartOfSpeech.nounProper,
+  24: PartOfSpeech.nounPrefix,
+  25: PartOfSpeech.nounSuffix,
+  26: PartOfSpeech.nounTemporal,
+  27: PartOfSpeech.numeric,
+  28: PartOfSpeech.pronoun,
+  29: PartOfSpeech.prefix,
+  30: PartOfSpeech.particle,
+  31: PartOfSpeech.suffix,
+  32: PartOfSpeech.unclassified,
+  33: PartOfSpeech.verb,
+  34: PartOfSpeech.verbIchidan,
+  35: PartOfSpeech.verbIchidanS,
+  36: PartOfSpeech.verbNidanAS,
+  37: PartOfSpeech.verbNidanBK,
+  38: PartOfSpeech.verbNidanBS,
+  39: PartOfSpeech.verbNidanDK,
+  40: PartOfSpeech.verbNidanDS,
+  41: PartOfSpeech.verbNidanGK,
+  42: PartOfSpeech.verbNidanGS,
+  43: PartOfSpeech.verbNidanHK,
+  44: PartOfSpeech.verbNidanHS,
+  45: PartOfSpeech.verbNidanKK,
+  46: PartOfSpeech.verbNidanKS,
+  47: PartOfSpeech.verbNidanMK,
+  48: PartOfSpeech.verbNidanMS,
+  49: PartOfSpeech.verbNidanNS,
+  50: PartOfSpeech.verbNidanRK,
+  51: PartOfSpeech.verbNidanRS,
+  52: PartOfSpeech.verbNidanSS,
+  53: PartOfSpeech.verbNidanTK,
+  54: PartOfSpeech.verbNidanTS,
+  55: PartOfSpeech.verbNidanWS,
+  56: PartOfSpeech.verbNidanYK,
+  57: PartOfSpeech.verbNidanYS,
+  58: PartOfSpeech.verbNidanZS,
+  59: PartOfSpeech.verbYodanB,
+  60: PartOfSpeech.verbYodanG,
+  61: PartOfSpeech.verbYodanH,
+  62: PartOfSpeech.verbYodanK,
+  63: PartOfSpeech.verbYodanM,
+  64: PartOfSpeech.verbYodanN,
+  65: PartOfSpeech.verbYodanR,
+  66: PartOfSpeech.verbYodanS,
+  67: PartOfSpeech.verbYodanT,
+  68: PartOfSpeech.verbGodanAru,
+  69: PartOfSpeech.verbGodanB,
+  70: PartOfSpeech.verbGodanG,
+  71: PartOfSpeech.verbGodanK,
+  72: PartOfSpeech.verbGodanKS,
+  73: PartOfSpeech.verbGodanM,
+  74: PartOfSpeech.verbGodanN,
+  75: PartOfSpeech.verbGodanR,
+  76: PartOfSpeech.verbGodanRI,
+  77: PartOfSpeech.verbGodanS,
+  78: PartOfSpeech.verbGodanT,
+  79: PartOfSpeech.verbGodanU,
+  80: PartOfSpeech.verbGodanUS,
+  81: PartOfSpeech.verbGodanUru,
+  82: PartOfSpeech.verbIntransitive,
+  83: PartOfSpeech.verbKuru,
+  84: PartOfSpeech.verbIrregularN,
+  85: PartOfSpeech.verbIrregularR,
+  86: PartOfSpeech.verbSuru,
+  87: PartOfSpeech.verbSu,
+  88: PartOfSpeech.verbSuruIncluded,
+  89: PartOfSpeech.verbSuruSpecial,
+  90: PartOfSpeech.verbTransitive,
+  91: PartOfSpeech.verbIchidanZuru,
+  92: PartOfSpeech.unknown,
+};
 
 Id _vocabGetId(Vocab object) {
   return object.id;
@@ -1570,6 +1783,159 @@ extension VocabQueryFilter on QueryBuilder<Vocab, Vocab, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> posIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'pos',
+      ));
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> posIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'pos',
+      ));
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> posElementEqualTo(
+      PartOfSpeech value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'pos',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> posElementGreaterThan(
+    PartOfSpeech value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'pos',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> posElementLessThan(
+    PartOfSpeech value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'pos',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> posElementBetween(
+    PartOfSpeech lower,
+    PartOfSpeech upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'pos',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> posLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pos',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> posIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pos',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> posIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pos',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> posLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pos',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> posLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pos',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> posLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pos',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
   QueryBuilder<Vocab, Vocab, QAfterFilterCondition>
       romajiTextIndexElementEqualTo(
     String value, {
@@ -1993,6 +2359,12 @@ extension VocabQueryWhereDistinct on QueryBuilder<Vocab, Vocab, QDistinct> {
     });
   }
 
+  QueryBuilder<Vocab, Vocab, QDistinct> distinctByPos() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'pos');
+    });
+  }
+
   QueryBuilder<Vocab, Vocab, QDistinct> distinctByRomajiTextIndex() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'romajiTextIndex');
@@ -2044,6 +2416,12 @@ extension VocabQueryProperty on QueryBuilder<Vocab, Vocab, QQueryProperty> {
       kanjiReadingPairsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'kanjiReadingPairs');
+    });
+  }
+
+  QueryBuilder<Vocab, List<PartOfSpeech>?, QQueryOperations> posProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'pos');
     });
   }
 

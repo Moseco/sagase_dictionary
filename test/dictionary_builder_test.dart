@@ -77,6 +77,7 @@ void main() {
       expect(vocab0.kanjiReadingPairs[0].readings[0].pitchAccents, [0]);
       expect(vocab0.frequencyScore, 15145);
       // Definition
+      expect(vocab0.pos, null);
       expect(vocab0.definitions.length, 1);
       expect(vocab0.definitions[0].definition,
           'obvious; clear; plain; evident; apparent; explicit; overt');
@@ -112,6 +113,7 @@ void main() {
       expect(vocab1.kanjiReadingPairs[0].readings[0].reading, 'あっというまに');
       expect(vocab1.kanjiReadingPairs[0].readings[0].pitchAccents, null);
       // Definition
+      expect(vocab1.pos, null);
       expect(vocab1.definitions.length, 1);
       expect(vocab1.definitions[0].definition,
           'in an instant; in a flash; in the blink of an eye; in no time at all; just like that');
@@ -156,12 +158,13 @@ void main() {
       expect(vocab2.kanjiReadingPairs[0].readings[0].pitchAccents, [0, 1]);
       expect(vocab2.kanjiReadingPairs[0].readings[1].reading, 'キッと');
       // Definitions
+      expect(vocab2.pos!.length, 1);
+      expect(vocab2.pos![0], PartOfSpeech.adverb);
       expect(vocab2.definitions.length, 4);
       // Definition 1
       expect(vocab2.definitions[0].definition,
           'surely; undoubtedly; almost certainly; most likely (e.g. 90 percent)');
-      expect(vocab2.definitions[0].pos!.length, 1);
-      expect(vocab2.definitions[0].pos![0], PartOfSpeech.adverb);
+      expect(vocab2.definitions[0].pos, null);
       expect(vocab2.definitions[0].miscInfo!.length, 2);
       expect(vocab2.definitions[0].miscInfo![0],
           MiscellaneousInfo.usuallyKanaAlone);
@@ -175,8 +178,7 @@ void main() {
       // Definition 2
       expect(vocab2.definitions[1].definition, 'sternly; severely');
       expect(vocab2.definitions[1].additionalInfo, 'esp. キッと');
-      expect(vocab2.definitions[1].pos!.length, 1);
-      expect(vocab2.definitions[1].pos![0], PartOfSpeech.adverb);
+      expect(vocab2.definitions[1].pos, null);
       expect(vocab2.definitions[1].miscInfo!.length, 2);
       expect(vocab2.definitions[1].miscInfo![0],
           MiscellaneousInfo.usuallyKanaAlone);
@@ -185,8 +187,7 @@ void main() {
       // Definition 3
       expect(vocab2.definitions[2].definition,
           'having no slack; rigid; stiff; tight');
-      expect(vocab2.definitions[2].pos!.length, 1);
-      expect(vocab2.definitions[2].pos![0], PartOfSpeech.adverb);
+      expect(vocab2.definitions[2].pos, null);
       expect(vocab2.definitions[2].miscInfo!.length, 2);
       expect(vocab2.definitions[2].miscInfo![0],
           MiscellaneousInfo.usuallyKanaAlone);
@@ -194,8 +195,7 @@ void main() {
           MiscellaneousInfo.onomatopoeicOrMimeticWord);
       // Definition 4
       expect(vocab2.definitions[3].definition, 'suddenly; abruptly; instantly');
-      expect(vocab2.definitions[3].pos!.length, 1);
-      expect(vocab2.definitions[3].pos![0], PartOfSpeech.adverb);
+      expect(vocab2.definitions[3].pos, null);
       expect(vocab2.definitions[3].miscInfo!.length, 3);
       expect(vocab2.definitions[3].miscInfo![0],
           MiscellaneousInfo.usuallyKanaAlone);
@@ -228,13 +228,14 @@ void main() {
       expect(vocab3.kanjiReadingPairs[0].readings[0].reading, 'いく');
       expect(vocab3.kanjiReadingPairs[0].readings[1].reading, 'ゆく');
       // Definitions
+      expect(vocab3.pos!.length, 1);
+      expect(vocab3.pos![0], PartOfSpeech.verbGodanKS);
       expect(vocab3.definitions.length, 10);
       // Definition 1
       expect(vocab3.definitions[0].definition,
           'to go; to move (in a direction or towards a specific location); to head (towards); to be transported (towards); to reach');
-      expect(vocab3.definitions[0].pos!.length, 2);
-      expect(vocab3.definitions[0].pos![0], PartOfSpeech.verbGodanKS);
-      expect(vocab3.definitions[0].pos![1], PartOfSpeech.verbIntransitive);
+      expect(vocab3.definitions[0].pos!.length, 1);
+      expect(vocab3.definitions[0].pos![0], PartOfSpeech.verbIntransitive);
       expect(vocab3.definitions[0].examples!.length, 1);
       expect(vocab3.definitions[0].examples![0].japanese, 'お母さん、泳ぎに行ってもいい。');
       expect(vocab3.definitions[0].examples![0].english,
@@ -243,9 +244,8 @@ void main() {
       expect(vocab3.definitions[1].definition, 'to proceed; to take place');
       expect(vocab3.definitions[1].additionalInfo,
           'い sometimes omitted in auxiliary use');
-      expect(vocab3.definitions[1].pos!.length, 2);
-      expect(vocab3.definitions[1].pos![0], PartOfSpeech.verbGodanKS);
-      expect(vocab3.definitions[1].pos![1], PartOfSpeech.verbIntransitive);
+      expect(vocab3.definitions[1].pos!.length, 1);
+      expect(vocab3.definitions[1].pos![0], PartOfSpeech.verbIntransitive);
       expect(vocab3.definitions[1].examples!.length, 1);
       expect(vocab3.definitions[1].examples![0].japanese,
           '私達はそれを禍とせず最善を尽くして頑張っていかなくてはならない。');
@@ -254,9 +254,8 @@ void main() {
       // Definition 3
       expect(
           vocab3.definitions[2].definition, 'to pass through; to come and go');
-      expect(vocab3.definitions[2].pos!.length, 2);
-      expect(vocab3.definitions[2].pos![0], PartOfSpeech.verbGodanKS);
-      expect(vocab3.definitions[2].pos![1], PartOfSpeech.verbIntransitive);
+      expect(vocab3.definitions[2].pos!.length, 1);
+      expect(vocab3.definitions[2].pos![0], PartOfSpeech.verbIntransitive);
       expect(vocab3.definitions[2].examples!.length, 1);
       expect(vocab3.definitions[2].examples![0].japanese,
           'これらの規則はずっと守られてきたし、これからもいつも守られていくだろう。');
@@ -264,51 +263,44 @@ void main() {
           'These rules have been and always will be observed.');
       // Definition 4
       expect(vocab3.definitions[3].definition, 'to walk');
-      expect(vocab3.definitions[3].pos!.length, 2);
-      expect(vocab3.definitions[3].pos![0], PartOfSpeech.verbGodanKS);
-      expect(vocab3.definitions[3].pos![1], PartOfSpeech.verbIntransitive);
+      expect(vocab3.definitions[3].pos!.length, 1);
+      expect(vocab3.definitions[3].pos![0], PartOfSpeech.verbIntransitive);
       // Definition 5
       expect(vocab3.definitions[4].definition, 'to die; to pass away');
-      expect(vocab3.definitions[4].pos!.length, 2);
-      expect(vocab3.definitions[4].pos![0], PartOfSpeech.verbGodanKS);
-      expect(vocab3.definitions[4].pos![1], PartOfSpeech.verbIntransitive);
+      expect(vocab3.definitions[4].pos!.length, 1);
+      expect(vocab3.definitions[4].pos![0], PartOfSpeech.verbIntransitive);
       expect(vocab3.definitions[4].appliesTo!.length, 1);
       expect(vocab3.definitions[4].appliesTo![0], '逝く');
       // Definition 6
       expect(vocab3.definitions[5].definition, 'to do (in a specific way)');
-      expect(vocab3.definitions[5].pos!.length, 2);
-      expect(vocab3.definitions[5].pos![0], PartOfSpeech.verbGodanKS);
-      expect(vocab3.definitions[5].pos![1], PartOfSpeech.verbIntransitive);
+      expect(vocab3.definitions[5].pos!.length, 1);
+      expect(vocab3.definitions[5].pos![0], PartOfSpeech.verbIntransitive);
       // Definition 7
       expect(vocab3.definitions[6].definition, 'to stream; to flow');
-      expect(vocab3.definitions[6].pos!.length, 2);
-      expect(vocab3.definitions[6].pos![0], PartOfSpeech.verbGodanKS);
-      expect(vocab3.definitions[6].pos![1], PartOfSpeech.verbIntransitive);
+      expect(vocab3.definitions[6].pos!.length, 1);
+      expect(vocab3.definitions[6].pos![0], PartOfSpeech.verbIntransitive);
       // Definition 8
       expect(vocab3.definitions[7].definition, 'to continue');
       expect(
           vocab3.definitions[7].additionalInfo, 'after the -te form of a verb');
-      expect(vocab3.definitions[7].pos!.length, 2);
-      expect(vocab3.definitions[7].pos![0], PartOfSpeech.verbGodanKS);
-      expect(vocab3.definitions[7].pos![1], PartOfSpeech.auxiliaryV);
+      expect(vocab3.definitions[7].pos!.length, 1);
+      expect(vocab3.definitions[7].pos![0], PartOfSpeech.auxiliaryV);
       expect(vocab3.definitions[7].miscInfo!.length, 1);
       expect(vocab3.definitions[7].miscInfo![0],
           MiscellaneousInfo.usuallyKanaAlone);
       // Definition 9
       expect(vocab3.definitions[8].definition,
           'to have an orgasm; to come; to cum');
-      expect(vocab3.definitions[8].pos!.length, 2);
-      expect(vocab3.definitions[8].pos![0], PartOfSpeech.verbGodanKS);
-      expect(vocab3.definitions[8].pos![1], PartOfSpeech.verbIntransitive);
+      expect(vocab3.definitions[8].pos!.length, 1);
+      expect(vocab3.definitions[8].pos![0], PartOfSpeech.verbIntransitive);
       expect(vocab3.definitions[8].miscInfo!.length, 1);
       expect(vocab3.definitions[8].miscInfo![0],
           MiscellaneousInfo.usuallyKanaAlone);
       // Definition 10
       expect(vocab3.definitions[9].definition,
           'to trip; to get high; to have a drug-induced hallucination');
-      expect(vocab3.definitions[9].pos!.length, 2);
-      expect(vocab3.definitions[9].pos![0], PartOfSpeech.verbGodanKS);
-      expect(vocab3.definitions[9].pos![1], PartOfSpeech.verbIntransitive);
+      expect(vocab3.definitions[9].pos!.length, 1);
+      expect(vocab3.definitions[9].pos![0], PartOfSpeech.verbIntransitive);
       expect(vocab3.definitions[9].miscInfo!.length, 2);
       expect(vocab3.definitions[9].miscInfo![0],
           MiscellaneousInfo.usuallyKanaAlone);
@@ -336,11 +328,12 @@ void main() {
       expect(vocab4.kanjiReadingPairs[0].readings[1].reading, 'うーん');
       expect(vocab4.kanjiReadingPairs[0].readings[2].reading, 'ウーン');
       // Definitions
+      expect(vocab4.pos!.length, 1);
+      expect(vocab4.pos![0], PartOfSpeech.interjection);
       expect(vocab4.definitions.length, 3);
       // Definition 1
       expect(vocab4.definitions[0].definition, 'um; er; well');
-      expect(vocab4.definitions[0].pos!.length, 1);
-      expect(vocab4.definitions[0].pos![0], PartOfSpeech.interjection);
+      expect(vocab4.definitions[0].pos, null);
       expect(vocab4.definitions[0].examples!.length, 1);
       expect(vocab4.definitions[0].examples![0].japanese,
           'ウーン、どっちの道に行っても迷いそうな気がする。');
@@ -348,8 +341,7 @@ void main() {
           'Hmm. I have a feeling I\'m going to get lost whichever road I take.');
       // Definition 2
       expect(vocab4.definitions[1].definition, 'nuh-uh; no');
-      expect(vocab4.definitions[1].pos!.length, 1);
-      expect(vocab4.definitions[1].pos![0], PartOfSpeech.interjection);
+      expect(vocab4.definitions[1].pos, null);
       expect(vocab4.definitions[1].appliesTo!.length, 1);
       expect(vocab4.definitions[1].appliesTo![0], 'ううん');
       expect(vocab4.definitions[1].examples!.length, 2);
@@ -362,8 +354,7 @@ void main() {
           'No, Yumi put it in a thermos flask and brought it into the club room.');
       // Definition 3
       expect(vocab4.definitions[2].definition, 'oof');
-      expect(vocab4.definitions[2].pos!.length, 1);
-      expect(vocab4.definitions[2].pos![0], PartOfSpeech.interjection);
+      expect(vocab4.definitions[2].pos, null);
       // Japanese text index
       expect(vocab4.japaneseTextIndex.length, 2);
       expect(vocab4.japaneseTextIndex[0], 'ううん');
@@ -413,6 +404,7 @@ void main() {
       expect(vocab5.kanjiReadingPairs[2].readings[0].info![0],
           ReadingInfo.irregularKana);
       // Definition
+      expect(vocab5.pos, null);
       expect(vocab5.definitions.length, 1);
       expect(vocab5.definitions[0].definition,
           'I\'m sorry to have kept you waiting');
@@ -429,7 +421,6 @@ void main() {
       expect(vocab5.japaneseTextIndex[6], 'お待ちどおさま');
       expect(vocab5.japaneseTextIndex[7], 'おまちどうさま');
       expect(vocab5.japaneseTextIndex[8], 'お待ちどうさま');
-
       // Romaji text index
       expect(vocab5.romajiTextIndex.length, 3);
       expect(vocab5.romajiTextIndex[0], 'omachidosama');
@@ -454,6 +445,7 @@ void main() {
       expect(vocab6.kanjiReadingPairs[0].readings[0].reading, 'おでん');
       expect(vocab6.kanjiReadingPairs[0].readings[0].pitchAccents, [2]);
       // Definition
+      expect(vocab6.pos, null);
       expect(vocab6.definitions.length, 1);
       expect(vocab6.definitions[0].definition,
           'oden; dish of various ingredients, e.g. egg, daikon, potato, chikuwa, konnyaku stewed in soy-flavored dashi');
@@ -483,6 +475,7 @@ void main() {
       expect(vocab7.kanjiReadingPairs[0].readings[1].reading, 'めごい');
       expect(vocab7.kanjiReadingPairs[0].readings[2].reading, 'めんごい');
       // Definition
+      expect(vocab7.pos, null);
       expect(vocab7.definitions.length, 1);
       expect(vocab7.definitions[0].definition,
           'dear; darling; adorable; precious; cute; lovely; sweet; beloved; charming');
@@ -512,6 +505,7 @@ void main() {
       expect(vocab8.kanjiReadingPairs[0].readings.length, 1);
       expect(vocab8.kanjiReadingPairs[0].readings[0].reading, 'ティーシャツ');
       // Definition
+      expect(vocab8.pos, null);
       expect(vocab8.definitions.length, 1);
       expect(vocab8.definitions[0].definition, 'T-shirt; tee shirt');
       expect(vocab8.definitions[0].pos!.length, 1);
