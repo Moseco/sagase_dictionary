@@ -26,6 +26,8 @@ class DictionaryBuilder {
     ProperNounSchema,
   ];
 
+  static final _kanaKit = const KanaKit().copyWithConfig(passRomaji: true);
+
   // Entry point for creating the dictionary
   static Future<void> createDictionary(
     Isar isar,
@@ -82,8 +84,6 @@ class DictionaryBuilder {
     String pitchAccents,
     String frequencyList,
   ) async {
-    final kanaKit = const KanaKit().copyWithConfig(passRomaji: true);
-
     final List<Vocab> vocabList = [];
 
     final jmdictDoc = XmlDocument.parse(vocabDict);
@@ -115,12 +115,20 @@ class DictionaryBuilder {
             vocab.id = int.parse(vocabElement.text);
             break;
           case 'k_ele':
-            kanjiReadingPairs.add(
-              KanjiReadingPair()
-                ..kanjiWritings = [
-                  _handleKanjiElements(vocabElement.childElements, vocab)
-                ],
-            );
+            final pair = KanjiReadingPair()
+              ..kanjiWritings = [
+                _handleKanjiElements(vocabElement.childElements, vocab)
+              ];
+            // If the kanji writing is a search only form add to index now and skip it
+            if (pair.kanjiWritings![0].info
+                    ?.contains(KanjiInfo.searchOnlyForm) ??
+                false) {
+              vocab.japaneseTextIndex.add(_kanaKit.toHiragana(
+                pair.kanjiWritings![0].kanji.toLowerCase().romajiToHalfWidth(),
+              ));
+            } else {
+              kanjiReadingPairs.add(pair);
+            }
             break;
           case 'r_ele':
             _handleReadingElements(
@@ -178,10 +186,10 @@ class DictionaryBuilder {
         // Add readings
         for (var reading in pair.readings) {
           // Japanese text
-          vocab.japaneseTextIndex.add(kanaKit.toHiragana(reading.reading));
+          vocab.japaneseTextIndex.add(_kanaKit.toHiragana(reading.reading));
           // Romaji text
           vocab.romajiTextIndex
-              .add(kanaKit.toRomaji(reading.reading).toLowerCase());
+              .add(_kanaKit.toRomaji(reading.reading).toLowerCase());
           // Simplified romaji text (remove based on if verb or not)
           String? simplifiedReading;
           for (var pos in vocab.definitions.first.pos ?? []) {
@@ -199,13 +207,13 @@ class DictionaryBuilder {
 
           if (simplifiedReading.isNotEmpty) {
             vocab.romajiTextIndex
-                .add(kanaKit.toRomaji(simplifiedReading).toLowerCase());
+                .add(_kanaKit.toRomaji(simplifiedReading).toLowerCase());
           }
         }
         // Add kanji
         if (pair.kanjiWritings != null) {
           for (var kanjiWriting in pair.kanjiWritings!) {
-            vocab.japaneseTextIndex.add(kanaKit.toHiragana(
+            vocab.japaneseTextIndex.add(_kanaKit.toHiragana(
               kanjiWriting.kanji.toLowerCase().romajiToHalfWidth(),
             ));
           }
@@ -265,17 +273,17 @@ class DictionaryBuilder {
         if (kanjiWriting == null) {
           results = await isar.vocabs
               .where()
-              .japaneseTextIndexElementEqualTo(
-                  kanaKit.toHiragana(reading.toLowerCase().romajiToHalfWidth()))
+              .japaneseTextIndexElementEqualTo(_kanaKit
+                  .toHiragana(reading.toLowerCase().romajiToHalfWidth()))
               .findAll();
         } else {
           results = await isar.vocabs
               .where()
-              .japaneseTextIndexElementEqualTo(kanaKit
+              .japaneseTextIndexElementEqualTo(_kanaKit
                   .toHiragana(kanjiWriting.toLowerCase().romajiToHalfWidth()))
               .filter()
-              .japaneseTextIndexElementEqualTo(
-                  kanaKit.toHiragana(reading.toLowerCase().romajiToHalfWidth()))
+              .japaneseTextIndexElementEqualTo(_kanaKit
+                  .toHiragana(reading.toLowerCase().romajiToHalfWidth()))
               .findAll();
         }
 
@@ -312,14 +320,14 @@ class DictionaryBuilder {
         List<Vocab> results = await isar.vocabs
             .where()
             .japaneseTextIndexElementEqualTo(
-                kanaKit.toHiragana(lemma.toLowerCase().romajiToHalfWidth()))
+                _kanaKit.toHiragana(lemma.toLowerCase().romajiToHalfWidth()))
             .findAll();
 
         for (var vocab in results) {
           // Don't replace a higher score
           if (vocab.frequencyScore > score) continue;
 
-          if (kanaKit.isKana(lemma)) {
+          if (_kanaKit.isKana(lemma)) {
             if (vocab.isUsuallyKanaAlone() ||
                 vocab.kanjiReadingPairs[0].kanjiWritings == null) {
               // Confirm lemma shows up in reading (prevent kana conversion problems)
@@ -443,6 +451,12 @@ class DictionaryBuilder {
           _handleVocabPriorityInfo(readingElement.text, vocab);
           break;
       }
+    }
+
+    // If the reading is a search only form add to index now and skip it
+    if (reading.info?.contains(ReadingInfo.searchOnlyForm) ?? false) {
+      vocab.japaneseTextIndex.add(_kanaKit.toHiragana(reading.reading));
+      return;
     }
 
     if (associatedKanjiList.isEmpty) {
@@ -1366,8 +1380,6 @@ class DictionaryBuilder {
     String kanjiComponentData,
     String strokeData,
   ) async {
-    final kanaKit = const KanaKit().copyWithConfig(passRomaji: true);
-
     final List<Kanji> kanjiList = [];
 
     final kanjidic2Doc = XmlDocument.parse(kanjiDict);
@@ -1438,27 +1450,27 @@ class DictionaryBuilder {
       if (kanji.kunReadings != null) {
         for (var reading in kanji.kunReadings!) {
           String cleaned = reading.replaceAll('.', '');
-          readingIndex.add(kanaKit.toHiragana(cleaned));
-          readingIndex.add(kanaKit.toRomaji(cleaned).toLowerCase());
-          readingIndex.add(kanaKit
+          readingIndex.add(_kanaKit.toHiragana(cleaned));
+          readingIndex.add(_kanaKit.toRomaji(cleaned).toLowerCase());
+          readingIndex.add(_kanaKit
               .toRomaji(cleaned.replaceAll(simplifyRegex, ''))
               .toLowerCase());
         }
       }
       if (kanji.onReadings != null) {
         for (var reading in kanji.onReadings!) {
-          readingIndex.add(kanaKit.toHiragana(reading));
-          readingIndex.add(kanaKit.toRomaji(reading).toLowerCase());
-          readingIndex.add(kanaKit
+          readingIndex.add(_kanaKit.toHiragana(reading));
+          readingIndex.add(_kanaKit.toRomaji(reading).toLowerCase());
+          readingIndex.add(_kanaKit
               .toRomaji(reading.replaceAll(simplifyRegex, ''))
               .toLowerCase());
         }
       }
       if (kanji.nanori != null) {
         for (var reading in kanji.nanori!) {
-          readingIndex.add(kanaKit.toHiragana(reading));
-          readingIndex.add(kanaKit.toRomaji(reading).toLowerCase());
-          readingIndex.add(kanaKit
+          readingIndex.add(_kanaKit.toHiragana(reading));
+          readingIndex.add(_kanaKit.toRomaji(reading).toLowerCase());
+          readingIndex.add(_kanaKit
               .toRomaji(reading.replaceAll(simplifyRegex, ''))
               .toLowerCase());
         }

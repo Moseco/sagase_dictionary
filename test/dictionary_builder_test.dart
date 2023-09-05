@@ -103,13 +103,11 @@ void main() {
       // Kanji-reading pairs
       expect(vocab1.kanjiReadingPairs.length, 1);
       // Pair 1
-      expect(vocab1.kanjiReadingPairs[0].kanjiWritings!.length, 6);
+      expect(vocab1.kanjiReadingPairs[0].kanjiWritings!.length, 4);
       expect(vocab1.kanjiReadingPairs[0].kanjiWritings![0].kanji, 'あっという間に');
       expect(vocab1.kanjiReadingPairs[0].kanjiWritings![1].kanji, 'あっと言う間に');
       expect(vocab1.kanjiReadingPairs[0].kanjiWritings![2].kanji, 'アッという間に');
       expect(vocab1.kanjiReadingPairs[0].kanjiWritings![3].kanji, 'アッと言う間に');
-      expect(vocab1.kanjiReadingPairs[0].kanjiWritings![4].kanji, 'あっとゆう間に');
-      expect(vocab1.kanjiReadingPairs[0].kanjiWritings![5].kanji, 'アッとゆう間に');
       expect(vocab1.kanjiReadingPairs[0].readings.length, 1);
       expect(vocab1.kanjiReadingPairs[0].readings[0].reading, 'あっというまに');
       expect(vocab1.kanjiReadingPairs[0].readings[0].pitchAccents, null);
@@ -126,10 +124,10 @@ void main() {
           'The holiday ended all too soon.');
       // Japanese text index
       expect(vocab1.japaneseTextIndex.length, 4);
-      expect(vocab1.japaneseTextIndex[0], 'あっというまに');
-      expect(vocab1.japaneseTextIndex[1], 'あっという間に');
-      expect(vocab1.japaneseTextIndex[2], 'あっと言う間に');
-      expect(vocab1.japaneseTextIndex[3], 'あっとゆう間に');
+      expect(vocab1.japaneseTextIndex[0], 'あっとゆう間に');
+      expect(vocab1.japaneseTextIndex[1], 'あっというまに');
+      expect(vocab1.japaneseTextIndex[2], 'あっという間に');
+      expect(vocab1.japaneseTextIndex[3], 'あっと言う間に');
       // Romaji text index
       expect(vocab1.romajiTextIndex.length, 2);
       expect(vocab1.romajiTextIndex[0], 'atoimani');
