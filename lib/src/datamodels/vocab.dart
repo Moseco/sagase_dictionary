@@ -406,6 +406,7 @@ enum LanguageSource {
   kor,
   kur,
   lat,
+  lit,
   mal,
   mao,
   may,

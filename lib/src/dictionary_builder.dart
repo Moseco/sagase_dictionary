@@ -1256,6 +1256,9 @@ class DictionaryBuilder {
       case 'lat':
         loanVocabInfo.languageSource.add(LanguageSource.lat);
         break;
+      case 'lit':
+        loanVocabInfo.languageSource.add(LanguageSource.lit);
+        break;
       case 'mal':
         loanVocabInfo.languageSource.add(LanguageSource.mal);
         break;
