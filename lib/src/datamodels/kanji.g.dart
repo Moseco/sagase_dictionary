@@ -107,7 +107,7 @@ const KanjiSchema = CollectionSchema(
         IndexPropertySchema(
           name: r'meanings',
           type: IndexType.value,
-          caseSensitive: true,
+          caseSensitive: false,
         )
       ],
     ),

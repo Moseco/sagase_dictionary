@@ -19,7 +19,7 @@ class Kanji extends DictionaryItem {
   int? frequency;
   byte jlpt = 255;
 
-  @Index(type: IndexType.value)
+  @Index(type: IndexType.value, caseSensitive: false)
   List<String>? meanings;
 
   List<String>? onReadings;
