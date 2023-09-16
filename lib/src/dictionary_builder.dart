@@ -1468,6 +1468,9 @@ class DictionaryBuilder {
           .japaneseTextIndexElementContains(kanji.kanji)
           .findAll();
       for (var vocab in vocabList) {
+        // Verify vocab actually has kanji writings
+        // Found kanji could all be a search only form
+        if (vocab.kanjiReadingPairs[0].kanjiWritings == null) continue;
         kanji.compounds.add(vocab);
       }
 
