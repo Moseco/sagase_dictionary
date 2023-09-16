@@ -68,13 +68,19 @@ const KanjiSchema = CollectionSchema(
       type: IsarType.object,
       target: r'SpacedRepetitionData',
     ),
-    r'strokeCount': PropertySchema(
+    r'spacedRepetitionDataEnglish': PropertySchema(
       id: 10,
+      name: r'spacedRepetitionDataEnglish',
+      type: IsarType.object,
+      target: r'SpacedRepetitionData',
+    ),
+    r'strokeCount': PropertySchema(
+      id: 11,
       name: r'strokeCount',
       type: IsarType.byte,
     ),
     r'strokes': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'strokes',
       type: IsarType.stringList,
     )
@@ -235,6 +241,14 @@ int _kanjiEstimateSize(
     }
   }
   {
+    final value = object.spacedRepetitionDataEnglish;
+    if (value != null) {
+      bytesCount += 3 +
+          SpacedRepetitionDataSchema.estimateSize(
+              value, allOffsets[SpacedRepetitionData]!, allOffsets);
+    }
+  }
+  {
     final list = object.strokes;
     if (list != null) {
       bytesCount += 3 + list.length * 3;
@@ -270,8 +284,14 @@ void _kanjiSerialize(
     SpacedRepetitionDataSchema.serialize,
     object.spacedRepetitionData,
   );
-  writer.writeByte(offsets[10], object.strokeCount);
-  writer.writeStringList(offsets[11], object.strokes);
+  writer.writeObject<SpacedRepetitionData>(
+    offsets[10],
+    allOffsets,
+    SpacedRepetitionDataSchema.serialize,
+    object.spacedRepetitionDataEnglish,
+  );
+  writer.writeByte(offsets[11], object.strokeCount);
+  writer.writeStringList(offsets[12], object.strokes);
 }
 
 Kanji _kanjiDeserialize(
@@ -296,8 +316,14 @@ Kanji _kanjiDeserialize(
     SpacedRepetitionDataSchema.deserialize,
     allOffsets,
   );
-  object.strokeCount = reader.readByte(offsets[10]);
-  object.strokes = reader.readStringList(offsets[11]);
+  object.spacedRepetitionDataEnglish =
+      reader.readObjectOrNull<SpacedRepetitionData>(
+    offsets[10],
+    SpacedRepetitionDataSchema.deserialize,
+    allOffsets,
+  );
+  object.strokeCount = reader.readByte(offsets[11]);
+  object.strokes = reader.readStringList(offsets[12]);
   return object;
 }
 
@@ -333,8 +359,14 @@ P _kanjiDeserializeProp<P>(
         allOffsets,
       )) as P;
     case 10:
-      return (reader.readByte(offset)) as P;
+      return (reader.readObjectOrNull<SpacedRepetitionData>(
+        offset,
+        SpacedRepetitionDataSchema.deserialize,
+        allOffsets,
+      )) as P;
     case 11:
+      return (reader.readByte(offset)) as P;
+    case 12:
       return (reader.readStringList(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2361,6 +2393,24 @@ extension KanjiQueryFilter on QueryBuilder<Kanji, Kanji, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition>
+      spacedRepetitionDataEnglishIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'spacedRepetitionDataEnglish',
+      ));
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition>
+      spacedRepetitionDataEnglishIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'spacedRepetitionDataEnglish',
+      ));
+    });
+  }
+
   QueryBuilder<Kanji, Kanji, QAfterFilterCondition> strokeCountEqualTo(
       int value) {
     return QueryBuilder.apply(this, (query) {
@@ -2650,6 +2700,13 @@ extension KanjiQueryObject on QueryBuilder<Kanji, Kanji, QFilterCondition> {
       FilterQuery<SpacedRepetitionData> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'spacedRepetitionData');
+    });
+  }
+
+  QueryBuilder<Kanji, Kanji, QAfterFilterCondition> spacedRepetitionDataEnglish(
+      FilterQuery<SpacedRepetitionData> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'spacedRepetitionDataEnglish');
     });
   }
 }
@@ -3117,6 +3174,13 @@ extension KanjiQueryProperty on QueryBuilder<Kanji, Kanji, QQueryProperty> {
       spacedRepetitionDataProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'spacedRepetitionData');
+    });
+  }
+
+  QueryBuilder<Kanji, SpacedRepetitionData?, QQueryOperations>
+      spacedRepetitionDataEnglishProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'spacedRepetitionDataEnglish');
     });
   }
 

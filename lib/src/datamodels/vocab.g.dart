@@ -65,6 +65,12 @@ const VocabSchema = CollectionSchema(
       name: r'spacedRepetitionData',
       type: IsarType.object,
       target: r'SpacedRepetitionData',
+    ),
+    r'spacedRepetitionDataEnglish': PropertySchema(
+      id: 9,
+      name: r'spacedRepetitionDataEnglish',
+      type: IsarType.object,
+      target: r'SpacedRepetitionData',
     )
   },
   estimateSize: _vocabEstimateSize,
@@ -196,6 +202,14 @@ int _vocabEstimateSize(
               value, allOffsets[SpacedRepetitionData]!, allOffsets);
     }
   }
+  {
+    final value = object.spacedRepetitionDataEnglish;
+    if (value != null) {
+      bytesCount += 3 +
+          SpacedRepetitionDataSchema.estimateSize(
+              value, allOffsets[SpacedRepetitionData]!, allOffsets);
+    }
+  }
   return bytesCount;
 }
 
@@ -228,6 +242,12 @@ void _vocabSerialize(
     allOffsets,
     SpacedRepetitionDataSchema.serialize,
     object.spacedRepetitionData,
+  );
+  writer.writeObject<SpacedRepetitionData>(
+    offsets[9],
+    allOffsets,
+    SpacedRepetitionDataSchema.serialize,
+    object.spacedRepetitionDataEnglish,
   );
 }
 
@@ -264,6 +284,12 @@ Vocab _vocabDeserialize(
   object.romajiTextIndex = reader.readStringList(offsets[7]) ?? [];
   object.spacedRepetitionData = reader.readObjectOrNull<SpacedRepetitionData>(
     offsets[8],
+    SpacedRepetitionDataSchema.deserialize,
+    allOffsets,
+  );
+  object.spacedRepetitionDataEnglish =
+      reader.readObjectOrNull<SpacedRepetitionData>(
+    offsets[9],
     SpacedRepetitionDataSchema.deserialize,
     allOffsets,
   );
@@ -309,6 +335,12 @@ P _vocabDeserializeProp<P>(
     case 7:
       return (reader.readStringList(offset) ?? []) as P;
     case 8:
+      return (reader.readObjectOrNull<SpacedRepetitionData>(
+        offset,
+        SpacedRepetitionDataSchema.deserialize,
+        allOffsets,
+      )) as P;
+    case 9:
       return (reader.readObjectOrNull<SpacedRepetitionData>(
         offset,
         SpacedRepetitionDataSchema.deserialize,
@@ -2179,6 +2211,24 @@ extension VocabQueryFilter on QueryBuilder<Vocab, Vocab, QFilterCondition> {
       ));
     });
   }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition>
+      spacedRepetitionDataEnglishIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'spacedRepetitionDataEnglish',
+      ));
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition>
+      spacedRepetitionDataEnglishIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'spacedRepetitionDataEnglish',
+      ));
+    });
+  }
 }
 
 extension VocabQueryObject on QueryBuilder<Vocab, Vocab, QFilterCondition> {
@@ -2200,6 +2250,13 @@ extension VocabQueryObject on QueryBuilder<Vocab, Vocab, QFilterCondition> {
       FilterQuery<SpacedRepetitionData> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'spacedRepetitionData');
+    });
+  }
+
+  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> spacedRepetitionDataEnglish(
+      FilterQuery<SpacedRepetitionData> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'spacedRepetitionDataEnglish');
     });
   }
 }
@@ -2436,6 +2493,13 @@ extension VocabQueryProperty on QueryBuilder<Vocab, Vocab, QQueryProperty> {
       spacedRepetitionDataProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'spacedRepetitionData');
+    });
+  }
+
+  QueryBuilder<Vocab, SpacedRepetitionData?, QQueryOperations>
+      spacedRepetitionDataEnglishProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'spacedRepetitionDataEnglish');
     });
   }
 }

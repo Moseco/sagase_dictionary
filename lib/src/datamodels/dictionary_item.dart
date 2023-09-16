@@ -5,6 +5,7 @@ abstract class DictionaryItem {
   late Id id;
 
   SpacedRepetitionData? spacedRepetitionData;
+  SpacedRepetitionData? spacedRepetitionDataEnglish;
 
   @ignore
   List<DictionaryItem>? similarFlashcards;

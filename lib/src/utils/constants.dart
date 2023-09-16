@@ -37,17 +37,24 @@ class SagaseDictionaryConstants {
   static const backupMyDictionaryLists = 'my_dictionary_lists';
   static const backupFlashcardSets = 'flashcard_sets';
   static const backupVocabSpacedRepetitionData = 'vocab_spaced_repetition_data';
+  static const backupVocabSpacedRepetitionDataEnglish =
+      'vocab_spaced_repetition_data_english';
   static const backupKanjiSpacedRepetitionData = 'kanji_spaced_repetition_data';
+  static const backupKanjiSpacedRepetitionDataEnglish =
+      'kanji_spaced_repetition_data_english';
   static const backupFlashcardSetId = 'id';
   static const backupFlashcardSetName = 'name';
   static const backupFlashcardSetUsingSpacedRepetition =
       'using_spaced_repetition';
+  static const backupFlashcardSetFrontType = 'front_type';
   static const backupFlashcardSetVocabShowReading = 'vocab_show_reading';
   static const backupFlashcardSetVocabShowReadingIfRareKanji =
       'vocab_show_reading_if_rare_kanji';
   static const backupFlashcardSetVocabShowAlternatives =
       'vocab_show_alternatives';
   static const backupFlashcardSetKanjiShowReading = 'kanji_show_reading';
+  static const backupFlashcardSetVocabShowPartsOfSpeech =
+      'vocab_show_parts_of_speech';
   static const backupFlashcardSetTimestamp = 'timestamp';
   static const backupFlashcardSetFlashcardsCompletedToday =
       'flashcards_completed_today';
