@@ -77,6 +77,8 @@ class VocabDefinition {
   List<Dialect>? dialects;
   List<VocabExample>? examples;
   LoanWordInfo? loanWordInfo;
+  List<VocabReference>? crossReferences;
+  List<VocabReference>? antonyms;
 }
 
 @embedded
@@ -92,6 +94,12 @@ class LoanWordInfo {
   @enumerated
   List<LanguageSource> languageSource = [];
   bool waseieigo = false;
+}
+
+@embedded
+class VocabReference {
+  int? id;
+  late String text;
 }
 
 enum KanjiInfo {

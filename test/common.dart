@@ -416,6 +416,101 @@ const shortJMdict = '''
 <gloss>charming</gloss>
 </sense>
 </entry>
+<entry>
+<ent_seq>1310500</ent_seq>
+<k_ele>
+<keb>上手く行く</keb>
+</k_ele>
+<k_ele>
+<keb>旨く行く</keb>
+<ke_inf>&rK;</ke_inf>
+</k_ele>
+<k_ele>
+<keb>上手くいく</keb>
+<ke_inf>&sK;</ke_inf>
+</k_ele>
+<k_ele>
+<keb>うまく行く</keb>
+<ke_inf>&sK;</ke_inf>
+</k_ele>
+<k_ele>
+<keb>旨くいく</keb>
+<ke_inf>&sK;</ke_inf>
+</k_ele>
+<k_ele>
+<keb>馬九行駆</keb>
+<ke_inf>&sK;</ke_inf>
+</k_ele>
+<k_ele>
+<keb>馬九行久</keb>
+<ke_inf>&sK;</ke_inf>
+</k_ele>
+<r_ele>
+<reb>うまくいく</reb>
+<re_pri>spec1</re_pri>
+</r_ele>
+<sense>
+<pos>&exp;</pos>
+<pos>&v5k-s;</pos>
+<misc>&uk;</misc>
+<gloss>to go smoothly</gloss>
+<gloss>to turn out well</gloss>
+<gloss>to do the trick</gloss>
+<gloss>to have peaceful relations</gloss>
+<example>
+<ex_srce exsrc_type="tat">98525</ex_srce>
+<ex_text>うまくいかない</ex_text>
+<ex_sent xml:lang="jpn">彼らの計画はうまくいかないと思う。</ex_sent>
+<ex_sent xml:lang="eng">I do not think their plan will work out.</ex_sent>
+</example>
+<example>
+<ex_srce exsrc_type="tat">185267</ex_srce>
+<ex_text>うまくいきました</ex_text>
+<ex_sent xml:lang="jpn">会社の賭けはうまくいきました。</ex_sent>
+<ex_sent xml:lang="eng">The company's gamble paid off.</ex_sent>
+</example>
+</sense>
+</entry>
+<entry>
+<ent_seq>1310840</ent_seq>
+<k_ele>
+<keb>死語</keb>
+<ke_pri>news2</ke_pri>
+<ke_pri>nf26</ke_pri>
+<ke_pri>spec2</ke_pri>
+</k_ele>
+<r_ele>
+<reb>しご</reb>
+<re_pri>news2</re_pri>
+<re_pri>nf26</re_pri>
+<re_pri>spec2</re_pri>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<ant>活語・1</ant>
+<gloss>dead language</gloss>
+<gloss>extinct language</gloss>
+<example>
+<ex_srce exsrc_type="tat">216343</ex_srce>
+<ex_text>死語</ex_text>
+<ex_sent xml:lang="jpn">しかし、その一方、ラテン語はそのときまでに「死語」となっていた。</ex_sent>
+<ex_sent xml:lang="eng">But, then again, Latin was already a "dead language" by that time.</ex_sent>
+</example>
+</sense>
+<sense>
+<pos>&n;</pos>
+<xref>廃語</xref>
+<gloss>obsolete word</gloss>
+<gloss>dated word</gloss>
+<gloss>word that has become passé</gloss>
+<example>
+<ex_srce exsrc_type="tat">205790</ex_srce>
+<ex_text>死語</ex_text>
+<ex_sent xml:lang="jpn">それって死語じゃないの。</ex_sent>
+<ex_sent xml:lang="eng">People don't say that anymore.</ex_sent>
+</example>
+</sense>
+</entry>
 </JMdict>
 ''';
 

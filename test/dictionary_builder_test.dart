@@ -91,6 +91,8 @@ void main() {
       expect(vocab0.definitions[0].examples![0].japanese, '何をしなければならないかは明白です。');
       expect(vocab0.definitions[0].examples![0].english,
           'It is clear what must be done.');
+      expect(vocab0.definitions[0].crossReferences, null);
+      expect(vocab0.definitions[0].antonyms, null);
       // Japanese text index
       expect(vocab0.japaneseTextIndex.length, 2);
       expect(vocab0.japaneseTextIndex[0], '明白');
@@ -240,6 +242,10 @@ void main() {
       expect(vocab3.definitions[0].examples![0].japanese, 'お母さん、泳ぎに行ってもいい。');
       expect(vocab3.definitions[0].examples![0].english,
           'Can I go swimming, Mother?');
+      expect(vocab3.definitions[0].crossReferences!.length, 1);
+      expect(vocab3.definitions[0].crossReferences![0].id, null);
+      expect(vocab3.definitions[0].crossReferences![0].text, '来る');
+      expect(vocab3.definitions[0].antonyms, null);
       // Definition 2
       expect(vocab3.definitions[1].definition, 'to proceed; to take place');
       expect(vocab3.definitions[1].additionalInfo,
@@ -251,6 +257,10 @@ void main() {
           '私達はそれを禍とせず最善を尽くして頑張っていかなくてはならない。');
       expect(vocab3.definitions[1].examples![0].english,
           'We\'ll have to try and make the best of it.');
+      expect(vocab3.definitions[1].crossReferences!.length, 1);
+      expect(vocab3.definitions[1].crossReferences![0].id, 1310500);
+      expect(vocab3.definitions[1].crossReferences![0].text, '旨く行く');
+      expect(vocab3.definitions[1].antonyms, null);
       // Definition 3
       expect(
           vocab3.definitions[2].definition, 'to pass through; to come and go');
@@ -339,6 +349,10 @@ void main() {
           'ウーン、どっちの道に行っても迷いそうな気がする。');
       expect(vocab4.definitions[0].examples![0].english,
           'Hmm. I have a feeling I\'m going to get lost whichever road I take.');
+      expect(vocab4.definitions[0].crossReferences!.length, 1);
+      expect(vocab4.definitions[0].crossReferences![0].id, null);
+      expect(vocab4.definitions[0].crossReferences![0].text, 'うん');
+      expect(vocab4.definitions[0].antonyms, null);
       // Definition 2
       expect(vocab4.definitions[1].definition, 'nuh-uh; no');
       expect(vocab4.definitions[1].pos, null);
@@ -355,6 +369,10 @@ void main() {
       // Definition 3
       expect(vocab4.definitions[2].definition, 'oof');
       expect(vocab4.definitions[2].pos, null);
+      expect(vocab4.definitions[2].crossReferences!.length, 1);
+      expect(vocab4.definitions[2].crossReferences![0].id, null);
+      expect(vocab4.definitions[2].crossReferences![0].text, 'うん');
+      expect(vocab4.definitions[2].antonyms, null);
       // Japanese text index
       expect(vocab4.japaneseTextIndex.length, 2);
       expect(vocab4.japaneseTextIndex[0], 'ううん');
@@ -518,6 +536,12 @@ void main() {
       expect(vocab8.romajiTextIndex.length, 2);
       expect(vocab8.romajiTextIndex[0], 'teishatsu');
       expect(vocab8.romajiTextIndex[1], 'teiishatsu');
+
+      final vocab9 = await isar.vocabs.get(1310840);
+      expect(vocab9!.definitions[0].crossReferences, null);
+      expect(vocab9.definitions[0].antonyms!.length, 1);
+      expect(vocab9.definitions[0].antonyms![0].id, null);
+      expect(vocab9.definitions[0].antonyms![0].text, '活語');
     });
 
     test('Kanji radicals database creation with short source', () async {

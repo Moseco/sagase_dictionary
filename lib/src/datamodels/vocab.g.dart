@@ -135,6 +135,7 @@ const VocabSchema = CollectionSchema(
     r'VocabDefinition': VocabDefinitionSchema,
     r'VocabExample': VocabExampleSchema,
     r'LoanWordInfo': LoanWordInfoSchema,
+    r'VocabReference': VocabReferenceSchema,
     r'SpacedRepetitionData': SpacedRepetitionDataSchema
   },
   getId: _vocabGetId,
@@ -3842,48 +3843,60 @@ const VocabDefinitionSchema = Schema(
       name: r'additionalInfo',
       type: IsarType.string,
     ),
-    r'appliesTo': PropertySchema(
+    r'antonyms': PropertySchema(
       id: 1,
+      name: r'antonyms',
+      type: IsarType.objectList,
+      target: r'VocabReference',
+    ),
+    r'appliesTo': PropertySchema(
+      id: 2,
       name: r'appliesTo',
       type: IsarType.stringList,
     ),
+    r'crossReferences': PropertySchema(
+      id: 3,
+      name: r'crossReferences',
+      type: IsarType.objectList,
+      target: r'VocabReference',
+    ),
     r'definition': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'definition',
       type: IsarType.string,
     ),
     r'dialects': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'dialects',
       type: IsarType.byteList,
       enumMap: _VocabDefinitiondialectsEnumValueMap,
     ),
     r'examples': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'examples',
       type: IsarType.objectList,
       target: r'VocabExample',
     ),
     r'fields': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'fields',
       type: IsarType.byteList,
       enumMap: _VocabDefinitionfieldsEnumValueMap,
     ),
     r'loanWordInfo': PropertySchema(
-      id: 6,
+      id: 8,
       name: r'loanWordInfo',
       type: IsarType.object,
       target: r'LoanWordInfo',
     ),
     r'miscInfo': PropertySchema(
-      id: 7,
+      id: 9,
       name: r'miscInfo',
       type: IsarType.byteList,
       enumMap: _VocabDefinitionmiscInfoEnumValueMap,
     ),
     r'pos': PropertySchema(
-      id: 8,
+      id: 10,
       name: r'pos',
       type: IsarType.byteList,
       enumMap: _VocabDefinitionposEnumValueMap,
@@ -3908,6 +3921,20 @@ int _vocabDefinitionEstimateSize(
     }
   }
   {
+    final list = object.antonyms;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        final offsets = allOffsets[VocabReference]!;
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount +=
+              VocabReferenceSchema.estimateSize(value, offsets, allOffsets);
+        }
+      }
+    }
+  }
+  {
     final list = object.appliesTo;
     if (list != null) {
       bytesCount += 3 + list.length * 3;
@@ -3915,6 +3942,20 @@ int _vocabDefinitionEstimateSize(
         for (var i = 0; i < list.length; i++) {
           final value = list[i];
           bytesCount += value.length * 3;
+        }
+      }
+    }
+  }
+  {
+    final list = object.crossReferences;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        final offsets = allOffsets[VocabReference]!;
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount +=
+              VocabReferenceSchema.estimateSize(value, offsets, allOffsets);
         }
       }
     }
@@ -3976,26 +4017,38 @@ void _vocabDefinitionSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.additionalInfo);
-  writer.writeStringList(offsets[1], object.appliesTo);
-  writer.writeString(offsets[2], object.definition);
+  writer.writeObjectList<VocabReference>(
+    offsets[1],
+    allOffsets,
+    VocabReferenceSchema.serialize,
+    object.antonyms,
+  );
+  writer.writeStringList(offsets[2], object.appliesTo);
+  writer.writeObjectList<VocabReference>(
+    offsets[3],
+    allOffsets,
+    VocabReferenceSchema.serialize,
+    object.crossReferences,
+  );
+  writer.writeString(offsets[4], object.definition);
   writer.writeByteList(
-      offsets[3], object.dialects?.map((e) => e.index).toList());
+      offsets[5], object.dialects?.map((e) => e.index).toList());
   writer.writeObjectList<VocabExample>(
-    offsets[4],
+    offsets[6],
     allOffsets,
     VocabExampleSchema.serialize,
     object.examples,
   );
-  writer.writeByteList(offsets[5], object.fields?.map((e) => e.index).toList());
+  writer.writeByteList(offsets[7], object.fields?.map((e) => e.index).toList());
   writer.writeObject<LoanWordInfo>(
-    offsets[6],
+    offsets[8],
     allOffsets,
     LoanWordInfoSchema.serialize,
     object.loanWordInfo,
   );
   writer.writeByteList(
-      offsets[7], object.miscInfo?.map((e) => e.index).toList());
-  writer.writeByteList(offsets[8], object.pos?.map((e) => e.index).toList());
+      offsets[9], object.miscInfo?.map((e) => e.index).toList());
+  writer.writeByteList(offsets[10], object.pos?.map((e) => e.index).toList());
 }
 
 VocabDefinition _vocabDefinitionDeserialize(
@@ -4006,35 +4059,47 @@ VocabDefinition _vocabDefinitionDeserialize(
 ) {
   final object = VocabDefinition();
   object.additionalInfo = reader.readStringOrNull(offsets[0]);
-  object.appliesTo = reader.readStringList(offsets[1]);
-  object.definition = reader.readString(offsets[2]);
+  object.antonyms = reader.readObjectList<VocabReference>(
+    offsets[1],
+    VocabReferenceSchema.deserialize,
+    allOffsets,
+    VocabReference(),
+  );
+  object.appliesTo = reader.readStringList(offsets[2]);
+  object.crossReferences = reader.readObjectList<VocabReference>(
+    offsets[3],
+    VocabReferenceSchema.deserialize,
+    allOffsets,
+    VocabReference(),
+  );
+  object.definition = reader.readString(offsets[4]);
   object.dialects = reader
-      .readByteList(offsets[3])
+      .readByteList(offsets[5])
       ?.map((e) => _VocabDefinitiondialectsValueEnumMap[e] ?? Dialect.brazilian)
       .toList();
   object.examples = reader.readObjectList<VocabExample>(
-    offsets[4],
+    offsets[6],
     VocabExampleSchema.deserialize,
     allOffsets,
     VocabExample(),
   );
   object.fields = reader
-      .readByteList(offsets[5])
+      .readByteList(offsets[7])
       ?.map((e) => _VocabDefinitionfieldsValueEnumMap[e] ?? Field.agriculture)
       .toList();
   object.loanWordInfo = reader.readObjectOrNull<LoanWordInfo>(
-    offsets[6],
+    offsets[8],
     LoanWordInfoSchema.deserialize,
     allOffsets,
   );
   object.miscInfo = reader
-      .readByteList(offsets[7])
+      .readByteList(offsets[9])
       ?.map((e) =>
           _VocabDefinitionmiscInfoValueEnumMap[e] ??
           MiscellaneousInfo.abbreviation)
       .toList();
   object.pos = reader
-      .readByteList(offsets[8])
+      .readByteList(offsets[10])
       ?.map(
           (e) => _VocabDefinitionposValueEnumMap[e] ?? PartOfSpeech.adjectiveF)
       .toList();
@@ -4051,42 +4116,56 @@ P _vocabDefinitionDeserializeProp<P>(
     case 0:
       return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readStringList(offset)) as P;
+      return (reader.readObjectList<VocabReference>(
+        offset,
+        VocabReferenceSchema.deserialize,
+        allOffsets,
+        VocabReference(),
+      )) as P;
     case 2:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringList(offset)) as P;
     case 3:
+      return (reader.readObjectList<VocabReference>(
+        offset,
+        VocabReferenceSchema.deserialize,
+        allOffsets,
+        VocabReference(),
+      )) as P;
+    case 4:
+      return (reader.readString(offset)) as P;
+    case 5:
       return (reader
           .readByteList(offset)
           ?.map((e) =>
               _VocabDefinitiondialectsValueEnumMap[e] ?? Dialect.brazilian)
           .toList()) as P;
-    case 4:
+    case 6:
       return (reader.readObjectList<VocabExample>(
         offset,
         VocabExampleSchema.deserialize,
         allOffsets,
         VocabExample(),
       )) as P;
-    case 5:
+    case 7:
       return (reader
           .readByteList(offset)
           ?.map(
               (e) => _VocabDefinitionfieldsValueEnumMap[e] ?? Field.agriculture)
           .toList()) as P;
-    case 6:
+    case 8:
       return (reader.readObjectOrNull<LoanWordInfo>(
         offset,
         LoanWordInfoSchema.deserialize,
         allOffsets,
       )) as P;
-    case 7:
+    case 9:
       return (reader
           .readByteList(offset)
           ?.map((e) =>
               _VocabDefinitionmiscInfoValueEnumMap[e] ??
               MiscellaneousInfo.abbreviation)
           .toList()) as P;
-    case 8:
+    case 10:
       return (reader
           .readByteList(offset)
           ?.map((e) =>
@@ -4761,6 +4840,113 @@ extension VocabDefinitionQueryFilter
   }
 
   QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      antonymsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'antonyms',
+      ));
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      antonymsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'antonyms',
+      ));
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      antonymsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'antonyms',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      antonymsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'antonyms',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      antonymsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'antonyms',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      antonymsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'antonyms',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      antonymsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'antonyms',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      antonymsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'antonyms',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
       appliesToIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -4995,6 +5181,113 @@ extension VocabDefinitionQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
         r'appliesTo',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      crossReferencesIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'crossReferences',
+      ));
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      crossReferencesIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'crossReferences',
+      ));
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      crossReferencesLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'crossReferences',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      crossReferencesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'crossReferences',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      crossReferencesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'crossReferences',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      crossReferencesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'crossReferences',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      crossReferencesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'crossReferences',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      crossReferencesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'crossReferences',
         lower,
         includeLower,
         upper,
@@ -5920,6 +6213,20 @@ extension VocabDefinitionQueryFilter
 extension VocabDefinitionQueryObject
     on QueryBuilder<VocabDefinition, VocabDefinition, QFilterCondition> {
   QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      antonymsElement(FilterQuery<VocabReference> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'antonyms');
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
+      crossReferencesElement(FilterQuery<VocabReference> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'crossReferences');
+    });
+  }
+
+  QueryBuilder<VocabDefinition, VocabDefinition, QAfterFilterCondition>
       examplesElement(FilterQuery<VocabExample> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'examples');
@@ -6671,3 +6978,290 @@ extension LoanWordInfoQueryFilter
 
 extension LoanWordInfoQueryObject
     on QueryBuilder<LoanWordInfo, LoanWordInfo, QFilterCondition> {}
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+
+const VocabReferenceSchema = Schema(
+  name: r'VocabReference',
+  id: 7886090632161590785,
+  properties: {
+    r'id': PropertySchema(
+      id: 0,
+      name: r'id',
+      type: IsarType.long,
+    ),
+    r'text': PropertySchema(
+      id: 1,
+      name: r'text',
+      type: IsarType.string,
+    )
+  },
+  estimateSize: _vocabReferenceEstimateSize,
+  serialize: _vocabReferenceSerialize,
+  deserialize: _vocabReferenceDeserialize,
+  deserializeProp: _vocabReferenceDeserializeProp,
+);
+
+int _vocabReferenceEstimateSize(
+  VocabReference object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.text.length * 3;
+  return bytesCount;
+}
+
+void _vocabReferenceSerialize(
+  VocabReference object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeLong(offsets[0], object.id);
+  writer.writeString(offsets[1], object.text);
+}
+
+VocabReference _vocabReferenceDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = VocabReference();
+  object.id = reader.readLongOrNull(offsets[0]);
+  object.text = reader.readString(offsets[1]);
+  return object;
+}
+
+P _vocabReferenceDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readLongOrNull(offset)) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+extension VocabReferenceQueryFilter
+    on QueryBuilder<VocabReference, VocabReference, QFilterCondition> {
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition> idEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      idGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      idLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition> idBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      textEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'text',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      textGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'text',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      textLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'text',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      textBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'text',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      textStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'text',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      textEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'text',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      textContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'text',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      textMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'text',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      textIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'text',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      textIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'text',
+        value: '',
+      ));
+    });
+  }
+}
+
+extension VocabReferenceQueryObject
+    on QueryBuilder<VocabReference, VocabReference, QFilterCondition> {}

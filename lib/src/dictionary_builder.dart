@@ -387,6 +387,114 @@ class DictionaryBuilder {
         }
       }
     });
+
+    // Complete cross references
+    await isar.writeTxn(() async {
+      final vocabWithCrossReferences = await isar.vocabs
+          .filter()
+          .definitionsElement((q) => q.crossReferencesIsNotNull())
+          .findAll();
+
+      for (var vocab in vocabWithCrossReferences) {
+        for (var definition in vocab.definitions) {
+          if (definition.crossReferences != null) {
+            for (var crossReference in definition.crossReferences!) {
+              List<String> split = crossReference.text.split('・');
+              crossReference.text = split[0];
+
+              late final List<Vocab> result;
+              if (split.length == 1 ||
+                  (split.length > 1 && int.tryParse(split[1]) != null)) {
+                result = await isar.vocabs
+                    .where()
+                    .japaneseTextIndexElementEqualTo(_kanaKit
+                        .toHiragana(split[0].toLowerCase().romajiToHalfWidth()))
+                    .findAll();
+              } else {
+                result = await isar.vocabs
+                    .where()
+                    .japaneseTextIndexElementEqualTo(_kanaKit
+                        .toHiragana(split[0].toLowerCase().romajiToHalfWidth()))
+                    .filter()
+                    .japaneseTextIndexElementEqualTo(_kanaKit
+                        .toHiragana(split[1].toLowerCase().romajiToHalfWidth()))
+                    .findAll();
+              }
+
+              if (result.length == 1) {
+                crossReference.id = result[0].id;
+              } else if (_kanaKit.isKana(split[0])) {
+                // If only kana given, try to filter down to one
+                for (int i = 0; i < result.length; i++) {
+                  if (result[i].kanjiReadingPairs[0].kanjiWritings != null &&
+                      !result[i].isUsuallyKanaAlone()) {
+                    result.removeAt(i--);
+                  }
+                }
+
+                if (result.length == 1) crossReference.id = result[0].id;
+              }
+            }
+          }
+        }
+
+        await isar.vocabs.put(vocab);
+      }
+    });
+
+    // Complete antonyms
+    await isar.writeTxn(() async {
+      final vocabWithAntonyms = await isar.vocabs
+          .filter()
+          .definitionsElement((q) => q.antonymsIsNotNull())
+          .findAll();
+
+      for (var vocab in vocabWithAntonyms) {
+        for (var definition in vocab.definitions) {
+          if (definition.antonyms != null) {
+            for (var antonym in definition.antonyms!) {
+              List<String> split = antonym.text.split('・');
+              antonym.text = split[0];
+
+              late final List<Vocab> result;
+              if (split.length == 1 ||
+                  (split.length > 1 && int.tryParse(split[1]) != null)) {
+                result = await isar.vocabs
+                    .where()
+                    .japaneseTextIndexElementEqualTo(_kanaKit
+                        .toHiragana(split[0].toLowerCase().romajiToHalfWidth()))
+                    .findAll();
+              } else {
+                result = await isar.vocabs
+                    .where()
+                    .japaneseTextIndexElementEqualTo(_kanaKit
+                        .toHiragana(split[0].toLowerCase().romajiToHalfWidth()))
+                    .filter()
+                    .japaneseTextIndexElementEqualTo(_kanaKit
+                        .toHiragana(split[1].toLowerCase().romajiToHalfWidth()))
+                    .findAll();
+              }
+
+              if (result.length == 1) {
+                antonym.id = result[0].id;
+              } else if (_kanaKit.isKana(split[0])) {
+                // If only kana given, try to filter down to one
+                for (int i = 0; i < result.length; i++) {
+                  if (result[i].kanjiReadingPairs[0].kanjiWritings != null &&
+                      !result[i].isUsuallyKanaAlone()) {
+                    result.removeAt(i--);
+                  }
+                }
+
+                if (result.length == 1) antonym.id = result[0].id;
+              }
+            }
+          }
+        }
+
+        await isar.vocabs.put(vocab);
+      }
+    });
   }
 
   static VocabKanji _handleKanjiElements(
@@ -528,6 +636,8 @@ class DictionaryBuilder {
     List<Dialect>? dialects;
     List<VocabExample>? examples;
     LoanWordInfo? loanWordInfo;
+    List<VocabReference>? crossReferences;
+    List<VocabReference>? antonyms;
 
     for (var senseElement in xmlElement.childElements) {
       switch (senseElement.name.local) {
@@ -544,10 +654,12 @@ class DictionaryBuilder {
           partsOfSpeech.add(_handlePartOfSpeechElement(senseElement.text));
           break;
         case 'xref':
-          // Cross-reference to another entry with similar/related meaning
+          crossReferences ??= [];
+          crossReferences.add(VocabReference()..text = senseElement.text);
           break;
         case 'ant':
-          // Reference to another entry that is an antonym of the current entry
+          antonyms ??= [];
+          antonyms.add(VocabReference()..text = senseElement.text);
           break;
         case 'field':
           final field = _handleFieldElement(senseElement.text);
@@ -598,7 +710,9 @@ class DictionaryBuilder {
         ..miscInfo = miscInfo
         ..dialects = dialects
         ..examples = examples
-        ..loanWordInfo = loanWordInfo,
+        ..loanWordInfo = loanWordInfo
+        ..crossReferences = crossReferences
+        ..antonyms = antonyms,
     );
 
     return definitions;
