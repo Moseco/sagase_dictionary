@@ -27,12 +27,13 @@ void main(List<String> arguments) async {
   await Directory(tempFilesPath).create(recursive: true);
   String outputFilesPath = path.join(examplePath, 'output_files');
   await Directory(outputFilesPath).create(recursive: true);
-  if (await File(path.join(outputFilesPath, 'db_export.zip')).exists()) {
-    await File(path.join(outputFilesPath, 'db_export.zip')).delete();
+  if (await File(path.join(outputFilesPath, 'base_dictionary.zip')).exists()) {
+    await File(path.join(outputFilesPath, 'base_dictionary.zip')).delete();
   }
-  if (await File(path.join(outputFilesPath, 'proper_nouns_export.zip'))
+  if (await File(path.join(outputFilesPath, 'proper_noun_dictionary.zip'))
       .exists()) {
-    await File(path.join(outputFilesPath, 'proper_nouns_export.zip')).delete();
+    await File(path.join(outputFilesPath, 'proper_noun_dictionary.zip'))
+        .delete();
   }
 
   // Get name of isar binary based on platform
@@ -83,12 +84,13 @@ void main(List<String> arguments) async {
     );
 
     // Export isar to file
-    await isar.copyToFile(path.join(tempFilesPath, 'db_export.isar'));
+    await isar.copyToFile(path.join(tempFilesPath, 'base_dictionary.isar'));
 
     // Compress the exported file
-    final bytes =
-        await File(path.join(tempFilesPath, 'db_export.isar')).readAsBytes();
-    final archiveFile = ArchiveFile('db_export.isar', bytes.length, bytes);
+    final bytes = await File(path.join(tempFilesPath, 'base_dictionary.isar'))
+        .readAsBytes();
+    final archiveFile =
+        ArchiveFile('base_dictionary.isar', bytes.length, bytes);
     final archive = Archive();
     archive.addFile(archiveFile);
     final encodedArchive =
@@ -97,7 +99,7 @@ void main(List<String> arguments) async {
       print('Compression did not work');
       return;
     }
-    await File(path.join(outputFilesPath, 'db_export.zip'))
+    await File(path.join(outputFilesPath, 'base_dictionary.zip'))
         .writeAsBytes(encodedArchive);
   }
 
@@ -133,7 +135,7 @@ void main(List<String> arguments) async {
       print('Compression did not work');
       return;
     }
-    await File(path.join(outputFilesPath, 'proper_nouns_export.zip'))
+    await File(path.join(outputFilesPath, 'proper_noun_dictionary.zip'))
         .writeAsBytes(encodedArchive);
   }
 
