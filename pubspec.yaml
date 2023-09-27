@@ -11,7 +11,7 @@ dependencies:
   isar: ^3.1.0+1
   xml: ^6.4.2
   meta: ^1.9.1
-  archive: ^3.3.7
+  archive: ^3.4.2
   kana_kit: # TODO change to main one after merge
     git:
       url: https://github.com/Moseco/kana_kit
