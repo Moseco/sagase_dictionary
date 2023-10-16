@@ -52,6 +52,8 @@ class SagaseDictionaryConstants {
       'vocab_show_reading_if_rare_kanji';
   static const backupFlashcardSetVocabShowAlternatives =
       'vocab_show_alternatives';
+  static const backupFlashcardSetVocabShowPitchAccent =
+      'vocab_show_pitch_accent';
   static const backupFlashcardSetKanjiShowReading = 'kanji_show_reading';
   static const backupFlashcardSetVocabShowPartsOfSpeech =
       'vocab_show_parts_of_speech';
