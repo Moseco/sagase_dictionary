@@ -242,13 +242,14 @@ class DictionaryBuilder {
       }
 
       for (var definition in rawDefinitions) {
-        // If definition starts with 'to ' (including space) index the whole string
+        final split = Isar.splitWords(definition.toLowerCase());
+        // If definition starts with 'to ' index 'to ' merged with the next word
         // This improves searching for verbs
-        if (definition.startsWith('to ')) {
-          vocab.definitionIndex.add(definition);
+        if (split.length > 1 && split[0] == 'to') {
+          vocab.definitionIndex.add('${split[0]} ${split[1]}');
         }
-        // Split words for improved searching
-        vocab.definitionIndex.addAll(Isar.splitWords(definition.toLowerCase()));
+        // Add split words for improved searching
+        vocab.definitionIndex.addAll(split);
       }
 
       // Remove duplicates from indexes
