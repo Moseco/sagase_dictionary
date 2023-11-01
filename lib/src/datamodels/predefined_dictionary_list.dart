@@ -11,4 +11,12 @@ class PredefinedDictionaryList extends DictionaryList {
   final vocabLinks = IsarLinks<Vocab>();
   @override
   final kanjiLinks = IsarLinks<Kanji>();
+
+  List<int> vocab = [];
+  List<int> kanji = [];
+
+  @override
+  List<int> getVocab() => vocab;
+  @override
+  List<int> getKanji() => kanji;
 }

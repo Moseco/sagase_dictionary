@@ -90,15 +90,7 @@ const KanjiRadicalSchema = CollectionSchema(
       ],
     )
   },
-  links: {
-    r'kanjiWithRadical': LinkSchema(
-      id: -3732638784367542430,
-      name: r'kanjiWithRadical',
-      target: r'Kanji',
-      single: false,
-      linkName: r'radical',
-    )
-  },
+  links: {},
   embeddedSchemas: {},
   getId: _kanjiRadicalGetId,
   getLinks: _kanjiRadicalGetLinks,
@@ -265,14 +257,12 @@ Id _kanjiRadicalGetId(KanjiRadical object) {
 }
 
 List<IsarLinkBase<dynamic>> _kanjiRadicalGetLinks(KanjiRadical object) {
-  return [object.kanjiWithRadical];
+  return [];
 }
 
 void _kanjiRadicalAttach(
     IsarCollection<dynamic> col, Id id, KanjiRadical object) {
   object.id = id;
-  object.kanjiWithRadical
-      .attach(col, col.isar.collection<Kanji>(), r'kanjiWithRadical', id);
 }
 
 extension KanjiRadicalByIndex on IsarCollection<KanjiRadical> {
@@ -1804,69 +1794,7 @@ extension KanjiRadicalQueryObject
     on QueryBuilder<KanjiRadical, KanjiRadical, QFilterCondition> {}
 
 extension KanjiRadicalQueryLinks
-    on QueryBuilder<KanjiRadical, KanjiRadical, QFilterCondition> {
-  QueryBuilder<KanjiRadical, KanjiRadical, QAfterFilterCondition>
-      kanjiWithRadical(FilterQuery<Kanji> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'kanjiWithRadical');
-    });
-  }
-
-  QueryBuilder<KanjiRadical, KanjiRadical, QAfterFilterCondition>
-      kanjiWithRadicalLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'kanjiWithRadical', length, true, length, true);
-    });
-  }
-
-  QueryBuilder<KanjiRadical, KanjiRadical, QAfterFilterCondition>
-      kanjiWithRadicalIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'kanjiWithRadical', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<KanjiRadical, KanjiRadical, QAfterFilterCondition>
-      kanjiWithRadicalIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'kanjiWithRadical', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<KanjiRadical, KanjiRadical, QAfterFilterCondition>
-      kanjiWithRadicalLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'kanjiWithRadical', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<KanjiRadical, KanjiRadical, QAfterFilterCondition>
-      kanjiWithRadicalLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'kanjiWithRadical', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<KanjiRadical, KanjiRadical, QAfterFilterCondition>
-      kanjiWithRadicalLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'kanjiWithRadical', lower, includeLower, upper, includeUpper);
-    });
-  }
-}
+    on QueryBuilder<KanjiRadical, KanjiRadical, QFilterCondition> {}
 
 extension KanjiRadicalQuerySortBy
     on QueryBuilder<KanjiRadical, KanjiRadical, QSortBy> {

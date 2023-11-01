@@ -1304,6 +1304,13 @@ const shortKanjiRadicalData = '''
     "meaning": "two",
     "reading": "ニ"
 },
+"口": {
+    "strokes": 3,
+    "kanjix": 30,
+    "meaning": "mouth",
+    "reading": "くち, くちへん",
+    "importance": 0
+},
 "心": {
     "strokes": 4,
     "kanjix": 61,
