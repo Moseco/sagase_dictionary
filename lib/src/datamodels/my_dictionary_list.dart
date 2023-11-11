@@ -3,6 +3,7 @@ import 'package:sagase_dictionary/src/datamodels/dictionary_list.dart';
 import 'package:sagase_dictionary/src/datamodels/kanji.dart';
 import 'package:sagase_dictionary/src/datamodels/vocab.dart';
 import 'package:sagase_dictionary/src/utils/constants.dart';
+import 'package:sagase_dictionary/src/utils/string_utils.dart';
 
 part 'my_dictionary_list.g.dart';
 
@@ -31,7 +32,7 @@ class MyDictionaryList extends DictionaryList {
       "${SagaseDictionaryConstants.backupMyDictionaryListName}": "$name",
       "${SagaseDictionaryConstants.backupMyDictionaryListTimestamp}": ${timestamp.millisecondsSinceEpoch},
       "${SagaseDictionaryConstants.backupMyDictionaryListVocab}": ${(vocabLinks.map((e) => e.id).toSet()..addAll(vocab)).toList()},
-      "${SagaseDictionaryConstants.backupMyDictionaryListKanji}": ${(kanjiLinks.map((e) => e.kanji.codeUnitAt(0)).toSet()..addAll(kanji)).toList()}
+      "${SagaseDictionaryConstants.backupMyDictionaryListKanji}": ${(kanjiLinks.map((e) => e.kanji.kanjiCodePoint()).toSet()..addAll(kanji)).toList()}
 }''';
   }
 
@@ -48,7 +49,7 @@ class MyDictionaryList extends DictionaryList {
         ..vocab = map[SagaseDictionaryConstants.backupMyDictionaryListVocab]
             .cast<int>()
         ..kanji = map[SagaseDictionaryConstants.backupMyDictionaryListKanji]
-            .map((e) => e.codeUnitAt(0))
+            .map((e) => (e as String).kanjiCodePoint())
             .toList()
             .cast<int>();
     } else {

@@ -65,7 +65,7 @@ void main() {
             ..name = 'list1'
             ..timestamp = now
             ..vocab = [0, 1]
-            ..kanji = ['a'.codeUnitAt(0), 'b'.codeUnitAt(0)];
+            ..kanji = ['a'.kanjiCodePoint(), 'b'.kanjiCodePoint()];
 
           await isar.myDictionaryLists.put(myList);
 
@@ -112,9 +112,9 @@ void main() {
         expect(newMyList.vocab.contains(1), true);
         expect(newMyList.vocab.contains(2), true);
         expect(newMyList.kanji.length, 3);
-        expect(newMyList.kanji.contains('a'.codeUnitAt(0)), true);
-        expect(newMyList.kanji.contains('b'.codeUnitAt(0)), true);
-        expect(newMyList.kanji.contains('c'.codeUnitAt(0)), true);
+        expect(newMyList.kanji.contains('a'.kanjiCodePoint()), true);
+        expect(newMyList.kanji.contains('b'.kanjiCodePoint()), true);
+        expect(newMyList.kanji.contains('c'.kanjiCodePoint()), true);
       });
     });
 
@@ -139,8 +139,8 @@ void main() {
       expect(newMyList.vocab[0], 0);
       expect(newMyList.vocab[1], 1);
       expect(newMyList.kanji.length, 2);
-      expect(newMyList.kanji[0], 'a'.codeUnitAt(0));
-      expect(newMyList.kanji[1], 'b'.codeUnitAt(0));
+      expect(newMyList.kanji[0], 'a'.kanjiCodePoint());
+      expect(newMyList.kanji[1], 'b'.kanjiCodePoint());
     });
   });
 }

@@ -7,6 +7,7 @@ import 'package:sagase_dictionary/src/datamodels/kanji.dart';
 import 'package:sagase_dictionary/src/datamodels/kanji_radical.dart';
 import 'package:sagase_dictionary/src/datamodels/vocab.dart';
 import 'package:sagase_dictionary/src/dictionary_builder.dart';
+import 'package:sagase_dictionary/src/utils/string_utils.dart';
 import 'package:test/test.dart';
 import 'package:path/path.dart' as path;
 
@@ -602,7 +603,7 @@ void main() {
         shortKanjiStrokeData,
       );
 
-      final kanji1 = await isar.kanjis.get('亜'.codeUnitAt(0));
+      final kanji1 = await isar.kanjis.get('亜'.kanjiCodePoint());
       expect(kanji1!.kanji, '亜');
       expect(kanji1.radical, '二');
       expect(kanji1.components!.length, 2);
@@ -623,7 +624,7 @@ void main() {
       expect(kanji1.nanori![2], 'つぐ');
       expect(kanji1.strokes!.length, 7);
 
-      final kanji2 = await isar.kanjis.get('悪'.codeUnitAt(0));
+      final kanji2 = await isar.kanjis.get('悪'.kanjiCodePoint());
       expect(kanji2!.kanji, '悪');
       expect(kanji2.radical, '心');
       expect(kanji2.components!.length, 2);
@@ -650,7 +651,7 @@ void main() {
       expect(kanji2.kunReadings![8], 'にく.む');
       expect(kanji2.nanori, null);
 
-      final kanji3 = await isar.kanjis.get('亞'.codeUnitAt(0));
+      final kanji3 = await isar.kanjis.get('亞'.kanjiCodePoint());
       expect(kanji3!.kanji, '亞');
       expect(kanji3.radical, '二');
       expect(kanji3.components!.length, 1);
