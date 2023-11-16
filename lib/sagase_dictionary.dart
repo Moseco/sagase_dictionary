@@ -12,3 +12,4 @@ export 'src/datamodels/spaced_repetition_data.dart';
 export 'src/datamodels/vocab.dart';
 
 export 'src/utils/constants.dart';
+export 'src/utils/string_utils.dart';

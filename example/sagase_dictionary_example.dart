@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:isar/isar.dart';
 import 'package:path/path.dart' as path;
+import 'package:sagase_dictionary/src/datamodels/kanji.dart';
 import 'package:sagase_dictionary/src/datamodels/proper_noun.dart';
+import 'package:sagase_dictionary/src/datamodels/vocab.dart';
 import 'package:sagase_dictionary/src/dictionary_builder.dart';
 
 void main(List<String> arguments) async {
@@ -82,6 +84,12 @@ void main(List<String> arguments) async {
       File(path.join(inputFilesPath, 'pitch_accents.txt')).readAsStringSync(),
       File(path.join(inputFilesPath, 'frequency_list.txt')).readAsStringSync(),
     );
+
+    // Confirm vocab and kanji counts
+    int vocabCount = await isar.vocabs.count();
+    print('Vocab count - $vocabCount');
+    int kanjiCount = await isar.kanjis.count();
+    print('Kanji ${kanjiCount == 13108 ? "valid" : "INVALID"} - $kanjiCount');
 
     // Export isar to file
     await isar.copyToFile(path.join(tempFilesPath, 'base_dictionary.isar'));

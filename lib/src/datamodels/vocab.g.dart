@@ -119,15 +119,7 @@ const VocabSchema = CollectionSchema(
       ],
     )
   },
-  links: {
-    r'myDictionaryListLinks': LinkSchema(
-      id: 6992640191833276501,
-      name: r'myDictionaryListLinks',
-      target: r'MyDictionaryList',
-      single: false,
-      linkName: r'vocabLinks',
-    )
-  },
+  links: {},
   embeddedSchemas: {
     r'KanjiReadingPair': KanjiReadingPairSchema,
     r'VocabKanji': VocabKanjiSchema,
@@ -548,13 +540,11 @@ Id _vocabGetId(Vocab object) {
 }
 
 List<IsarLinkBase<dynamic>> _vocabGetLinks(Vocab object) {
-  return [object.myDictionaryListLinks];
+  return [];
 }
 
 void _vocabAttach(IsarCollection<dynamic> col, Id id, Vocab object) {
   object.id = id;
-  object.myDictionaryListLinks.attach(col,
-      col.isar.collection<MyDictionaryList>(), r'myDictionaryListLinks', id);
 }
 
 extension VocabQueryWhereSort on QueryBuilder<Vocab, Vocab, QWhere> {
@@ -2262,71 +2252,7 @@ extension VocabQueryObject on QueryBuilder<Vocab, Vocab, QFilterCondition> {
   }
 }
 
-extension VocabQueryLinks on QueryBuilder<Vocab, Vocab, QFilterCondition> {
-  QueryBuilder<Vocab, Vocab, QAfterFilterCondition> myDictionaryListLinks(
-      FilterQuery<MyDictionaryList> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'myDictionaryListLinks');
-    });
-  }
-
-  QueryBuilder<Vocab, Vocab, QAfterFilterCondition>
-      myDictionaryListLinksLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'myDictionaryListLinks', length, true, length, true);
-    });
-  }
-
-  QueryBuilder<Vocab, Vocab, QAfterFilterCondition>
-      myDictionaryListLinksIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'myDictionaryListLinks', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<Vocab, Vocab, QAfterFilterCondition>
-      myDictionaryListLinksIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'myDictionaryListLinks', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<Vocab, Vocab, QAfterFilterCondition>
-      myDictionaryListLinksLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'myDictionaryListLinks', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<Vocab, Vocab, QAfterFilterCondition>
-      myDictionaryListLinksLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'myDictionaryListLinks', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<Vocab, Vocab, QAfterFilterCondition>
-      myDictionaryListLinksLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'myDictionaryListLinks', lower, includeLower, upper, includeUpper);
-    });
-  }
-}
+extension VocabQueryLinks on QueryBuilder<Vocab, Vocab, QFilterCondition> {}
 
 extension VocabQuerySortBy on QueryBuilder<Vocab, Vocab, QSortBy> {
   QueryBuilder<Vocab, Vocab, QAfterSortBy> sortByCommonWord() {

@@ -1,14 +1,15 @@
 import 'package:isar/isar.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_list.dart';
-import 'package:sagase_dictionary/src/datamodels/kanji.dart';
-import 'package:sagase_dictionary/src/datamodels/vocab.dart';
 
 part 'predefined_dictionary_list.g.dart';
 
 @Collection()
 class PredefinedDictionaryList extends DictionaryList {
+  List<int> vocab = [];
+  List<int> kanji = [];
+
   @override
-  final vocabLinks = IsarLinks<Vocab>();
+  List<int> getVocab() => vocab;
   @override
-  final kanjiLinks = IsarLinks<Kanji>();
+  List<int> getKanji() => kanji;
 }

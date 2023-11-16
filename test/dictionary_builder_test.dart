@@ -7,6 +7,7 @@ import 'package:sagase_dictionary/src/datamodels/kanji.dart';
 import 'package:sagase_dictionary/src/datamodels/kanji_radical.dart';
 import 'package:sagase_dictionary/src/datamodels/vocab.dart';
 import 'package:sagase_dictionary/src/dictionary_builder.dart';
+import 'package:sagase_dictionary/src/utils/string_utils.dart';
 import 'package:test/test.dart';
 import 'package:path/path.dart' as path;
 
@@ -602,14 +603,12 @@ void main() {
         shortKanjiStrokeData,
       );
 
-      final kanji1 = await isar.kanjis.get(20811601);
+      final kanji1 = await isar.kanjis.get('亜'.kanjiCodePoint());
       expect(kanji1!.kanji, '亜');
-      await kanji1.radical.load();
-      expect(kanji1.radical.value!.kangxiId, 7);
-      await kanji1.componentLinks.load();
-      expect(kanji1.componentLinks.length, 2);
-      expect(kanji1.componentLinks.elementAt(0).kanji, '一');
-      expect(kanji1.componentLinks.elementAt(1).kanji, '口');
+      expect(kanji1.radical, '二');
+      expect(kanji1.components!.length, 2);
+      expect(kanji1.components![0], '一');
+      expect(kanji1.components![1], '口');
       expect(kanji1.grade, 255);
       expect(kanji1.strokeCount, 7);
       expect(kanji1.frequency, 1509);
@@ -625,14 +624,12 @@ void main() {
       expect(kanji1.nanori![2], 'つぐ');
       expect(kanji1.strokes!.length, 7);
 
-      final kanji2 = await isar.kanjis.get(20811613);
+      final kanji2 = await isar.kanjis.get('悪'.kanjiCodePoint());
       expect(kanji2!.kanji, '悪');
-      await kanji2.radical.load();
-      expect(kanji2.radical.value!.kangxiId, 61);
-      await kanji2.componentLinks.load();
-      expect(kanji2.componentLinks.length, 2);
-      expect(kanji2.componentLinks.elementAt(0).kanji, '一');
-      expect(kanji2.componentLinks.elementAt(1).kanji, '口');
+      expect(kanji2.radical, '心');
+      expect(kanji2.components!.length, 2);
+      expect(kanji2.components![0], '一');
+      expect(kanji2.components![1], '口');
       expect(kanji2.grade, 3);
       expect(kanji2.strokeCount, 11);
       expect(kanji2.frequency, 530);
@@ -654,13 +651,11 @@ void main() {
       expect(kanji2.kunReadings![8], 'にく.む');
       expect(kanji2.nanori, null);
 
-      final kanji3 = await isar.kanjis.get(20814819);
+      final kanji3 = await isar.kanjis.get('亞'.kanjiCodePoint());
       expect(kanji3!.kanji, '亞');
-      await kanji3.radical.load();
-      expect(kanji3.radical.value!.kangxiId, 7);
-      await kanji3.componentLinks.load();
-      expect(kanji3.componentLinks.length, 1);
-      expect(kanji3.componentLinks.elementAt(0).kanji, '一');
+      expect(kanji3.radical, '二');
+      expect(kanji3.components!.length, 1);
+      expect(kanji3.components![0], '一');
       expect(kanji3.grade, 255);
       expect(kanji3.strokeCount, 8);
       expect(kanji3.frequency, null);

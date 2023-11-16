@@ -1,5 +1,4 @@
 import 'package:isar/isar.dart';
-import 'package:sagase_dictionary/src/datamodels/kanji.dart';
 
 part 'kanji_radical.g.dart';
 
@@ -9,9 +8,7 @@ class KanjiRadical {
 
   @Index(unique: true)
   late String radical;
-
   int? kangxiId;
-
   late int strokeCount;
   late String meaning;
   late String reading;
@@ -20,12 +17,8 @@ class KanjiRadical {
   @enumerated
   late KanjiRadicalImportance importance;
   List<String>? strokes;
-
   List<String>? variants;
   String? variantOf;
-
-  @Backlink(to: 'radical')
-  final kanjiWithRadical = IsarLinks<Kanji>();
 }
 
 enum KanjiRadicalImportance {

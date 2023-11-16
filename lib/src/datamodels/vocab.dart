@@ -2,7 +2,6 @@ import 'package:isar/isar.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_item.dart';
 import 'package:sagase_dictionary/src/datamodels/japanese_text_token.dart';
 import 'package:sagase_dictionary/src/datamodels/kanji.dart';
-import 'package:sagase_dictionary/src/datamodels/my_dictionary_list.dart';
 import 'package:sagase_dictionary/src/datamodels/spaced_repetition_data.dart';
 
 part 'vocab.g.dart';
@@ -26,9 +25,6 @@ class Vocab extends DictionaryItem {
 
   bool commonWord = false;
   int frequencyScore = 0;
-
-  @Backlink(to: 'vocabLinks')
-  final myDictionaryListLinks = IsarLinks<MyDictionaryList>();
 
   @ignore
   List<Kanji>? includedKanji;

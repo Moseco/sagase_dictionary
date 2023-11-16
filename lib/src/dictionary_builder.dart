@@ -1536,8 +1536,6 @@ class DictionaryBuilder {
         await isar.writeTxn(() async {
           for (var kanji in kanjiList) {
             await isar.kanjis.put(kanji);
-            await kanji.radical.save();
-            await kanji.compounds.save();
           }
         });
         kanjiList.clear();
@@ -1550,10 +1548,11 @@ class DictionaryBuilder {
       for (var kanjiElement in rawKanjiItem.childElements) {
         switch (kanjiElement.name.local) {
           case 'literal':
+            kanji.id = kanjiElement.text.kanjiCodePoint();
             kanji.kanji = kanjiElement.text;
             break;
           case 'codepoint':
-            _handleKanjiCodepointElements(kanjiElement.childElements, kanji);
+            // Kanji codepoint
             break;
           case 'radical':
             await _handleKanjiRadicalElements(
@@ -1577,16 +1576,40 @@ class DictionaryBuilder {
         }
       }
 
-      // Search vocab for kanji and add links to them
-      final vocabList = await isar.vocabs
+      // Search vocab for kanji and add them as compounds
+      final vocabList = (await isar.vocabs
           .filter()
           .japaneseTextIndexElementContains(kanji.kanji)
-          .findAll();
-      for (var vocab in vocabList) {
-        // Verify vocab actually has kanji writings
-        // Found kanji could all be a search only form
-        if (vocab.kanjiReadingPairs[0].kanjiWritings == null) continue;
-        kanji.compounds.add(vocab);
+          .findAll())
+        ..sort((a, b) =>
+            b.frequencyScore +
+            (b.commonWord ? 1 : 0) -
+            a.frequencyScore -
+            (a.commonWord ? 1 : 0));
+
+      if (vocabList.isNotEmpty) {
+        List<int> onlyKanji = [];
+        List<int> inPrimaryWriting = [];
+        List<int> other = [];
+
+        for (var vocab in vocabList) {
+          // Verify vocab actually has kanji writings
+          // Found kanji could all be a search only form
+          if (vocab.kanjiReadingPairs[0].kanjiWritings == null) continue;
+
+          // Sort by where in compound kanji appears
+          if (vocab.kanjiReadingPairs[0].kanjiWritings![0].kanji ==
+              kanji.kanji) {
+            onlyKanji.add(vocab.id);
+          } else if (vocab.kanjiReadingPairs[0].kanjiWritings![0].kanji
+              .contains(kanji.kanji)) {
+            inPrimaryWriting.add(vocab.id);
+          } else {
+            other.add(vocab.id);
+          }
+        }
+
+        kanji.compounds = onlyKanji + inPrimaryWriting + other;
       }
 
       // Create reading index
@@ -1633,8 +1656,6 @@ class DictionaryBuilder {
     await isar.writeTxn(() async {
       for (var kanji in kanjiList) {
         await isar.kanjis.put(kanji);
-        await kanji.radical.save();
-        await kanji.compounds.save();
       }
     });
 
@@ -1643,44 +1664,30 @@ class DictionaryBuilder {
       Map<String, dynamic> kanjiComponentMap = jsonDecode(kanjiComponentData);
 
       for (var entry in kanjiComponentMap.entries) {
-        final kanji = await isar.kanjis.getByKanji(entry.key);
+        final kanji = await isar.kanjis.get(entry.key.kanjiCodePoint());
         if (kanji == null) continue;
 
-        await kanji.radical.load();
+        final radical = await isar.kanjiRadicals.getByRadical(kanji.radical);
         // If kanji is itself the radical (or a variant), skip component check
-        if (kanji.kanji == kanji.radical.value?.radical) continue;
-        if (kanji.radical.value?.variants != null) {
-          bool sameAsVariant = false;
-          for (var variant in kanji.radical.value!.variants!) {
-            if (kanji.kanji == variant) {
-              sameAsVariant = true;
-              break;
-            }
-          }
-          if (sameAsVariant) continue;
-        }
+        if (kanji.kanji == radical?.radical) continue;
+        if (radical?.variants?.contains(kanji.kanji) ?? false) continue;
 
         // Go through component strings
-        for (var componentString in entry.value) {
+        for (String componentString in entry.value) {
           // If component is the same as kanji's radical (or a variant) skip it
-          if (componentString == kanji.radical.value?.radical) continue;
-          if (kanji.radical.value?.variants != null) {
-            bool sameAsVariant = false;
-            for (var variant in kanji.radical.value!.variants!) {
-              if (componentString == variant) {
-                sameAsVariant = true;
-                break;
-              }
-            }
-            if (sameAsVariant) continue;
-          }
+          if (componentString == radical?.radical) continue;
+          if (radical?.variants?.contains(componentString) ?? false) continue;
 
           // Try to load component and add it
-          final componentKanji = await isar.kanjis.getByKanji(componentString);
-          if (componentKanji != null) kanji.componentLinks.add(componentKanji);
+          final componentKanji =
+              await isar.kanjis.get(componentString.kanjiCodePoint());
+          if (componentKanji != null) {
+            kanji.components ??= [];
+            kanji.components!.add(componentKanji.kanji);
+          }
         }
 
-        await kanji.componentLinks.save();
+        await isar.kanjis.put(kanji);
       }
     });
 
@@ -1689,28 +1696,13 @@ class DictionaryBuilder {
       Map<String, dynamic> strokeMap = jsonDecode(strokeData);
 
       for (var entry in strokeMap.entries) {
-        final kanji = await isar.kanjis.getByKanji(entry.key);
+        final kanji = await isar.kanjis.get(entry.key.kanjiCodePoint());
         if (kanji != null) {
           kanji.strokes = entry.value.cast<String>();
           await isar.kanjis.put(kanji);
         }
       }
     });
-  }
-
-  static void _handleKanjiCodepointElements(
-    Iterable<XmlElement> elements,
-    Kanji kanji,
-  ) {
-    for (var element in elements) {
-      if (element.getAttribute('cp_type')!.startsWith('j')) {
-        kanji.id = _getIdFromCodepoint(
-          element.getAttribute('cp_type')!,
-          element.text,
-        );
-        return;
-      }
-    }
   }
 
   static Future<void> _handleKanjiRadicalElements(
@@ -1720,10 +1712,11 @@ class DictionaryBuilder {
   ) async {
     for (var element in elements) {
       if (element.getAttribute('rad_type') == 'classical') {
-        kanji.radical.value = (await isar.kanjiRadicals
-            .filter()
-            .kangxiIdEqualTo(int.parse(element.text))
-            .findFirst());
+        kanji.radical = (await isar.kanjiRadicals
+                .filter()
+                .kangxiIdEqualTo(int.parse(element.text))
+                .findFirst())!
+            .radical;
         return;
       }
     }
@@ -1810,10 +1803,6 @@ class DictionaryBuilder {
     kanji.kunReadings = kunReadings.isEmpty ? null : kunReadings;
   }
 
-  static int _getIdFromCodepoint(String jisVersion, String value) {
-    return int.parse('${jisVersion.substring(3)}${value.replaceAll('-', '')}');
-  }
-
   // Creates the built-in dictionary lists
   @visibleForTesting
   static Future<void> createDictionaryLists(
@@ -1828,420 +1817,363 @@ class DictionaryBuilder {
     final vocabMap = jsonDecode(vocabLists);
 
     // JLPT vocab N5
-    final jlptVocabN5List = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN5
-      ..name = 'N5 Vocab';
-    final jlptVocabN5ListRaw = vocabMap['jlpt_n5'];
     await isar.writeTxn(() async {
-      for (int i = 0; i < jlptVocabN5ListRaw.length; i++) {
-        final vocab = await isar.vocabs.get(jlptVocabN5ListRaw[i]);
-        jlptVocabN5List.vocabLinks.add(vocab!);
-      }
+      final jlptVocabN5List = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN5
+        ..name = 'N5 Vocab';
+      final jlptVocabN5ListRaw = vocabMap['jlpt_n5'].cast<int>();
+      assert(!(await isar.vocabs.getAll(jlptVocabN5ListRaw)).contains(null));
+      jlptVocabN5List.vocab = jlptVocabN5ListRaw;
       await isar.predefinedDictionaryLists.put(jlptVocabN5List);
-      await jlptVocabN5List.vocabLinks.save();
     });
 
     // JLPT vocab N4
-    final jlptVocabN4List = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN4
-      ..name = 'N4 Vocab';
-    final jlptVocabN4ListRaw = vocabMap['jlpt_n4'];
     await isar.writeTxn(() async {
-      for (int i = 0; i < jlptVocabN4ListRaw.length; i++) {
-        final vocab = await isar.vocabs.get(jlptVocabN4ListRaw[i]);
-        jlptVocabN4List.vocabLinks.add(vocab!);
-      }
+      final jlptVocabN4List = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN4
+        ..name = 'N4 Vocab';
+      final jlptVocabN4ListRaw = vocabMap['jlpt_n4'].cast<int>();
+      assert(!(await isar.vocabs.getAll(jlptVocabN4ListRaw)).contains(null));
+      jlptVocabN4List.vocab = jlptVocabN4ListRaw;
       await isar.predefinedDictionaryLists.put(jlptVocabN4List);
-      await jlptVocabN4List.vocabLinks.save();
     });
 
     // JLPT vocab N3
-    final jlptVocabN3List = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN3
-      ..name = 'N3 Vocab';
-    final jlptVocabN3ListRaw = vocabMap['jlpt_n3'];
     await isar.writeTxn(() async {
-      for (int i = 0; i < jlptVocabN3ListRaw.length; i++) {
-        final vocab = await isar.vocabs.get(jlptVocabN3ListRaw[i]);
-        jlptVocabN3List.vocabLinks.add(vocab!);
-      }
+      final jlptVocabN3List = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN3
+        ..name = 'N3 Vocab';
+      final jlptVocabN3ListRaw = vocabMap['jlpt_n3'].cast<int>();
+      assert(!(await isar.vocabs.getAll(jlptVocabN3ListRaw)).contains(null));
+      jlptVocabN3List.vocab = jlptVocabN3ListRaw;
       await isar.predefinedDictionaryLists.put(jlptVocabN3List);
-      await jlptVocabN3List.vocabLinks.save();
     });
 
     // JLPT vocab N2
-    final jlptVocabN2List = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN2
-      ..name = 'N2 Vocab';
-    final jlptVocabN2ListRaw = vocabMap['jlpt_n2'];
     await isar.writeTxn(() async {
-      for (int i = 0; i < jlptVocabN2ListRaw.length; i++) {
-        final vocab = await isar.vocabs.get(jlptVocabN2ListRaw[i]);
-        jlptVocabN2List.vocabLinks.add(vocab!);
-      }
+      final jlptVocabN2List = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN2
+        ..name = 'N2 Vocab';
+      final jlptVocabN2ListRaw = vocabMap['jlpt_n2'].cast<int>();
+      assert(!(await isar.vocabs.getAll(jlptVocabN2ListRaw)).contains(null));
+      jlptVocabN2List.vocab = jlptVocabN2ListRaw;
       await isar.predefinedDictionaryLists.put(jlptVocabN2List);
-      await jlptVocabN2List.vocabLinks.save();
     });
 
     // JLPT vocab N1
-    final jlptVocabN1List = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN1
-      ..name = 'N1 Vocab';
-    final jlptVocabN1ListRaw = vocabMap['jlpt_n1'];
     await isar.writeTxn(() async {
-      for (int i = 0; i < jlptVocabN1ListRaw.length; i++) {
-        final vocab = await isar.vocabs.get(jlptVocabN1ListRaw[i]);
-        jlptVocabN1List.vocabLinks.add(vocab!);
-      }
+      final jlptVocabN1List = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN1
+        ..name = 'N1 Vocab';
+      final jlptVocabN1ListRaw = vocabMap['jlpt_n1'].cast<int>();
+      assert(!(await isar.vocabs.getAll(jlptVocabN1ListRaw)).contains(null));
+      jlptVocabN1List.vocab = jlptVocabN1ListRaw;
       await isar.predefinedDictionaryLists.put(jlptVocabN1List);
-      await jlptVocabN1List.vocabLinks.save();
     });
 
     // Parse kanji lists
     final kanjiListsMap = jsonDecode(kanjiLists);
 
     // Jouyou
-    final jouyouList = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdJouyou
-      ..name = 'Jouyou';
-    final jouyouListRaw = kanjiListsMap['jouyou'];
     await isar.writeTxn(() async {
-      for (int i = 0; i < jouyouListRaw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(jouyouListRaw[i]);
-        jouyouList.kanjiLinks.add(kanji!);
-      }
+      final jouyouList = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdJouyou
+        ..name = 'Jouyou';
+      final jouyouListRaw = kanjiListsMap['jouyou']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(jouyouListRaw)).contains(null));
+      jouyouList.kanji = jouyouListRaw;
       await isar.predefinedDictionaryLists.put(jouyouList);
-      await jouyouList.kanjiLinks.save();
-    });
-
-    // JLPT kanji N5
-    final jlptKanjiN5List = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN5
-      ..name = 'N5 Kanji';
-    final jlptKanjiN5ListRaw = kanjiListsMap['jlpt_n5'];
-    await isar.writeTxn(() async {
-      for (int i = 0; i < jlptKanjiN5ListRaw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(jlptKanjiN5ListRaw[i]);
-        jlptKanjiN5List.kanjiLinks.add(kanji!);
-      }
-      await isar.predefinedDictionaryLists.put(jlptKanjiN5List);
-      await jlptKanjiN5List.kanjiLinks.save();
-    });
-
-    // JLPT kanji N4
-    final jlptKanjiN4List = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN4
-      ..name = 'N4 Kanji';
-    final jlptKanjiN4ListRaw = kanjiListsMap['jlpt_n4'];
-    await isar.writeTxn(() async {
-      for (int i = 0; i < jlptKanjiN4ListRaw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(jlptKanjiN4ListRaw[i]);
-        jlptKanjiN4List.kanjiLinks.add(kanji!);
-      }
-      await isar.predefinedDictionaryLists.put(jlptKanjiN4List);
-      await jlptKanjiN4List.kanjiLinks.save();
-    });
-
-    // JLPT kanji N3
-    final jlptKanjiN3List = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN3
-      ..name = 'N3 Kanji';
-    final jlptKanjiN3ListRaw = kanjiListsMap['jlpt_n3'];
-    await isar.writeTxn(() async {
-      for (int i = 0; i < jlptKanjiN3ListRaw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(jlptKanjiN3ListRaw[i]);
-        jlptKanjiN3List.kanjiLinks.add(kanji!);
-      }
-      await isar.predefinedDictionaryLists.put(jlptKanjiN3List);
-      await jlptKanjiN3List.kanjiLinks.save();
-    });
-
-    // JLPT kanji N2
-    final jlptKanjiN2List = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN2
-      ..name = 'N2 Kanji';
-    final jlptKanjiN2ListRaw = kanjiListsMap['jlpt_n2'];
-    await isar.writeTxn(() async {
-      for (int i = 0; i < jlptKanjiN2ListRaw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(jlptKanjiN2ListRaw[i]);
-        jlptKanjiN2List.kanjiLinks.add(kanji!);
-      }
-      await isar.predefinedDictionaryLists.put(jlptKanjiN2List);
-      await jlptKanjiN2List.kanjiLinks.save();
-    });
-
-    // JLPT kanji N1
-    final jlptKanjiN1List = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN1
-      ..name = 'N1 Kanji';
-    final jlptKanjiN1ListRaw = kanjiListsMap['jlpt_n1'];
-    await isar.writeTxn(() async {
-      for (int i = 0; i < jlptKanjiN1ListRaw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(jlptKanjiN1ListRaw[i]);
-        jlptKanjiN1List.kanjiLinks.add(kanji!);
-      }
-      await isar.predefinedDictionaryLists.put(jlptKanjiN1List);
-      await jlptKanjiN1List.kanjiLinks.save();
-    });
-
-    // Grade level 1
-    final gradeLevel1 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel1
-      ..name = '1st Grade Kanji';
-    final gradeLevel1Raw = kanjiListsMap['grade_level_1'];
-    await isar.writeTxn(() async {
-      for (int i = 0; i < gradeLevel1Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(gradeLevel1Raw[i]);
-        gradeLevel1.kanjiLinks.add(kanji!);
-      }
-      await isar.predefinedDictionaryLists.put(gradeLevel1);
-      await gradeLevel1.kanjiLinks.save();
-    });
-
-    // Grade level 2
-    final gradeLevel2 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel2
-      ..name = '2nd Grade Kanji';
-    final gradeLevel2Raw = kanjiListsMap['grade_level_2'];
-    await isar.writeTxn(() async {
-      for (int i = 0; i < gradeLevel2Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(gradeLevel2Raw[i]);
-        gradeLevel2.kanjiLinks.add(kanji!);
-      }
-      await isar.predefinedDictionaryLists.put(gradeLevel2);
-      await gradeLevel2.kanjiLinks.save();
-    });
-
-    // Grade level 3
-    final gradeLevel3 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel3
-      ..name = '3rd Grade Kanji';
-    final gradeLevel3Raw = kanjiListsMap['grade_level_3'];
-    await isar.writeTxn(() async {
-      for (int i = 0; i < gradeLevel3Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(gradeLevel3Raw[i]);
-        gradeLevel3.kanjiLinks.add(kanji!);
-      }
-      await isar.predefinedDictionaryLists.put(gradeLevel3);
-      await gradeLevel3.kanjiLinks.save();
-    });
-
-    // Grade level 4
-    final gradeLevel4 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel4
-      ..name = '4th Grade Kanji';
-    final gradeLevel4Raw = kanjiListsMap['grade_level_4'];
-    await isar.writeTxn(() async {
-      for (int i = 0; i < gradeLevel4Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(gradeLevel4Raw[i]);
-        gradeLevel4.kanjiLinks.add(kanji!);
-      }
-      await isar.predefinedDictionaryLists.put(gradeLevel4);
-      await gradeLevel4.kanjiLinks.save();
-    });
-
-    // Grade level 5
-    final gradeLevel5 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel5
-      ..name = '5th Grade Kanji';
-    final gradeLevel5Raw = kanjiListsMap['grade_level_5'];
-    await isar.writeTxn(() async {
-      for (int i = 0; i < gradeLevel5Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(gradeLevel5Raw[i]);
-        gradeLevel5.kanjiLinks.add(kanji!);
-      }
-      await isar.predefinedDictionaryLists.put(gradeLevel5);
-      await gradeLevel5.kanjiLinks.save();
-    });
-
-    // Grade level 6
-    final gradeLevel6 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel6
-      ..name = '6th Grade Kanji';
-    final gradeLevel6Raw = kanjiListsMap['grade_level_6'];
-    await isar.writeTxn(() async {
-      for (int i = 0; i < gradeLevel6Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(gradeLevel6Raw[i]);
-        gradeLevel6.kanjiLinks.add(kanji!);
-      }
-      await isar.predefinedDictionaryLists.put(gradeLevel6);
-      await gradeLevel6.kanjiLinks.save();
     });
 
     // Jinmeiyou
-    final jinmeiyouList = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdJinmeiyou
-      ..name = 'Jinmeiyou';
-    final jinmeiyouListRaw = kanjiListsMap['jinmeiyou'];
     await isar.writeTxn(() async {
-      for (int i = 0; i < jinmeiyouListRaw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(jinmeiyouListRaw[i]);
-        jinmeiyouList.kanjiLinks.add(kanji!);
-      }
+      final jinmeiyouList = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdJinmeiyou
+        ..name = 'Jinmeiyou';
+      final jinmeiyouListRaw = kanjiListsMap['jinmeiyou']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(jinmeiyouListRaw)).contains(null));
+      jinmeiyouList.kanji = jinmeiyouListRaw;
       await isar.predefinedDictionaryLists.put(jinmeiyouList);
-      await jinmeiyouList.kanjiLinks.save();
     });
 
-    // Kanji kentei level 10 (reuse the grade level 1 list)
-    final kenteiLevel10 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel10
-      ..name = 'Kanji Kentei level 10';
+    // JLPT kanji N5
     await isar.writeTxn(() async {
-      for (int i = 0; i < gradeLevel1Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(gradeLevel1Raw[i]);
-        kenteiLevel10.kanjiLinks.add(kanji!);
-      }
+      final jlptKanjiN5List = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN5
+        ..name = 'N5 Kanji';
+      final jlptKanjiN5ListRaw = kanjiListsMap['jlpt_n5']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(jlptKanjiN5ListRaw)).contains(null));
+      jlptKanjiN5List.kanji = jlptKanjiN5ListRaw;
+      await isar.predefinedDictionaryLists.put(jlptKanjiN5List);
+    });
+
+    // JLPT kanji N4
+    await isar.writeTxn(() async {
+      final jlptKanjiN4List = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN4
+        ..name = 'N4 Kanji';
+      final jlptKanjiN4ListRaw = kanjiListsMap['jlpt_n4']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(jlptKanjiN4ListRaw)).contains(null));
+      jlptKanjiN4List.kanji = jlptKanjiN4ListRaw;
+      await isar.predefinedDictionaryLists.put(jlptKanjiN4List);
+    });
+
+    // JLPT kanji N3
+    await isar.writeTxn(() async {
+      final jlptKanjiN3List = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN3
+        ..name = 'N3 Kanji';
+      final jlptKanjiN3ListRaw = kanjiListsMap['jlpt_n3']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(jlptKanjiN3ListRaw)).contains(null));
+      jlptKanjiN3List.kanji = jlptKanjiN3ListRaw;
+      await isar.predefinedDictionaryLists.put(jlptKanjiN3List);
+    });
+
+    // JLPT kanji N2
+    await isar.writeTxn(() async {
+      final jlptKanjiN2List = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN2
+        ..name = 'N2 Kanji';
+      final jlptKanjiN2ListRaw = kanjiListsMap['jlpt_n2']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(jlptKanjiN2ListRaw)).contains(null));
+      jlptKanjiN2List.kanji = jlptKanjiN2ListRaw;
+      await isar.predefinedDictionaryLists.put(jlptKanjiN2List);
+    });
+
+    // JLPT kanji N1
+    await isar.writeTxn(() async {
+      final jlptKanjiN1List = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN1
+        ..name = 'N1 Kanji';
+      final jlptKanjiN1ListRaw = kanjiListsMap['jlpt_n1']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(jlptKanjiN1ListRaw)).contains(null));
+      jlptKanjiN1List.kanji = jlptKanjiN1ListRaw;
+      await isar.predefinedDictionaryLists.put(jlptKanjiN1List);
+    });
+
+    // Grade level 1 and kanji kentei level 10
+    await isar.writeTxn(() async {
+      final gradeLevel1 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel1
+        ..name = '1st Grade Kanji';
+      final gradeLevel1Raw = kanjiListsMap['grade_level_1']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(gradeLevel1Raw)).contains(null));
+      gradeLevel1.kanji = gradeLevel1Raw;
+      await isar.predefinedDictionaryLists.put(gradeLevel1);
+
+      final kenteiLevel10 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel10
+        ..name = 'Kanji Kentei level 10';
+      kenteiLevel10.kanji = gradeLevel1Raw;
       await isar.predefinedDictionaryLists.put(kenteiLevel10);
-      await kenteiLevel10.kanjiLinks.save();
     });
 
-    // Kanji kentei level 9 (reuse the grade level 2 list)
-    final kenteiLevel9 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel9
-      ..name = 'Kanji Kentei level 9';
+    // Grade level 2 and kanji kentei level 9
     await isar.writeTxn(() async {
-      for (int i = 0; i < gradeLevel2Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(gradeLevel2Raw[i]);
-        kenteiLevel9.kanjiLinks.add(kanji!);
-      }
+      final gradeLevel2 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel2
+        ..name = '2nd Grade Kanji';
+      final gradeLevel2Raw = kanjiListsMap['grade_level_2']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(gradeLevel2Raw)).contains(null));
+      gradeLevel2.kanji = gradeLevel2Raw;
+      await isar.predefinedDictionaryLists.put(gradeLevel2);
+
+      final kenteiLevel9 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel9
+        ..name = 'Kanji Kentei level 9';
+      kenteiLevel9.kanji = gradeLevel2Raw;
       await isar.predefinedDictionaryLists.put(kenteiLevel9);
-      await kenteiLevel9.kanjiLinks.save();
     });
 
-    // Kanji kentei level 8 (reuse the grade level 3 list)
-    final kenteiLevel8 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel8
-      ..name = 'Kanji Kentei level 8';
+    // Grade level 3 and kanji kentei level 8
     await isar.writeTxn(() async {
-      for (int i = 0; i < gradeLevel3Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(gradeLevel3Raw[i]);
-        kenteiLevel8.kanjiLinks.add(kanji!);
-      }
+      final gradeLevel3 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel3
+        ..name = '3rd Grade Kanji';
+      final gradeLevel3Raw = kanjiListsMap['grade_level_3']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(gradeLevel3Raw)).contains(null));
+      gradeLevel3.kanji = gradeLevel3Raw;
+      await isar.predefinedDictionaryLists.put(gradeLevel3);
+
+      final kenteiLevel8 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel8
+        ..name = 'Kanji Kentei level 8';
+      kenteiLevel8.kanji = gradeLevel3Raw;
       await isar.predefinedDictionaryLists.put(kenteiLevel8);
-      await kenteiLevel8.kanjiLinks.save();
     });
 
-    // Kanji kentei level 7 (reuse the grade level 4 list)
-    final kenteiLevel7 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel7
-      ..name = 'Kanji Kentei level 7';
+    // Grade level 4 and kanji kentei level 7
     await isar.writeTxn(() async {
-      for (int i = 0; i < gradeLevel4Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(gradeLevel4Raw[i]);
-        kenteiLevel7.kanjiLinks.add(kanji!);
-      }
+      final gradeLevel4 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel4
+        ..name = '4th Grade Kanji';
+      final gradeLevel4Raw = kanjiListsMap['grade_level_4']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(gradeLevel4Raw)).contains(null));
+      gradeLevel4.kanji = gradeLevel4Raw;
+      await isar.predefinedDictionaryLists.put(gradeLevel4);
+
+      final kenteiLevel7 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel7
+        ..name = 'Kanji Kentei level 7';
+      kenteiLevel7.kanji = gradeLevel4Raw;
       await isar.predefinedDictionaryLists.put(kenteiLevel7);
-      await kenteiLevel7.kanjiLinks.save();
     });
 
-    // Kanji kentei level 6 (reuse the grade level 5 list)
-    final kenteiLevel6 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel6
-      ..name = 'Kanji Kentei level 6';
+    // Grade level 5 and kanji kentei level 6
     await isar.writeTxn(() async {
-      for (int i = 0; i < gradeLevel5Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(gradeLevel5Raw[i]);
-        kenteiLevel6.kanjiLinks.add(kanji!);
-      }
+      final gradeLevel5 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel5
+        ..name = '5th Grade Kanji';
+      final gradeLevel5Raw = kanjiListsMap['grade_level_5']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(gradeLevel5Raw)).contains(null));
+      gradeLevel5.kanji = gradeLevel5Raw;
+      await isar.predefinedDictionaryLists.put(gradeLevel5);
+
+      final kenteiLevel6 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel6
+        ..name = 'Kanji Kentei level 6';
+      kenteiLevel6.kanji = gradeLevel5Raw;
       await isar.predefinedDictionaryLists.put(kenteiLevel6);
-      await kenteiLevel6.kanjiLinks.save();
     });
 
-    // Kanji kentei level 5 (reuse the grade level 6 list)
-    final kenteiLevel5 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel5
-      ..name = 'Kanji Kentei level 5';
+    // Grade level 6 and kanji kentei level 5
     await isar.writeTxn(() async {
-      for (int i = 0; i < gradeLevel6Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(gradeLevel6Raw[i]);
-        kenteiLevel5.kanjiLinks.add(kanji!);
-      }
+      final gradeLevel6 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel6
+        ..name = '6th Grade Kanji';
+      final gradeLevel6Raw = kanjiListsMap['grade_level_6']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(gradeLevel6Raw)).contains(null));
+      gradeLevel6.kanji = gradeLevel6Raw;
+      await isar.predefinedDictionaryLists.put(gradeLevel6);
+
+      final kenteiLevel5 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel5
+        ..name = 'Kanji Kentei level 5';
+      kenteiLevel5.kanji = gradeLevel6Raw;
       await isar.predefinedDictionaryLists.put(kenteiLevel5);
-      await kenteiLevel5.kanjiLinks.save();
     });
 
     // Kanji kentei level 4
-    final kenteiLevel4 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel4
-      ..name = 'Kanji Kentei level 4';
-    final kenteiLevel4Raw = kanjiListsMap['kentei_level_4'];
     await isar.writeTxn(() async {
-      for (int i = 0; i < kenteiLevel4Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(kenteiLevel4Raw[i]);
-        kenteiLevel4.kanjiLinks.add(kanji!);
-      }
+      final kenteiLevel4 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel4
+        ..name = 'Kanji Kentei level 4';
+      final kenteiLevel4Raw = kanjiListsMap['kentei_level_4']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(kenteiLevel4Raw)).contains(null));
+      kenteiLevel4.kanji = kenteiLevel4Raw;
       await isar.predefinedDictionaryLists.put(kenteiLevel4);
-      await kenteiLevel4.kanjiLinks.save();
     });
 
     // Kanji kentei level 3
-    final kenteiLevel3 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel3
-      ..name = 'Kanji Kentei level 3';
-    final kenteiLevel3Raw = kanjiListsMap['kentei_level_3'];
     await isar.writeTxn(() async {
-      for (int i = 0; i < kenteiLevel3Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(kenteiLevel3Raw[i]);
-        kenteiLevel3.kanjiLinks.add(kanji!);
-      }
+      final kenteiLevel3 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel3
+        ..name = 'Kanji Kentei level 3';
+      final kenteiLevel3Raw = kanjiListsMap['kentei_level_3']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(kenteiLevel3Raw)).contains(null));
+      kenteiLevel3.kanji = kenteiLevel3Raw;
       await isar.predefinedDictionaryLists.put(kenteiLevel3);
-      await kenteiLevel3.kanjiLinks.save();
     });
 
     // Kanji kentei level Pre 2
-    final kenteiLevelPre2 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevelPre2
-      ..name = 'Kanji Kentei level Pre-2';
-    final kenteiLevelPre2Raw = kanjiListsMap['kentei_level_pre_2'];
     await isar.writeTxn(() async {
-      for (int i = 0; i < kenteiLevelPre2Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(kenteiLevelPre2Raw[i]);
-        kenteiLevelPre2.kanjiLinks.add(kanji!);
-      }
+      final kenteiLevelPre2 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevelPre2
+        ..name = 'Kanji Kentei level Pre-2';
+      final kenteiLevelPre2Raw = kanjiListsMap['kentei_level_pre_2']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(kenteiLevelPre2Raw)).contains(null));
+      kenteiLevelPre2.kanji = kenteiLevelPre2Raw;
       await isar.predefinedDictionaryLists.put(kenteiLevelPre2);
-      await kenteiLevelPre2.kanjiLinks.save();
     });
 
     // Kanji kentei level 2
-    final kenteiLevel2 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel2
-      ..name = 'Kanji Kentei level 2';
-    final kenteiLevel2Raw = kanjiListsMap['kentei_level_2'];
     await isar.writeTxn(() async {
-      for (int i = 0; i < kenteiLevel2Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(kenteiLevel2Raw[i]);
-        kenteiLevel2.kanjiLinks.add(kanji!);
-      }
+      final kenteiLevel2 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel2
+        ..name = 'Kanji Kentei level 2';
+      final kenteiLevel2Raw = kanjiListsMap['kentei_level_2']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(kenteiLevel2Raw)).contains(null));
+      kenteiLevel2.kanji = kenteiLevel2Raw;
       await isar.predefinedDictionaryLists.put(kenteiLevel2);
-      await kenteiLevel2.kanjiLinks.save();
     });
 
     // Kanji kentei level Pre 1
-    final kenteiLevelPre1 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevelPre1
-      ..name = 'Kanji Kentei level Pre-1';
-    final kenteiLevelPre1Raw = kanjiListsMap['kentei_level_pre_1'];
     await isar.writeTxn(() async {
-      for (int i = 0; i < kenteiLevelPre1Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(kenteiLevelPre1Raw[i]);
-        kenteiLevelPre1.kanjiLinks.add(kanji!);
-      }
+      final kenteiLevelPre1 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevelPre1
+        ..name = 'Kanji Kentei level Pre-1';
+      final kenteiLevelPre1Raw = kanjiListsMap['kentei_level_pre_1']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(kenteiLevelPre1Raw)).contains(null));
+      kenteiLevelPre1.kanji = kenteiLevelPre1Raw;
       await isar.predefinedDictionaryLists.put(kenteiLevelPre1);
-      await kenteiLevelPre1.kanjiLinks.save();
     });
 
     // Kanji kentei level 1
-    final kenteiLevel1 = PredefinedDictionaryList()
-      ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel1
-      ..name = 'Kanji Kentei level 1';
-    final kenteiLevel1Raw = kanjiListsMap['kentei_level_1'];
     await isar.writeTxn(() async {
-      for (int i = 0; i < kenteiLevel1Raw.length; i++) {
-        final kanji = await isar.kanjis.getByKanji(kenteiLevel1Raw[i]);
-        kenteiLevel1.kanjiLinks.add(kanji!);
-      }
+      final kenteiLevel1 = PredefinedDictionaryList()
+        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel1
+        ..name = 'Kanji Kentei level 1';
+      final kenteiLevel1Raw = kanjiListsMap['kentei_level_1']
+          .map((e) => (e as String).kanjiCodePoint())
+          .toList()
+          .cast<int>();
+      assert(!(await isar.kanjis.getAll(kenteiLevel1Raw)).contains(null));
+      kenteiLevel1.kanji = kenteiLevel1Raw;
       await isar.predefinedDictionaryLists.put(kenteiLevel1);
-      await kenteiLevel1.kanjiLinks.save();
     });
 
     // Add favorites my list
