@@ -1,7 +1,5 @@
 import 'package:isar/isar.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_list.dart';
-import 'package:sagase_dictionary/src/datamodels/kanji.dart';
-import 'package:sagase_dictionary/src/datamodels/vocab.dart';
 import 'package:sagase_dictionary/src/utils/constants.dart';
 import 'package:sagase_dictionary/src/utils/string_utils.dart';
 
@@ -10,11 +8,6 @@ part 'my_dictionary_list.g.dart';
 @Collection()
 class MyDictionaryList extends DictionaryList {
   late DateTime timestamp;
-
-  @override
-  final vocabLinks = IsarLinks<Vocab>();
-  @override
-  final kanjiLinks = IsarLinks<Kanji>();
 
   @Index()
   List<int> vocab = [];
@@ -31,8 +24,8 @@ class MyDictionaryList extends DictionaryList {
       "${SagaseDictionaryConstants.backupMyDictionaryListId}": $id,
       "${SagaseDictionaryConstants.backupMyDictionaryListName}": "$name",
       "${SagaseDictionaryConstants.backupMyDictionaryListTimestamp}": ${timestamp.millisecondsSinceEpoch},
-      "${SagaseDictionaryConstants.backupMyDictionaryListVocab}": ${(vocabLinks.map((e) => e.id).toSet()..addAll(vocab)).toList()},
-      "${SagaseDictionaryConstants.backupMyDictionaryListKanji}": ${(kanjiLinks.map((e) => e.kanji.kanjiCodePoint()).toSet()..addAll(kanji)).toList()}
+      "${SagaseDictionaryConstants.backupMyDictionaryListVocab}": $vocab,
+      "${SagaseDictionaryConstants.backupMyDictionaryListKanji}": $kanji
 }''';
   }
 

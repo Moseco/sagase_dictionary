@@ -40,20 +40,7 @@ const PredefinedDictionaryListSchema = CollectionSchema(
   deserializeProp: _predefinedDictionaryListDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {
-    r'vocabLinks': LinkSchema(
-      id: -8755321992188407673,
-      name: r'vocabLinks',
-      target: r'Vocab',
-      single: false,
-    ),
-    r'kanjiLinks': LinkSchema(
-      id: 42614560257722466,
-      name: r'kanjiLinks',
-      target: r'Kanji',
-      single: false,
-    )
-  },
+  links: {},
   embeddedSchemas: {},
   getId: _predefinedDictionaryListGetId,
   getLinks: _predefinedDictionaryListGetLinks,
@@ -122,16 +109,12 @@ Id _predefinedDictionaryListGetId(PredefinedDictionaryList object) {
 
 List<IsarLinkBase<dynamic>> _predefinedDictionaryListGetLinks(
     PredefinedDictionaryList object) {
-  return [object.vocabLinks, object.kanjiLinks];
+  return [];
 }
 
 void _predefinedDictionaryListAttach(
     IsarCollection<dynamic> col, Id id, PredefinedDictionaryList object) {
   object.id = id;
-  object.vocabLinks
-      .attach(col, col.isar.collection<Vocab>(), r'vocabLinks', id);
-  object.kanjiLinks
-      .attach(col, col.isar.collection<Kanji>(), r'kanjiLinks', id);
 }
 
 extension PredefinedDictionaryListQueryWhereSort on QueryBuilder<
@@ -706,129 +689,7 @@ extension PredefinedDictionaryListQueryObject on QueryBuilder<
     PredefinedDictionaryList, PredefinedDictionaryList, QFilterCondition> {}
 
 extension PredefinedDictionaryListQueryLinks on QueryBuilder<
-    PredefinedDictionaryList, PredefinedDictionaryList, QFilterCondition> {
-  QueryBuilder<PredefinedDictionaryList, PredefinedDictionaryList,
-      QAfterFilterCondition> vocabLinks(FilterQuery<Vocab> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'vocabLinks');
-    });
-  }
-
-  QueryBuilder<PredefinedDictionaryList, PredefinedDictionaryList,
-      QAfterFilterCondition> vocabLinksLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'vocabLinks', length, true, length, true);
-    });
-  }
-
-  QueryBuilder<PredefinedDictionaryList, PredefinedDictionaryList,
-      QAfterFilterCondition> vocabLinksIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'vocabLinks', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<PredefinedDictionaryList, PredefinedDictionaryList,
-      QAfterFilterCondition> vocabLinksIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'vocabLinks', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<PredefinedDictionaryList, PredefinedDictionaryList,
-      QAfterFilterCondition> vocabLinksLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'vocabLinks', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<PredefinedDictionaryList, PredefinedDictionaryList,
-      QAfterFilterCondition> vocabLinksLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'vocabLinks', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<PredefinedDictionaryList, PredefinedDictionaryList,
-      QAfterFilterCondition> vocabLinksLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'vocabLinks', lower, includeLower, upper, includeUpper);
-    });
-  }
-
-  QueryBuilder<PredefinedDictionaryList, PredefinedDictionaryList,
-      QAfterFilterCondition> kanjiLinks(FilterQuery<Kanji> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'kanjiLinks');
-    });
-  }
-
-  QueryBuilder<PredefinedDictionaryList, PredefinedDictionaryList,
-      QAfterFilterCondition> kanjiLinksLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'kanjiLinks', length, true, length, true);
-    });
-  }
-
-  QueryBuilder<PredefinedDictionaryList, PredefinedDictionaryList,
-      QAfterFilterCondition> kanjiLinksIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'kanjiLinks', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<PredefinedDictionaryList, PredefinedDictionaryList,
-      QAfterFilterCondition> kanjiLinksIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'kanjiLinks', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<PredefinedDictionaryList, PredefinedDictionaryList,
-      QAfterFilterCondition> kanjiLinksLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'kanjiLinks', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<PredefinedDictionaryList, PredefinedDictionaryList,
-      QAfterFilterCondition> kanjiLinksLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'kanjiLinks', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<PredefinedDictionaryList, PredefinedDictionaryList,
-      QAfterFilterCondition> kanjiLinksLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'kanjiLinks', lower, includeLower, upper, includeUpper);
-    });
-  }
-}
+    PredefinedDictionaryList, PredefinedDictionaryList, QFilterCondition> {}
 
 extension PredefinedDictionaryListQuerySortBy on QueryBuilder<
     PredefinedDictionaryList, PredefinedDictionaryList, QSortBy> {
