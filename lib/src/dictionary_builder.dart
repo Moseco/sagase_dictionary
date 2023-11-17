@@ -1732,7 +1732,7 @@ class DictionaryBuilder {
       switch (element.name.local) {
         case 'grade':
           int grade = int.parse(element.text);
-          if (grade <= 6) kanji.grade = grade;
+          if (grade <= 8) kanji.grade = grade;
           break;
         case 'stroke_count':
           strokeCount ??= int.parse(element.text);

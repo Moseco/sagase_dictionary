@@ -11,6 +11,10 @@ class Kanji extends DictionaryItem {
   @Index()
   late String radical;
   List<String>? components;
+
+  // Grade value meaning
+  //  1-6: learn in that grade
+  //  8: learn in grades 7-9
   byte grade = 255;
   late byte strokeCount;
   int? frequency;

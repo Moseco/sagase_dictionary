@@ -609,7 +609,7 @@ void main() {
       expect(kanji1.components!.length, 2);
       expect(kanji1.components![0], '一');
       expect(kanji1.components![1], '口');
-      expect(kanji1.grade, 255);
+      expect(kanji1.grade, 8);
       expect(kanji1.strokeCount, 7);
       expect(kanji1.frequency, 1509);
       expect(kanji1.jlpt, 1);
