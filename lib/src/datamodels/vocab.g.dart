@@ -6912,10 +6912,10 @@ const VocabReferenceSchema = Schema(
   name: r'VocabReference',
   id: 7886090632161590785,
   properties: {
-    r'id': PropertySchema(
+    r'ids': PropertySchema(
       id: 0,
-      name: r'id',
-      type: IsarType.long,
+      name: r'ids',
+      type: IsarType.longList,
     ),
     r'text': PropertySchema(
       id: 1,
@@ -6935,6 +6935,12 @@ int _vocabReferenceEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  {
+    final value = object.ids;
+    if (value != null) {
+      bytesCount += 3 + value.length * 8;
+    }
+  }
   bytesCount += 3 + object.text.length * 3;
   return bytesCount;
 }
@@ -6945,7 +6951,7 @@ void _vocabReferenceSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.id);
+  writer.writeLongList(offsets[0], object.ids);
   writer.writeString(offsets[1], object.text);
 }
 
@@ -6956,7 +6962,7 @@ VocabReference _vocabReferenceDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = VocabReference();
-  object.id = reader.readLongOrNull(offsets[0]);
+  object.ids = reader.readLongList(offsets[0]);
   object.text = reader.readString(offsets[1]);
   return object;
 }
@@ -6969,7 +6975,7 @@ P _vocabReferenceDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readLongList(offset)) as P;
     case 1:
       return (reader.readString(offset)) as P;
     default:
@@ -6980,75 +6986,165 @@ P _vocabReferenceDeserializeProp<P>(
 extension VocabReferenceQueryFilter
     on QueryBuilder<VocabReference, VocabReference, QFilterCondition> {
   QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
-      idIsNull() {
+      idsIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'id',
+        property: r'ids',
       ));
     });
   }
 
   QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
-      idIsNotNull() {
+      idsIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'id',
+        property: r'ids',
       ));
     });
   }
 
-  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition> idEqualTo(
-      int? value) {
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      idsElementEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'id',
+        property: r'ids',
         value: value,
       ));
     });
   }
 
   QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
-      idGreaterThan(
-    int? value, {
+      idsElementGreaterThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'id',
+        property: r'ids',
         value: value,
       ));
     });
   }
 
   QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
-      idLessThan(
-    int? value, {
+      idsElementLessThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'id',
+        property: r'ids',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      idsElementBetween(
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'id',
+        property: r'ids',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      idsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'ids',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      idsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'ids',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      idsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'ids',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      idsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'ids',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      idsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'ids',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VocabReference, VocabReference, QAfterFilterCondition>
+      idsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'ids',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 

@@ -94,7 +94,7 @@ class LoanWordInfo {
 
 @embedded
 class VocabReference {
-  int? id;
+  List<int>? ids;
   late String text;
 }
 

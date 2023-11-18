@@ -421,19 +421,31 @@ class DictionaryBuilder {
                         .toHiragana(split[1].toLowerCase().romajiToHalfWidth()))
                     .findAll();
               }
+              result.sort(_compareVocab);
 
-              if (result.length == 1) {
-                crossReference.id = result[0].id;
-              } else if (_kanaKit.isKana(split[0])) {
-                // If only kana given, try to filter down to one
-                for (int i = 0; i < result.length; i++) {
-                  if (result[i].kanjiReadingPairs[0].kanjiWritings != null &&
-                      !result[i].isUsuallyKanaAlone()) {
-                    result.removeAt(i--);
+              if (result.isEmpty) {
+                continue;
+              } else if (result.length == 1) {
+                crossReference.ids = [result[0].id];
+              } else {
+                List<Vocab> filtered = List.from(result);
+
+                // If only kana given, try to filter
+                if (_kanaKit.isKana(split[0])) {
+                  for (int i = 0; i < filtered.length; i++) {
+                    if (filtered[i].kanjiReadingPairs[0].kanjiWritings !=
+                            null &&
+                        !filtered[i].isUsuallyKanaAlone()) {
+                      filtered.removeAt(i--);
+                    }
                   }
                 }
 
-                if (result.length == 1) crossReference.id = result[0].id;
+                if (filtered.isNotEmpty) {
+                  crossReference.ids = filtered.map((e) => e.id).toList();
+                } else {
+                  crossReference.ids = result.map((e) => e.id).toList();
+                }
               }
             }
           }
@@ -475,19 +487,31 @@ class DictionaryBuilder {
                         .toHiragana(split[1].toLowerCase().romajiToHalfWidth()))
                     .findAll();
               }
+              result.sort(_compareVocab);
 
-              if (result.length == 1) {
-                antonym.id = result[0].id;
-              } else if (_kanaKit.isKana(split[0])) {
+              if (result.isEmpty) {
+                continue;
+              } else if (result.length == 1) {
+                antonym.ids = [result[0].id];
+              } else {
+                List<Vocab> filtered = List.from(result);
+
                 // If only kana given, try to filter down to one
-                for (int i = 0; i < result.length; i++) {
-                  if (result[i].kanjiReadingPairs[0].kanjiWritings != null &&
-                      !result[i].isUsuallyKanaAlone()) {
-                    result.removeAt(i--);
+                if (_kanaKit.isKana(split[0])) {
+                  for (int i = 0; i < filtered.length; i++) {
+                    if (filtered[i].kanjiReadingPairs[0].kanjiWritings !=
+                            null &&
+                        !filtered[i].isUsuallyKanaAlone()) {
+                      filtered.removeAt(i--);
+                    }
                   }
                 }
 
-                if (result.length == 1) antonym.id = result[0].id;
+                if (filtered.isNotEmpty) {
+                  antonym.ids = filtered.map((e) => e.id).toList();
+                } else {
+                  antonym.ids = result.map((e) => e.id).toList();
+                }
               }
             }
           }
@@ -1478,6 +1502,16 @@ class DictionaryBuilder {
     }
   }
 
+  // Function to be used with list.sort
+  // Compare by frequency score and commonness
+  // b - a so that the list will be sorted from highest to lowest
+  static int _compareVocab(Vocab a, Vocab b) {
+    return b.frequencyScore +
+        (b.commonWord ? 1 : 0) -
+        a.frequencyScore -
+        (a.commonWord ? 1 : 0);
+  }
+
   // Creates the radical database from the radical json
   @visibleForTesting
   static Future<void> createRadicalDictionary(
@@ -1581,11 +1615,7 @@ class DictionaryBuilder {
           .filter()
           .japaneseTextIndexElementContains(kanji.kanji)
           .findAll())
-        ..sort((a, b) =>
-            b.frequencyScore +
-            (b.commonWord ? 1 : 0) -
-            a.frequencyScore -
-            (a.commonWord ? 1 : 0));
+        ..sort(_compareVocab);
 
       if (vocabList.isNotEmpty) {
         List<int> onlyKanji = [];

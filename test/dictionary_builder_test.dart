@@ -244,7 +244,7 @@ void main() {
       expect(vocab3.definitions[0].examples![0].english,
           'Can I go swimming, Mother?');
       expect(vocab3.definitions[0].crossReferences!.length, 1);
-      expect(vocab3.definitions[0].crossReferences![0].id, null);
+      expect(vocab3.definitions[0].crossReferences![0].ids, null);
       expect(vocab3.definitions[0].crossReferences![0].text, '来る');
       expect(vocab3.definitions[0].antonyms, null);
       // Definition 2
@@ -259,7 +259,7 @@ void main() {
       expect(vocab3.definitions[1].examples![0].english,
           'We\'ll have to try and make the best of it.');
       expect(vocab3.definitions[1].crossReferences!.length, 1);
-      expect(vocab3.definitions[1].crossReferences![0].id, 1310500);
+      expect(vocab3.definitions[1].crossReferences![0].ids, [1310500]);
       expect(vocab3.definitions[1].crossReferences![0].text, '旨く行く');
       expect(vocab3.definitions[1].antonyms, null);
       // Definition 3
@@ -351,7 +351,7 @@ void main() {
       expect(vocab4.definitions[0].examples![0].english,
           'Hmm. I have a feeling I\'m going to get lost whichever road I take.');
       expect(vocab4.definitions[0].crossReferences!.length, 1);
-      expect(vocab4.definitions[0].crossReferences![0].id, null);
+      expect(vocab4.definitions[0].crossReferences![0].ids, null);
       expect(vocab4.definitions[0].crossReferences![0].text, 'うん');
       expect(vocab4.definitions[0].antonyms, null);
       // Definition 2
@@ -371,7 +371,7 @@ void main() {
       expect(vocab4.definitions[2].definition, 'oof');
       expect(vocab4.definitions[2].pos, null);
       expect(vocab4.definitions[2].crossReferences!.length, 1);
-      expect(vocab4.definitions[2].crossReferences![0].id, null);
+      expect(vocab4.definitions[2].crossReferences![0].ids, null);
       expect(vocab4.definitions[2].crossReferences![0].text, 'うん');
       expect(vocab4.definitions[2].antonyms, null);
       // Japanese text index
@@ -541,7 +541,7 @@ void main() {
       final vocab9 = await isar.vocabs.get(1310840);
       expect(vocab9!.definitions[0].crossReferences, null);
       expect(vocab9.definitions[0].antonyms!.length, 1);
-      expect(vocab9.definitions[0].antonyms![0].id, null);
+      expect(vocab9.definitions[0].antonyms![0].ids, null);
       expect(vocab9.definitions[0].antonyms![0].text, '活語');
     });
 
