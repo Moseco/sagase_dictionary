@@ -10,15 +10,15 @@ dependencies:
   path: ^1.8.3
   isar: ^3.1.0+1
   xml: ^6.4.2
-  meta: ^1.9.1
-  archive: ^3.4.2
+  meta: ^1.10.0
+  archive: ^3.4.9
   kana_kit: # TODO change to main one after merge
     git:
       url: https://github.com/Moseco/kana_kit
 
 dev_dependencies:
-  lints: ^2.1.1
-  test: ^1.24.6
+  lints: ^3.0.0
+  test: ^1.24.9
 
   build_runner: any
   isar_generator: any

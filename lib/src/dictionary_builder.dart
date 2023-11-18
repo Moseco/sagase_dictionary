@@ -112,7 +112,7 @@ class DictionaryBuilder {
       for (var vocabElement in rawVocabItem.childElements) {
         switch (vocabElement.name.local) {
           case 'ent_seq':
-            vocab.id = int.parse(vocabElement.text);
+            vocab.id = int.parse(vocabElement.innerText);
             break;
           case 'k_ele':
             final pair = KanjiReadingPair()
@@ -531,15 +531,15 @@ class DictionaryBuilder {
     for (var kanjiElement in elements) {
       switch (kanjiElement.name.local) {
         case 'keb':
-          kanjiWriting.kanji = kanjiElement.text;
+          kanjiWriting.kanji = kanjiElement.innerText;
           break;
         case 'ke_inf':
-          final kanjiInfo = _handleKanjiInfo(kanjiElement.text);
+          final kanjiInfo = _handleKanjiInfo(kanjiElement.innerText);
           kanjiWriting.info ??= [];
           kanjiWriting.info!.add(kanjiInfo!);
           break;
         case 'ke_pri':
-          _handleVocabPriorityInfo(kanjiElement.text, vocab);
+          _handleVocabPriorityInfo(kanjiElement.innerText, vocab);
           break;
       }
     }
@@ -591,21 +591,21 @@ class DictionaryBuilder {
     for (var readingElement in elements) {
       switch (readingElement.name.local) {
         case 'reb':
-          reading.reading = readingElement.text;
+          reading.reading = readingElement.innerText;
           break;
         case 're_nokanji':
           // If present, represents that the reading isn't fully associated with the kanji
           break;
         case 're_restr':
-          associatedKanjiList.add(readingElement.text);
+          associatedKanjiList.add(readingElement.innerText);
           break;
         case 're_inf':
-          final readingInfo = _handleReadingInfo(readingElement.text);
+          final readingInfo = _handleReadingInfo(readingElement.innerText);
           reading.info ??= [];
           reading.info!.add(readingInfo!);
           break;
         case 're_pri':
-          _handleVocabPriorityInfo(readingElement.text, vocab);
+          _handleVocabPriorityInfo(readingElement.innerText, vocab);
           break;
       }
     }
@@ -668,48 +668,48 @@ class DictionaryBuilder {
       switch (senseElement.name.local) {
         case 'stagk':
           appliesTo ??= [];
-          appliesTo.add(senseElement.text);
+          appliesTo.add(senseElement.innerText);
           break;
         case 'stagr':
           appliesTo ??= [];
-          appliesTo.add(senseElement.text);
+          appliesTo.add(senseElement.innerText);
           break;
         case 'pos':
           partsOfSpeech ??= [];
-          partsOfSpeech.add(_handlePartOfSpeechElement(senseElement.text));
+          partsOfSpeech.add(_handlePartOfSpeechElement(senseElement.innerText));
           break;
         case 'xref':
           crossReferences ??= [];
-          crossReferences.add(VocabReference()..text = senseElement.text);
+          crossReferences.add(VocabReference()..text = senseElement.innerText);
           break;
         case 'ant':
           antonyms ??= [];
-          antonyms.add(VocabReference()..text = senseElement.text);
+          antonyms.add(VocabReference()..text = senseElement.innerText);
           break;
         case 'field':
-          final field = _handleFieldElement(senseElement.text);
+          final field = _handleFieldElement(senseElement.innerText);
           fields ??= [];
           fields.add(field!);
           break;
         case 'misc':
-          final misc = _handleMiscElement(senseElement.text);
+          final misc = _handleMiscElement(senseElement.innerText);
           miscInfo ??= [];
           miscInfo.add(misc!);
           break;
         case 's_inf':
-          additionalInfo = senseElement.text;
+          additionalInfo = senseElement.innerText;
           break;
         case 'lsource':
           loanWordInfo ??= LoanWordInfo();
           _handleLanguageSourceElement(loanWordInfo, senseElement);
           break;
         case 'dial':
-          final dialect = _handleDialectElement(senseElement.text);
+          final dialect = _handleDialectElement(senseElement.innerText);
           dialects ??= [];
           dialects.add(dialect!);
           break;
         case 'gloss':
-          definitions.add(senseElement.text);
+          definitions.add(senseElement.innerText);
           break;
         case 'example':
           examples ??= [];
@@ -750,9 +750,9 @@ class DictionaryBuilder {
     for (var element in xmlElement.childElements) {
       if (element.name.local == 'ex_sent') {
         if (element.getAttribute('xml:lang') == 'jpn') {
-          japaneseText = element.text;
+          japaneseText = element.innerText;
         } else {
-          englishText = element.text;
+          englishText = element.innerText;
         }
       }
     }
@@ -1582,8 +1582,8 @@ class DictionaryBuilder {
       for (var kanjiElement in rawKanjiItem.childElements) {
         switch (kanjiElement.name.local) {
           case 'literal':
-            kanji.id = kanjiElement.text.kanjiCodePoint();
-            kanji.kanji = kanjiElement.text;
+            kanji.id = kanjiElement.innerText.kanjiCodePoint();
+            kanji.kanji = kanjiElement.innerText;
             break;
           case 'codepoint':
             // Kanji codepoint
@@ -1744,7 +1744,7 @@ class DictionaryBuilder {
       if (element.getAttribute('rad_type') == 'classical') {
         kanji.radical = (await isar.kanjiRadicals
                 .filter()
-                .kangxiIdEqualTo(int.parse(element.text))
+                .kangxiIdEqualTo(int.parse(element.innerText))
                 .findFirst())!
             .radical;
         return;
@@ -1761,23 +1761,23 @@ class DictionaryBuilder {
     for (var element in elements) {
       switch (element.name.local) {
         case 'grade':
-          int grade = int.parse(element.text);
+          int grade = int.parse(element.innerText);
           if (grade <= 8) kanji.grade = grade;
           break;
         case 'stroke_count':
-          strokeCount ??= int.parse(element.text);
+          strokeCount ??= int.parse(element.innerText);
           break;
         case 'variant':
           // Variant of the current kanji
           break;
         case 'freq':
-          kanji.frequency = int.parse(element.text);
+          kanji.frequency = int.parse(element.innerText);
           break;
         case 'rad_name':
           // This kanji is itself a radical
           break;
         case 'jlpt':
-          kanji.jlpt = int.parse(element.text);
+          kanji.jlpt = int.parse(element.innerText);
           break;
       }
     }
@@ -1797,7 +1797,7 @@ class DictionaryBuilder {
           _handleKanjiRmgroupElements(element.childElements, kanji);
           break;
         case 'nanori':
-          nanori.add(element.text);
+          nanori.add(element.innerText);
           break;
       }
     }
@@ -1817,13 +1817,13 @@ class DictionaryBuilder {
       switch (element.name.local) {
         case 'reading':
           if (element.getAttribute('r_type') == 'ja_on') {
-            onReadings.add(element.text);
+            onReadings.add(element.innerText);
           } else if (element.getAttribute('r_type') == 'ja_kun') {
-            kunReadings.add(element.text);
+            kunReadings.add(element.innerText);
           }
           break;
         case 'meaning':
-          if (element.attributes.isEmpty) meanings.add(element.text);
+          if (element.attributes.isEmpty) meanings.add(element.innerText);
           break;
       }
     }
