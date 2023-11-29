@@ -1,5 +1,5 @@
 class SagaseDictionaryConstants {
-  static const int dictionaryVersion = 12;
+  static const int dictionaryVersion = 13;
 
   static const int dictionaryListIdJouyou = 0;
   static const int dictionaryListIdJlptVocabN1 = 1;
