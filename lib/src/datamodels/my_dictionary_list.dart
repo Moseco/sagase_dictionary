@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:isar/isar.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_list.dart';
 import 'package:sagase_dictionary/src/utils/constants.dart';
@@ -56,5 +58,35 @@ class MyDictionaryList extends DictionaryList {
         ..kanji = map[SagaseDictionaryConstants.backupMyDictionaryListKanji]
             .cast<int>();
     }
+  }
+
+  String toExportJson() {
+    return jsonEncode(
+      {
+        SagaseDictionaryConstants.exportType:
+            SagaseDictionaryConstants.exportTypeMyList,
+        SagaseDictionaryConstants.exportMyListName: name,
+        SagaseDictionaryConstants.exportMyListVocab: vocab,
+        SagaseDictionaryConstants.exportMyListKanji: kanji,
+      },
+    );
+  }
+
+  static MyDictionaryList? fromExportJson(String json) {
+    final map = jsonDecode(json);
+
+    // Verify contents
+    if (map[SagaseDictionaryConstants.exportType] !=
+            SagaseDictionaryConstants.exportTypeMyList ||
+        map[SagaseDictionaryConstants.exportMyListName] == null ||
+        map[SagaseDictionaryConstants.exportMyListVocab] == null ||
+        map[SagaseDictionaryConstants.exportMyListKanji] == null) {
+      return null;
+    }
+
+    return MyDictionaryList()
+      ..name = map[SagaseDictionaryConstants.exportMyListName]
+      ..vocab = map[SagaseDictionaryConstants.exportMyListVocab].cast<int>()
+      ..kanji = map[SagaseDictionaryConstants.exportMyListKanji].cast<int>();
   }
 }

@@ -80,4 +80,10 @@ class SagaseDictionaryConstants {
   static const backupSpacedRepetitionDataTotalAnswers = 'total_answers';
   static const backupSpacedRepetitionDataTotalWrongAnswers =
       'total_wrong_answers';
+
+  static const exportType = 'type';
+  static const exportTypeMyList = 'my_dictionary_list';
+  static const exportMyListName = 'name';
+  static const exportMyListVocab = 'vocab';
+  static const exportMyListKanji = 'kanji';
 }

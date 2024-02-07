@@ -55,5 +55,35 @@ void main() {
       expect(newMyList.kanji[0], 'a'.kanjiCodePoint());
       expect(newMyList.kanji[1], 'b'.kanjiCodePoint());
     });
+
+    test('toExportJson and fromExportJson', () {
+      final myList = MyDictionaryList()
+        ..id = 1
+        ..name = 'list1'
+        ..timestamp = DateTime.now()
+        ..vocab = [0, 1]
+        ..kanji = ['a'.kanjiCodePoint(), 'b'.kanjiCodePoint()];
+
+      String json = myList.toExportJson();
+
+      expect(
+        json,
+        '{"type":"my_dictionary_list","name":"list1","vocab":[0,1],"kanji":[97,98]}',
+      );
+
+      final newMyList = MyDictionaryList.fromExportJson(json);
+
+      expect(newMyList!.name, 'list1');
+      expect(newMyList.vocab, [0, 1]);
+      expect(newMyList.kanji, ['a'.kanjiCodePoint(), 'b'.kanjiCodePoint()]);
+    });
+
+    test('fromExportJson with invalid input', () {
+      String json = '{"name":"list1","vocab":[0,1],"kanji":[97,98]}';
+
+      final myList = MyDictionaryList.fromExportJson(json);
+
+      expect(myList, null);
+    });
   });
 }
