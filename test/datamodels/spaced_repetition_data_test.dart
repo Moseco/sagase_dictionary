@@ -33,8 +33,8 @@ void main() {
       expect(data.initialCorrectCount, 2);
     });
 
-    test('Backup', () {
-      var data = SpacedRepetitionData()
+    test('toBackupJson and fromBackupJson', () {
+      final data = SpacedRepetitionData()
         ..interval = 1
         ..repetitions = 2
         ..easeFactor = 3
@@ -42,34 +42,16 @@ void main() {
         ..totalAnswers = 5
         ..totalWrongAnswers = 4;
 
-      String json = data.toBackupJson(vocabId: 10);
-      expect(json, '''{
-      "vocab_id": 10,
-      "interval": 1,
-      "repetitions": 2,
-      "ease_factor": 3.0,
-      "due_date": 2022,
-      "total_answers": 5,
-      "total_wrong_answers": 4
-}''');
-      String json2 = data.toBackupJson(kanjiId: 20);
-      expect(json2, '''{
-      "kanji_id": 20,
-      "interval": 1,
-      "repetitions": 2,
-      "ease_factor": 3.0,
-      "due_date": 2022,
-      "total_answers": 5,
-      "total_wrong_answers": 4
-}''');
+      // Backup and import
+      final newData =
+          SpacedRepetitionData.fromBackupJson(jsonDecode(data.toBackupJson()));
 
-      data = SpacedRepetitionData.fromBackupJson(jsonDecode(json));
-      expect(data.interval, 1);
-      expect(data.repetitions, 2);
-      expect(data.easeFactor, 3);
-      expect(data.dueDate, 2022);
-      expect(data.totalAnswers, 5);
-      expect(data.totalWrongAnswers, 4);
+      expect(newData.interval, 1);
+      expect(newData.repetitions, 2);
+      expect(newData.easeFactor, 3);
+      expect(newData.dueDate, 2022);
+      expect(newData.totalAnswers, 5);
+      expect(newData.totalWrongAnswers, 4);
     });
   });
 }

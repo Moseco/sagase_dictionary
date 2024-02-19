@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:isar/isar.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_list.dart';
 import 'package:sagase_dictionary/src/utils/constants.dart';
-import 'package:sagase_dictionary/src/utils/string_utils.dart';
 
 part 'my_dictionary_list.g.dart';
 
@@ -22,45 +21,33 @@ class MyDictionaryList extends DictionaryList {
   List<int> getKanji() => kanji;
 
   String toBackupJson() {
-    return '''{
-      "${SagaseDictionaryConstants.backupMyDictionaryListId}": $id,
-      "${SagaseDictionaryConstants.backupMyDictionaryListName}": "$name",
-      "${SagaseDictionaryConstants.backupMyDictionaryListTimestamp}": ${timestamp.millisecondsSinceEpoch},
-      "${SagaseDictionaryConstants.backupMyDictionaryListVocab}": $vocab,
-      "${SagaseDictionaryConstants.backupMyDictionaryListKanji}": $kanji
-}''';
+    return jsonEncode(
+      {
+        SagaseDictionaryConstants.backupMyDictionaryListId: id,
+        SagaseDictionaryConstants.backupMyDictionaryListName: name,
+        SagaseDictionaryConstants.backupMyDictionaryListTimestamp:
+            timestamp.millisecondsSinceEpoch,
+        SagaseDictionaryConstants.backupMyDictionaryListVocab: vocab,
+        SagaseDictionaryConstants.backupMyDictionaryListKanji: kanji
+      },
+    );
   }
 
-  static MyDictionaryList fromBackupJson(
-    Map<String, dynamic> map,
-    int version,
-  ) {
-    if (version <= 11) {
-      return MyDictionaryList()
-        ..id = map[SagaseDictionaryConstants.backupMyDictionaryListId]
-        ..name = map[SagaseDictionaryConstants.backupMyDictionaryListName]
-        ..timestamp = DateTime.fromMillisecondsSinceEpoch(
-            map[SagaseDictionaryConstants.backupMyDictionaryListTimestamp])
-        ..vocab = map[SagaseDictionaryConstants.backupMyDictionaryListVocab]
-            .cast<int>()
-        ..kanji = map[SagaseDictionaryConstants.backupMyDictionaryListKanji]
-            .map((e) => (e as String).kanjiCodePoint())
-            .toList()
-            .cast<int>();
-    } else {
-      return MyDictionaryList()
-        ..id = map[SagaseDictionaryConstants.backupMyDictionaryListId]
-        ..name = map[SagaseDictionaryConstants.backupMyDictionaryListName]
-        ..timestamp = DateTime.fromMillisecondsSinceEpoch(
-            map[SagaseDictionaryConstants.backupMyDictionaryListTimestamp])
-        ..vocab = map[SagaseDictionaryConstants.backupMyDictionaryListVocab]
-            .cast<int>()
-        ..kanji = map[SagaseDictionaryConstants.backupMyDictionaryListKanji]
-            .cast<int>();
-    }
+  static MyDictionaryList fromBackupJson(String json) {
+    final map = jsonDecode(json);
+
+    return MyDictionaryList()
+      ..id = map[SagaseDictionaryConstants.backupMyDictionaryListId]
+      ..name = map[SagaseDictionaryConstants.backupMyDictionaryListName]
+      ..timestamp = DateTime.fromMillisecondsSinceEpoch(
+          map[SagaseDictionaryConstants.backupMyDictionaryListTimestamp])
+      ..vocab =
+          map[SagaseDictionaryConstants.backupMyDictionaryListVocab].cast<int>()
+      ..kanji = map[SagaseDictionaryConstants.backupMyDictionaryListKanji]
+          .cast<int>();
   }
 
-  String toExportJson() {
+  String toShareJson() {
     return jsonEncode(
       {
         SagaseDictionaryConstants.exportType:
@@ -72,7 +59,7 @@ class MyDictionaryList extends DictionaryList {
     );
   }
 
-  static MyDictionaryList? fromExportJson(String json) {
+  static MyDictionaryList? fromShareJson(String json) {
     final map = jsonDecode(json);
 
     // Verify contents

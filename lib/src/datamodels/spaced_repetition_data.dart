@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:isar/isar.dart';
@@ -32,18 +33,21 @@ class SpacedRepetitionData {
       ..initialCorrectCount = max(0, (initialCorrectCount + change));
   }
 
-  String toBackupJson({int? vocabId, int? kanjiId}) {
-    assert(vocabId != null || kanjiId != null);
-
-    return '''{
-      ${vocabId != null ? '"${SagaseDictionaryConstants.backupSpacedRepetitionDataVocabId}": $vocabId' : '"${SagaseDictionaryConstants.backupSpacedRepetitionDataKanjiId}": $kanjiId'},
-      "${SagaseDictionaryConstants.backupSpacedRepetitionDataInterval}": $interval,
-      "${SagaseDictionaryConstants.backupSpacedRepetitionDataRepetitions}": $repetitions,
-      "${SagaseDictionaryConstants.backupSpacedRepetitionDataEaseFactor}": $easeFactor,
-      "${SagaseDictionaryConstants.backupSpacedRepetitionDataDueDate}": $dueDate,
-      "${SagaseDictionaryConstants.backupSpacedRepetitionDataTotalAnswers}": $totalAnswers,
-      "${SagaseDictionaryConstants.backupSpacedRepetitionDataTotalWrongAnswers}": $totalWrongAnswers
-}''';
+  String toBackupJson() {
+    return jsonEncode(
+      {
+        SagaseDictionaryConstants.backupSpacedRepetitionDataInterval: interval,
+        SagaseDictionaryConstants.backupSpacedRepetitionDataRepetitions:
+            repetitions,
+        SagaseDictionaryConstants.backupSpacedRepetitionDataEaseFactor:
+            easeFactor,
+        SagaseDictionaryConstants.backupSpacedRepetitionDataDueDate: dueDate,
+        SagaseDictionaryConstants.backupSpacedRepetitionDataTotalAnswers:
+            totalAnswers,
+        SagaseDictionaryConstants.backupSpacedRepetitionDataTotalWrongAnswers:
+            totalWrongAnswers
+      },
+    );
   }
 
   static SpacedRepetitionData fromBackupJson(Map<String, dynamic> map) {

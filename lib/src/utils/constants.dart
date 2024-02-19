@@ -70,8 +70,6 @@ class SagaseDictionaryConstants {
   static const backupMyDictionaryListTimestamp = 'timestamp';
   static const backupMyDictionaryListVocab = 'vocab';
   static const backupMyDictionaryListKanji = 'kanji';
-  static const backupSpacedRepetitionDataVocabId = 'vocab_id';
-  static const backupSpacedRepetitionDataKanjiId = 'kanji_id';
   static const backupSpacedRepetitionDataKanji = 'kanji';
   static const backupSpacedRepetitionDataInterval = 'interval';
   static const backupSpacedRepetitionDataRepetitions = 'repetitions';
@@ -82,6 +80,7 @@ class SagaseDictionaryConstants {
       'total_wrong_answers';
 
   static const exportType = 'type';
+  static const exportTypeBackup = 'backup';
   static const exportTypeMyList = 'my_dictionary_list';
   static const exportMyListName = 'name';
   static const exportMyListVocab = 'vocab';
