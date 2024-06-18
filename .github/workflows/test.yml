@@ -1,0 +1,35 @@
+name: Test
+
+on:
+  pull_request:
+    types: 
+      - opened
+      - synchronize
+    branches: 
+      - 'master'
+      - 'dev'
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Flutter set up
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - run: flutter --version
+
+      - name: Dart get packages
+        run: dart pub get
+
+      - name: Dart code generation
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Dart test
+        run: dart test
