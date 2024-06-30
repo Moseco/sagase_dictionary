@@ -1045,211 +1045,256 @@ const shortKanjidic2 = '''
 <nanori>わ</nanori>
 </reading_meaning>
 </character>
-</kanjidic2>
-''';
-
-// Excerpts from the EDRDG dictionary file. See README for details.
-const compoundTestJMdict = '''
-<?xml version="1.0" encoding="UTF-8"?>
-<JMdict>
-<entry>
-<ent_seq>1593670</ent_seq>
-<k_ele>
-<keb>探す</keb>
-<ke_pri>ichi1</ke_pri>
-<ke_pri>news1</ke_pri>
-<ke_pri>nf16</ke_pri>
-</k_ele>
-<k_ele>
-<keb>捜す</keb>
-<ke_pri>ichi1</ke_pri>
-<ke_pri>news2</ke_pri>
-<ke_pri>nf36</ke_pri>
-</k_ele>
-<r_ele>
-<reb>さがす</reb>
-<re_pri>ichi1</re_pri>
-<re_pri>news1</re_pri>
-<re_pri>nf16</re_pri>
-</r_ele>
-<sense>
-<pos>&v5s;</pos>
-<pos>&vt;</pos>
-<s_inf>esp. 探す for something desired and 捜す for something lost</s_inf>
-<gloss>to search for</gloss>
-<gloss>to look for</gloss>
-<gloss>to hunt for</gloss>
-<gloss>to seek</gloss>
-<example>
-<ex_srce exsrc_type="tat">155776</ex_srce>
-<ex_text>探した</ex_text>
-<ex_sent xml:lang="jpn">私は寝る場所を探した。</ex_sent>
-<ex_sent xml:lang="eng">I looked for a place in which to sleep.</ex_sent>
-</example>
-<example>
-<ex_srce exsrc_type="tat">176188</ex_srce>
-<ex_text>捜した</ex_text>
-<ex_sent xml:lang="jpn">警察は行方不明の少年を捜した。</ex_sent>
-<ex_sent xml:lang="eng">The police searched for the lost boy.</ex_sent>
-</example>
-</sense>
-<sense>
-<pos>&v5s;</pos>
-<pos>&vt;</pos>
-<gloss>to search (a house, pocket, etc.)</gloss>
-<gloss>to search through</gloss>
-<gloss>to rummage in (e.g. a drawer)</gloss>
-<gloss>to fish around</gloss>
-<example>
-<ex_srce exsrc_type="tat">175060</ex_srce>
-<ex_text>捜した</ex_text>
-<ex_sent xml:lang="jpn">鍵を求めて机の中を捜した。</ex_sent>
-<ex_sent xml:lang="eng">I searched the drawer for the key.</ex_sent>
-</example>
-</sense>
-</entry>
-<entry>
-<ent_seq>1000220</ent_seq>
-<k_ele>
-<keb>明白</keb>
-<ke_pri>ichi1</ke_pri>
-<ke_pri>news1</ke_pri>
-<ke_pri>nf10</ke_pri>
-</k_ele>
-<r_ele>
-<reb>めいはく</reb>
-<re_pri>ichi1</re_pri>
-<re_pri>news1</re_pri>
-<re_pri>nf10</re_pri>
-</r_ele>
-<sense>
-<pos>&adj-na;</pos>
-<gloss>obvious</gloss>
-<gloss>clear</gloss>
-<gloss>plain</gloss>
-<gloss>evident</gloss>
-<gloss>apparent</gloss>
-<gloss>explicit</gloss>
-<gloss>overt</gloss>
-<example>
-<ex_srce exsrc_type="tat">187608</ex_srce>
-<ex_text>明白</ex_text>
-<ex_sent xml:lang="jpn">何をしなければならないかは明白です。</ex_sent>
-<ex_sent xml:lang="eng">It is clear what must be done.</ex_sent>
-</example>
-</sense>
-</entry>
-<entry>
-<ent_seq>1227150</ent_seq>
-<k_ele>
-<keb>逆探知</keb>
-<ke_pri>news2</ke_pri>
-<ke_pri>nf34</ke_pri>
-</k_ele>
-<r_ele>
-<reb>ぎゃくたんち</reb>
-<re_pri>news2</re_pri>
-<re_pri>nf34</re_pri>
-</r_ele>
-<sense>
-<pos>&n;</pos>
-<pos>&vs;</pos>
-<pos>&vt;</pos>
-<gloss>phone trace</gloss>
-<gloss>detecting the source of a telephone call</gloss>
-</sense>
-</entry>
-</JMdict>
-''';
-
-// Excerpts from the EDRDG dictionary file. See README for details.
-const compoundTestKanjidic2 = '''
-<?xml version="1.0" encoding="UTF-8"?>
-<kanjidic2>
-<header>
-<!-- KANJIDIC 2 - XML format kanji database combining the KANJIDIC
-	and KANJD212 files plus the kanji from JIS X 0213.
--->
-<file_version>4</file_version>
-<database_version>2022-273</database_version>
-<date_of_creation>2022-09-30</date_of_creation>
-</header>
-<!-- Entry for Kanji: 探 -->
+<!-- Entry for Kanji: 働 -->
 <character>
-<literal>探</literal>
+<literal>働</literal>
 <codepoint>
-<cp_value cp_type="ucs">63a2</cp_value>
-<cp_value cp_type="jis208">1-35-21</cp_value>
+<cp_value cp_type="ucs">50cd</cp_value>
+<cp_value cp_type="jis208">1-38-15</cp_value>
 </codepoint>
 <radical>
-<rad_value rad_type="classical">64</rad_value>
+<rad_value rad_type="classical">9</rad_value>
 </radical>
 <misc>
-<grade>6</grade>
-<stroke_count>11</stroke_count>
-<freq>930</freq>
-<jlpt>2</jlpt>
+<grade>4</grade>
+<stroke_count>13</stroke_count>
+<variant var_type="jis208">1-48-30</variant>
+<freq>417</freq>
+<jlpt>3</jlpt>
 </misc>
 <dic_number>
-<dic_ref dr_type="nelson_c">1949</dic_ref>
-<dic_ref dr_type="nelson_n">2211</dic_ref>
-<dic_ref dr_type="halpern_njecd">505</dic_ref>
-<dic_ref dr_type="halpern_kkd">613</dic_ref>
-<dic_ref dr_type="halpern_kkld">374</dic_ref>
-<dic_ref dr_type="halpern_kkld_2ed">466</dic_ref>
-<dic_ref dr_type="heisig">1327</dic_ref>
-<dic_ref dr_type="heisig6">1425</dic_ref>
-<dic_ref dr_type="gakken">1239</dic_ref>
-<dic_ref dr_type="oneill_names">1316</dic_ref>
-<dic_ref dr_type="oneill_kk">1236</dic_ref>
-<dic_ref dr_type="moro" m_vol="5" m_page="0285">12276</dic_ref>
-<dic_ref dr_type="henshall">930</dic_ref>
-<dic_ref dr_type="sh_kk">535</dic_ref>
-<dic_ref dr_type="sh_kk2">544</dic_ref>
-<dic_ref dr_type="jf_cards">578</dic_ref>
-<dic_ref dr_type="henshall3">942</dic_ref>
-<dic_ref dr_type="tutt_cards">927</dic_ref>
-<dic_ref dr_type="kanji_in_context">1258</dic_ref>
-<dic_ref dr_type="kodansha_compact">908</dic_ref>
-<dic_ref dr_type="maniette">1340</dic_ref>
+<dic_ref dr_type="nelson_c">532</dic_ref>
+<dic_ref dr_type="nelson_n">297</dic_ref>
+<dic_ref dr_type="halpern_njecd">153</dic_ref>
+<dic_ref dr_type="halpern_kkd">172</dic_ref>
+<dic_ref dr_type="halpern_kkld">113</dic_ref>
+<dic_ref dr_type="halpern_kkld_2ed">130</dic_ref>
+<dic_ref dr_type="heisig">1678</dic_ref>
+<dic_ref dr_type="heisig6">1809</dic_ref>
+<dic_ref dr_type="gakken">444</dic_ref>
+<dic_ref dr_type="oneill_kk">170</dic_ref>
+<dic_ref dr_type="moro" m_vol="1" m_page="0920">1079</dic_ref>
+<dic_ref dr_type="henshall">558</dic_ref>
+<dic_ref dr_type="sh_kk">232</dic_ref>
+<dic_ref dr_type="sh_kk2">232</dic_ref>
+<dic_ref dr_type="sakade">488</dic_ref>
+<dic_ref dr_type="jf_cards">120</dic_ref>
+<dic_ref dr_type="henshall3">585</dic_ref>
+<dic_ref dr_type="tutt_cards">612</dic_ref>
+<dic_ref dr_type="crowley">137</dic_ref>
+<dic_ref dr_type="kanji_in_context">192</dic_ref>
+<dic_ref dr_type="busy_people">3.15</dic_ref>
+<dic_ref dr_type="kodansha_compact">132</dic_ref>
+<dic_ref dr_type="maniette">1694</dic_ref>
 </dic_number>
 <query_code>
-<q_code qc_type="skip">1-3-8</q_code>
-<q_code qc_type="sh_desc">3c8.16</q_code>
-<q_code qc_type="four_corner">5709.4</q_code>
-<q_code qc_type="deroo">1364</q_code>
+<q_code qc_type="skip">1-2-11</q_code>
+<q_code qc_type="sh_desc">2a11.1</q_code>
+<q_code qc_type="four_corner">2422.7</q_code>
+<q_code qc_type="deroo">2145</q_code>
 </query_code>
 <reading_meaning>
 <rmgroup>
-<reading r_type="pinyin">tan4</reading>
-<reading r_type="pinyin">tan1</reading>
-<reading r_type="korean_r">tam</reading>
-<reading r_type="korean_h">탐</reading>
-<reading r_type="vietnam">Tham</reading>
-<reading r_type="vietnam">Thám</reading>
-<reading r_type="ja_on">タン</reading>
-<reading r_type="ja_kun">さぐ.る</reading>
-<reading r_type="ja_kun">さが.す</reading>
-<meaning>grope</meaning>
-<meaning>search</meaning>
-<meaning>look for</meaning>
-<meaning m_lang="fr">chercher</meaning>
-<meaning m_lang="fr">tâtonner</meaning>
-<meaning m_lang="fr">enquête</meaning>
-<meaning m_lang="es">explorar</meaning>
-<meaning m_lang="es">indagar</meaning>
-<meaning m_lang="es">buscar</meaning>
-<meaning m_lang="es">sondear</meaning>
-<meaning m_lang="pt">tatear</meaning>
-<meaning m_lang="pt">pesquisar</meaning>
-<meaning m_lang="pt">procurar</meaning>
+<reading r_type="pinyin">dong4</reading>
+<reading r_type="korean_r">dong</reading>
+<reading r_type="korean_h">동</reading>
+<reading r_type="vietnam">Động</reading>
+<reading r_type="ja_on">ドウ</reading>
+<reading r_type="ja_kun">はたら.く</reading>
+<meaning>work</meaning>
+<meaning>(kokuji)</meaning>
+<meaning m_lang="fr">travailler</meaning>
+<meaning m_lang="fr">(kokuji)</meaning>
+<meaning m_lang="es">trabajo</meaning>
+<meaning m_lang="es">trabajar</meaning>
+<meaning m_lang="es">funcionar</meaning>
+<meaning m_lang="es">afectar</meaning>
+<meaning m_lang="pt">trabalho</meaning>
 </rmgroup>
+</reading_meaning>
+</character>
+<!-- Entry for Kanji: 以 -->
+<character>
+<literal>以</literal>
+<codepoint>
+<cp_value cp_type="ucs">4ee5</cp_value>
+<cp_value cp_type="jis208">1-16-42</cp_value>
+</codepoint>
+<radical>
+<rad_value rad_type="classical">9</rad_value>
+</radical>
+<misc>
+<grade>4</grade>
+<stroke_count>5</stroke_count>
+<freq>126</freq>
+<jlpt>3</jlpt>
+</misc>
+<dic_number>
+<dic_ref dr_type="nelson_c">348</dic_ref>
+<dic_ref dr_type="nelson_n">109</dic_ref>
+<dic_ref dr_type="halpern_njecd">41</dic_ref>
+<dic_ref dr_type="halpern_kkd">45</dic_ref>
+<dic_ref dr_type="halpern_kkld">25</dic_ref>
+<dic_ref dr_type="halpern_kkld_2ed">26</dic_ref>
+<dic_ref dr_type="heisig">1028</dic_ref>
+<dic_ref dr_type="heisig6">1105</dic_ref>
+<dic_ref dr_type="gakken">157</dic_ref>
+<dic_ref dr_type="oneill_names">134</dic_ref>
+<dic_ref dr_type="oneill_kk">221</dic_ref>
+<dic_ref dr_type="moro" m_vol="1" m_page="0620">388</dic_ref>
+<dic_ref dr_type="henshall">419</dic_ref>
+<dic_ref dr_type="sh_kk">46</dic_ref>
+<dic_ref dr_type="sh_kk2">46</dic_ref>
+<dic_ref dr_type="sakade">342</dic_ref>
+<dic_ref dr_type="jf_cards">112</dic_ref>
+<dic_ref dr_type="henshall3">443</dic_ref>
+<dic_ref dr_type="tutt_cards">446</dic_ref>
+<dic_ref dr_type="crowley">118</dic_ref>
+<dic_ref dr_type="kanji_in_context">420</dic_ref>
+<dic_ref dr_type="busy_people">3.10</dic_ref>
+<dic_ref dr_type="kodansha_compact">43</dic_ref>
+<dic_ref dr_type="maniette">1037</dic_ref>
+</dic_number>
+<query_code>
+<q_code qc_type="skip">1-2-3</q_code>
+<q_code qc_type="sh_desc">0a5.1</q_code>
+<q_code qc_type="four_corner">2810.0</q_code>
+<q_code qc_type="deroo">1262</q_code>
+<q_code qc_type="skip" skip_misclass="posn">1-3-2</q_code>
+</query_code>
+<reading_meaning>
+<rmgroup>
+<reading r_type="pinyin">yi3</reading>
+<reading r_type="korean_r">i</reading>
+<reading r_type="korean_h">이</reading>
+<reading r_type="vietnam">Dĩ</reading>
+<reading r_type="ja_on">イ</reading>
+<reading r_type="ja_kun">もっ.て</reading>
+<meaning>by means of</meaning>
+<meaning>because</meaning>
+<meaning>in view of</meaning>
+<meaning>compared with</meaning>
+<meaning m_lang="fr">au moyen de</meaning>
+<meaning m_lang="fr">parce que</meaning>
+<meaning m_lang="fr">en vue de</meaning>
+<meaning m_lang="fr">comparé à</meaning>
+<meaning m_lang="es">además de</meaning>
+<meaning m_lang="es">más que</meaning>
+<meaning m_lang="pt">Por meios de</meaning>
+<meaning m_lang="pt">porque</meaning>
+<meaning m_lang="pt">em visão de</meaning>
+<meaning m_lang="pt">comparada com</meaning>
+</rmgroup>
+<nanori>もち</nanori>
+</reading_meaning>
+</character>
+<!-- Entry for Kanji: 行 -->
+<character>
+<literal>行</literal>
+<codepoint>
+<cp_value cp_type="ucs">884c</cp_value>
+<cp_value cp_type="jis208">1-25-52</cp_value>
+</codepoint>
+<radical>
+<rad_value rad_type="classical">144</rad_value>
+</radical>
+<misc>
+<grade>2</grade>
+<stroke_count>6</stroke_count>
+<freq>20</freq>
+<jlpt>4</jlpt>
+</misc>
+<dic_number>
+<dic_ref dr_type="nelson_c">4213</dic_ref>
+<dic_ref dr_type="nelson_n">5419</dic_ref>
+<dic_ref dr_type="halpern_njecd">212</dic_ref>
+<dic_ref dr_type="halpern_kkd">246</dic_ref>
+<dic_ref dr_type="halpern_kkld">157</dic_ref>
+<dic_ref dr_type="halpern_kkld_2ed">187</dic_ref>
+<dic_ref dr_type="heisig">873</dic_ref>
+<dic_ref dr_type="heisig6">938</dic_ref>
+<dic_ref dr_type="gakken">31</dic_ref>
+<dic_ref dr_type="oneill_names">245</dic_ref>
+<dic_ref dr_type="oneill_kk">24</dic_ref>
+<dic_ref dr_type="moro" m_vol="10" m_page="0135">34029</dic_ref>
+<dic_ref dr_type="henshall">118</dic_ref>
+<dic_ref dr_type="sh_kk">68</dic_ref>
+<dic_ref dr_type="sh_kk2">68</dic_ref>
+<dic_ref dr_type="sakade">73</dic_ref>
+<dic_ref dr_type="jf_cards">82</dic_ref>
+<dic_ref dr_type="henshall3">131</dic_ref>
+<dic_ref dr_type="tutt_cards">123</dic_ref>
+<dic_ref dr_type="crowley">18</dic_ref>
+<dic_ref dr_type="kanji_in_context">58</dic_ref>
+<dic_ref dr_type="busy_people">2.4</dic_ref>
+<dic_ref dr_type="kodansha_compact">1613</dic_ref>
+<dic_ref dr_type="maniette">882</dic_ref>
+</dic_number>
+<query_code>
+<q_code qc_type="skip">1-3-3</q_code>
+<q_code qc_type="sh_desc">3i3.1</q_code>
+<q_code qc_type="four_corner">2122.1</q_code>
+<q_code qc_type="deroo">2053</q_code>
+</query_code>
+<reading_meaning>
+<rmgroup>
+<reading r_type="pinyin">xing2</reading>
+<reading r_type="pinyin">hang2</reading>
+<reading r_type="pinyin">hang4</reading>
+<reading r_type="pinyin">xing4</reading>
+<reading r_type="korean_r">haeng</reading>
+<reading r_type="korean_r">hang</reading>
+<reading r_type="korean_h">행</reading>
+<reading r_type="korean_h">항</reading>
+<reading r_type="vietnam">Hành</reading>
+<reading r_type="vietnam">Hạnh</reading>
+<reading r_type="vietnam">Hàng</reading>
+<reading r_type="vietnam">Hạng</reading>
+<reading r_type="ja_on">コウ</reading>
+<reading r_type="ja_on">ギョウ</reading>
+<reading r_type="ja_on">アン</reading>
+<reading r_type="ja_kun">い.く</reading>
+<reading r_type="ja_kun">ゆ.く</reading>
+<reading r_type="ja_kun">-ゆ.き</reading>
+<reading r_type="ja_kun">-ゆき</reading>
+<reading r_type="ja_kun">-い.き</reading>
+<reading r_type="ja_kun">-いき</reading>
+<reading r_type="ja_kun">おこな.う</reading>
+<reading r_type="ja_kun">おこ.なう</reading>
+<meaning>going</meaning>
+<meaning>journey</meaning>
+<meaning>carry out</meaning>
+<meaning>conduct</meaning>
+<meaning>act</meaning>
+<meaning>line</meaning>
+<meaning>row</meaning>
+<meaning>bank</meaning>
+<meaning m_lang="fr">aller</meaning>
+<meaning m_lang="fr">voyage</meaning>
+<meaning m_lang="es">ir</meaning>
+<meaning m_lang="es">fila</meaning>
+<meaning m_lang="es">línea (texto)</meaning>
+<meaning m_lang="es">ocurrencia</meaning>
+<meaning m_lang="es">conducta</meaning>
+<meaning m_lang="es">realizar</meaning>
+<meaning m_lang="es">llevar a cabo</meaning>
+<meaning m_lang="es">ocurrir</meaning>
+<meaning m_lang="pt">ir</meaning>
+<meaning m_lang="pt">viagem</meaning>
+<meaning m_lang="pt">viajar</meaning>
+</rmgroup>
+<nanori>いく</nanori>
+<nanori>なみ</nanori>
+<nanori>なめ</nanori>
+<nanori>みち</nanori>
+<nanori>ゆき</nanori>
+<nanori>ゆく</nanori>
 </reading_meaning>
 </character>
 </kanjidic2>
 ''';
 
-const shortKanjiComponents = '''
+const shortKanjiComponentData = '''
 {
 "亜": ["｜", "一", "口"],
 "悪": ["｜", "一", "口", "心"],
@@ -1304,6 +1349,31 @@ const shortKanjiRadicalData = '''
     "meaning": "two",
     "reading": "ニ"
 },
+"人": {
+    "strokes": 2,
+    "kanjix": 9,
+    "meaning": "person",
+    "reading": "ひと, にんべん, ひとがしら, ひとやね",
+    "importance": 0,
+    "variants": [
+        "亻",
+        "𠆢"
+    ]
+},
+"亻": {
+    "strokes": 2,
+    "meaning": "person",
+    "reading": "ひと, にんべん, ひとがしら, ひとやね",
+    "position": 1,
+    "variant_of": "人"
+},
+"𠆢": {
+    "strokes": 2,
+    "meaning": "person",
+    "reading": "ひと, にんべん, ひとがしら, ひとやね",
+    "position": 0,
+    "variant_of": "人"
+},
 "口": {
     "strokes": 3,
     "kanjix": 30,
@@ -1333,13 +1403,56 @@ const shortKanjiRadicalData = '''
     "meaning": "heart",
     "reading": "こころ, りっしんべん, したごころ",
     "variant_of": "心"
+},
+"行": {
+    "strokes": 6,
+    "kanjix": 144,
+    "meaning": "to go",
+    "reading": "ゆきがまえ, ぎょうがまえ",
+    "position": 4
 }
 }
 ''';
 
-const pitchAccentsTest = '''明白	めいはく	0
+const shortPitchAccentData = '''明白	めいはく	0
 屹度	きっと	0,1
 御田	おでん	2
 かさかさ		(副)1,(形動)0''';
 
-const frequencyListTest = '15145	明白';
+const shortFrequencyListData = '15145	明白';
+
+const shortVocabListData = '''{
+    "jlpt_n5": [
+      1578850
+    ],
+    "jlpt_n4": [],
+    "jlpt_n3": [],
+    "jlpt_n2": [],
+    "jlpt_n1": []
+}
+''';
+
+const shortKanjiListData = '''{
+  "jouyou": [
+    "亜"
+  ],
+  "grade_level_1": [],
+  "grade_level_2": [],
+  "grade_level_3": [],
+  "grade_level_4": [],
+  "grade_level_5": [],
+  "grade_level_6": [],
+  "jlpt_n5": [],
+  "jlpt_n4": [],
+  "jlpt_n3": [],
+  "jlpt_n2": [],
+  "jlpt_n1": [],
+  "jinmeiyou": [],
+  "kentei_level_4": [],
+  "kentei_level_3": [],
+  "kentei_level_pre_2": [],
+  "kentei_level_2": [],
+  "kentei_level_pre_1": [],
+  "kentei_level_1": []
+}
+''';

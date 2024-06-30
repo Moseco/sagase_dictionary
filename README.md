@@ -4,6 +4,8 @@ Creates the dictionary for the [Sagase Japanese-English dictionary app](https://
 
 ## Getting started
 
+Download/install sqlite on your system and add it to your path.
+
 Prepare source files to be placed in ```example/input_files/```
 
 ### Externally managed files
@@ -19,7 +21,7 @@ Prepare source files to be placed in ```example/input_files/```
 - [enamdict_utf-8](http://www.edrdg.org/enamdict/enamdict_doc.html)
     - Proper nouns
 
-### Self-managed files
+### Included files
 
 - kanji_radicals.json
 - kanji_components.json

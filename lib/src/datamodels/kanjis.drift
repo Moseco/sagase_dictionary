@@ -1,0 +1,7 @@
+import 'kanjis.dart';
+
+CREATE INDEX IX_kanji_readings_reading_search_form
+ON kanji_readings(reading_search_form) WHERE reading_search_form IS NOT NULL;
+
+CREATE INDEX IX_kanji_readings_reading_romaji_simplified
+ON kanji_readings(reading_romaji_simplified) WHERE reading_romaji_simplified IS NOT NULL;

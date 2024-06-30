@@ -1,0 +1,7 @@
+import 'my_dictionary_lists.dart';
+
+CREATE INDEX IX_my_dictionary_list_items_vocab_id
+ON my_dictionary_list_items(vocab_id) WHERE vocab_id != 0;
+
+CREATE INDEX IX_my_dictionary_list_items_kanji_id
+ON my_dictionary_list_items(kanji_id) WHERE kanji_id != 0;

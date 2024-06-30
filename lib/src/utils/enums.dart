@@ -1,104 +1,79 @@
-import 'package:isar/isar.dart';
-import 'package:sagase_dictionary/src/datamodels/dictionary_item.dart';
-import 'package:sagase_dictionary/src/datamodels/japanese_text_token.dart';
-import 'package:sagase_dictionary/src/datamodels/kanji.dart';
-import 'package:sagase_dictionary/src/datamodels/spaced_repetition_data.dart';
-
-part 'vocab.g.dart';
-
-@Collection()
-class Vocab extends DictionaryItem {
-  List<KanjiReadingPair> kanjiReadingPairs = [];
-
-  @enumerated
-  List<PartOfSpeech>? pos;
-  List<VocabDefinition> definitions = [];
-
-  @Index(type: IndexType.value)
-  List<String> japaneseTextIndex = [];
-
-  @Index(type: IndexType.value)
-  List<String> romajiTextIndex = [];
-
-  @Index(type: IndexType.value)
-  List<String> definitionIndex = [];
-
-  bool commonWord = false;
-  int frequencyScore = 0;
-
-  @ignore
-  List<Kanji>? includedKanji;
-
-  bool isUsuallyKanaAlone() {
-    if (definitions[0].miscInfo == null) return false;
-    return definitions[0]
-        .miscInfo!
-        .contains(MiscellaneousInfo.usuallyKanaAlone);
-  }
+enum RadicalImportance {
+  top25,
+  top50,
+  top75,
 }
 
-@embedded
-class KanjiReadingPair {
-  List<VocabKanji>? kanjiWritings;
-  List<VocabReading> readings = [];
+enum RadicalPosition {
+  top,
+  left,
+  right,
+  bottom,
+  enclose,
+  topLeft,
+  bottomLeft,
 }
 
-@embedded
-class VocabKanji {
-  late String kanji;
-  @enumerated
-  List<KanjiInfo>? info;
+enum KanjiGrade {
+  first,
+  second,
+  third,
+  fourth,
+  fifth,
+  sixth,
+  middleSchool,
+  jinmeiyou,
 }
 
-@embedded
-class VocabReading {
-  late String reading;
-  @enumerated
-  List<ReadingInfo>? info;
-  List<int>? pitchAccents;
+enum JlptLevel {
+  n1,
+  n2,
+  n3,
+  n4,
+  n5,
 }
 
-@embedded
-class VocabDefinition {
-  late String definition;
-  String? additionalInfo;
-  @enumerated
-  List<PartOfSpeech>? pos;
-  List<String>? appliesTo;
-  @enumerated
-  List<Field>? fields;
-  @enumerated
-  List<MiscellaneousInfo>? miscInfo;
-  @enumerated
-  List<Dialect>? dialects;
-  List<VocabExample>? examples;
-  LoanWordInfo? loanWordInfo;
-  List<VocabReference>? crossReferences;
-  List<VocabReference>? antonyms;
+enum KanjiReadingType {
+  on,
+  kun,
+  nanori,
 }
 
-@embedded
-class VocabExample {
-  late String japanese;
-  late String english;
-  @ignore
-  late List<JapaneseTextToken> tokens;
+enum ProperNounType {
+  surname,
+  placeName,
+  personName,
+  givenName,
+  femaleName,
+  maleName,
+  fullName,
+  product,
+  company,
+  organization,
+  station,
+  workOfArt,
+  group,
+  object,
+  service,
+  character,
+  legend,
+  creature,
+  event,
+  myth,
+  fiction,
+  deity,
+  ship,
+  document,
+  religion,
+  unknown,
 }
 
-@embedded
-class LoanWordInfo {
-  @enumerated
-  List<LanguageSource> languageSource = [];
-  bool waseieigo = false;
+enum FrontType {
+  japanese,
+  english,
 }
 
-@embedded
-class VocabReference {
-  List<int>? ids;
-  late String text;
-}
-
-enum KanjiInfo {
+enum WritingInfo {
   ateji,
   irregularKana,
   irregularKanji,
