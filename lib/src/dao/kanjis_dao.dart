@@ -40,10 +40,6 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
           .getSingle();
     }
 
-    return _getFromBase(kanji);
-  }
-
-  Future<Kanji> _getFromBase(Kanji kanji) async {
     List<KanjiReading> onReadings = [];
     List<KanjiReading> kunReadings = [];
     List<KanjiReading> nanori = [];
@@ -78,32 +74,145 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
   }
 
   Future<List<Kanji>> getAll(List<int> idList, {FrontType? frontType}) async {
-    List<Kanji> kanji = [];
-    for (final id in idList) {
-      kanji.add(await get(id, frontType: frontType));
-    }
-    return kanji;
-  }
+    final baseQuery = db.select(db.kanjis)..where((row) => row.id.isIn(idList));
 
-  Future<List<Kanji>> _getAllFromBase(List<Kanji> kanjiList) async {
-    for (final kanji in kanjiList) {
-      await _getFromBase(kanji);
+    late Map<int, Kanji> kanjiMap = {};
+    if (frontType == null) {
+      // Get kanji only
+      kanjiMap = {for (var kanji in (await baseQuery.get())) kanji.id: kanji};
+    } else {
+      // If front type is given get that spaced repetition data too
+      final query = baseQuery.join([
+        leftOuterJoin(
+            db.spacedRepetitionDatas,
+            Expression.and([
+              db.spacedRepetitionDatas.kanjiId.equalsExp(db.kanjis.id),
+              db.spacedRepetitionDatas.frontType.equals(frontType.index),
+            ]))
+      ]).map(
+        (row) => row.readTable(db.kanjis)
+          ..spacedRepetitionData =
+              row.readTableOrNull(db.spacedRepetitionDatas),
+      );
+
+      kanjiMap = {for (var kanji in (await query.get())) kanji.id: kanji};
     }
+
+    final readings = await (db.select(db.kanjiReadings)
+          ..where((row) => row.kanjiId.isIn(idList))
+          ..orderBy([(reading) => OrderingTerm.asc(reading.id)]))
+        .get();
+
+    if (readings.isNotEmpty) {
+      int currentKanjiId = readings[0].kanjiId;
+      List<KanjiReading> onReadings = [];
+      List<KanjiReading> kunReadings = [];
+      List<KanjiReading> nanori = [];
+      for (final reading in readings) {
+        // If id does not match got to new kanji, add current readings and clear lists
+        if (reading.kanjiId != currentKanjiId) {
+          kanjiMap[currentKanjiId]!
+            ..onReadings = onReadings.isEmpty ? null : onReadings
+            ..kunReadings = kunReadings.isEmpty ? null : kunReadings
+            ..nanori = nanori.isEmpty ? null : nanori;
+          currentKanjiId = reading.kanjiId;
+          onReadings = [];
+          kunReadings = [];
+          nanori = [];
+        }
+        switch (reading.type) {
+          case KanjiReadingType.on:
+            onReadings.add(reading);
+            break;
+          case KanjiReadingType.kun:
+            kunReadings.add(reading);
+            break;
+          case KanjiReadingType.nanori:
+            nanori.add(reading);
+            break;
+        }
+      }
+      // Add remaining readings
+      kanjiMap[currentKanjiId]!
+        ..onReadings = onReadings.isEmpty ? null : onReadings
+        ..kunReadings = kunReadings.isEmpty ? null : kunReadings
+        ..nanori = nanori.isEmpty ? null : nanori;
+    }
+
+    // Put the results in the same order as the input
+    List<Kanji> kanjiList = [];
+    for (final id in idList) {
+      kanjiList.add(kanjiMap[id]!);
+    }
+
     return kanjiList;
   }
 
-  Future<List<Kanji>> validateAllKanji(List<int> idList) async {
+  Future<List<Kanji>> _getAllFromBase(List<Kanji> kanjiList) async {
+    final kanjiMap = {for (var kanji in kanjiList) kanji.id: kanji};
+
+    final readings = await (db.select(db.kanjiReadings)
+          ..where((row) => row.kanjiId.isIn(kanjiMap.keys))
+          ..orderBy([(reading) => OrderingTerm.asc(reading.id)]))
+        .get();
+
+    if (readings.isNotEmpty) {
+      int currentKanjiId = readings[0].kanjiId;
+      List<KanjiReading> onReadings = [];
+      List<KanjiReading> kunReadings = [];
+      List<KanjiReading> nanori = [];
+      for (final reading in readings) {
+        // If id does not match got to new kanji, add current readings and clear lists
+        if (reading.kanjiId != currentKanjiId) {
+          kanjiMap[currentKanjiId]!
+            ..onReadings = onReadings.isEmpty ? null : onReadings
+            ..kunReadings = kunReadings.isEmpty ? null : kunReadings
+            ..nanori = nanori.isEmpty ? null : nanori;
+          currentKanjiId = reading.kanjiId;
+          onReadings = [];
+          kunReadings = [];
+          nanori = [];
+        }
+        switch (reading.type) {
+          case KanjiReadingType.on:
+            onReadings.add(reading);
+            break;
+          case KanjiReadingType.kun:
+            kunReadings.add(reading);
+            break;
+          case KanjiReadingType.nanori:
+            nanori.add(reading);
+            break;
+        }
+      }
+      // Add remaining readings
+      kanjiMap[currentKanjiId]!
+        ..onReadings = onReadings.isEmpty ? null : onReadings
+        ..kunReadings = kunReadings.isEmpty ? null : kunReadings
+        ..nanori = nanori.isEmpty ? null : nanori;
+    }
+
+    return kanjiList;
+  }
+
+  Future<List<Kanji>> validateAll(List<int> idList) async {
+    final kanjiMap = {
+      for (var kanji in (await (db.select(db.kanjis)
+            ..where((row) => row.id.isIn(idList)))
+          .get()))
+        kanji.id: kanji
+    };
+
+    // Put the results in the same order as the input
     List<Kanji> kanjiList = [];
     for (final id in idList) {
-      final kanji = await (db.select(db.kanjis)
-            ..where((row) => row.id.equals(id)))
-          .getSingleOrNull();
+      final kanji = kanjiMap[id];
       if (kanji != null) kanjiList.add(kanji);
     }
     return kanjiList;
   }
 
-  Future<List<Kanji>> getKanjiWithRadical(String radical) async {
+  Future<List<Kanji>> getWithRadical(String radical) async {
     return (db.select(db.kanjis)
           ..where((kanji) => kanji.radical.equals(radical))
           ..orderBy([

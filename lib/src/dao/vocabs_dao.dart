@@ -40,10 +40,6 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
           .getSingle();
     }
 
-    return _getFromBase(vocab);
-  }
-
-  Future<Vocab> _getFromBase(Vocab vocab) async {
     final writings = await (db.select(db.vocabWritings)
           ..where((writing) => writing.vocabId.equals(vocab.id))
           ..orderBy([(writing) => OrderingTerm.asc(writing.id)]))
@@ -65,33 +61,204 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
       ..definitions = definitions;
   }
 
-  Future<List<Vocab>> getAll(List<int> ids, {FrontType? frontType}) async {
-    List<Vocab> vocabList = [];
-    for (final id in ids) {
-      vocabList.add(await get(id, frontType: frontType));
+  Future<List<Vocab>> getAll(List<int> idList, {FrontType? frontType}) async {
+    final baseQuery = db.select(db.vocabs)
+      ..where((vocab) => vocab.id.isIn(idList));
+
+    late Map<int, Vocab> vocabMap = {};
+    if (frontType == null) {
+      // Get vocab only
+      vocabMap = {for (var vocab in (await baseQuery.get())) vocab.id: vocab};
+    } else {
+      // If front type is given get that spaced repetition data too
+      final query = baseQuery.join([
+        leftOuterJoin(
+            db.spacedRepetitionDatas,
+            Expression.and([
+              db.spacedRepetitionDatas.vocabId.equalsExp(db.vocabs.id),
+              db.spacedRepetitionDatas.frontType.equals(frontType.index),
+            ]))
+      ]).map(
+        (row) => row.readTable(db.vocabs)
+          ..spacedRepetitionData =
+              row.readTableOrNull(db.spacedRepetitionDatas),
+      );
+
+      vocabMap = {for (var vocab in (await query.get())) vocab.id: vocab};
     }
+
+    final writings = await (db.select(db.vocabWritings)
+          ..where((writing) => writing.vocabId.isIn(idList))
+          ..orderBy([(writing) => OrderingTerm.asc(writing.id)]))
+        .get();
+
+    // Start loading readings while processing writings
+    final readingsFuture = (db.select(db.vocabReadings)
+          ..where((reading) => reading.vocabId.isIn(idList))
+          ..orderBy([(reading) => OrderingTerm.asc(reading.id)]))
+        .get();
+
+    if (writings.isNotEmpty) {
+      int currentVocabId = writings[0].vocabId;
+      List<VocabWriting> currentWritings = [];
+      for (final writing in writings) {
+        // If id does not match got to new vocab, add current writings and clear list
+        if (writing.vocabId != currentVocabId) {
+          vocabMap[currentVocabId]!.writings =
+              currentWritings.isEmpty ? null : currentWritings;
+          currentVocabId = writing.vocabId;
+          currentWritings = [];
+        }
+        currentWritings.add(writing);
+      }
+      // Add remaining writings
+      vocabMap[currentVocabId]!.writings =
+          currentWritings.isEmpty ? null : currentWritings;
+    }
+
+    final readings = await readingsFuture;
+    // Start loading definitions while processing readings
+    final definitionFuture = (db.select(db.vocabDefinitions)
+          ..where((definition) => definition.vocabId.isIn(idList))
+          ..orderBy([(definition) => OrderingTerm.asc(definition.id)]))
+        .get();
+
+    if (readings.isNotEmpty) {
+      int currentVocabId = readings[0].vocabId;
+      List<VocabReading> currentReadings = [];
+      for (final reading in readings) {
+        // If id does not match got to new vocab, add current readings and clear list
+        if (reading.vocabId != currentVocabId) {
+          vocabMap[currentVocabId]!.readings = currentReadings;
+          currentVocabId = reading.vocabId;
+          currentReadings = [];
+        }
+        currentReadings.add(reading);
+      }
+      // Add remaining readings
+      vocabMap[currentVocabId]!.readings = currentReadings;
+    }
+
+    final definitions = await definitionFuture;
+    if (definitions.isNotEmpty) {
+      int currentVocabId = definitions[0].vocabId;
+      List<VocabDefinition> currentDefinitions = [];
+      for (final definition in definitions) {
+        // If id does not match got to new vocab, add current definitions and clear list
+        if (definition.vocabId != currentVocabId) {
+          vocabMap[currentVocabId]!.definitions = currentDefinitions;
+          currentVocabId = definition.vocabId;
+          currentDefinitions = [];
+        }
+        currentDefinitions.add(definition);
+      }
+      // Add remaining definitions
+      vocabMap[currentVocabId]!.definitions = currentDefinitions;
+    }
+
+    // Put the results in the same order as the input
+    List<Vocab> vocabList = [];
+    for (final id in idList) {
+      vocabList.add(vocabMap[id]!);
+    }
+
     return vocabList;
   }
 
   Future<List<Vocab>> _getAllFromBase(List<Vocab> vocabList) async {
-    for (final vocab in vocabList) {
-      await _getFromBase(vocab);
+    final vocabMap = {for (var vocab in vocabList) vocab.id: vocab};
+
+    final writings = await (db.select(db.vocabWritings)
+          ..where((writing) => writing.vocabId.isIn(vocabMap.keys))
+          ..orderBy([(writing) => OrderingTerm.asc(writing.id)]))
+        .get();
+
+    // Start loading readings while processing writings
+    final readingsFuture = (db.select(db.vocabReadings)
+          ..where((reading) => reading.vocabId.isIn(vocabMap.keys))
+          ..orderBy([(reading) => OrderingTerm.asc(reading.id)]))
+        .get();
+
+    if (writings.isNotEmpty) {
+      int currentVocabId = writings[0].vocabId;
+      List<VocabWriting> currentWritings = [];
+      for (final writing in writings) {
+        // If id does not match got to new vocab, add current writings and clear list
+        if (writing.vocabId != currentVocabId) {
+          vocabMap[currentVocabId]!.writings =
+              currentWritings.isEmpty ? null : currentWritings;
+          currentVocabId = writing.vocabId;
+          currentWritings = [];
+        }
+        currentWritings.add(writing);
+      }
+      // Add remaining writings
+      vocabMap[currentVocabId]!.writings =
+          currentWritings.isEmpty ? null : currentWritings;
     }
+
+    final readings = await readingsFuture;
+    // Start loading definitions while processing readings
+    final definitionFuture = (db.select(db.vocabDefinitions)
+          ..where((definition) => definition.vocabId.isIn(vocabMap.keys))
+          ..orderBy([(definition) => OrderingTerm.asc(definition.id)]))
+        .get();
+
+    if (readings.isNotEmpty) {
+      int currentVocabId = readings[0].vocabId;
+      List<VocabReading> currentReadings = [];
+      for (final reading in readings) {
+        // If id does not match got to new vocab, add current readings and clear list
+        if (reading.vocabId != currentVocabId) {
+          vocabMap[currentVocabId]!.readings = currentReadings;
+          currentVocabId = reading.vocabId;
+          currentReadings = [];
+        }
+        currentReadings.add(reading);
+      }
+      // Add remaining readings
+      vocabMap[currentVocabId]!.readings = currentReadings;
+    }
+
+    final definitions = await definitionFuture;
+    if (definitions.isNotEmpty) {
+      int currentVocabId = definitions[0].vocabId;
+      List<VocabDefinition> currentDefinitions = [];
+      for (final definition in definitions) {
+        // If id does not match got to new vocab, add current definitions and clear list
+        if (definition.vocabId != currentVocabId) {
+          vocabMap[currentVocabId]!.definitions = currentDefinitions;
+          currentVocabId = definition.vocabId;
+          currentDefinitions = [];
+        }
+        currentDefinitions.add(definition);
+      }
+      // Add remaining definitions
+      vocabMap[currentVocabId]!.definitions = currentDefinitions;
+    }
+
     return vocabList;
   }
 
-  Future<List<Vocab>> validateAllVocab(List<int> idList) async {
+  Future<List<Vocab>> validateAll(List<int> idList) async {
+    final vocabMap = {
+      for (var vocab in (await (db.select(db.vocabs)
+            ..where((row) => row.id.isIn(idList)))
+          .get()))
+        vocab.id: vocab
+    };
+
+    // Put the results in the same order as the input
     List<Vocab> vocabList = [];
     for (final id in idList) {
-      final vocab = await (db.select(db.vocabs)
-            ..where((row) => row.id.equals(id)))
-          .getSingleOrNull();
+      final vocab = vocabMap[id];
       if (vocab != null) vocabList.add(vocab);
     }
+
     return vocabList;
   }
 
-  Future<List<Vocab>> getVocabByWriting(String text) async {
+  Future<List<Vocab>> getByWriting(String text) async {
     final matchingWriting = Subquery(
       db.select(db.vocabWritings)
         ..where((writing) => Expression.or([
@@ -116,7 +283,7 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
     return _getAllFromBase(baseList);
   }
 
-  Future<List<Vocab>> getVocabByReading(String text) async {
+  Future<List<Vocab>> getByReading(String text) async {
     final matchingReading = Subquery(
       db.select(db.vocabReadings)
         ..where((reading) => Expression.or([

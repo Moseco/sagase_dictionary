@@ -27,70 +27,215 @@ void main() {
       await database.close();
     });
 
-    test('get', () async {
-      final vocab = await database.vocabsDao.get(1000220);
-      expect(vocab.id, 1000220);
-      expect(vocab.writings!.length, 1);
-      expect(vocab.writings![0].writing, '明白');
-      expect(vocab.readings.length, 1);
-      expect(vocab.readings[0].reading, 'めいはく');
-      expect(vocab.definitions.length, 1);
-      expect(
-        vocab.definitions[0].definition,
-        'obvious; clear; plain; evident; apparent; explicit; overt',
-      );
+    group('get', () {
+      test('No front type', () async {
+        final vocab = await database.vocabsDao.get(1000220);
+        expect(vocab.id, 1000220);
+        expect(vocab.writings!.length, 1);
+        expect(vocab.writings![0].writing, '明白');
+        expect(vocab.readings.length, 1);
+        expect(vocab.readings[0].reading, 'めいはく');
+        expect(vocab.definitions.length, 1);
+        expect(
+          vocab.definitions[0].definition,
+          'obvious; clear; plain; evident; apparent; explicit; overt',
+        );
+      });
+
+      group('With front type', () {
+        test('Spaced repetition does not exist', () async {
+          final vocab = await database.vocabsDao.get(
+            1000220,
+            frontType: FrontType.japanese,
+          );
+          expect(vocab.id, 1000220);
+          expect(vocab.spacedRepetitionData, null);
+        });
+
+        test('Spaced repetition does exist', () async {
+          await database.spacedRepetitionDatasDao.set(
+            SpacedRepetitionData.initial(
+              dictionaryItem: await database.vocabsDao.get(1000220),
+              frontType: FrontType.japanese,
+            ),
+          );
+
+          final vocab = await database.vocabsDao.get(
+            1000220,
+            frontType: FrontType.japanese,
+          );
+          expect(vocab.id, 1000220);
+          expect(vocab.spacedRepetitionData!.frontType, FrontType.japanese);
+        });
+
+        test('Spaced repetition both exist', () async {
+          await database.spacedRepetitionDatasDao.set(
+            SpacedRepetitionData.initial(
+              dictionaryItem: await database.vocabsDao.get(1000220),
+              frontType: FrontType.japanese,
+            ),
+          );
+          await database.spacedRepetitionDatasDao.set(
+            SpacedRepetitionData.initial(
+              dictionaryItem: await database.vocabsDao.get(1000220),
+              frontType: FrontType.english,
+            ),
+          );
+
+          final vocab = await database.vocabsDao.get(
+            1000220,
+            frontType: FrontType.english,
+          );
+          expect(vocab.id, 1000220);
+          expect(vocab.spacedRepetitionData!.frontType, FrontType.english);
+        });
+      });
     });
 
-    test('get - with spaced repetition - does not exist', () async {
-      final vocab = await database.vocabsDao.get(
-        1000220,
-        frontType: FrontType.japanese,
-      );
-      expect(vocab.id, 1000220);
-      expect(vocab.spacedRepetitionData, null);
+    group('getAll', () {
+      test('No front type', () async {
+        final vocabList = await database.vocabsDao.getAll([1000220, 1000160]);
+        expect(vocabList.length, 2);
+        expect(vocabList[0].id, 1000220);
+        expect(vocabList[0].writings!.length, 1);
+        expect(vocabList[0].writings![0].writing, '明白');
+        expect(vocabList[0].readings.length, 1);
+        expect(vocabList[0].readings[0].reading, 'めいはく');
+        expect(vocabList[0].definitions.length, 1);
+        expect(
+          vocabList[0].definitions[0].definition,
+          'obvious; clear; plain; evident; apparent; explicit; overt',
+        );
+        expect(vocabList[1].id, 1000160);
+        expect(vocabList[1].writings!.length, 1);
+        expect(vocabList[1].writings![0].writing, 'Ｔシャツ');
+        expect(vocabList[1].readings.length, 1);
+        expect(vocabList[1].readings[0].reading, 'ティーシャツ');
+        expect(vocabList[1].definitions.length, 1);
+        expect(vocabList[1].definitions[0].definition, 'T-shirt; tee shirt');
+      });
+
+      group('With front type', () {
+        test('Spaced repetition does not exist', () async {
+          final vocabList = await database.vocabsDao.getAll(
+            [1000220, 1000160],
+            frontType: FrontType.japanese,
+          );
+          expect(vocabList[0].id, 1000220);
+          expect(vocabList[0].spacedRepetitionData, null);
+          expect(vocabList[1].id, 1000160);
+          expect(vocabList[1].spacedRepetitionData, null);
+        });
+
+        test('Spaced repetition some exist', () async {
+          await database.spacedRepetitionDatasDao.set(
+            SpacedRepetitionData.initial(
+              dictionaryItem: await database.vocabsDao.get(1000220),
+              frontType: FrontType.japanese,
+            ),
+          );
+
+          final vocabList = await database.vocabsDao.getAll(
+            [1000220, 1000160],
+            frontType: FrontType.japanese,
+          );
+          expect(vocabList[0].id, 1000220);
+          expect(vocabList[0].spacedRepetitionData!.vocabId, 1000220);
+          expect(
+            vocabList[0].spacedRepetitionData!.frontType,
+            FrontType.japanese,
+          );
+          expect(vocabList[1].id, 1000160);
+          expect(vocabList[1].spacedRepetitionData, null);
+        });
+
+        test('Spaced repetition all exist', () async {
+          await database.spacedRepetitionDatasDao.set(
+            SpacedRepetitionData.initial(
+              dictionaryItem: await database.vocabsDao.get(1000220),
+              frontType: FrontType.japanese,
+            ),
+          );
+          await database.spacedRepetitionDatasDao.set(
+            SpacedRepetitionData.initial(
+              dictionaryItem: await database.vocabsDao.get(1000160),
+              frontType: FrontType.japanese,
+            ),
+          );
+
+          final vocabList = await database.vocabsDao.getAll(
+            [1000220, 1000160],
+            frontType: FrontType.japanese,
+          );
+          expect(vocabList[0].id, 1000220);
+          expect(vocabList[0].spacedRepetitionData!.vocabId, 1000220);
+          expect(
+            vocabList[0].spacedRepetitionData!.frontType,
+            FrontType.japanese,
+          );
+          expect(vocabList[1].id, 1000160);
+          expect(vocabList[1].spacedRepetitionData!.vocabId, 1000160);
+          expect(
+            vocabList[1].spacedRepetitionData!.frontType,
+            FrontType.japanese,
+          );
+        });
+
+        test('Spaced repetition both exist for all', () async {
+          await database.spacedRepetitionDatasDao.set(
+            SpacedRepetitionData.initial(
+              dictionaryItem: await database.vocabsDao.get(1000220),
+              frontType: FrontType.japanese,
+            ),
+          );
+          await database.spacedRepetitionDatasDao.set(
+            SpacedRepetitionData.initial(
+              dictionaryItem: await database.vocabsDao.get(1000220),
+              frontType: FrontType.english,
+            ),
+          );
+          await database.spacedRepetitionDatasDao.set(
+            SpacedRepetitionData.initial(
+              dictionaryItem: await database.vocabsDao.get(1000160),
+              frontType: FrontType.japanese,
+            ),
+          );
+          await database.spacedRepetitionDatasDao.set(
+            SpacedRepetitionData.initial(
+              dictionaryItem: await database.vocabsDao.get(1000160),
+              frontType: FrontType.english,
+            ),
+          );
+
+          final vocabList = await database.vocabsDao.getAll(
+            [1000220, 1000160],
+            frontType: FrontType.english,
+          );
+          expect(vocabList[0].id, 1000220);
+          expect(vocabList[0].spacedRepetitionData!.vocabId, 1000220);
+          expect(
+            vocabList[0].spacedRepetitionData!.frontType,
+            FrontType.english,
+          );
+          expect(vocabList[1].id, 1000160);
+          expect(vocabList[1].spacedRepetitionData!.vocabId, 1000160);
+          expect(
+            vocabList[1].spacedRepetitionData!.frontType,
+            FrontType.english,
+          );
+        });
+      });
     });
 
-    test('get - with spaced repetition - does exists', () async {
-      await database.spacedRepetitionDatasDao.set(
-        SpacedRepetitionData.initial(
-          dictionaryItem: await database.vocabsDao.get(1000220),
-          frontType: FrontType.japanese,
-        ),
-      );
-
-      final vocab = await database.vocabsDao.get(
-        1000220,
-        frontType: FrontType.japanese,
-      );
-      expect(vocab.id, 1000220);
-      expect(vocab.spacedRepetitionData!.frontType, FrontType.japanese);
+    test('validateAll', () async {
+      final vocabList = await database.vocabsDao.validateAll([1000220, 7]);
+      expect(vocabList.length, 1);
+      expect(vocabList[0].id, 1000220);
     });
 
-    test('get - with spaced repetition - both exist', () async {
-      await database.spacedRepetitionDatasDao.set(
-        SpacedRepetitionData.initial(
-          dictionaryItem: await database.vocabsDao.get(1000220),
-          frontType: FrontType.japanese,
-        ),
-      );
-      await database.spacedRepetitionDatasDao.set(
-        SpacedRepetitionData.initial(
-          dictionaryItem: await database.vocabsDao.get(1000220),
-          frontType: FrontType.english,
-        ),
-      );
-
-      final vocab = await database.vocabsDao.get(
-        1000220,
-        frontType: FrontType.english,
-      );
-      expect(vocab.id, 1000220);
-      expect(vocab.spacedRepetitionData!.frontType, FrontType.english);
-    });
-
-    test('getAll', () async {
-      final vocabList = await database.vocabsDao.getAll([1000220, 1000160]);
-      expect(vocabList.length, 2);
+    test('getByWriting', () async {
+      final vocabList = await database.vocabsDao.getByWriting('明白');
+      expect(vocabList.length, 1);
       expect(vocabList[0].id, 1000220);
       expect(vocabList[0].writings!.length, 1);
       expect(vocabList[0].writings![0].writing, '明白');
@@ -101,17 +246,10 @@ void main() {
         vocabList[0].definitions[0].definition,
         'obvious; clear; plain; evident; apparent; explicit; overt',
       );
-      expect(vocabList[1].id, 1000160);
     });
 
-    test('validateAllVocab', () async {
-      final vocabList = await database.vocabsDao.validateAllVocab([1000220, 7]);
-      expect(vocabList.length, 1);
-      expect(vocabList[0].id, 1000220);
-    });
-
-    test('getVocabByWriting', () async {
-      final vocabList = await database.vocabsDao.getVocabByWriting('明白');
+    test('getByReading', () async {
+      final vocabList = await database.vocabsDao.getByReading('めいはく');
       expect(vocabList.length, 1);
       expect(vocabList[0].id, 1000220);
       expect(vocabList[0].writings!.length, 1);
@@ -119,91 +257,104 @@ void main() {
       expect(vocabList[0].readings.length, 1);
       expect(vocabList[0].readings[0].reading, 'めいはく');
       expect(vocabList[0].definitions.length, 1);
-    });
-
-    test('getVocabByReading', () async {
-      final vocabList = await database.vocabsDao.getVocabByReading('めいはく');
-      expect(vocabList.length, 1);
-      expect(vocabList[0].id, 1000220);
-      expect(vocabList[0].writings!.length, 1);
-      expect(vocabList[0].writings![0].writing, '明白');
-      expect(vocabList[0].readings.length, 1);
-      expect(vocabList[0].readings[0].reading, 'めいはく');
-      expect(vocabList[0].definitions.length, 1);
+      expect(
+        vocabList[0].definitions[0].definition,
+        'obvious; clear; plain; evident; apparent; explicit; overt',
+      );
     });
 
     test('getUsingKanji', () async {
       final vocabList = await database.vocabsDao.getUsingKanji('行');
       expect(vocabList.length, 2);
+      expect(vocabList[0].id, 1310500);
+      expect(vocabList[0].writings!.length, 7);
       expect(vocabList[0].writings![0].writing, '上手く行く');
+      expect(vocabList[0].readings.length, 1);
+      expect(vocabList[0].readings[0].reading, 'うまくいく');
+      expect(vocabList[0].definitions.length, 1);
+      expect(
+        vocabList[0].definitions[0].definition,
+        'to go smoothly; to turn out well; to do the trick; to have peaceful relations',
+      );
+      expect(vocabList[1].id, 1578850);
+      expect(vocabList[1].writings!.length, 3);
       expect(vocabList[1].writings![0].writing, '行く');
+      expect(vocabList[1].readings.length, 2);
+      expect(vocabList[1].readings[0].reading, 'いく');
+      expect(vocabList[1].definitions.length, 10);
+      expect(
+        vocabList[1].definitions[0].definition,
+        'to go; to move (in a direction or towards a specific location); to head (towards); to be transported (towards); to reach',
+      );
     });
 
-    test('searchVocab - definition single word', () async {
-      final results = await database.vocabsDao.search('shirt');
-      expect(results.length, 1);
-      expect(results[0].id, 1000160);
-    });
+    group('search', () {
+      test('Definition single word', () async {
+        final results = await database.vocabsDao.search('shirt');
+        expect(results.length, 1);
+        expect(results[0].id, 1000160);
+      });
 
-    test('searchVocab - definition partial word', () async {
-      final results = await database.vocabsDao.search('shir');
-      expect(results.length, 1);
-      expect(results[0].id, 1000160);
-    });
+      test('Definition partial word', () async {
+        final results = await database.vocabsDao.search('shir');
+        expect(results.length, 1);
+        expect(results[0].id, 1000160);
+      });
 
-    test('searchVocab - definition multiple words', () async {
-      final results = await database.vocabsDao.search('in a flash');
-      expect(results.length, 1);
-      expect(results[0].id, 1000390);
-    });
+      test('Definition multiple words', () async {
+        final results = await database.vocabsDao.search('in a flash');
+        expect(results.length, 1);
+        expect(results[0].id, 1000390);
+      });
 
-    test('searchVocab - definition single and partial word', () async {
-      final results = await database.vocabsDao.search('no ti');
-      expect(results.length, 2);
-      expect(results[0].id, 1000390);
-      expect(results[1].id, 1003430);
-    });
+      test('Definition single and partial word', () async {
+        final results = await database.vocabsDao.search('no ti');
+        expect(results.length, 2);
+        expect(results[0].id, 1000390);
+        expect(results[1].id, 1003430);
+      });
 
-    test('searchVocab - writing complete', () async {
-      final results = await database.vocabsDao.search('行く');
-      expect(results.length, 1);
-      expect(results[0].id, 1578850);
-    });
+      test('Writing complete', () async {
+        final results = await database.vocabsDao.search('行く');
+        expect(results.length, 1);
+        expect(results[0].id, 1578850);
+      });
 
-    test('searchVocab - writing partial', () async {
-      final results = await database.vocabsDao.search('行');
-      expect(results.length, 1);
-      expect(results[0].id, 1578850);
-    });
+      test('Writing partial', () async {
+        final results = await database.vocabsDao.search('行');
+        expect(results.length, 1);
+        expect(results[0].id, 1578850);
+      });
 
-    test('searchVocab - reading complete', () async {
-      final results = await database.vocabsDao.search('きっと');
-      expect(results.length, 1);
-      expect(results[0].id, 1003430);
-    });
+      test('Reading complete', () async {
+        final results = await database.vocabsDao.search('きっと');
+        expect(results.length, 1);
+        expect(results[0].id, 1003430);
+      });
 
-    test('searchVocab - reading partial', () async {
-      final results = await database.vocabsDao.search('きっ');
-      expect(results.length, 1);
-      expect(results[0].id, 1003430);
-    });
+      test('Reading partial', () async {
+        final results = await database.vocabsDao.search('きっ');
+        expect(results.length, 1);
+        expect(results[0].id, 1003430);
+      });
 
-    test('searchVocab - reading romaji complete', () async {
-      final results = await database.vocabsDao.search('kitto');
-      expect(results.length, 1);
-      expect(results[0].id, 1003430);
-    });
+      test('Reading romaji complete', () async {
+        final results = await database.vocabsDao.search('kitto');
+        expect(results.length, 1);
+        expect(results[0].id, 1003430);
+      });
 
-    test('searchVocab - reading romaji partial', () async {
-      final results = await database.vocabsDao.search('kitt');
-      expect(results.length, 1);
-      expect(results[0].id, 1003430);
-    });
+      test('Reading romaji partial', () async {
+        final results = await database.vocabsDao.search('kitt');
+        expect(results.length, 1);
+        expect(results[0].id, 1003430);
+      });
 
-    test('searchVocab - reading romaji simplified', () async {
-      final results = await database.vocabsDao.search('kito');
-      expect(results.length, 1);
-      expect(results[0].id, 1003430);
+      test('Reading romaji simplified', () async {
+        final results = await database.vocabsDao.search('kito');
+        expect(results.length, 1);
+        expect(results[0].id, 1003430);
+      });
     });
   });
 }

@@ -287,9 +287,9 @@ class DictionaryBuilder {
 
         late List<Vocab> results;
         if (writing == null) {
-          results = await db.vocabsDao.getVocabByReading(reading);
+          results = await db.vocabsDao.getByReading(reading);
         } else {
-          results = await db.vocabsDao.getVocabByWriting(writing);
+          results = await db.vocabsDao.getByWriting(writing);
         }
 
         // Add pitch accent info if the vocab writing/reading matches
@@ -342,8 +342,8 @@ class DictionaryBuilder {
         String lemma = parts[1].trim();
 
         List<Vocab> results = _kanaKit.isKana(lemma)
-            ? await db.vocabsDao.getVocabByReading(lemma)
-            : await db.vocabsDao.getVocabByWriting(lemma);
+            ? await db.vocabsDao.getByReading(lemma)
+            : await db.vocabsDao.getByWriting(lemma);
 
         for (var vocab in results) {
           // Don't replace a higher score
@@ -409,8 +409,8 @@ class DictionaryBuilder {
           String updatedText = split[0];
 
           List<Vocab> results = _kanaKit.isKana(split[0])
-              ? await db.vocabsDao.getVocabByReading(split[0])
-              : await db.vocabsDao.getVocabByWriting(split[0]);
+              ? await db.vocabsDao.getByReading(split[0])
+              : await db.vocabsDao.getByWriting(split[0]);
           // If have additional reading filter results
           if (split.length > 1 && int.tryParse(split[1]) == null) {
             for (int j = 0; j < results.length; j++) {
@@ -498,8 +498,8 @@ class DictionaryBuilder {
           String updatedText = split[0];
 
           List<Vocab> results = _kanaKit.isKana(split[0])
-              ? await db.vocabsDao.getVocabByReading(split[0])
-              : await db.vocabsDao.getVocabByWriting(split[0]);
+              ? await db.vocabsDao.getByReading(split[0])
+              : await db.vocabsDao.getByWriting(split[0]);
           // If have additional reading filter results
           if (split.length > 1 && int.tryParse(split[1]) == null) {
             for (int i = 0; i < results.length; i++) {
