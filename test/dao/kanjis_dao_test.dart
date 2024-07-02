@@ -250,8 +250,8 @@ void main() {
       expect(kanjiList[0].kanji, '亜');
     });
 
-    test('getWithRadical', () async {
-      final kanjiList = await database.kanjisDao.getWithRadical('二');
+    test('getAllWithRadical', () async {
+      final kanjiList = await database.kanjisDao.getAllWithRadical('二');
       expect(kanjiList.length, 3);
       expect(kanjiList[0].kanji, '二');
       expect(kanjiList[1].kanji, '亜');

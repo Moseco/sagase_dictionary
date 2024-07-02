@@ -212,14 +212,16 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
     return kanjiList;
   }
 
-  Future<List<Kanji>> getWithRadical(String radical) async {
-    return (db.select(db.kanjis)
+  Future<List<Kanji>> getAllWithRadical(String radical) async {
+    final kanjiList = await (db.select(db.kanjis)
           ..where((kanji) => kanji.radical.equals(radical))
           ..orderBy([
             (kanji) => OrderingTerm.asc(kanji.strokeCount),
             (kanji) => OrderingTerm.asc(kanji.frequency),
           ]))
         .get();
+
+    return _getAllFromBase(kanjiList);
   }
 
   Future<List<Kanji>> search(String text) async {
