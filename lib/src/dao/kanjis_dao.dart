@@ -237,15 +237,15 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
       final splits = cleanedText.splitWords();
       if (splits.length > 1) {
         // Search by meaning
-        return _searchByMeaning(splits);
+        return _searchByMeaning(cleanedText, splits);
       } else {
         // Search by meaning and romaji reading/writing
 
         // Search by meaning
-        final meaningResults = await _searchByMeaning(splits);
+        final meaningResults = await _searchByMeaning(cleanedText, splits);
 
         // Search by romaji reading
-        final searchingReading = Subquery(
+        final searchReading = Subquery(
           db.select(db.kanjiReadings)
             ..where(
               (reading) => Expression.or([
@@ -256,27 +256,39 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
           'search_reading',
         );
 
+        final minReadingRomajiLength =
+            searchReading.ref(db.kanjiReadings.readingRomaji).length.min();
         final query = db.select(db.kanjis).join([
           innerJoin(
-            searchingReading,
-            searchingReading
-                .ref(db.kanjiReadings.kanjiId)
-                .equalsExp(db.kanjis.id),
+            searchReading,
+            searchReading.ref(db.kanjiReadings.kanjiId).equalsExp(db.kanjis.id),
             useColumns: false,
           ),
         ])
+          ..addColumns([minReadingRomajiLength])
           ..orderBy([
-            OrderingTerm.asc(
-                searchingReading.ref(db.kanjiReadings.readingRomaji).length),
+            OrderingTerm.asc(minReadingRomajiLength),
             OrderingTerm.asc(db.kanjis.frequency, nulls: NullsOrder.last),
           ])
           ..groupBy([db.kanjis.id])
           ..limit(500);
 
-        final kanjiList =
-            await query.map((row) => row.readTable(db.kanjis)).get();
+        // Get kanji and sort by if the reading is an exact match or not
+        // This solves some romaji simplification problems and
+        // makes possible sorting later more convenient
+        final rows = await query.get();
+        List<Kanji> exactMatchKanji = [];
+        List<Kanji> otherKanji = [];
+        for (final row in rows) {
+          if (row.read(minReadingRomajiLength) == cleanedText.length) {
+            exactMatchKanji.add(row.readTable(db.kanjis));
+          } else {
+            otherKanji.add(row.readTable(db.kanjis));
+          }
+        }
 
-        final readingResults = await _getAllFromBase(kanjiList);
+        final readingResults =
+            await _getAllFromBase(exactMatchKanji + otherKanji);
 
         // If one of the lists is empty, can simply return the non empty one
         if (meaningResults.isEmpty) return readingResults;
@@ -286,46 +298,12 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
         // - Exact match readings results
         // - All meaning results
         // - Remaining reading results
-        List<Kanji> mergedResults = [];
-
-        outer:
-        for (int i = 0; i < readingResults.length; i++) {
-          if (readingResults[i].onReadings != null) {
-            for (var reading in readingResults[i].onReadings!) {
-              if (cleanedText == reading.readingRomaji ||
-                  cleanedText == reading.readingRomajiSimplified) {
-                mergedResults.add(readingResults.removeAt(i--));
-                continue outer;
-              }
-            }
-          }
-          if (readingResults[i].kunReadings != null) {
-            for (var reading in readingResults[i].kunReadings!) {
-              if (cleanedText == reading.readingRomaji ||
-                  cleanedText == reading.readingRomajiSimplified) {
-                mergedResults.add(readingResults.removeAt(i--));
-                continue outer;
-              }
-            }
-          }
-          if (readingResults[i].nanori != null) {
-            for (var reading in readingResults[i].nanori!) {
-              if (cleanedText == reading.readingRomaji ||
-                  cleanedText == reading.readingRomajiSimplified) {
-                mergedResults.add(readingResults.removeAt(i--));
-                continue outer;
-              }
-            }
-          }
-          break;
-        }
-
-        return mergedResults + meaningResults + readingResults;
+        return exactMatchKanji + meaningResults + otherKanji;
       }
     } else {
       // Japanese text, search by reading
       String queryText = _kanaKit.toHiragana('$cleanedText%');
-      final searchingReading = Subquery(
+      final searchReading = Subquery(
         db.select(db.kanjiReadings)
           ..where(
             (reading) => Expression.or([
@@ -336,18 +314,18 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
         'search_reading',
       );
 
+      final minReadingLength =
+          searchReading.ref(db.kanjiReadings.reading).length.min();
       final query = db.select(db.kanjis).join([
         innerJoin(
-          searchingReading,
-          searchingReading
-              .ref(db.kanjiReadings.kanjiId)
-              .equalsExp(db.kanjis.id),
+          searchReading,
+          searchReading.ref(db.kanjiReadings.kanjiId).equalsExp(db.kanjis.id),
           useColumns: false,
         ),
       ])
+        ..addColumns([minReadingLength])
         ..orderBy([
-          OrderingTerm.asc(
-              searchingReading.ref(db.kanjiReadings.reading).length),
+          OrderingTerm.asc(minReadingLength),
           OrderingTerm.asc(db.kanjis.frequency, nulls: NullsOrder.last),
         ])
         ..groupBy([db.kanjis.id])
@@ -360,42 +338,102 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
     }
   }
 
-  Future<List<Kanji>> _searchByMeaning(List<String> splits) async {
+  Future<List<Kanji>> _searchByMeaning(
+    String cleanedText,
+    List<String> splits,
+  ) async {
     final uniqueWords = splits.toSet().toList();
 
-    // Create sub queries that match all but the last word
-    List<Subquery<KanjiMeaningWord>> subqueries = [];
-    for (int i = 0; i < uniqueWords.length - 1; i++) {
-      subqueries.add(Subquery(
+    late final List<Kanji> kanjiList;
+    if (uniqueWords.length == 1) {
+      // Create a subquery that finds words that start with the last word
+      final searchMeaning = Subquery(
         db.select(db.kanjiMeaningWords)
-          ..where((word) => word.word.equals(uniqueWords[i])),
-        'search_meaning_$i',
-      ));
-    }
+          ..where((word) => word.word.like('${uniqueWords.last}%')),
+        'search_meaning',
+      );
 
-    // Create a sub query that uses like for the last word
-    subqueries.add(Subquery(
-      db.select(db.kanjiMeaningWords)
-        ..where((word) => word.word.like('${uniqueWords.last}%')),
-      'search_meaning_${uniqueWords.length}',
-    ));
+      final minWordLength =
+          searchMeaning.ref(db.kanjiMeaningWords.word).length.min();
+      kanjiList = await (db.select(db.kanjis).join(
+        [
+          innerJoin(
+            searchMeaning,
+            searchMeaning
+                .ref(db.kanjiMeaningWords.kanjiId)
+                .equalsExp(db.kanjis.id),
+            useColumns: false,
+          ),
+        ],
+      )
+            ..addColumns([minWordLength])
+            ..orderBy([
+              OrderingTerm.asc(minWordLength),
+              OrderingTerm.asc(db.kanjis.frequency, nulls: NullsOrder.last),
+            ])
+            ..groupBy([db.kanjis.id])
+            ..limit(500))
+          .map((row) => row.readTable(db.kanjis))
+          .get();
+    } else {
+      // Create a join that matches all but the last word and starts with for the last word
+      // Then use having to exclude results that don't contain all words
+      final wordsExceptLast = uniqueWords.sublist(0, uniqueWords.length - 1);
+      final startsWithLastWord = '${uniqueWords.last}%';
+      final minStartsWithLastWordLength = db.kanjiMeaningWords.word.length
+          .min(filter: db.kanjiMeaningWords.word.like(startsWithLastWord));
 
-    final kanjiList = await (db.select(db.kanjis).join(subqueries
-            .map(
-              (e) => innerJoin(
-                e,
-                e.ref(db.kanjiMeaningWords.kanjiId).equalsExp(db.kanjis.id),
-                useColumns: false,
+      final unsortedKanjiList = await (db.select(db.kanjis).join([
+        innerJoin(
+          db.kanjiMeaningWords,
+          db.kanjiMeaningWords.kanjiId.equalsExp(db.kanjis.id),
+        ),
+      ])
+            ..addColumns([minStartsWithLastWordLength])
+            ..orderBy([
+              OrderingTerm.asc(
+                minStartsWithLastWordLength,
+                nulls: NullsOrder.last,
               ),
+              OrderingTerm.asc(db.kanjis.frequency, nulls: NullsOrder.last),
+            ])
+            ..where(Expression.or([
+              db.kanjiMeaningWords.word.isIn(wordsExceptLast),
+              db.kanjiMeaningWords.word.like(startsWithLastWord),
+            ]))
+            ..groupBy(
+              [db.kanjis.id],
+              having: Expression.and([
+                db.kanjiMeaningWords.word
+                    .caseMatch(when: {
+                      for (var w in wordsExceptLast) Variable(w): Variable(w)
+                    })
+                    .count(distinct: true)
+                    .equals(wordsExceptLast.length),
+                CaseWhenExpression(cases: [
+                  CaseWhen(
+                    db.kanjiMeaningWords.word.like(startsWithLastWord),
+                    then: const Constant(0),
+                  ),
+                ]).count().isBiggerOrEqualValue(1),
+              ]),
             )
-            .toList())
-          ..orderBy([
-            OrderingTerm.asc(db.kanjis.frequency, nulls: NullsOrder.last),
-          ])
-          ..groupBy([db.kanjis.id])
-          ..limit(500))
-        .map((row) => row.readTable(db.kanjis))
-        .get();
+            ..limit(500))
+          .map((row) => row.readTable(db.kanjis))
+          .get();
+
+      // Sort exact matches of the search string to the top
+      final regExp = RegExp(r'\b' + cleanedText, caseSensitive: false);
+
+      final List<Kanji> exactMatchKanjiList = [];
+      for (int i = 0; i < unsortedKanjiList.length; i++) {
+        if (regExp.hasMatch(unsortedKanjiList[i].meaning!)) {
+          exactMatchKanjiList.add(unsortedKanjiList.removeAt(i--));
+        }
+      }
+
+      kanjiList = exactMatchKanjiList + unsortedKanjiList;
+    }
 
     return _getAllFromBase(kanjiList);
   }
