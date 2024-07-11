@@ -348,14 +348,12 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
     String cleanedText,
     List<String> splits,
   ) async {
-    final uniqueWords = splits.toSet().toList();
-
     late final List<Kanji> kanjiList;
-    if (uniqueWords.length == 1) {
-      // Create a subquery that finds words that start with the last word
+    if (splits.length == 1) {
+      // Create a subquery that finds words that start with the given word
       final searchMeaning = Subquery(
         db.select(db.kanjiMeaningWords)
-          ..where((word) => word.word.like('${uniqueWords.last}%')),
+          ..where((word) => word.word.like('${splits[0]}%')),
         'search_meaning',
       );
 
@@ -384,8 +382,15 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
     } else {
       // Create a join that matches all but the last word and starts with for the last word
       // Then use having to exclude results that don't contain all words
-      final wordsExceptLast = uniqueWords.sublist(0, uniqueWords.length - 1);
-      final startsWithLastWord = '${uniqueWords.last}%';
+      final uniqueWords = splits.toSet().toList();
+      // Last word in splits might match another word so make sure to separate words correctly
+      late final List<String> wordsExceptLast;
+      if (splits.where((e) => e == splits.last).length > 1) {
+        wordsExceptLast = uniqueWords;
+      } else {
+        wordsExceptLast = uniqueWords.sublist(0, uniqueWords.length - 1);
+      }
+      final startsWithLastWord = '${splits.last}%';
       final minStartsWithLastWordLength = db.kanjiMeaningWords.word.length
           .min(filter: db.kanjiMeaningWords.word.like(startsWithLastWord));
 
