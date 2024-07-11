@@ -343,16 +343,16 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
       final splits = cleanedText.splitWords();
       if (splits.length > 1) {
         // Search by definition
-        return _searchByDefinition(splits.toSet().toList());
+        return _searchByDefinition(cleanedText, splits);
       } else {
         // Search by romaji reading and definition
 
         // Search by definition
         final definitionResults =
-            await _searchByDefinition(splits.toSet().toList());
+            await _searchByDefinition(cleanedText, splits);
 
         // Search by romaji reading
-        final searchingReading = Subquery(
+        final searchReading = Subquery(
           db.select(db.vocabReadings)
             ..where((reading) => Expression.or([
                   reading.readingRomaji.like('$cleanedText%'),
@@ -361,26 +361,39 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
           'search_reading',
         );
 
+        final minReadingRomajiLength =
+            searchReading.ref(db.vocabReadings.readingRomaji).length.min();
         final query = db.select(db.vocabs).join([
           innerJoin(
-            searchingReading,
-            searchingReading
-                .ref(db.vocabReadings.vocabId)
-                .equalsExp(db.vocabs.id),
+            searchReading,
+            searchReading.ref(db.vocabReadings.vocabId).equalsExp(db.vocabs.id),
             useColumns: false,
           ),
         ])
+          ..addColumns([minReadingRomajiLength])
           ..orderBy([
-            OrderingTerm.asc(
-                searchingReading.ref(db.vocabReadings.readingRomaji).length),
+            OrderingTerm.asc(minReadingRomajiLength),
             OrderingTerm.desc(db.vocabs.frequencyScore),
           ])
-          ..groupBy([db.vocabs.id]);
+          ..groupBy([db.vocabs.id])
+          ..limit(1000);
 
-        final vocabList =
-            await query.map((row) => row.readTable(db.vocabs)).get();
+        // Get vocab and sort by if the reading is an exact match or not
+        // This solves some romaji simplification problems and
+        // makes possible sorting later more convenient
+        final rows = await query.get();
+        List<Vocab> exactMatchVocab = [];
+        List<Vocab> otherVocab = [];
+        for (final row in rows) {
+          if (row.read(minReadingRomajiLength) == cleanedText.length) {
+            exactMatchVocab.add(row.readTable(db.vocabs));
+          } else {
+            otherVocab.add(row.readTable(db.vocabs));
+          }
+        }
 
-        final readingResults = await _getAllFromBase(vocabList);
+        final readingResults =
+            await _getAllFromBase(exactMatchVocab + otherVocab);
 
         // If one of the lists is empty, can simply return the non empty one
         if (definitionResults.isEmpty) return readingResults;
@@ -390,27 +403,13 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
         // - Exact match readings results
         // - All definition results
         // - Remaining reading results
-        List<Vocab> mergedResults = [];
-
-        outer:
-        for (int i = 0; i < readingResults.length; i++) {
-          for (var reading in readingResults[i].readings) {
-            if (cleanedText == reading.readingRomaji ||
-                cleanedText == reading.readingRomajiSimplified) {
-              mergedResults.add(readingResults.removeAt(i--));
-              continue outer;
-            }
-          }
-          break;
-        }
-
-        return mergedResults + definitionResults + readingResults;
+        return exactMatchVocab + definitionResults + otherVocab;
       }
     } else {
       // Japanese text
       if (_kanaKit.isKana(cleanedText)) {
         // Search by reading
-        final searchingReading = Subquery(
+        final searchReading = Subquery(
           db.select(db.vocabReadings)
             ..where((reading) => Expression.or([
                   reading.reading.like('$cleanedText%'),
@@ -420,21 +419,22 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
           'search_reading',
         );
 
+        final minReadingLength =
+            searchReading.ref(db.vocabReadings.reading).length.min();
         final query = db.select(db.vocabs).join([
           innerJoin(
-            searchingReading,
-            searchingReading
-                .ref(db.vocabReadings.vocabId)
-                .equalsExp(db.vocabs.id),
+            searchReading,
+            searchReading.ref(db.vocabReadings.vocabId).equalsExp(db.vocabs.id),
             useColumns: false,
           ),
         ])
+          ..addColumns([minReadingLength])
           ..orderBy([
-            OrderingTerm.asc(
-                searchingReading.ref(db.vocabReadings.reading).length),
+            OrderingTerm.asc(minReadingLength),
             OrderingTerm.desc(db.vocabs.frequencyScore),
           ])
-          ..groupBy([db.vocabs.id]);
+          ..groupBy([db.vocabs.id])
+          ..limit(1000);
 
         final baseList =
             await query.map((row) => row.readTable(db.vocabs)).get();
@@ -442,7 +442,7 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
         return _getAllFromBase(baseList);
       } else {
         // Search by writing
-        final searchingWriting = Subquery(
+        final searchWriting = Subquery(
           db.select(db.vocabWritings)
             ..where((writing) => Expression.or([
                   writing.writing.like('$cleanedText%'),
@@ -452,21 +452,22 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
           'search_writing',
         );
 
+        final minWritingLength =
+            searchWriting.ref(db.vocabWritings.writing).length.min();
         final query = db.select(db.vocabs).join([
           innerJoin(
-            searchingWriting,
-            searchingWriting
-                .ref(db.vocabWritings.vocabId)
-                .equalsExp(db.vocabs.id),
+            searchWriting,
+            searchWriting.ref(db.vocabWritings.vocabId).equalsExp(db.vocabs.id),
             useColumns: false,
           ),
         ])
+          ..addColumns([minWritingLength])
           ..orderBy([
-            OrderingTerm.asc(
-                searchingWriting.ref(db.vocabWritings.writing).length),
+            OrderingTerm.asc(minWritingLength),
             OrderingTerm.desc(db.vocabs.frequencyScore),
           ])
-          ..groupBy([db.vocabs.id]);
+          ..groupBy([db.vocabs.id])
+          ..limit(1000);
 
         final baseList =
             await query.map((row) => row.readTable(db.vocabs)).get();
@@ -476,42 +477,155 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
     }
   }
 
-  Future<List<Vocab>> _searchByDefinition(List<String> splits) async {
-    // Create sub queries that match all but the last split
-    List<Subquery<VocabDefinitionWord>> subqueries = [];
-    for (int i = 0; i < splits.length - 1; i++) {
-      subqueries.add(Subquery(
+  Future<List<Vocab>> _searchByDefinition(
+    String cleanedText,
+    List<String> splits,
+  ) async {
+    late final List<Vocab> vocabList;
+    if (splits.length == 1) {
+      // Create a subquery that finds words that start with the given word
+      final searchDefinition = Subquery(
         db.select(db.vocabDefinitionWords)
-          ..where((word) => word.word.equals(splits[i])),
-        'search_definition_$i',
-      ));
+          ..where((word) => word.word.like('${splits.last}%')),
+        'search_definition',
+      );
+
+      final minWordLength =
+          searchDefinition.ref(db.vocabDefinitionWords.word).length.min();
+      vocabList = await (db.select(db.vocabs).join([
+        innerJoin(
+          searchDefinition,
+          searchDefinition
+              .ref(db.vocabDefinitionWords.vocabId)
+              .equalsExp(db.vocabs.id),
+          useColumns: false,
+        ),
+      ])
+            ..addColumns([minWordLength])
+            ..orderBy([
+              OrderingTerm.asc(minWordLength),
+              OrderingTerm.desc(db.vocabs.frequencyScore),
+              OrderingTerm.desc(db.vocabs.common),
+            ])
+            ..groupBy([db.vocabs.id])
+            ..limit(1000))
+          .map((row) => row.readTable(db.vocabs))
+          .get();
+    } else {
+      // Create a join that matches all but the last word and starts with for the last word
+      // Then use having to exclude results that don't contain all words
+      final uniqueWords = splits.toSet().toList();
+      // Last word in splits might match another word so make sure to separate words correctly
+      late final List<String> wordsExceptLast;
+      if (splits.where((e) => e == splits.last).length > 1) {
+        wordsExceptLast = uniqueWords;
+      } else {
+        wordsExceptLast = uniqueWords.sublist(0, uniqueWords.length - 1);
+      }
+      final startsWithLastWord = '${splits.last}%';
+      final minStartsWithLastWordLength = db.vocabDefinitionWords.word.length
+          .min(filter: db.vocabDefinitionWords.word.like(startsWithLastWord));
+
+      vocabList = await (db.select(db.vocabs).join([
+        innerJoin(
+          db.vocabDefinitionWords,
+          db.vocabDefinitionWords.vocabId.equalsExp(db.vocabs.id),
+        ),
+      ])
+            ..addColumns([minStartsWithLastWordLength])
+            ..orderBy([
+              OrderingTerm.asc(
+                minStartsWithLastWordLength,
+                nulls: NullsOrder.last,
+              ),
+              OrderingTerm.desc(db.vocabs.frequencyScore),
+              OrderingTerm.desc(db.vocabs.common),
+            ])
+            ..where(Expression.or([
+              db.vocabDefinitionWords.word.isIn(wordsExceptLast),
+              db.vocabDefinitionWords.word.like(startsWithLastWord),
+            ]))
+            ..groupBy(
+              [db.vocabs.id],
+              having: Expression.and([
+                db.vocabDefinitionWords.word
+                    .caseMatch(when: {
+                      for (var w in wordsExceptLast) Variable(w): Variable(w)
+                    })
+                    .count(distinct: true)
+                    .equals(wordsExceptLast.length),
+                CaseWhenExpression(cases: [
+                  CaseWhen(
+                    db.vocabDefinitionWords.word.like(startsWithLastWord),
+                    then: const Constant(0),
+                  ),
+                ]).count().isBiggerOrEqualValue(1),
+              ]),
+            )
+            ..limit(500))
+          .map((row) => row.readTable(db.vocabs))
+          .get();
     }
 
-    // Create a sub query that uses like for the last split
-    subqueries.add(Subquery(
-      db.select(db.vocabDefinitionWords)
-        ..where((word) => word.word.like('${splits.last}%')),
-      'search_definition_${splits.length}',
-    ));
+    if (vocabList.isEmpty) return [];
 
-    final vocabList = await (db.select(db.vocabs).join(subqueries
-            .map(
-              (e) => innerJoin(
-                e,
-                e.ref(db.vocabDefinitionWords.vocabId).equalsExp(db.vocabs.id),
-                useColumns: false,
-              ),
-            )
-            .toList())
-          ..orderBy([
-            OrderingTerm.asc(db.vocabs.frequencyScore, nulls: NullsOrder.last),
-            OrderingTerm.desc(db.vocabs.common),
-          ])
-          ..groupBy([db.vocabs.id])
-          ..limit(1000))
-        .map((row) => row.readTable(db.vocabs))
-        .get();
+    // Finish getting vocab
+    await _getAllFromBase(vocabList);
 
-    return _getAllFromBase(vocabList);
+    // Sort by how well search text matches vocab definition
+    // Each nested list is for quality of match
+    //    Nested list 0: definition 1 sub-definition contains only search text
+    //    Nested list 1: definition 1 sub-definition starts with search text
+    //    Nested list 2: exact match in definition 1 other than start
+    //    Nested list 3: exact match in definition 2+
+    //    Nested list 4: no match found
+    List<List<Vocab>> nestedSortingList = [[], [], [], [], []];
+
+    // Match word starting with search text
+    final searchTextRegExp = RegExp(
+      r'\b' + cleanedText,
+      caseSensitive: false,
+    );
+    // Match search text at the start of string or after ';' and ignore leading/trailing parenthesis
+    final startingRegExp = RegExp(
+      r'(^|(; ))(\([^)]*\) )?\b' + cleanedText + r'( \([^)]*\))?',
+      caseSensitive: false,
+    );
+    // Same as startingRegExp but with end of sub-definition
+    final startingEndRegExp = RegExp(
+      startingRegExp.pattern + r'($|;)',
+      caseSensitive: false,
+    );
+
+    outer:
+    for (var vocab in vocabList) {
+      for (int i = 0; i < vocab.definitions.length; i++) {
+        final definition = vocab.definitions[i].definition;
+        if (definition.contains(searchTextRegExp)) {
+          if (i == 0) {
+            int foundIndex = definition.indexOf(startingRegExp);
+            if (foundIndex != -1) {
+              if (definition.contains(startingEndRegExp, foundIndex)) {
+                nestedSortingList[0].add(vocab);
+              } else {
+                nestedSortingList[1].add(vocab);
+              }
+            } else {
+              nestedSortingList[2].add(vocab);
+            }
+          } else {
+            nestedSortingList[3].add(vocab);
+          }
+          continue outer;
+        }
+      }
+      nestedSortingList[4].add(vocab);
+    }
+
+    return nestedSortingList[0] +
+        nestedSortingList[1] +
+        nestedSortingList[2] +
+        nestedSortingList[3] +
+        nestedSortingList[4];
   }
 }
