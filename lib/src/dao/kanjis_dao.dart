@@ -74,6 +74,8 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
   }
 
   Future<List<Kanji>> getAll(List<int> idList, {FrontType? frontType}) async {
+    if (idList.isEmpty) return [];
+
     final baseQuery = db.select(db.kanjis)..where((row) => row.id.isIn(idList));
 
     late Map<int, Kanji> kanjiMap = {};
@@ -149,6 +151,8 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
   }
 
   Future<List<Kanji>> _getAllFromBase(List<Kanji> kanjiList) async {
+    if (kanjiList.isEmpty) return kanjiList;
+
     final kanjiMap = {for (var kanji in kanjiList) kanji.id: kanji};
 
     final readings = await (db.select(db.kanjiReadings)
@@ -196,6 +200,8 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
   }
 
   Future<List<Kanji>> validateAll(List<int> idList) async {
+    if (idList.isEmpty) return [];
+
     final kanjiMap = {
       for (var kanji in (await (db.select(db.kanjis)
             ..where((row) => row.id.isIn(idList)))

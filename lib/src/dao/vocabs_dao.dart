@@ -62,6 +62,8 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
   }
 
   Future<List<Vocab>> getAll(List<int> idList, {FrontType? frontType}) async {
+    if (idList.isEmpty) return [];
+
     final baseQuery = db.select(db.vocabs)
       ..where((vocab) => vocab.id.isIn(idList));
 
@@ -166,6 +168,8 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
   }
 
   Future<List<Vocab>> _getAllFromBase(List<Vocab> vocabList) async {
+    if (vocabList.isEmpty) return vocabList;
+
     final vocabMap = {for (var vocab in vocabList) vocab.id: vocab};
 
     final writings = await (db.select(db.vocabWritings)
@@ -241,6 +245,8 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
   }
 
   Future<List<Vocab>> validateAll(List<int> idList) async {
+    if (idList.isEmpty) return [];
+
     final vocabMap = {
       for (var vocab in (await (db.select(db.vocabs)
             ..where((row) => row.id.isIn(idList)))

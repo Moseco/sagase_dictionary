@@ -16,13 +16,18 @@ class PredefinedDictionaryListsDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<List<PredefinedDictionaryList>> getAll(List<int> ids) async {
+    if (ids.isEmpty) return [];
+
     return (db.select(db.predefinedDictionaryLists)
           ..where((list) => list.id.isIn(ids)))
         .get();
   }
 
   Future<List<PredefinedDictionaryList>> getAllWithoutItems(
-      List<int> ids) async {
+    List<int> ids,
+  ) async {
+    if (ids.isEmpty) return [];
+
     return (db.selectOnly(db.predefinedDictionaryLists)
           ..addColumns([
             db.predefinedDictionaryLists.id,
