@@ -289,7 +289,7 @@ class DictionaryBuilder {
         if (writing == null) {
           results = await db.vocabsDao.getByReading(reading);
         } else {
-          results = await db.vocabsDao.getByWriting(writing);
+          results = await db.vocabsDao.getByWritingAndReading(writing, reading);
         }
 
         // Add pitch accent info if the vocab writing/reading matches
@@ -405,34 +405,38 @@ class DictionaryBuilder {
         if (definition.crossReferences == null) continue;
         List<VocabReference> newCrossReferences = [];
         for (final crossReference in definition.crossReferences!) {
-          List<String> split = crossReference.text.split('・');
-          String updatedText = split[0];
+          List<String> splits = crossReference.text.split('・');
+          String updatedText = splits[0];
 
-          List<Vocab> results = _kanaKit.isKana(split[0])
-              ? await db.vocabsDao.getByReading(split[0])
-              : await db.vocabsDao.getByWriting(split[0]);
-          // If have additional reading filter results
-          if (split.length > 1 && int.tryParse(split[1]) == null) {
-            for (int j = 0; j < results.length; j++) {
-              bool removeResult = true;
-              if (_kanaKit.isKana(split[1])) {
-                for (final reading in results[j].readings) {
-                  if (reading.reading == split[1]) {
-                    removeResult = false;
-                    break;
-                  }
-                }
-              } else {
-                for (final writing in results[j].writings ?? []) {
-                  if (writing.writing == split[1]) {
-                    removeResult = false;
-                    break;
-                  }
-                }
-              }
-              if (removeResult) results.removeAt(j--);
+          // Get writing and/or reading
+          String? writing;
+          String? reading;
+          if (_kanaKit.isKana(splits[0])) {
+            reading = splits[0];
+          } else {
+            writing = splits[0];
+          }
+          if (splits.length > 1 && int.tryParse(splits[1]) == null) {
+            if (_kanaKit.isKana(splits[1])) {
+              reading = splits[1];
+            } else {
+              writing = splits[1];
             }
           }
+
+          // Search based on what we have
+          late List<Vocab> results;
+          if (writing == null) {
+            results = await db.vocabsDao.getByReading(reading!);
+          } else {
+            if (reading == null) {
+              results = await db.vocabsDao.getByWriting(writing);
+            } else {
+              results =
+                  await db.vocabsDao.getByWritingAndReading(writing, reading);
+            }
+          }
+
           results.sort(_compareVocab);
 
           List<int>? ids;
@@ -443,8 +447,8 @@ class DictionaryBuilder {
           } else {
             List<Vocab> filtered = List.from(results);
 
-            // If only kana given, try to filter
-            if (_kanaKit.isKana(split[0])) {
+            // If only reading given, try to filter
+            if (writing == null) {
               for (int j = 0; j < filtered.length; j++) {
                 if (filtered[j].writings?[0].writing != null &&
                     !filtered[j].isUsuallyKanaAlone()) {
@@ -494,34 +498,38 @@ class DictionaryBuilder {
         if (definition.antonyms == null) continue;
         List<VocabReference> newAntonyms = [];
         for (final antonym in definition.antonyms!) {
-          List<String> split = antonym.text.split('・');
-          String updatedText = split[0];
+          List<String> splits = antonym.text.split('・');
+          String updatedText = splits[0];
 
-          List<Vocab> results = _kanaKit.isKana(split[0])
-              ? await db.vocabsDao.getByReading(split[0])
-              : await db.vocabsDao.getByWriting(split[0]);
-          // If have additional reading filter results
-          if (split.length > 1 && int.tryParse(split[1]) == null) {
-            for (int i = 0; i < results.length; i++) {
-              bool removeResult = true;
-              if (_kanaKit.isKana(split[1])) {
-                for (final reading in results[i].readings) {
-                  if (reading.reading == split[1]) {
-                    removeResult = false;
-                    break;
-                  }
-                }
-              } else {
-                for (final writing in results[i].writings ?? []) {
-                  if (writing.writing == split[1]) {
-                    removeResult = false;
-                    break;
-                  }
-                }
-              }
-              if (removeResult) results.removeAt(i--);
+          // Get writing and/or reading
+          String? writing;
+          String? reading;
+          if (_kanaKit.isKana(splits[0])) {
+            reading = splits[0];
+          } else {
+            writing = splits[0];
+          }
+          if (splits.length > 1 && int.tryParse(splits[1]) == null) {
+            if (_kanaKit.isKana(splits[1])) {
+              reading = splits[1];
+            } else {
+              writing = splits[1];
             }
           }
+
+          // Search based on what we have
+          late List<Vocab> results;
+          if (writing == null) {
+            results = await db.vocabsDao.getByReading(reading!);
+          } else {
+            if (reading == null) {
+              results = await db.vocabsDao.getByWriting(writing);
+            } else {
+              results =
+                  await db.vocabsDao.getByWritingAndReading(writing, reading);
+            }
+          }
+
           results.sort(_compareVocab);
 
           List<int>? ids;
@@ -532,8 +540,8 @@ class DictionaryBuilder {
           } else {
             List<Vocab> filtered = List.from(results);
 
-            // If only kana given, try to filter
-            if (_kanaKit.isKana(split[0])) {
+            // If only reading given, try to filter
+            if (writing == null) {
               for (int i = 0; i < filtered.length; i++) {
                 if (filtered[i].writings?[0].writing != null &&
                     !filtered[i].isUsuallyKanaAlone()) {

@@ -313,6 +313,49 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
     return _getAllFromBase(baseList);
   }
 
+  Future<List<Vocab>> getByWritingAndReading(
+    String writingText,
+    String readingText,
+  ) async {
+    final matchWriting = Subquery(
+      db.select(db.vocabWritings)
+        ..where((writing) => Expression.or([
+              writing.writing.equals(writingText),
+              writing.writingSearchForm.equals(_kanaKit
+                  .toHiragana(writingText.toLowerCase().romajiToHalfWidth())),
+            ])),
+      'match_writing',
+    );
+
+    final matchReading = Subquery(
+      db.select(db.vocabReadings)
+        ..where((reading) => Expression.or([
+              reading.reading.equals(readingText),
+              reading.readingSearchForm
+                  .equals(_kanaKit.toHiragana(readingText)),
+            ])),
+      'match_reading',
+    );
+
+    final query = db.select(db.vocabs).join([
+      innerJoin(
+        matchWriting,
+        matchWriting.ref(db.vocabWritings.vocabId).equalsExp(db.vocabs.id),
+        useColumns: false,
+      ),
+      innerJoin(
+        matchReading,
+        matchReading.ref(db.vocabReadings.vocabId).equalsExp(db.vocabs.id),
+        useColumns: false,
+      ),
+    ])
+      ..groupBy([db.vocabs.id]);
+
+    final baseList = await query.map((row) => row.readTable(db.vocabs)).get();
+
+    return _getAllFromBase(baseList);
+  }
+
   Future<List<Vocab>> getUsingKanji(String kanji) async {
     final searchWriting = Subquery(
       db.select(db.vocabWritings)

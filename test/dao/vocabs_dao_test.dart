@@ -263,6 +263,34 @@ void main() {
       );
     });
 
+    group('getByWritingAndReading', () {
+      test('Valid', () async {
+        final vocabList = await database.vocabsDao.getByWritingAndReading(
+          '明白',
+          'めいはく',
+        );
+        expect(vocabList.length, 1);
+        expect(vocabList[0].id, 1000220);
+        expect(vocabList[0].writings!.length, 1);
+        expect(vocabList[0].writings![0].writing, '明白');
+        expect(vocabList[0].readings.length, 1);
+        expect(vocabList[0].readings[0].reading, 'めいはく');
+        expect(vocabList[0].definitions.length, 1);
+        expect(
+          vocabList[0].definitions[0].definition,
+          'obvious; clear; plain; evident; apparent; explicit; overt',
+        );
+      });
+
+      test('Empty result', () async {
+        final vocabList = await database.vocabsDao.getByWritingAndReading(
+          '明白',
+          'ら',
+        );
+        expect(vocabList.length, 0);
+      });
+    });
+
     test('getUsingKanji', () async {
       final vocabList = await database.vocabsDao.getUsingKanji('行');
       expect(vocabList.length, 2);
