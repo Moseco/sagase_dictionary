@@ -13,6 +13,7 @@ import 'package:sagase_dictionary/src/datamodels/flashcard_sets.dart';
 import 'package:sagase_dictionary/src/datamodels/kanjis.dart';
 import 'package:sagase_dictionary/src/datamodels/my_dictionary_lists.dart';
 import 'package:sagase_dictionary/src/datamodels/predefined_dictionary_lists.dart';
+import 'package:sagase_dictionary/src/datamodels/proper_nouns.dart';
 import 'package:sagase_dictionary/src/datamodels/radicals.dart';
 import 'package:sagase_dictionary/src/datamodels/search_history_items.dart';
 import 'package:sagase_dictionary/src/datamodels/spaced_repetition_datas.dart';
@@ -35,6 +36,7 @@ part 'database.g.dart';
     MyDictionaryLists,
     MyDictionaryListItems,
     PredefinedDictionaryLists,
+    ProperNouns,
     Radicals,
     SearchHistoryItems,
     SpacedRepetitionDatas,
@@ -47,6 +49,7 @@ part 'database.g.dart';
   include: {
     'datamodels/kanjis.drift',
     'datamodels/my_dictionary_lists.drift',
+    'datamodels/proper_nouns.drift',
     'datamodels/spaced_repetition_datas.drift',
     'datamodels/vocabs.drift',
   },

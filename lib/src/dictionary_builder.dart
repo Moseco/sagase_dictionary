@@ -2310,47 +2310,92 @@ class DictionaryBuilder {
         );
   }
 
-  //TODO finish transition to sql
   // Creates the proper noun database from the raw dictionary file
-  // static Future<void> createProperNounDictionary(
-  //   Isar isar,
-  //   String enamdictString,
-  // ) async {
-  // // Set up
-  // await isar.writeTxn(() async {
-  //   await isar.clear();
-  // });
+  static Future<void> createProperNounDictionary(
+    AppDatabase db,
+    String enamdict, {
+    bool showProgress = false,
+  }) async {
+    if (showProgress) {
+      stdout.write('\nProper noun progress 0%');
+    }
 
-  // // Create
-  // await isar.writeTxn(() async {
-  //   final lines = enamdictString.split('\n');
-  //   for (var line in lines) {
-  //     String writing = line.substring(0, line.indexOf(' '));
-  //     line = line.substring(writing.length + 1);
-  //     String? reading;
-  //     if (line[0] == '[') {
-  //       reading = line.substring(1, line.indexOf(' ') - 1);
-  //       line = line.substring(reading.length + 3);
-  //     }
-  //     String typesString = line.substring(2, line.indexOf(')'));
-  //     line = line.substring(typesString.length + 4);
-  //     String romaji = line.substring(0, line.length - 1);
+    final lines = enamdict.split('\n');
+    List<ProperNounsCompanion> properNouns = [];
+    double progress = 0;
+    for (int i = 0; i < lines.length; i++) {
+      if (showProgress) {
+        double currentProgress = i / lines.length;
+        if (currentProgress != progress) {
+          progress = currentProgress;
+          stdout.write(
+            '\rProper noun progress ${(progress * 100).toStringAsFixed(0)}%',
+          );
+        }
+      }
 
-  //     List<ProperNounType> types = [];
-  //     for (var typeString in typesString.split(',')) {
-  //       types.add(_properNounTypeStringToEnum(typeString));
-  //     }
+      var line = lines[i];
 
-  //     ProperNounIsar current = ProperNounIsar()
-  //       ..writing = writing
-  //       ..reading = reading
-  //       ..romaji = romaji
-  //       ..types = types;
+      // Set initial writing
+      String? writing = line.substring(0, line.indexOf(' '));
+      line = line.substring(writing.length + 1);
+      // Try to get reading
+      late String reading;
+      String? writingSearchForm;
+      if (line[0] == '[') {
+        // Set reading
+        reading = line.substring(1, line.indexOf(' ') - 1);
+        line = line.substring(reading.length + 3);
+        // Create writing search form
+        writingSearchForm =
+            _kanaKit.toHiragana(writing.toLowerCase().romajiToHalfWidth());
+        if (writing == writingSearchForm) writingSearchForm = null;
+      } else {
+        // No reading available so set reading to writing and writing to null
+        reading = writing;
+        writing = null;
+      }
+      // Create reading search form
+      String? readingSearchForm = _kanaKit.toHiragana(reading);
+      if (reading == readingSearchForm) readingSearchForm = null;
 
-  //     await isar.properNouns.put(current);
-  //   }
-  // });
-  // }
+      // Create reading romaji
+      String readingRomaji = _kanaKit.toRomaji(reading).toLowerCase();
+      String? readingRomajiSimplified = _kanaKit
+          .toRomaji(reading.replaceAll(_simplifyNonVerbRegex, ''))
+          .toLowerCase();
+      if (readingRomaji == readingRomajiSimplified) {
+        readingRomajiSimplified = null;
+      }
+
+      // Get proper noun types
+      String typesString = line.substring(2, line.indexOf(')'));
+      List<ProperNounType> types = [];
+      for (var typeString in typesString.split(',')) {
+        types.add(_properNounTypeStringToEnum(typeString));
+      }
+      // Get romaji
+      line = line.substring(typesString.length + 4);
+      String romaji = line.substring(0, line.length - 1);
+
+      properNouns.add(
+        ProperNounsCompanion(
+          writing: Value.absentIfNull(writing),
+          writingSearchForm: Value.absentIfNull(writingSearchForm),
+          reading: Value(reading),
+          readingSearchForm: Value.absentIfNull(readingSearchForm),
+          readingRomaji: Value(readingRomaji),
+          readingRomajiSimplified: Value.absentIfNull(readingRomajiSimplified),
+          romaji: Value(romaji),
+          types: Value(types),
+        ),
+      );
+    }
+
+    await db.batch((batch) {
+      batch.insertAll(db.properNouns, properNouns);
+    });
+  }
 
   static ProperNounType _properNounTypeStringToEnum(String type) {
     switch (type) {

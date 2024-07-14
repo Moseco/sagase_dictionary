@@ -3777,6 +3777,482 @@ class RadicalsCompanion extends UpdateCompanion<Radical> {
   }
 }
 
+class $ProperNounsTable extends ProperNouns
+    with TableInfo<$ProperNounsTable, ProperNoun> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProperNounsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _writingMeta =
+      const VerificationMeta('writing');
+  @override
+  late final GeneratedColumn<String> writing = GeneratedColumn<String>(
+      'writing', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _writingSearchFormMeta =
+      const VerificationMeta('writingSearchForm');
+  @override
+  late final GeneratedColumn<String> writingSearchForm =
+      GeneratedColumn<String>('writing_search_form', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _readingMeta =
+      const VerificationMeta('reading');
+  @override
+  late final GeneratedColumn<String> reading = GeneratedColumn<String>(
+      'reading', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _readingSearchFormMeta =
+      const VerificationMeta('readingSearchForm');
+  @override
+  late final GeneratedColumn<String> readingSearchForm =
+      GeneratedColumn<String>('reading_search_form', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _readingRomajiMeta =
+      const VerificationMeta('readingRomaji');
+  @override
+  late final GeneratedColumn<String> readingRomaji = GeneratedColumn<String>(
+      'reading_romaji', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _readingRomajiSimplifiedMeta =
+      const VerificationMeta('readingRomajiSimplified');
+  @override
+  late final GeneratedColumn<String> readingRomajiSimplified =
+      GeneratedColumn<String>('reading_romaji_simplified', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _romajiMeta = const VerificationMeta('romaji');
+  @override
+  late final GeneratedColumn<String> romaji = GeneratedColumn<String>(
+      'romaji', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _typesMeta = const VerificationMeta('types');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<ProperNounType>?, String>
+      types = GeneratedColumn<String>('types', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<ProperNounType>?>(
+              $ProperNounsTable.$convertertypesn);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        writing,
+        writingSearchForm,
+        reading,
+        readingSearchForm,
+        readingRomaji,
+        readingRomajiSimplified,
+        romaji,
+        types
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'proper_nouns';
+  @override
+  VerificationContext validateIntegrity(Insertable<ProperNoun> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('writing')) {
+      context.handle(_writingMeta,
+          writing.isAcceptableOrUnknown(data['writing']!, _writingMeta));
+    }
+    if (data.containsKey('writing_search_form')) {
+      context.handle(
+          _writingSearchFormMeta,
+          writingSearchForm.isAcceptableOrUnknown(
+              data['writing_search_form']!, _writingSearchFormMeta));
+    }
+    if (data.containsKey('reading')) {
+      context.handle(_readingMeta,
+          reading.isAcceptableOrUnknown(data['reading']!, _readingMeta));
+    } else if (isInserting) {
+      context.missing(_readingMeta);
+    }
+    if (data.containsKey('reading_search_form')) {
+      context.handle(
+          _readingSearchFormMeta,
+          readingSearchForm.isAcceptableOrUnknown(
+              data['reading_search_form']!, _readingSearchFormMeta));
+    }
+    if (data.containsKey('reading_romaji')) {
+      context.handle(
+          _readingRomajiMeta,
+          readingRomaji.isAcceptableOrUnknown(
+              data['reading_romaji']!, _readingRomajiMeta));
+    } else if (isInserting) {
+      context.missing(_readingRomajiMeta);
+    }
+    if (data.containsKey('reading_romaji_simplified')) {
+      context.handle(
+          _readingRomajiSimplifiedMeta,
+          readingRomajiSimplified.isAcceptableOrUnknown(
+              data['reading_romaji_simplified']!,
+              _readingRomajiSimplifiedMeta));
+    }
+    if (data.containsKey('romaji')) {
+      context.handle(_romajiMeta,
+          romaji.isAcceptableOrUnknown(data['romaji']!, _romajiMeta));
+    } else if (isInserting) {
+      context.missing(_romajiMeta);
+    }
+    context.handle(_typesMeta, const VerificationResult.success());
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProperNoun map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProperNoun(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      writing: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}writing']),
+      writingSearchForm: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}writing_search_form']),
+      reading: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}reading'])!,
+      readingSearchForm: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}reading_search_form']),
+      readingRomaji: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}reading_romaji'])!,
+      readingRomajiSimplified: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}reading_romaji_simplified']),
+      romaji: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}romaji'])!,
+      types: $ProperNounsTable.$convertertypesn.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}types'])),
+    );
+  }
+
+  @override
+  $ProperNounsTable createAlias(String alias) {
+    return $ProperNounsTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<List<ProperNounType>, String> $convertertypes =
+      const ProperNounTypeConverter();
+  static TypeConverter<List<ProperNounType>?, String?> $convertertypesn =
+      NullAwareTypeConverter.wrap($convertertypes);
+}
+
+class ProperNoun extends DataClass implements Insertable<ProperNoun> {
+  final int id;
+  final String? writing;
+  final String? writingSearchForm;
+  final String reading;
+  final String? readingSearchForm;
+  final String readingRomaji;
+  final String? readingRomajiSimplified;
+  final String romaji;
+  final List<ProperNounType>? types;
+  const ProperNoun(
+      {required this.id,
+      this.writing,
+      this.writingSearchForm,
+      required this.reading,
+      this.readingSearchForm,
+      required this.readingRomaji,
+      this.readingRomajiSimplified,
+      required this.romaji,
+      this.types});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || writing != null) {
+      map['writing'] = Variable<String>(writing);
+    }
+    if (!nullToAbsent || writingSearchForm != null) {
+      map['writing_search_form'] = Variable<String>(writingSearchForm);
+    }
+    map['reading'] = Variable<String>(reading);
+    if (!nullToAbsent || readingSearchForm != null) {
+      map['reading_search_form'] = Variable<String>(readingSearchForm);
+    }
+    map['reading_romaji'] = Variable<String>(readingRomaji);
+    if (!nullToAbsent || readingRomajiSimplified != null) {
+      map['reading_romaji_simplified'] =
+          Variable<String>(readingRomajiSimplified);
+    }
+    map['romaji'] = Variable<String>(romaji);
+    if (!nullToAbsent || types != null) {
+      map['types'] =
+          Variable<String>($ProperNounsTable.$convertertypesn.toSql(types));
+    }
+    return map;
+  }
+
+  ProperNounsCompanion toCompanion(bool nullToAbsent) {
+    return ProperNounsCompanion(
+      id: Value(id),
+      writing: writing == null && nullToAbsent
+          ? const Value.absent()
+          : Value(writing),
+      writingSearchForm: writingSearchForm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(writingSearchForm),
+      reading: Value(reading),
+      readingSearchForm: readingSearchForm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(readingSearchForm),
+      readingRomaji: Value(readingRomaji),
+      readingRomajiSimplified: readingRomajiSimplified == null && nullToAbsent
+          ? const Value.absent()
+          : Value(readingRomajiSimplified),
+      romaji: Value(romaji),
+      types:
+          types == null && nullToAbsent ? const Value.absent() : Value(types),
+    );
+  }
+
+  factory ProperNoun.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProperNoun(
+      id: serializer.fromJson<int>(json['id']),
+      writing: serializer.fromJson<String?>(json['writing']),
+      writingSearchForm:
+          serializer.fromJson<String?>(json['writingSearchForm']),
+      reading: serializer.fromJson<String>(json['reading']),
+      readingSearchForm:
+          serializer.fromJson<String?>(json['readingSearchForm']),
+      readingRomaji: serializer.fromJson<String>(json['readingRomaji']),
+      readingRomajiSimplified:
+          serializer.fromJson<String?>(json['readingRomajiSimplified']),
+      romaji: serializer.fromJson<String>(json['romaji']),
+      types: serializer.fromJson<List<ProperNounType>?>(json['types']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'writing': serializer.toJson<String?>(writing),
+      'writingSearchForm': serializer.toJson<String?>(writingSearchForm),
+      'reading': serializer.toJson<String>(reading),
+      'readingSearchForm': serializer.toJson<String?>(readingSearchForm),
+      'readingRomaji': serializer.toJson<String>(readingRomaji),
+      'readingRomajiSimplified':
+          serializer.toJson<String?>(readingRomajiSimplified),
+      'romaji': serializer.toJson<String>(romaji),
+      'types': serializer.toJson<List<ProperNounType>?>(types),
+    };
+  }
+
+  ProperNoun copyWith(
+          {int? id,
+          Value<String?> writing = const Value.absent(),
+          Value<String?> writingSearchForm = const Value.absent(),
+          String? reading,
+          Value<String?> readingSearchForm = const Value.absent(),
+          String? readingRomaji,
+          Value<String?> readingRomajiSimplified = const Value.absent(),
+          String? romaji,
+          Value<List<ProperNounType>?> types = const Value.absent()}) =>
+      ProperNoun(
+        id: id ?? this.id,
+        writing: writing.present ? writing.value : this.writing,
+        writingSearchForm: writingSearchForm.present
+            ? writingSearchForm.value
+            : this.writingSearchForm,
+        reading: reading ?? this.reading,
+        readingSearchForm: readingSearchForm.present
+            ? readingSearchForm.value
+            : this.readingSearchForm,
+        readingRomaji: readingRomaji ?? this.readingRomaji,
+        readingRomajiSimplified: readingRomajiSimplified.present
+            ? readingRomajiSimplified.value
+            : this.readingRomajiSimplified,
+        romaji: romaji ?? this.romaji,
+        types: types.present ? types.value : this.types,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('ProperNoun(')
+          ..write('id: $id, ')
+          ..write('writing: $writing, ')
+          ..write('writingSearchForm: $writingSearchForm, ')
+          ..write('reading: $reading, ')
+          ..write('readingSearchForm: $readingSearchForm, ')
+          ..write('readingRomaji: $readingRomaji, ')
+          ..write('readingRomajiSimplified: $readingRomajiSimplified, ')
+          ..write('romaji: $romaji, ')
+          ..write('types: $types')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, writing, writingSearchForm, reading,
+      readingSearchForm, readingRomaji, readingRomajiSimplified, romaji, types);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProperNoun &&
+          other.id == this.id &&
+          other.writing == this.writing &&
+          other.writingSearchForm == this.writingSearchForm &&
+          other.reading == this.reading &&
+          other.readingSearchForm == this.readingSearchForm &&
+          other.readingRomaji == this.readingRomaji &&
+          other.readingRomajiSimplified == this.readingRomajiSimplified &&
+          other.romaji == this.romaji &&
+          other.types == this.types);
+}
+
+class ProperNounsCompanion extends UpdateCompanion<ProperNoun> {
+  final Value<int> id;
+  final Value<String?> writing;
+  final Value<String?> writingSearchForm;
+  final Value<String> reading;
+  final Value<String?> readingSearchForm;
+  final Value<String> readingRomaji;
+  final Value<String?> readingRomajiSimplified;
+  final Value<String> romaji;
+  final Value<List<ProperNounType>?> types;
+  const ProperNounsCompanion({
+    this.id = const Value.absent(),
+    this.writing = const Value.absent(),
+    this.writingSearchForm = const Value.absent(),
+    this.reading = const Value.absent(),
+    this.readingSearchForm = const Value.absent(),
+    this.readingRomaji = const Value.absent(),
+    this.readingRomajiSimplified = const Value.absent(),
+    this.romaji = const Value.absent(),
+    this.types = const Value.absent(),
+  });
+  ProperNounsCompanion.insert({
+    this.id = const Value.absent(),
+    this.writing = const Value.absent(),
+    this.writingSearchForm = const Value.absent(),
+    required String reading,
+    this.readingSearchForm = const Value.absent(),
+    required String readingRomaji,
+    this.readingRomajiSimplified = const Value.absent(),
+    required String romaji,
+    this.types = const Value.absent(),
+  })  : reading = Value(reading),
+        readingRomaji = Value(readingRomaji),
+        romaji = Value(romaji);
+  static Insertable<ProperNoun> custom({
+    Expression<int>? id,
+    Expression<String>? writing,
+    Expression<String>? writingSearchForm,
+    Expression<String>? reading,
+    Expression<String>? readingSearchForm,
+    Expression<String>? readingRomaji,
+    Expression<String>? readingRomajiSimplified,
+    Expression<String>? romaji,
+    Expression<String>? types,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (writing != null) 'writing': writing,
+      if (writingSearchForm != null) 'writing_search_form': writingSearchForm,
+      if (reading != null) 'reading': reading,
+      if (readingSearchForm != null) 'reading_search_form': readingSearchForm,
+      if (readingRomaji != null) 'reading_romaji': readingRomaji,
+      if (readingRomajiSimplified != null)
+        'reading_romaji_simplified': readingRomajiSimplified,
+      if (romaji != null) 'romaji': romaji,
+      if (types != null) 'types': types,
+    });
+  }
+
+  ProperNounsCompanion copyWith(
+      {Value<int>? id,
+      Value<String?>? writing,
+      Value<String?>? writingSearchForm,
+      Value<String>? reading,
+      Value<String?>? readingSearchForm,
+      Value<String>? readingRomaji,
+      Value<String?>? readingRomajiSimplified,
+      Value<String>? romaji,
+      Value<List<ProperNounType>?>? types}) {
+    return ProperNounsCompanion(
+      id: id ?? this.id,
+      writing: writing ?? this.writing,
+      writingSearchForm: writingSearchForm ?? this.writingSearchForm,
+      reading: reading ?? this.reading,
+      readingSearchForm: readingSearchForm ?? this.readingSearchForm,
+      readingRomaji: readingRomaji ?? this.readingRomaji,
+      readingRomajiSimplified:
+          readingRomajiSimplified ?? this.readingRomajiSimplified,
+      romaji: romaji ?? this.romaji,
+      types: types ?? this.types,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (writing.present) {
+      map['writing'] = Variable<String>(writing.value);
+    }
+    if (writingSearchForm.present) {
+      map['writing_search_form'] = Variable<String>(writingSearchForm.value);
+    }
+    if (reading.present) {
+      map['reading'] = Variable<String>(reading.value);
+    }
+    if (readingSearchForm.present) {
+      map['reading_search_form'] = Variable<String>(readingSearchForm.value);
+    }
+    if (readingRomaji.present) {
+      map['reading_romaji'] = Variable<String>(readingRomaji.value);
+    }
+    if (readingRomajiSimplified.present) {
+      map['reading_romaji_simplified'] =
+          Variable<String>(readingRomajiSimplified.value);
+    }
+    if (romaji.present) {
+      map['romaji'] = Variable<String>(romaji.value);
+    }
+    if (types.present) {
+      map['types'] = Variable<String>(
+          $ProperNounsTable.$convertertypesn.toSql(types.value));
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProperNounsCompanion(')
+          ..write('id: $id, ')
+          ..write('writing: $writing, ')
+          ..write('writingSearchForm: $writingSearchForm, ')
+          ..write('reading: $reading, ')
+          ..write('readingSearchForm: $readingSearchForm, ')
+          ..write('readingRomaji: $readingRomaji, ')
+          ..write('readingRomajiSimplified: $readingRomajiSimplified, ')
+          ..write('romaji: $romaji, ')
+          ..write('types: $types')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $PredefinedDictionaryListsTable extends PredefinedDictionaryLists
     with TableInfo<$PredefinedDictionaryListsTable, PredefinedDictionaryList> {
   @override
@@ -5128,6 +5604,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $RadicalsTable radicals = $RadicalsTable(this);
   late final Index uKRadicalsRadical = Index('UK_radicals_radical',
       'CREATE UNIQUE INDEX UK_radicals_radical ON radicals (radical)');
+  late final $ProperNounsTable properNouns = $ProperNounsTable(this);
+  late final Index iXProperNounsReading = Index('IX_proper_nouns_reading',
+      'CREATE INDEX IX_proper_nouns_reading ON proper_nouns (reading)');
+  late final Index iXProperNounsReadingRomaji = Index(
+      'IX_proper_nouns_reading_romaji',
+      'CREATE INDEX IX_proper_nouns_reading_romaji ON proper_nouns (reading_romaji)');
+  late final Index iXProperNounsRomaji = Index('IX_proper_nouns_romaji',
+      'CREATE INDEX IX_proper_nouns_romaji ON proper_nouns (romaji)');
   late final $PredefinedDictionaryListsTable predefinedDictionaryLists =
       $PredefinedDictionaryListsTable(this);
   late final $MyDictionaryListsTable myDictionaryLists =
@@ -5146,6 +5630,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Index iXSpacedRepetitionDatasKanjiId = Index(
       'IX_spaced_repetition_datas_kanji_id',
       'CREATE INDEX IX_spaced_repetition_datas_kanji_id ON spaced_repetition_datas (kanji_id) WHERE kanji_id != 0');
+  late final Index iXProperNounsWriting = Index('IX_proper_nouns_writing',
+      'CREATE INDEX IX_proper_nouns_writing ON proper_nouns (writing) WHERE writing IS NOT NULL');
+  late final Index iXProperNounsWritingSearchForm = Index(
+      'IX_proper_nouns_writing_search_form',
+      'CREATE INDEX IX_proper_nouns_writing_search_form ON proper_nouns (writing_search_form) WHERE writing_search_form IS NOT NULL');
+  late final Index iXProperNounsReadingSearchForm = Index(
+      'IX_proper_nouns_reading_search_form',
+      'CREATE INDEX IX_proper_nouns_reading_search_form ON proper_nouns (reading_search_form) WHERE reading_search_form IS NOT NULL');
+  late final Index iXProperNounsReadingRomajiSimplified = Index(
+      'IX_proper_nouns_reading_romaji_simplified',
+      'CREATE INDEX IX_proper_nouns_reading_romaji_simplified ON proper_nouns (reading_romaji_simplified) WHERE reading_romaji_simplified IS NOT NULL');
   late final Index iXMyDictionaryListItemsVocabId = Index(
       'IX_my_dictionary_list_items_vocab_id',
       'CREATE INDEX IX_my_dictionary_list_items_vocab_id ON my_dictionary_list_items (vocab_id) WHERE vocab_id != 0');
@@ -5205,6 +5700,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         searchHistoryItems,
         radicals,
         uKRadicalsRadical,
+        properNouns,
+        iXProperNounsReading,
+        iXProperNounsReadingRomaji,
+        iXProperNounsRomaji,
         predefinedDictionaryLists,
         myDictionaryLists,
         myDictionaryListItems,
@@ -5213,6 +5712,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         dictionaryInfos,
         iXSpacedRepetitionDatasVocabId,
         iXSpacedRepetitionDatasKanjiId,
+        iXProperNounsWriting,
+        iXProperNounsWritingSearchForm,
+        iXProperNounsReadingSearchForm,
+        iXProperNounsReadingRomajiSimplified,
         iXMyDictionaryListItemsVocabId,
         iXMyDictionaryListItemsKanjiId,
         iXKanjiReadingsReadingSearchForm,
@@ -6414,6 +6917,211 @@ class $$RadicalsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+typedef $$ProperNounsTableInsertCompanionBuilder = ProperNounsCompanion
+    Function({
+  Value<int> id,
+  Value<String?> writing,
+  Value<String?> writingSearchForm,
+  required String reading,
+  Value<String?> readingSearchForm,
+  required String readingRomaji,
+  Value<String?> readingRomajiSimplified,
+  required String romaji,
+  Value<List<ProperNounType>?> types,
+});
+typedef $$ProperNounsTableUpdateCompanionBuilder = ProperNounsCompanion
+    Function({
+  Value<int> id,
+  Value<String?> writing,
+  Value<String?> writingSearchForm,
+  Value<String> reading,
+  Value<String?> readingSearchForm,
+  Value<String> readingRomaji,
+  Value<String?> readingRomajiSimplified,
+  Value<String> romaji,
+  Value<List<ProperNounType>?> types,
+});
+
+class $$ProperNounsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ProperNounsTable,
+    ProperNoun,
+    $$ProperNounsTableFilterComposer,
+    $$ProperNounsTableOrderingComposer,
+    $$ProperNounsTableProcessedTableManager,
+    $$ProperNounsTableInsertCompanionBuilder,
+    $$ProperNounsTableUpdateCompanionBuilder> {
+  $$ProperNounsTableTableManager(_$AppDatabase db, $ProperNounsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$ProperNounsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$ProperNounsTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$ProperNounsTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> writing = const Value.absent(),
+            Value<String?> writingSearchForm = const Value.absent(),
+            Value<String> reading = const Value.absent(),
+            Value<String?> readingSearchForm = const Value.absent(),
+            Value<String> readingRomaji = const Value.absent(),
+            Value<String?> readingRomajiSimplified = const Value.absent(),
+            Value<String> romaji = const Value.absent(),
+            Value<List<ProperNounType>?> types = const Value.absent(),
+          }) =>
+              ProperNounsCompanion(
+            id: id,
+            writing: writing,
+            writingSearchForm: writingSearchForm,
+            reading: reading,
+            readingSearchForm: readingSearchForm,
+            readingRomaji: readingRomaji,
+            readingRomajiSimplified: readingRomajiSimplified,
+            romaji: romaji,
+            types: types,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> writing = const Value.absent(),
+            Value<String?> writingSearchForm = const Value.absent(),
+            required String reading,
+            Value<String?> readingSearchForm = const Value.absent(),
+            required String readingRomaji,
+            Value<String?> readingRomajiSimplified = const Value.absent(),
+            required String romaji,
+            Value<List<ProperNounType>?> types = const Value.absent(),
+          }) =>
+              ProperNounsCompanion.insert(
+            id: id,
+            writing: writing,
+            writingSearchForm: writingSearchForm,
+            reading: reading,
+            readingSearchForm: readingSearchForm,
+            readingRomaji: readingRomaji,
+            readingRomajiSimplified: readingRomajiSimplified,
+            romaji: romaji,
+            types: types,
+          ),
+        ));
+}
+
+class $$ProperNounsTableProcessedTableManager extends ProcessedTableManager<
+    _$AppDatabase,
+    $ProperNounsTable,
+    ProperNoun,
+    $$ProperNounsTableFilterComposer,
+    $$ProperNounsTableOrderingComposer,
+    $$ProperNounsTableProcessedTableManager,
+    $$ProperNounsTableInsertCompanionBuilder,
+    $$ProperNounsTableUpdateCompanionBuilder> {
+  $$ProperNounsTableProcessedTableManager(super.$state);
+}
+
+class $$ProperNounsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $ProperNounsTable> {
+  $$ProperNounsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get writing => $state.composableBuilder(
+      column: $state.table.writing,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get writingSearchForm => $state.composableBuilder(
+      column: $state.table.writingSearchForm,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get reading => $state.composableBuilder(
+      column: $state.table.reading,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get readingSearchForm => $state.composableBuilder(
+      column: $state.table.readingSearchForm,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get readingRomaji => $state.composableBuilder(
+      column: $state.table.readingRomaji,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get readingRomajiSimplified => $state.composableBuilder(
+      column: $state.table.readingRomajiSimplified,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get romaji => $state.composableBuilder(
+      column: $state.table.romaji,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<ProperNounType>?, List<ProperNounType>,
+          String>
+      get types => $state.composableBuilder(
+          column: $state.table.types,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+}
+
+class $$ProperNounsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $ProperNounsTable> {
+  $$ProperNounsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get writing => $state.composableBuilder(
+      column: $state.table.writing,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get writingSearchForm => $state.composableBuilder(
+      column: $state.table.writingSearchForm,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get reading => $state.composableBuilder(
+      column: $state.table.reading,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get readingSearchForm => $state.composableBuilder(
+      column: $state.table.readingSearchForm,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get readingRomaji => $state.composableBuilder(
+      column: $state.table.readingRomaji,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get readingRomajiSimplified =>
+      $state.composableBuilder(
+          column: $state.table.readingRomajiSimplified,
+          builder: (column, joinBuilders) =>
+              ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get romaji => $state.composableBuilder(
+      column: $state.table.romaji,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get types => $state.composableBuilder(
+      column: $state.table.types,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 typedef $$MyDictionaryListItemsTableInsertCompanionBuilder
     = MyDictionaryListItemsCompanion Function({
   Value<int> id,
@@ -6650,6 +7358,8 @@ class _$AppDatabaseManager {
       $$SearchHistoryItemsTableTableManager(_db, _db.searchHistoryItems);
   $$RadicalsTableTableManager get radicals =>
       $$RadicalsTableTableManager(_db, _db.radicals);
+  $$ProperNounsTableTableManager get properNouns =>
+      $$ProperNounsTableTableManager(_db, _db.properNouns);
   $$MyDictionaryListItemsTableTableManager get myDictionaryListItems =>
       $$MyDictionaryListItemsTableTableManager(_db, _db.myDictionaryListItems);
   $$DictionaryInfosTableTableManager get dictionaryInfos =>
