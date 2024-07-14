@@ -1319,7 +1319,7 @@ const shortKanjiStrokeData = '''
 }
 ''';
 
-const shortKanjiRadicalData = '''
+const shortRadicalData = '''
 {
 "一": {
     "strokes": 1,

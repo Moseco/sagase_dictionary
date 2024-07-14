@@ -33,7 +33,7 @@ void main() async {
       database,
       File(path.join(inputFilesPath, 'JMdict_e_examp')).readAsStringSync(),
       File(path.join(inputFilesPath, 'kanjidic2.xml')).readAsStringSync(),
-      File(path.join(inputFilesPath, 'kanji_radicals.json')).readAsStringSync(),
+      File(path.join(inputFilesPath, 'radicals.json')).readAsStringSync(),
       File(path.join(inputFilesPath, 'kanji_strokes.json')).readAsStringSync(),
       File(path.join(inputFilesPath, 'kanji_components.json'))
           .readAsStringSync(),

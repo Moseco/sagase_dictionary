@@ -22,7 +22,7 @@ void main() {
         database,
         shortJMdict,
         shortKanjidic2,
-        shortKanjiRadicalData,
+        shortRadicalData,
         shortKanjiStrokeData,
         shortKanjiComponentData,
         shortVocabListData,

@@ -23,7 +23,7 @@ Prepare source files to be placed in ```example/input_files/```
 
 ### Included files
 
-- kanji_radicals.json
+- radicals.json
 - kanji_components.json
 - kanji_strokes.json
 - vocab_lists.json

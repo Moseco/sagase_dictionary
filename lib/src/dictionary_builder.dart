@@ -24,7 +24,7 @@ class DictionaryBuilder {
     AppDatabase db,
     String vocabDict,
     String kanjiDict,
-    String kanjiRadicals,
+    String radicals,
     String strokeData,
     String kanjiComponentData,
     String vocabLists,
@@ -49,10 +49,10 @@ class DictionaryBuilder {
       showProgress: showProgress,
     );
 
-    // Kanji radicals
+    // Radicals
     await DictionaryBuilder.createRadicalDictionary(
       db,
-      kanjiRadicals,
+      radicals,
       strokeData,
     );
 
@@ -1556,14 +1556,14 @@ class DictionaryBuilder {
   @visibleForTesting
   static Future<void> createRadicalDictionary(
     AppDatabase db,
-    String kanjiRadicals,
+    String radicals,
     String strokeData,
   ) async {
-    Map<String, dynamic> kanjiRadicalMap = jsonDecode(kanjiRadicals);
+    Map<String, dynamic> radicalMap = jsonDecode(radicals);
     Map<String, dynamic> strokeMap = jsonDecode(strokeData);
 
     await db.transaction(() async {
-      for (var entry in kanjiRadicalMap.entries) {
+      for (var entry in radicalMap.entries) {
         await db.into(db.radicals).insert(
               RadicalsCompanion(
                 radical: Value(entry.key),
@@ -1641,7 +1641,7 @@ class DictionaryBuilder {
             // Kanji codepoint
             break;
           case 'radical':
-            kanji = await _handleKanjiRadicalElements(
+            kanji = await _handleRadicalElements(
               db,
               xmlKanjiChild.childElements,
               kanji,
@@ -1847,7 +1847,7 @@ class DictionaryBuilder {
     });
   }
 
-  static Future<KanjisCompanion> _handleKanjiRadicalElements(
+  static Future<KanjisCompanion> _handleRadicalElements(
     AppDatabase db,
     Iterable<XmlElement> elements,
     KanjisCompanion kanji,

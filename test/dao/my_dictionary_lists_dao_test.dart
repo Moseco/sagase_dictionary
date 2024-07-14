@@ -26,7 +26,7 @@ void main() {
       // Radicals
       await DictionaryBuilder.createRadicalDictionary(
         database,
-        shortKanjiRadicalData,
+        shortRadicalData,
         shortKanjiStrokeData,
       );
 
