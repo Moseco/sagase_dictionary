@@ -157,16 +157,18 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
     );
   }
 
-  Future<bool> isInMyDictionaryLists(DictionaryItem dictionaryItem) async {
-    return (await (db.select(db.myDictionaryListItems)
-              ..where((item) => dictionaryItem is Vocab
-                  ? item.vocabId.equalsNullable(dictionaryItem.id)
-                  : item.kanjiId.equalsNullable(dictionaryItem.id)))
-            .get())
-        .isNotEmpty;
+  Future<List<int>> getContainingDictionaryItem(
+    DictionaryItem dictionaryItem,
+  ) async {
+    return (db.select(db.myDictionaryListItems)
+          ..where((item) => dictionaryItem is Vocab
+              ? item.vocabId.equalsNullable(dictionaryItem.id)
+              : item.kanjiId.equalsNullable(dictionaryItem.id)))
+        .map((row) => row.listId)
+        .get();
   }
 
-  Stream<List<MyDictionaryList>> watchMyDictionaryLists() {
+  Stream<List<MyDictionaryList>> watchAll() {
     return (db.select(db.myDictionaryLists)
           ..orderBy([(list) => OrderingTerm.desc(list.timestamp)]))
         .watch();
@@ -197,13 +199,14 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
-  Stream<List<MyDictionaryListItem>> watchDictionaryItemInMyDictionaryLists(
+  Stream<List<int>> watchContainingDictionaryItem(
     DictionaryItem dictionaryItem,
   ) {
     return (db.select(db.myDictionaryListItems)
           ..where((item) => dictionaryItem is Vocab
               ? item.vocabId.equalsNullable(dictionaryItem.id)
               : item.kanjiId.equalsNullable(dictionaryItem.id)))
+        .map((e) => e.listId)
         .watch();
   }
 

@@ -241,7 +241,7 @@ void main() {
       expect(list2Items.kanjiIds.length, 0);
     });
 
-    test('isInMyDictionaryLists', () async {
+    test('getContainingDictionaryItem', () async {
       final dictionaryList1 =
           await database.myDictionaryListsDao.create('list1');
       await database.myDictionaryListsDao.create('list2');
@@ -253,23 +253,23 @@ void main() {
 
       expect(
         await database.myDictionaryListsDao
-            .isInMyDictionaryLists(await database.vocabsDao.get(1000220)),
-        true,
+            .getContainingDictionaryItem(await database.vocabsDao.get(1000220)),
+        [dictionaryList1.id],
       );
       expect(
         await database.myDictionaryListsDao
-            .isInMyDictionaryLists(await database.vocabsDao.get(1003430)),
-        false,
+            .getContainingDictionaryItem(await database.vocabsDao.get(1003430)),
+        [],
       );
     });
 
-    test('watchMyDictionaryLists', () async {
+    test('watchAll', () async {
       final dictionaryList1 =
           await database.myDictionaryListsDao.create('list1');
       await database.myDictionaryListsDao.create('list2');
 
       final events = StreamQueue(
-        database.myDictionaryListsDao.watchMyDictionaryLists(),
+        database.myDictionaryListsDao.watchAll(),
       );
 
       var currentEvent = await events.next;
@@ -320,13 +320,12 @@ void main() {
       expect(currentEvent.kanjiIds.length, 0);
     });
 
-    test('watchDictionaryItemInMyDictionaryLists', () async {
+    test('watchContainingDictionaryItem', () async {
       final dictionaryList =
           await database.myDictionaryListsDao.create('list1');
       final vocab = await database.vocabsDao.get(1003430);
       final events = StreamQueue(
-        database.myDictionaryListsDao
-            .watchDictionaryItemInMyDictionaryLists(vocab),
+        database.myDictionaryListsDao.watchContainingDictionaryItem(vocab),
       );
 
       var currentEvent = await events.next;
@@ -336,7 +335,7 @@ void main() {
           .addDictionaryItem(dictionaryList, vocab);
 
       currentEvent = await events.next;
-      expect(currentEvent.length, 1);
+      expect(currentEvent, [dictionaryList.id]);
 
       await database.myDictionaryListsDao
           .removeDictionaryItem(dictionaryList, vocab);
