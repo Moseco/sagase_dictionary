@@ -1,10 +1,13 @@
-import 'package:isar/isar.dart';
-
 abstract class DictionaryList {
-  Id id = Isar.autoIncrement;
+  final int id;
+  final String name;
+  final List<int> vocab;
+  final List<int> kanji;
 
-  late String name;
-
-  List<int> getVocab();
-  List<int> getKanji();
+  const DictionaryList({
+    required this.id,
+    required this.name,
+    required this.vocab,
+    required this.kanji,
+  });
 }

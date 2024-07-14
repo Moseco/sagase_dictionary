@@ -1,5 +1,5 @@
 class SagaseDictionaryConstants {
-  static const int dictionaryVersion = 13;
+  static const int dictionaryVersion = 14;
 
   static const int dictionaryListIdJouyou = 0;
   static const int dictionaryListIdJlptVocabN1 = 1;
@@ -70,7 +70,6 @@ class SagaseDictionaryConstants {
   static const backupMyDictionaryListTimestamp = 'timestamp';
   static const backupMyDictionaryListVocab = 'vocab';
   static const backupMyDictionaryListKanji = 'kanji';
-  static const backupSpacedRepetitionDataKanji = 'kanji';
   static const backupSpacedRepetitionDataInterval = 'interval';
   static const backupSpacedRepetitionDataRepetitions = 'repetitions';
   static const backupSpacedRepetitionDataEaseFactor = 'ease_factor';

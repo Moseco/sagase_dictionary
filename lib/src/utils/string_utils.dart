@@ -1,3 +1,5 @@
+import 'dart:math';
+
 extension JapaneseTextHelpers on String {
   static const fullWidthRegExp = r'([\uff01-\uff5e])';
   static const halfWidthRegExp = r'([\u0021-\u007e])';
@@ -24,5 +26,19 @@ extension JapaneseTextHelpers on String {
       // Bit shift and merge
       return codeUnits[0] << 16 | codeUnits[1];
     }
+  }
+
+  // To be used with names for my dictionary lists and flashcard sets
+  String sanitizeName() {
+    // Remove new line characters
+    String name = replaceAll('\n', '');
+    // Enforce character length and trim whitespace
+    return name.substring(0, min(50, name.length)).trim();
+  }
+
+  static final splitWordsRegExp = RegExp(r'\b[^\s]+\b');
+
+  List<String> splitWords() {
+    return splitWordsRegExp.allMatches(this).map((e) => e[0]!).toList();
   }
 }

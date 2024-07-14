@@ -1,76 +1,73 @@
-// ignore_for_file: avoid_print
 import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
 
-import 'package:isar/isar.dart';
+import 'package:drift/drift.dart';
 import 'package:kana_kit/kana_kit.dart';
 import 'package:meta/meta.dart';
-import 'package:sagase_dictionary/src/datamodels/kanji_radical.dart';
-import 'package:sagase_dictionary/src/datamodels/dictionary_info.dart';
-import 'package:sagase_dictionary/src/datamodels/kanji.dart';
-import 'package:sagase_dictionary/src/datamodels/my_dictionary_list.dart';
-import 'package:sagase_dictionary/src/datamodels/predefined_dictionary_list.dart';
-import 'package:sagase_dictionary/src/datamodels/proper_noun.dart';
-import 'package:sagase_dictionary/src/datamodels/vocab.dart';
+import 'package:sagase_dictionary/src/database.dart';
+import 'package:sagase_dictionary/src/datamodels/vocabs.dart';
+import 'package:sagase_dictionary/src/utils/enum_utils.dart';
+import 'package:sagase_dictionary/src/utils/enums.dart';
 import 'package:xml/xml.dart';
 import 'package:sagase_dictionary/src/utils/constants.dart';
 import 'package:sagase_dictionary/src/utils/string_utils.dart';
 
 class DictionaryBuilder {
-  static const List<CollectionSchema<dynamic>> dictionarySchemas = [
-    DictionaryInfoSchema,
-    VocabSchema,
-    KanjiSchema,
-    PredefinedDictionaryListSchema,
-    MyDictionaryListSchema,
-    KanjiRadicalSchema,
-    ProperNounSchema,
-  ];
-
   static final _kanaKit = const KanaKit().copyWithConfig(passRomaji: true);
+
+  static final _simplifyNonVerbRegex = RegExp(r'(?<=.{1})(う|っ|ッ|ー)');
+  static final _simplifyVerbRegex = RegExp(r'(?<=.{1})(ー|っ|ッ|(う(?=.)))');
 
   // Entry point for creating the dictionary
   static Future<void> createDictionary(
-    Isar isar,
+    AppDatabase db,
     String vocabDict,
     String kanjiDict,
-    String kanjiRadicals,
+    String radicals,
     String strokeData,
     String kanjiComponentData,
     String vocabLists,
     String kanjiLists,
     String pitchAccents,
-    String frequencyList,
-  ) async {
+    String frequencyList, {
+    bool showProgress = false,
+  }) async {
     // Set up
-    await isar.writeTxn(() async {
-      await isar.clear();
-      return isar.dictionaryInfos.put(
-        DictionaryInfo()..version = SagaseDictionaryConstants.dictionaryVersion,
-      );
-    });
+    await db.into(db.dictionaryInfos).insert(
+          DictionaryInfosCompanion(
+            version: Value(SagaseDictionaryConstants.dictionaryVersion),
+          ),
+        );
 
     // Vocab
     await DictionaryBuilder.createVocabDictionary(
-        isar, vocabDict, pitchAccents, frequencyList);
+      db,
+      vocabDict,
+      pitchAccents,
+      frequencyList,
+      showProgress: showProgress,
+    );
 
-    // Kanji radicals
+    // Radicals
     await DictionaryBuilder.createRadicalDictionary(
-      isar,
-      kanjiRadicals,
+      db,
+      radicals,
       strokeData,
     );
 
     // Kanji
     await DictionaryBuilder.createKanjiDictionary(
-      isar,
+      db,
       kanjiDict,
       kanjiComponentData,
       strokeData,
+      showProgress: showProgress,
     );
 
     // Dictionary lists
     await DictionaryBuilder.createDictionaryLists(
-      isar,
+      db,
       vocabLists,
       kanjiLists,
     );
@@ -79,213 +76,208 @@ class DictionaryBuilder {
   // Creates the vocab database from the raw dictionary file
   @visibleForTesting
   static Future<void> createVocabDictionary(
-    Isar isar,
+    AppDatabase db,
     String vocabDict,
     String pitchAccents,
-    String frequencyList,
-  ) async {
-    final List<Vocab> vocabList = [];
+    String frequencyList, {
+    bool showProgress = false,
+  }) async {
+    final List<VocabsCompanion> vocabList = [];
+    final List<VocabWritingsCompanion> writings = [];
+    final List<VocabReadingsCompanion> readings = [];
+    final List<VocabDefinitionsCompanion> definitions = [];
+    final List<VocabDefinitionWordsCompanion> definitionWords = [];
 
-    final jmdictDoc = XmlDocument.parse(vocabDict);
+    final xmlVocabList =
+        XmlDocument.parse(vocabDict).childElements.first.childElements.toList();
 
-    final rawVocabList = jmdictDoc.childElements.first.childElements;
     // Top level of vocab items
-    for (int i = 0; i < rawVocabList.length; i++) {
-      // Write to database every 1000 iterations
-      if (i % 1000 == 0 && i != 0) {
-        print("At vocab $i");
-        await isar.writeTxn(() async {
-          for (var vocab in vocabList) {
-            await isar.vocabs.put(vocab);
-          }
-          vocabList.clear();
-        });
-      }
-
-      final vocab = Vocab();
-      List<KanjiReadingPair> kanjiReadingPairs = [];
-      vocab.kanjiReadingPairs = kanjiReadingPairs;
-      List<String> rawDefinitions = [];
-
-      // Elements within vocab
-      final rawVocabItem = rawVocabList.elementAt(i);
-      for (var vocabElement in rawVocabItem.childElements) {
-        switch (vocabElement.name.local) {
-          case 'ent_seq':
-            vocab.id = int.parse(vocabElement.innerText);
-            break;
-          case 'k_ele':
-            final pair = KanjiReadingPair()
-              ..kanjiWritings = [
-                _handleKanjiElements(vocabElement.childElements, vocab)
-              ];
-            // If the kanji writing is a search only form add to index now and skip it
-            if (pair.kanjiWritings![0].info
-                    ?.contains(KanjiInfo.searchOnlyForm) ??
-                false) {
-              vocab.japaneseTextIndex.add(_kanaKit.toHiragana(
-                pair.kanjiWritings![0].kanji.toLowerCase().romajiToHalfWidth(),
-              ));
-            } else {
-              kanjiReadingPairs.add(pair);
-            }
-            break;
-          case 'r_ele':
-            _handleReadingElements(
-              vocabElement.childElements,
-              kanjiReadingPairs,
-              vocab,
-            );
-            break;
-          case 'sense':
-            rawDefinitions.addAll(_handleSenseElement(vocabElement, vocab));
-            break;
+    double progress = 0;
+    for (int i = 0; i < xmlVocabList.length; i++) {
+      if (showProgress) {
+        double currentProgress = i / xmlVocabList.length;
+        if (currentProgress != progress) {
+          progress = currentProgress;
+          stdout.write(
+            '\rVocab progress ${(progress * 100).toStringAsFixed(0)}%',
+          );
         }
       }
 
-      // Merge kanji reading pairs if they contain the same readings
-      for (int j = 0; j < kanjiReadingPairs.length; j++) {
-        for (int k = j + 1; k < kanjiReadingPairs.length; k++) {
-          // If reading list length is not the same, can  skip
-          if (kanjiReadingPairs[j].readings.length !=
-              kanjiReadingPairs[k].readings.length) continue;
+      var vocab = VocabsCompanion(common: Value(false));
+      List<VocabWritingsCompanion> currentWritings = [];
+      List<VocabReadingsCompanion> currentReadings = [];
+      List<VocabDefinitionsCompanion> currentDefinitions = [];
 
-          // Go through readings and check if they are all the same
-          bool readingMismatch = false;
-          for (int x = 0; x < kanjiReadingPairs[j].readings.length; x++) {
-            if (kanjiReadingPairs[j].readings[x] !=
-                kanjiReadingPairs[k].readings[x]) {
-              readingMismatch = true;
-              break;
-            }
-          }
-          // If any of the readings were different, can skip
-          if (readingMismatch) continue;
-
-          // If got here, then can merge pairs if both kanji writing lists exist
-          if (kanjiReadingPairs[j].kanjiWritings != null &&
-              kanjiReadingPairs[k].kanjiWritings != null) {
-            kanjiReadingPairs[j]
-                .kanjiWritings!
-                .addAll(kanjiReadingPairs[k].kanjiWritings!);
-
-            // Remove pair that was merged from
-            kanjiReadingPairs.removeAt(k);
-            k--;
-          }
+      // Elements within vocab
+      for (var xmlVocabChild in xmlVocabList[i].childElements) {
+        switch (xmlVocabChild.name.local) {
+          case 'ent_seq':
+            vocab = vocab.copyWith(
+              id: Value(int.parse(xmlVocabChild.innerText)),
+            );
+            break;
+          case 'k_ele':
+            final result = _handleWritingElements(xmlVocabChild.childElements);
+            currentWritings.add(result.$1.copyWith(vocabId: vocab.id));
+            vocab =
+                vocab.copyWith(common: Value(vocab.common.value || result.$2));
+            break;
+          case 'r_ele':
+            final result = _handleReadingElements(xmlVocabChild.childElements);
+            currentReadings.add(result.$1.copyWith(vocabId: vocab.id));
+            vocab =
+                vocab.copyWith(common: Value(vocab.common.value || result.$2));
+            break;
+          case 'sense':
+            currentDefinitions.add(
+              _handleSenseElement(xmlVocabChild).copyWith(vocabId: vocab.id),
+            );
+            break;
         }
       }
 
       // Extract pos to general list if shared by all definitions (skip if single definition)
-      if (vocab.definitions.length > 1) {
-        if (vocab.definitions[0].pos != null) {
+      if (currentDefinitions.length > 1) {
+        if (currentDefinitions[0].pos.value != null) {
           outer:
-          for (var pos in vocab.definitions[0].pos!) {
-            for (int i = 1; i < vocab.definitions.length; i++) {
-              if (!(vocab.definitions[i].pos?.contains(pos) ?? false)) {
+          for (var pos in currentDefinitions[0].pos.value!) {
+            for (int i = 1; i < currentDefinitions.length; i++) {
+              if (!(currentDefinitions[i].pos.value?.contains(pos) ?? false)) {
                 continue outer;
               }
             }
-            vocab.pos ??= [];
-            vocab.pos!.add(pos);
+            if (vocab.pos.value == null) {
+              vocab = vocab.copyWith(pos: Value([pos]));
+            } else {
+              vocab.pos.value!.add(pos);
+            }
           }
-          if (vocab.pos != null) {
-            for (var pos in vocab.pos!) {
-              for (var definition in vocab.definitions) {
-                definition.pos?.remove(pos);
-                if (definition.pos?.isEmpty ?? false) definition.pos = null;
+          if (vocab.pos.value != null) {
+            for (var pos in vocab.pos.value!) {
+              for (int i = 0; i < currentDefinitions.length; i++) {
+                currentDefinitions[i].pos.value?.remove(pos);
+                if (currentDefinitions[i].pos.value?.isEmpty ?? false) {
+                  currentDefinitions[i] =
+                      currentDefinitions[i].copyWith(pos: Value.absent());
+                }
               }
             }
           }
         }
       }
 
-      // Create index strings
-      final simplifyNonVerbRegex = RegExp(r'(?<=.{1})(う|っ|ー)');
-      final simplifyVerbRegex = RegExp(r'(?<=.{1})(ー|っ|(う(?=.)))');
-      for (var pair in vocab.kanjiReadingPairs) {
-        // Add readings
-        for (var reading in pair.readings) {
-          // Japanese text
-          vocab.japaneseTextIndex.add(_kanaKit.toHiragana(reading.reading));
-          // Romaji text
-          vocab.romajiTextIndex
-              .add(_kanaKit.toRomaji(reading.reading).toLowerCase());
-          // Simplified romaji text (remove based on if verb or not)
-          String? simplifiedReading;
-          for (var pos in vocab.definitions.first.pos ?? []) {
-            // Range of verbs
-            if (pos.index >= PartOfSpeech.verb.index &&
-                pos.index <= PartOfSpeech.verbIchidanZuru.index) {
-              simplifiedReading =
-                  reading.reading.replaceAll(simplifyVerbRegex, '');
+      // Create search form of writings
+      for (int i = 0; i < currentWritings.length; i++) {
+        final searchForm = _kanaKit.toHiragana(
+            currentWritings[i].writing.value.toLowerCase().romajiToHalfWidth());
+        if (searchForm != currentWritings[i].writing.value) {
+          currentWritings[i] = currentWritings[i].copyWith(
+            writingSearchForm: Value(searchForm),
+          );
+        }
+      }
+
+      // Create search form and romaji versions of readings
+      for (int i = 0; i < currentReadings.length; i++) {
+        // Search form
+        String? searchForm =
+            _kanaKit.toHiragana(currentReadings[i].reading.value);
+        if (searchForm == currentReadings[i].reading.value) searchForm = null;
+
+        // Romaji text
+        final readingRomaji =
+            _kanaKit.toRomaji(currentReadings[i].reading.value).toLowerCase();
+
+        // Simplified romaji text (remove based on if verb or not)
+        bool isVerb = false;
+        if (vocab.pos.value != null) {
+          for (final pos in vocab.pos.value!) {
+            if (pos.isVerb()) {
+              isVerb = true;
               break;
             }
           }
-          // If not already set, use non-verb regex
-          simplifiedReading ??=
-              reading.reading.replaceAll(simplifyNonVerbRegex, '');
-
-          if (simplifiedReading.isNotEmpty) {
-            vocab.romajiTextIndex
-                .add(_kanaKit.toRomaji(simplifiedReading).toLowerCase());
+        }
+        if (!isVerb && currentDefinitions[0].pos.value != null) {
+          for (final pos in currentDefinitions[0].pos.value!) {
+            if (pos.isVerb()) {
+              isVerb = true;
+              break;
+            }
           }
         }
-        // Add kanji
-        if (pair.kanjiWritings != null) {
-          for (var kanjiWriting in pair.kanjiWritings!) {
-            vocab.japaneseTextIndex.add(_kanaKit.toHiragana(
-              kanjiWriting.kanji.toLowerCase().romajiToHalfWidth(),
-            ));
-          }
+
+        String? romajiSimplified = _kanaKit
+            .toRomaji(currentReadings[i].reading.value.replaceAll(
+                isVerb ? _simplifyVerbRegex : _simplifyNonVerbRegex, ''))
+            .toLowerCase();
+
+        if (romajiSimplified.isEmpty || readingRomaji == romajiSimplified) {
+          romajiSimplified = null;
         }
+
+        currentReadings[i] = currentReadings[i].copyWith(
+          readingSearchForm: Value.absentIfNull(searchForm),
+          readingRomaji: Value(readingRomaji),
+          readingRomajiSimplified: Value.absentIfNull(romajiSimplified),
+        );
       }
 
-      for (var definition in rawDefinitions) {
-        final split = Isar.splitWords(definition.toLowerCase());
-        // If definition starts with 'to ' index 'to ' merged with the next word
-        // This improves searching for verbs
-        if (split.length > 1 && split[0] == 'to') {
-          vocab.definitionIndex.add('${split[0]} ${split[1]}');
-        }
-        // Add split words for improved searching
-        vocab.definitionIndex.addAll(split);
-      }
-
-      // Remove duplicates from indexes
-      vocab.japaneseTextIndex = vocab.japaneseTextIndex.toSet().toList();
-      vocab.romajiTextIndex = vocab.romajiTextIndex.toSet().toList();
-      vocab.definitionIndex = vocab.definitionIndex.toSet().toList();
-
-      // Sort text indexes by length
-      vocab.japaneseTextIndex.sort((a, b) => a.length.compareTo(b.length));
-      vocab.romajiTextIndex.sort((a, b) => a.length.compareTo(b.length));
-
-      // Finally, add vocab to list
+      // Finally, add to lists
       vocabList.add(vocab);
+      writings.addAll(currentWritings);
+      readings.addAll(currentReadings);
+      definitions.addAll(currentDefinitions);
+      final words = currentDefinitions
+          .map((e) => e.definition.value)
+          .toList()
+          .join('\n')
+          .toLowerCase()
+          .splitWords()
+          .toSet()
+          .toList();
+      for (final word in words) {
+        definitionWords.add(VocabDefinitionWordsCompanion(
+          word: Value(word),
+          vocabId: vocab.id,
+        ));
+      }
     }
 
-    // Write the remaining vocab
-    await isar.writeTxn(() async {
-      for (var vocab in vocabList) {
-        await isar.vocabs.put(vocab);
-      }
+    // Write vocab to db
+    await db.batch((batch) {
+      batch.insertAll(db.vocabs, vocabList);
+      batch.insertAll(db.vocabWritings, writings);
+      batch.insertAll(db.vocabReadings, readings);
+      batch.insertAll(db.vocabDefinitions, definitions);
+      batch.insertAll(db.vocabDefinitionWords, definitionWords);
     });
 
     // Add pitch accents to vocab
-    await isar.writeTxn(() async {
-      List<String> lines = pitchAccents.split('\n');
+    if (showProgress) stdout.write('\nPitch progress 0%');
+    await db.transaction(() async {
+      List<String> pitchLines = pitchAccents.split('\n');
 
-      for (var line in lines) {
-        List<String> parts = line.split('\t');
+      for (int i = 0; i < pitchLines.length; i++) {
+        if (showProgress) {
+          double currentProgress = i / pitchLines.length;
+          if (currentProgress != progress) {
+            progress = currentProgress;
+            stdout.write(
+              '\rPitch progress ${(progress * 100).toStringAsFixed(0)}%',
+            );
+          }
+        }
+
+        List<String> parts = pitchLines[i].split('\t');
         // Get info for pitch accent
-        String? kanjiWriting;
-        late String reading;
-        if (parts[1].trim().isEmpty) {
+        String? writing;
+        String reading = parts[1].trim();
+        if (reading.isEmpty) {
           reading = parts[0].trim();
         } else {
-          kanjiWriting = parts[0].trim();
-          reading = parts[1].trim();
+          writing = parts[0].trim();
         }
         parts[2] = parts[2].trim();
 
@@ -293,347 +285,391 @@ class DictionaryBuilder {
         // There are some accents dependant on POS which are not handled
         if (parts[2].contains(RegExp(r'[^0-9,]'))) continue;
 
-        // Search for the kanji portion with reading as filter if available
         late List<Vocab> results;
-        if (kanjiWriting == null) {
-          results = await isar.vocabs
-              .where()
-              .japaneseTextIndexElementEqualTo(_kanaKit
-                  .toHiragana(reading.toLowerCase().romajiToHalfWidth()))
-              .findAll();
+        if (writing == null) {
+          results = await db.vocabsDao.getByReading(reading);
         } else {
-          results = await isar.vocabs
-              .where()
-              .japaneseTextIndexElementEqualTo(_kanaKit
-                  .toHiragana(kanjiWriting.toLowerCase().romajiToHalfWidth()))
-              .filter()
-              .japaneseTextIndexElementEqualTo(_kanaKit
-                  .toHiragana(reading.toLowerCase().romajiToHalfWidth()))
-              .findAll();
+          results = await db.vocabsDao.getByWritingAndReading(writing, reading);
         }
 
-        // If the first kanji/reading pair matches kanji/reading, add pitch accent info
+        // Add pitch accent info if the vocab writing/reading matches
         for (var result in results) {
-          if ((kanjiWriting == null &&
-                  result.kanjiReadingPairs[0].kanjiWritings == null &&
-                  result.kanjiReadingPairs[0].readings[0].reading == reading) ||
-              (kanjiWriting != null &&
-                  result.kanjiReadingPairs[0].kanjiWritings?[0].kanji ==
-                      kanjiWriting &&
-                  result.kanjiReadingPairs[0].readings[0].reading == reading)) {
-            result.kanjiReadingPairs[0].readings[0].pitchAccents = [];
+          if ((writing == null &&
+                  result.writings == null &&
+                  result.readings[0].reading == reading) ||
+              (writing != null &&
+                  result.writings?[0].writing == writing &&
+                  result.readings[0].reading == reading)) {
+            List<int> pitchAccents = [];
             for (var pitchAccent in parts[2].split(',')) {
-              result.kanjiReadingPairs[0].readings[0].pitchAccents!
-                  .add(int.parse(pitchAccent.trim()));
+              pitchAccents.add(int.parse(pitchAccent.trim()));
             }
-            await isar.vocabs.put(result);
+
+            if (pitchAccents.isNotEmpty) {
+              await (db.update(db.vocabReadings)
+                    ..where(
+                      (reading) => reading.id.equals(result.readings[0].id),
+                    ))
+                  .write(
+                VocabReadingsCompanion(
+                  pitchAccents: Value(pitchAccents),
+                ),
+              );
+            }
           }
         }
       }
     });
 
     // Add frequency information to vocab
-    await isar.writeTxn(() async {
-      List<String> lines = frequencyList.split('\n');
+    if (showProgress) stdout.write('\nFrequency progress 0%');
+    await db.transaction(() async {
+      final frequencyLines = frequencyList.split('\n');
 
-      for (var line in lines) {
-        List<String> parts = line.split('\t');
+      for (int i = 0; i < frequencyLines.length; i++) {
+        if (showProgress) {
+          double currentProgress = i / frequencyLines.length;
+          if (currentProgress != progress) {
+            progress = currentProgress;
+            stdout.write(
+              '\rFrequency progress ${(progress * 100).toStringAsFixed(0)}%',
+            );
+          }
+        }
+        List<String> parts = frequencyLines[i].split('\t');
 
         int score = int.parse(parts[0].trim());
         String lemma = parts[1].trim();
 
-        List<Vocab> results = await isar.vocabs
-            .where()
-            .japaneseTextIndexElementEqualTo(
-                _kanaKit.toHiragana(lemma.toLowerCase().romajiToHalfWidth()))
-            .findAll();
+        List<Vocab> results = _kanaKit.isKana(lemma)
+            ? await db.vocabsDao.getByReading(lemma)
+            : await db.vocabsDao.getByWriting(lemma);
 
         for (var vocab in results) {
           // Don't replace a higher score
           if (vocab.frequencyScore > score) continue;
 
+          bool updateVocab = false;
           if (_kanaKit.isKana(lemma)) {
-            if (vocab.isUsuallyKanaAlone() ||
-                vocab.kanjiReadingPairs[0].kanjiWritings == null) {
-              // Confirm lemma shows up in reading (prevent kana conversion problems)
-              for (var pair in vocab.kanjiReadingPairs) {
-                bool found = false;
-                for (var reading in pair.readings) {
-                  if (reading.reading == lemma) {
-                    vocab.frequencyScore = score;
-                    await isar.vocabs.put(vocab);
-                    found = true;
-                    break;
-                  }
-                }
-                if (found) break;
-              }
-            }
-          } else {
-            // Confirm lemma shows up in kanji writing (prevent kana conversion problems)
-            for (var pair in vocab.kanjiReadingPairs) {
-              bool found = false;
-              if (pair.kanjiWritings == null) continue;
-              for (var kanjiWriting in pair.kanjiWritings!) {
-                if (kanjiWriting.kanji == lemma) {
-                  vocab.frequencyScore = score;
-                  await isar.vocabs.put(vocab);
-                  found = true;
+            if (vocab.isUsuallyKanaAlone() || vocab.writings == null) {
+              // Confirm lemma shows up in readings (prevents kana conversion problems)
+              for (var reading in vocab.readings) {
+                if (reading.reading == lemma) {
+                  updateVocab = true;
                   break;
                 }
               }
-              if (found) break;
             }
+          } else {
+            // Confirm lemma shows up in writings (prevents kana conversion problems)
+            for (var writing in vocab.writings!) {
+              if (writing.writing == lemma) {
+                updateVocab = true;
+                break;
+              }
+            }
+          }
+
+          if (updateVocab) {
+            await (db.update(db.vocabs)..where((v) => v.id.equals(vocab.id)))
+                .write(
+              VocabsCompanion(
+                frequencyScore: Value(score),
+              ),
+            );
           }
         }
       }
     });
 
     // Complete cross references
-    await isar.writeTxn(() async {
-      final vocabWithCrossReferences = await isar.vocabs
-          .filter()
-          .definitionsElement((q) => q.crossReferencesIsNotNull())
-          .findAll();
+    if (showProgress) stdout.write('\nCross reference progress 0%');
+    await db.transaction(() async {
+      final definitionsWithCrossReferences =
+          await (db.select(db.vocabDefinitions)
+                ..where((r) => r.crossReferences.isNotNull()))
+              .get();
 
-      for (var vocab in vocabWithCrossReferences) {
-        for (var definition in vocab.definitions) {
-          if (definition.crossReferences != null) {
-            for (var crossReference in definition.crossReferences!) {
-              List<String> split = crossReference.text.split('・');
-              crossReference.text = split[0];
-
-              late final List<Vocab> result;
-              if (split.length == 1 ||
-                  (split.length > 1 && int.tryParse(split[1]) != null)) {
-                result = await isar.vocabs
-                    .where()
-                    .japaneseTextIndexElementEqualTo(_kanaKit
-                        .toHiragana(split[0].toLowerCase().romajiToHalfWidth()))
-                    .findAll();
-              } else {
-                result = await isar.vocabs
-                    .where()
-                    .japaneseTextIndexElementEqualTo(_kanaKit
-                        .toHiragana(split[0].toLowerCase().romajiToHalfWidth()))
-                    .filter()
-                    .japaneseTextIndexElementEqualTo(_kanaKit
-                        .toHiragana(split[1].toLowerCase().romajiToHalfWidth()))
-                    .findAll();
-              }
-              result.sort(_compareVocab);
-
-              if (result.isEmpty) {
-                continue;
-              } else if (result.length == 1) {
-                crossReference.ids = [result[0].id];
-              } else {
-                List<Vocab> filtered = List.from(result);
-
-                // If only kana given, try to filter
-                if (_kanaKit.isKana(split[0])) {
-                  for (int i = 0; i < filtered.length; i++) {
-                    if (filtered[i].kanjiReadingPairs[0].kanjiWritings !=
-                            null &&
-                        !filtered[i].isUsuallyKanaAlone()) {
-                      filtered.removeAt(i--);
-                    }
-                  }
-                }
-
-                if (filtered.isNotEmpty) {
-                  crossReference.ids = filtered.map((e) => e.id).toList();
-                } else {
-                  crossReference.ids = result.map((e) => e.id).toList();
-                }
-              }
-            }
+      for (int i = 0; i < definitionsWithCrossReferences.length; i++) {
+        if (showProgress) {
+          double currentProgress = i / definitionsWithCrossReferences.length;
+          if (currentProgress != progress) {
+            progress = currentProgress;
+            stdout.write(
+              '\rCross reference progress ${(progress * 100).toStringAsFixed(0)}%',
+            );
           }
         }
 
-        await isar.vocabs.put(vocab);
+        final definition = definitionsWithCrossReferences[i];
+        if (definition.crossReferences == null) continue;
+        List<VocabReference> newCrossReferences = [];
+        for (final crossReference in definition.crossReferences!) {
+          List<String> splits = crossReference.text.split('・');
+          String updatedText = splits[0];
+
+          // Get writing and/or reading
+          String? writing;
+          String? reading;
+          if (_kanaKit.isKana(splits[0])) {
+            reading = splits[0];
+          } else {
+            writing = splits[0];
+          }
+          if (splits.length > 1 && int.tryParse(splits[1]) == null) {
+            if (_kanaKit.isKana(splits[1])) {
+              reading = splits[1];
+            } else {
+              writing = splits[1];
+            }
+          }
+
+          // Search based on what we have
+          late List<Vocab> results;
+          if (writing == null) {
+            results = await db.vocabsDao.getByReading(reading!);
+          } else {
+            if (reading == null) {
+              results = await db.vocabsDao.getByWriting(writing);
+            } else {
+              results =
+                  await db.vocabsDao.getByWritingAndReading(writing, reading);
+            }
+          }
+
+          results.sort(_compareVocab);
+
+          List<int>? ids;
+          if (results.isEmpty) {
+            // Do nothing
+          } else if (results.length == 1) {
+            ids = [results[0].id];
+          } else {
+            List<Vocab> filtered = List.from(results);
+
+            // If only reading given, try to filter
+            if (writing == null) {
+              for (int j = 0; j < filtered.length; j++) {
+                if (filtered[j].writings?[0].writing != null &&
+                    !filtered[j].isUsuallyKanaAlone()) {
+                  filtered.removeAt(j--);
+                }
+              }
+            }
+
+            if (filtered.isNotEmpty) {
+              ids = filtered.map((e) => e.id).toList();
+            } else {
+              ids = results.map((e) => e.id).toList();
+            }
+          }
+          newCrossReferences.add(VocabReference(ids: ids, text: updatedText));
+        }
+
+        await (db.update(db.vocabDefinitions)
+              ..where((r) => r.id.equals(definition.id)))
+            .write(
+          VocabDefinitionsCompanion(
+            crossReferences: Value(newCrossReferences),
+          ),
+        );
       }
     });
 
     // Complete antonyms
-    await isar.writeTxn(() async {
-      final vocabWithAntonyms = await isar.vocabs
-          .filter()
-          .definitionsElement((q) => q.antonymsIsNotNull())
-          .findAll();
+    if (showProgress) stdout.write('\nAntonym progress 0%');
+    await db.transaction(() async {
+      final definitionsWithAntonyms = await (db.select(db.vocabDefinitions)
+            ..where((r) => r.antonyms.isNotNull()))
+          .get();
 
-      for (var vocab in vocabWithAntonyms) {
-        for (var definition in vocab.definitions) {
-          if (definition.antonyms != null) {
-            for (var antonym in definition.antonyms!) {
-              List<String> split = antonym.text.split('・');
-              antonym.text = split[0];
-
-              late final List<Vocab> result;
-              if (split.length == 1 ||
-                  (split.length > 1 && int.tryParse(split[1]) != null)) {
-                result = await isar.vocabs
-                    .where()
-                    .japaneseTextIndexElementEqualTo(_kanaKit
-                        .toHiragana(split[0].toLowerCase().romajiToHalfWidth()))
-                    .findAll();
-              } else {
-                result = await isar.vocabs
-                    .where()
-                    .japaneseTextIndexElementEqualTo(_kanaKit
-                        .toHiragana(split[0].toLowerCase().romajiToHalfWidth()))
-                    .filter()
-                    .japaneseTextIndexElementEqualTo(_kanaKit
-                        .toHiragana(split[1].toLowerCase().romajiToHalfWidth()))
-                    .findAll();
-              }
-              result.sort(_compareVocab);
-
-              if (result.isEmpty) {
-                continue;
-              } else if (result.length == 1) {
-                antonym.ids = [result[0].id];
-              } else {
-                List<Vocab> filtered = List.from(result);
-
-                // If only kana given, try to filter down to one
-                if (_kanaKit.isKana(split[0])) {
-                  for (int i = 0; i < filtered.length; i++) {
-                    if (filtered[i].kanjiReadingPairs[0].kanjiWritings !=
-                            null &&
-                        !filtered[i].isUsuallyKanaAlone()) {
-                      filtered.removeAt(i--);
-                    }
-                  }
-                }
-
-                if (filtered.isNotEmpty) {
-                  antonym.ids = filtered.map((e) => e.id).toList();
-                } else {
-                  antonym.ids = result.map((e) => e.id).toList();
-                }
-              }
-            }
+      for (int i = 0; i < definitionsWithAntonyms.length; i++) {
+        if (showProgress) {
+          double currentProgress = i / definitionsWithAntonyms.length;
+          if (currentProgress != progress) {
+            progress = currentProgress;
+            stdout.write(
+              '\rAntonym progress ${(progress * 100).toStringAsFixed(0)}%',
+            );
           }
         }
 
-        await isar.vocabs.put(vocab);
+        final definition = definitionsWithAntonyms[i];
+        if (definition.antonyms == null) continue;
+        List<VocabReference> newAntonyms = [];
+        for (final antonym in definition.antonyms!) {
+          List<String> splits = antonym.text.split('・');
+          String updatedText = splits[0];
+
+          // Get writing and/or reading
+          String? writing;
+          String? reading;
+          if (_kanaKit.isKana(splits[0])) {
+            reading = splits[0];
+          } else {
+            writing = splits[0];
+          }
+          if (splits.length > 1 && int.tryParse(splits[1]) == null) {
+            if (_kanaKit.isKana(splits[1])) {
+              reading = splits[1];
+            } else {
+              writing = splits[1];
+            }
+          }
+
+          // Search based on what we have
+          late List<Vocab> results;
+          if (writing == null) {
+            results = await db.vocabsDao.getByReading(reading!);
+          } else {
+            if (reading == null) {
+              results = await db.vocabsDao.getByWriting(writing);
+            } else {
+              results =
+                  await db.vocabsDao.getByWritingAndReading(writing, reading);
+            }
+          }
+
+          results.sort(_compareVocab);
+
+          List<int>? ids;
+          if (results.isEmpty) {
+            // Do nothing
+          } else if (results.length == 1) {
+            ids = [results[0].id];
+          } else {
+            List<Vocab> filtered = List.from(results);
+
+            // If only reading given, try to filter
+            if (writing == null) {
+              for (int i = 0; i < filtered.length; i++) {
+                if (filtered[i].writings?[0].writing != null &&
+                    !filtered[i].isUsuallyKanaAlone()) {
+                  filtered.removeAt(i--);
+                }
+              }
+            }
+
+            if (filtered.isNotEmpty) {
+              ids = filtered.map((e) => e.id).toList();
+            } else {
+              ids = results.map((e) => e.id).toList();
+            }
+          }
+          newAntonyms.add(VocabReference(ids: ids, text: updatedText));
+        }
+
+        await (db.update(db.vocabDefinitions)
+              ..where((r) => r.id.equals(definition.id)))
+            .write(
+          VocabDefinitionsCompanion(
+            antonyms: Value(newAntonyms),
+          ),
+        );
       }
     });
   }
 
-  static VocabKanji _handleKanjiElements(
+  static (VocabWritingsCompanion, bool) _handleWritingElements(
     Iterable<XmlElement> elements,
-    Vocab vocab,
   ) {
-    final kanjiWriting = VocabKanji();
+    var vocabWriting = VocabWritingsCompanion();
+    List<WritingInfo>? info;
+    bool common = false;
 
-    for (var kanjiElement in elements) {
-      switch (kanjiElement.name.local) {
+    for (var writingElement in elements) {
+      switch (writingElement.name.local) {
         case 'keb':
-          kanjiWriting.kanji = kanjiElement.innerText;
+          vocabWriting = vocabWriting.copyWith(
+            writing: Value(writingElement.innerText),
+          );
           break;
         case 'ke_inf':
-          final kanjiInfo = _handleKanjiInfo(kanjiElement.innerText);
-          kanjiWriting.info ??= [];
-          kanjiWriting.info!.add(kanjiInfo!);
+          info ??= [];
+          info.add(_handleWritingInfo(writingElement.innerText)!);
           break;
         case 'ke_pri':
-          _handleVocabPriorityInfo(kanjiElement.innerText, vocab);
+          common = common || _handleVocabPriorityInfo(writingElement.innerText);
           break;
       }
     }
 
-    return kanjiWriting;
+    return (
+      vocabWriting.copyWith(info: Value.absentIfNull(info)),
+      common,
+    );
   }
 
-  static KanjiInfo? _handleKanjiInfo(String kanjiInfo) {
-    switch (kanjiInfo) {
+  static WritingInfo? _handleWritingInfo(String writingInfo) {
+    switch (writingInfo) {
       case '&ateji;':
-        return KanjiInfo.ateji;
+        return WritingInfo.ateji;
       case '&ik;':
-        return KanjiInfo.irregularKana;
+        return WritingInfo.irregularKana;
       case '&iK;':
-        return KanjiInfo.irregularKanji;
+        return WritingInfo.irregularKanji;
       case '&io;':
-        return KanjiInfo.irregularOkurigana;
+        return WritingInfo.irregularOkurigana;
       case '&oK;':
-        return KanjiInfo.outdatedKanji;
+        return WritingInfo.outdatedKanji;
       case '&rK;':
-        return KanjiInfo.rareKanjiForm;
+        return WritingInfo.rareKanjiForm;
       case '&sK;':
-        return KanjiInfo.searchOnlyForm;
+        return WritingInfo.searchOnlyForm;
       default:
         return null;
     }
   }
 
-  static void _handleVocabPriorityInfo(String text, Vocab vocab) {
+  static bool _handleVocabPriorityInfo(String text) {
     // Ignoring ichi2 and gai2
-    if (text == 'news1' ||
+    return text == 'news1' ||
         text == 'news2' ||
         text == 'ichi1' ||
         text == 'spec1' ||
         text == 'spec2' ||
-        text == 'gai1') {
-      vocab.commonWord = true;
-    }
+        text == 'gai1';
   }
 
-  static void _handleReadingElements(
+  static (VocabReadingsCompanion, bool) _handleReadingElements(
     Iterable<XmlElement> elements,
-    List<KanjiReadingPair> kanjiReadingPairs,
-    Vocab vocab,
   ) {
-    final reading = VocabReading();
-    List<String> associatedKanjiList = [];
+    var vocabReading = VocabReadingsCompanion();
+    List<ReadingInfo>? info;
+    List<String>? associatedWritings;
+    bool common = false;
 
     for (var readingElement in elements) {
       switch (readingElement.name.local) {
         case 'reb':
-          reading.reading = readingElement.innerText;
+          vocabReading = vocabReading.copyWith(
+            reading: Value(readingElement.innerText),
+          );
           break;
         case 're_nokanji':
           // If present, represents that the reading isn't fully associated with the kanji
           break;
         case 're_restr':
-          associatedKanjiList.add(readingElement.innerText);
+          associatedWritings ??= [];
+          associatedWritings.add(readingElement.innerText);
           break;
         case 're_inf':
-          final readingInfo = _handleReadingInfo(readingElement.innerText);
-          reading.info ??= [];
-          reading.info!.add(readingInfo!);
+          info ??= [];
+          info.add(_handleReadingInfo(readingElement.innerText)!);
           break;
         case 're_pri':
-          _handleVocabPriorityInfo(readingElement.innerText, vocab);
+          common = _handleVocabPriorityInfo(readingElement.innerText);
           break;
       }
     }
 
-    // If the reading is a search only form add to index now and skip it
-    if (reading.info?.contains(ReadingInfo.searchOnlyForm) ?? false) {
-      vocab.japaneseTextIndex.add(_kanaKit.toHiragana(reading.reading));
-      return;
-    }
-
-    if (associatedKanjiList.isEmpty) {
-      // Not associated with specific kanji writing, add to all
-      // If no pairs have been created so far, create an empty pair
-      if (kanjiReadingPairs.isEmpty) kanjiReadingPairs.add(KanjiReadingPair());
-      for (var pair in kanjiReadingPairs) {
-        pair.readings.add(reading);
-      }
-    } else {
-      // Associated with specific kanji writing, add to associated
-      for (var pair in kanjiReadingPairs) {
-        for (var associatedKanji in associatedKanjiList) {
-          if (pair.kanjiWritings!.first.kanji == associatedKanji) {
-            pair.readings.add(reading);
-            break;
-          }
-        }
-      }
-    }
+    return (
+      vocabReading.copyWith(
+        info: Value.absentIfNull(info),
+        associatedWritings: Value.absentIfNull(associatedWritings),
+      ),
+      common
+    );
   }
 
   static ReadingInfo? _handleReadingInfo(String readingInfo) {
@@ -651,7 +687,9 @@ class DictionaryBuilder {
     }
   }
 
-  static List<String> _handleSenseElement(XmlElement xmlElement, Vocab vocab) {
+  static VocabDefinitionsCompanion _handleSenseElement(
+    XmlElement xmlElement,
+  ) {
     List<String> definitions = [];
     List<PartOfSpeech>? partsOfSpeech;
     String? additionalInfo;
@@ -660,7 +698,8 @@ class DictionaryBuilder {
     List<MiscellaneousInfo>? miscInfo;
     List<Dialect>? dialects;
     List<VocabExample>? examples;
-    LoanWordInfo? loanWordInfo;
+    List<LanguageSource>? languageSource;
+    bool waseieigo = false;
     List<VocabReference>? crossReferences;
     List<VocabReference>? antonyms;
 
@@ -680,11 +719,21 @@ class DictionaryBuilder {
           break;
         case 'xref':
           crossReferences ??= [];
-          crossReferences.add(VocabReference()..text = senseElement.innerText);
+          crossReferences.add(
+            VocabReference(
+              ids: null,
+              text: senseElement.innerText,
+            ),
+          );
           break;
         case 'ant':
           antonyms ??= [];
-          antonyms.add(VocabReference()..text = senseElement.innerText);
+          antonyms.add(
+            VocabReference(
+              ids: null,
+              text: senseElement.innerText,
+            ),
+          );
           break;
         case 'field':
           final field = _handleFieldElement(senseElement.innerText);
@@ -700,8 +749,9 @@ class DictionaryBuilder {
           additionalInfo = senseElement.innerText;
           break;
         case 'lsource':
-          loanWordInfo ??= LoanWordInfo();
-          _handleLanguageSourceElement(loanWordInfo, senseElement);
+          languageSource ??= [];
+          waseieigo =
+              _handleLanguageSourceElement(senseElement, languageSource);
           break;
         case 'dial':
           final dialect = _handleDialectElement(senseElement.innerText);
@@ -718,29 +768,20 @@ class DictionaryBuilder {
       }
     }
 
-    // Construct definition
-    final definitionBuffer = StringBuffer(definitions.first);
-    for (int i = 1; i < definitions.length; i++) {
-      definitionBuffer.write('; ${definitions[i]}');
-    }
-
-    // Set definition
-    vocab.definitions.add(
-      VocabDefinition()
-        ..definition = definitionBuffer.toString()
-        ..additionalInfo = additionalInfo
-        ..pos = partsOfSpeech
-        ..appliesTo = appliesTo
-        ..fields = fields
-        ..miscInfo = miscInfo
-        ..dialects = dialects
-        ..examples = examples
-        ..loanWordInfo = loanWordInfo
-        ..crossReferences = crossReferences
-        ..antonyms = antonyms,
+    return VocabDefinitionsCompanion(
+      definition: Value(definitions.join('; ')),
+      additionalInfo: Value.absentIfNull(additionalInfo),
+      pos: Value.absentIfNull(partsOfSpeech),
+      appliesTo: Value.absentIfNull(appliesTo),
+      fields: Value.absentIfNull(fields),
+      miscInfo: Value.absentIfNull(miscInfo),
+      dialects: Value.absentIfNull(dialects),
+      examples: Value.absentIfNull(examples),
+      languageSource: Value.absentIfNull(languageSource),
+      waseieigo: Value(waseieigo),
+      crossReferences: Value.absentIfNull(crossReferences),
+      antonyms: Value.absentIfNull(antonyms),
     );
-
-    return definitions;
   }
 
   static VocabExample _handleExampleElement(XmlElement xmlElement) {
@@ -757,9 +798,10 @@ class DictionaryBuilder {
       }
     }
 
-    return VocabExample()
-      ..japanese = japaneseText
-      ..english = englishText;
+    return VocabExample(
+      japanese: japaneseText,
+      english: englishText,
+    );
   }
 
   static PartOfSpeech _handlePartOfSpeechElement(String partOfSpeech) {
@@ -1279,217 +1321,217 @@ class DictionaryBuilder {
     }
   }
 
-  static void _handleLanguageSourceElement(
-    LoanWordInfo loanVocabInfo,
+  static bool _handleLanguageSourceElement(
     XmlElement xmlElement,
+    List<LanguageSource> languageSource,
   ) {
     switch (xmlElement.getAttribute('xml:lang')) {
       case 'afr':
-        loanVocabInfo.languageSource.add(LanguageSource.afr);
+        languageSource.add(LanguageSource.afr);
         break;
       case 'ain':
-        loanVocabInfo.languageSource.add(LanguageSource.ain);
+        languageSource.add(LanguageSource.ain);
         break;
       case 'alg':
-        loanVocabInfo.languageSource.add(LanguageSource.alg);
+        languageSource.add(LanguageSource.alg);
         break;
       case 'amh':
-        loanVocabInfo.languageSource.add(LanguageSource.amh);
+        languageSource.add(LanguageSource.amh);
         break;
       case 'ara':
-        loanVocabInfo.languageSource.add(LanguageSource.ara);
+        languageSource.add(LanguageSource.ara);
         break;
       case 'arn':
-        loanVocabInfo.languageSource.add(LanguageSource.arn);
+        languageSource.add(LanguageSource.arn);
         break;
       case 'bnt':
-        loanVocabInfo.languageSource.add(LanguageSource.bnt);
+        languageSource.add(LanguageSource.bnt);
         break;
       case 'bre':
-        loanVocabInfo.languageSource.add(LanguageSource.bre);
+        languageSource.add(LanguageSource.bre);
         break;
       case 'bul':
-        loanVocabInfo.languageSource.add(LanguageSource.bul);
+        languageSource.add(LanguageSource.bul);
         break;
       case 'bur':
-        loanVocabInfo.languageSource.add(LanguageSource.bur);
+        languageSource.add(LanguageSource.bur);
         break;
       case 'chi':
-        loanVocabInfo.languageSource.add(LanguageSource.chi);
+        languageSource.add(LanguageSource.chi);
         break;
       case 'chn':
-        loanVocabInfo.languageSource.add(LanguageSource.chn);
+        languageSource.add(LanguageSource.chn);
         break;
       case 'cze':
-        loanVocabInfo.languageSource.add(LanguageSource.cze);
+        languageSource.add(LanguageSource.cze);
         break;
       case 'dan':
-        loanVocabInfo.languageSource.add(LanguageSource.dan);
+        languageSource.add(LanguageSource.dan);
         break;
       case 'dut':
-        loanVocabInfo.languageSource.add(LanguageSource.dut);
+        languageSource.add(LanguageSource.dut);
         break;
       case 'eng':
-        loanVocabInfo.languageSource.add(LanguageSource.eng);
+        languageSource.add(LanguageSource.eng);
         break;
       case 'epo':
-        loanVocabInfo.languageSource.add(LanguageSource.epo);
+        languageSource.add(LanguageSource.epo);
         break;
       case 'est':
-        loanVocabInfo.languageSource.add(LanguageSource.est);
+        languageSource.add(LanguageSource.est);
         break;
       case 'fil':
-        loanVocabInfo.languageSource.add(LanguageSource.fil);
+        languageSource.add(LanguageSource.fil);
         break;
       case 'fin':
-        loanVocabInfo.languageSource.add(LanguageSource.fin);
+        languageSource.add(LanguageSource.fin);
         break;
       case 'fre':
-        loanVocabInfo.languageSource.add(LanguageSource.fre);
+        languageSource.add(LanguageSource.fre);
         break;
       case 'geo':
-        loanVocabInfo.languageSource.add(LanguageSource.geo);
+        languageSource.add(LanguageSource.geo);
         break;
       case 'ger':
-        loanVocabInfo.languageSource.add(LanguageSource.ger);
+        languageSource.add(LanguageSource.ger);
         break;
       case 'glg':
-        loanVocabInfo.languageSource.add(LanguageSource.glg);
+        languageSource.add(LanguageSource.glg);
         break;
       case 'grc':
-        loanVocabInfo.languageSource.add(LanguageSource.grc);
+        languageSource.add(LanguageSource.grc);
         break;
       case 'gre':
-        loanVocabInfo.languageSource.add(LanguageSource.gre);
+        languageSource.add(LanguageSource.gre);
         break;
       case 'haw':
-        loanVocabInfo.languageSource.add(LanguageSource.haw);
+        languageSource.add(LanguageSource.haw);
         break;
       case 'heb':
-        loanVocabInfo.languageSource.add(LanguageSource.heb);
+        languageSource.add(LanguageSource.heb);
         break;
       case 'hin':
-        loanVocabInfo.languageSource.add(LanguageSource.hin);
+        languageSource.add(LanguageSource.hin);
         break;
       case 'hun':
-        loanVocabInfo.languageSource.add(LanguageSource.hun);
+        languageSource.add(LanguageSource.hun);
         break;
       case 'ice':
-        loanVocabInfo.languageSource.add(LanguageSource.ice);
+        languageSource.add(LanguageSource.ice);
         break;
       case 'ind':
-        loanVocabInfo.languageSource.add(LanguageSource.ind);
+        languageSource.add(LanguageSource.ind);
         break;
       case 'ita':
-        loanVocabInfo.languageSource.add(LanguageSource.ita);
+        languageSource.add(LanguageSource.ita);
         break;
       case 'khm':
-        loanVocabInfo.languageSource.add(LanguageSource.khm);
+        languageSource.add(LanguageSource.khm);
         break;
       case 'kor':
-        loanVocabInfo.languageSource.add(LanguageSource.kor);
+        languageSource.add(LanguageSource.kor);
         break;
       case 'kur':
-        loanVocabInfo.languageSource.add(LanguageSource.kur);
+        languageSource.add(LanguageSource.kur);
         break;
       case 'lat':
-        loanVocabInfo.languageSource.add(LanguageSource.lat);
+        languageSource.add(LanguageSource.lat);
         break;
       case 'lit':
-        loanVocabInfo.languageSource.add(LanguageSource.lit);
+        languageSource.add(LanguageSource.lit);
         break;
       case 'mal':
-        loanVocabInfo.languageSource.add(LanguageSource.mal);
+        languageSource.add(LanguageSource.mal);
         break;
       case 'mao':
-        loanVocabInfo.languageSource.add(LanguageSource.mao);
+        languageSource.add(LanguageSource.mao);
         break;
       case 'may':
-        loanVocabInfo.languageSource.add(LanguageSource.may);
+        languageSource.add(LanguageSource.may);
         break;
       case 'mnc':
-        loanVocabInfo.languageSource.add(LanguageSource.mnc);
+        languageSource.add(LanguageSource.mnc);
         break;
       case 'mol':
-        loanVocabInfo.languageSource.add(LanguageSource.mol);
+        languageSource.add(LanguageSource.mol);
         break;
       case 'mon':
-        loanVocabInfo.languageSource.add(LanguageSource.mon);
+        languageSource.add(LanguageSource.mon);
         break;
       case 'nor':
-        loanVocabInfo.languageSource.add(LanguageSource.nor);
+        languageSource.add(LanguageSource.nor);
         break;
       case 'per':
-        loanVocabInfo.languageSource.add(LanguageSource.per);
+        languageSource.add(LanguageSource.per);
         break;
       case 'pol':
-        loanVocabInfo.languageSource.add(LanguageSource.pol);
+        languageSource.add(LanguageSource.pol);
         break;
       case 'por':
-        loanVocabInfo.languageSource.add(LanguageSource.por);
+        languageSource.add(LanguageSource.por);
         break;
       case 'rum':
-        loanVocabInfo.languageSource.add(LanguageSource.rum);
+        languageSource.add(LanguageSource.rum);
         break;
       case 'rus':
-        loanVocabInfo.languageSource.add(LanguageSource.rus);
+        languageSource.add(LanguageSource.rus);
         break;
       case 'san':
-        loanVocabInfo.languageSource.add(LanguageSource.san);
+        languageSource.add(LanguageSource.san);
         break;
       case 'scr':
-        loanVocabInfo.languageSource.add(LanguageSource.scr);
+        languageSource.add(LanguageSource.scr);
         break;
       case 'slo':
-        loanVocabInfo.languageSource.add(LanguageSource.slo);
+        languageSource.add(LanguageSource.slo);
         break;
       case 'slv':
-        loanVocabInfo.languageSource.add(LanguageSource.slv);
+        languageSource.add(LanguageSource.slv);
         break;
       case 'som':
-        loanVocabInfo.languageSource.add(LanguageSource.som);
+        languageSource.add(LanguageSource.som);
         break;
       case 'spa':
-        loanVocabInfo.languageSource.add(LanguageSource.spa);
+        languageSource.add(LanguageSource.spa);
         break;
       case 'swa':
-        loanVocabInfo.languageSource.add(LanguageSource.swa);
+        languageSource.add(LanguageSource.swa);
         break;
       case 'swe':
-        loanVocabInfo.languageSource.add(LanguageSource.swe);
+        languageSource.add(LanguageSource.swe);
         break;
       case 'tah':
-        loanVocabInfo.languageSource.add(LanguageSource.tah);
+        languageSource.add(LanguageSource.tah);
         break;
       case 'tam':
-        loanVocabInfo.languageSource.add(LanguageSource.tam);
+        languageSource.add(LanguageSource.tam);
         break;
       case 'tgl':
-        loanVocabInfo.languageSource.add(LanguageSource.tgl);
+        languageSource.add(LanguageSource.tgl);
         break;
       case 'tha':
-        loanVocabInfo.languageSource.add(LanguageSource.tha);
+        languageSource.add(LanguageSource.tha);
         break;
       case 'tib':
-        loanVocabInfo.languageSource.add(LanguageSource.tib);
+        languageSource.add(LanguageSource.tib);
         break;
       case 'tur':
-        loanVocabInfo.languageSource.add(LanguageSource.tur);
+        languageSource.add(LanguageSource.tur);
         break;
       case 'ukr':
-        loanVocabInfo.languageSource.add(LanguageSource.ukr);
+        languageSource.add(LanguageSource.ukr);
         break;
       case 'urd':
-        loanVocabInfo.languageSource.add(LanguageSource.urd);
+        languageSource.add(LanguageSource.urd);
         break;
       case 'vie':
-        loanVocabInfo.languageSource.add(LanguageSource.vie);
+        languageSource.add(LanguageSource.vie);
         break;
       case 'yid':
-        loanVocabInfo.languageSource.add(LanguageSource.yid);
+        languageSource.add(LanguageSource.yid);
         break;
       case null:
-        loanVocabInfo.languageSource.add(LanguageSource.eng);
+        languageSource.add(LanguageSource.eng);
         break;
       default:
         print(
@@ -1497,9 +1539,7 @@ class DictionaryBuilder {
         break;
     }
 
-    if (xmlElement.getAttribute('ls_wasei') == 'y') {
-      loanVocabInfo.waseieigo = true;
-    }
+    return xmlElement.getAttribute('ls_wasei') == 'y';
   }
 
   // Function to be used with list.sort
@@ -1507,43 +1547,47 @@ class DictionaryBuilder {
   // b - a so that the list will be sorted from highest to lowest
   static int _compareVocab(Vocab a, Vocab b) {
     return b.frequencyScore +
-        (b.commonWord ? 1 : 0) -
+        (b.common ? 1 : 0) -
         a.frequencyScore -
-        (a.commonWord ? 1 : 0);
+        (a.common ? 1 : 0);
   }
 
   // Creates the radical database from the radical json
   @visibleForTesting
   static Future<void> createRadicalDictionary(
-    Isar isar,
-    String kanjiRadicals,
+    AppDatabase db,
+    String radicals,
     String strokeData,
   ) async {
-    Map<String, dynamic> kanjiRadicalMap = jsonDecode(kanjiRadicals);
+    Map<String, dynamic> radicalMap = jsonDecode(radicals);
     Map<String, dynamic> strokeMap = jsonDecode(strokeData);
 
-    // Loop through and add the basic data
-    await isar.writeTxn(() async {
-      for (var entry in kanjiRadicalMap.entries) {
-        final kanjiRadical = KanjiRadical()
-          ..radical = entry.key
-          ..kangxiId = entry.value['kanjix']
-          ..strokeCount = entry.value['strokes']
-          ..meaning = entry.value['meaning']
-          ..reading = entry.value['reading']
-          ..position = entry.value.containsKey('position')
-              ? KanjiRadicalPosition.values[entry.value['position']]
-              : KanjiRadicalPosition.none
-          ..importance = entry.value.containsKey('importance')
-              ? KanjiRadicalImportance.values[entry.value['importance']]
-              : KanjiRadicalImportance.none
-          ..strokes = strokeMap[entry.key]?.cast<String>()
-          ..variants = entry.value.containsKey('variants')
-              ? entry.value['variants'].cast<String>()
-              : null
-          ..variantOf = entry.value['variant_of'];
-
-        await isar.kanjiRadicals.put(kanjiRadical);
+    await db.transaction(() async {
+      for (var entry in radicalMap.entries) {
+        await db.into(db.radicals).insert(
+              RadicalsCompanion(
+                radical: Value(entry.key),
+                kangxiId: Value.absentIfNull(entry.value['kanjix']),
+                strokeCount: Value(entry.value['strokes']),
+                meaning: Value(entry.value['meaning']),
+                reading: Value(entry.value['reading']),
+                position: Value.absentIfNull(
+                  entry.value.containsKey('position')
+                      ? RadicalPosition.values[entry.value['position']]
+                      : null,
+                ),
+                importance: Value.absentIfNull(
+                  entry.value.containsKey('importance')
+                      ? RadicalImportance.values[entry.value['importance']]
+                      : null,
+                ),
+                strokes:
+                    Value.absentIfNull(strokeMap[entry.key]?.cast<String>()),
+                variants:
+                    Value.absentIfNull(entry.value['variants']?.cast<String>()),
+                variantOf: Value.absentIfNull(entry.value['variant_of']),
+              ),
+            );
       }
     });
   }
@@ -1551,52 +1595,63 @@ class DictionaryBuilder {
   // Creates the kanji database from the raw dictionary file
   @visibleForTesting
   static Future<void> createKanjiDictionary(
-    Isar isar,
+    AppDatabase db,
     String kanjiDict,
     String kanjiComponentData,
-    String strokeData,
-  ) async {
-    final List<Kanji> kanjiList = [];
+    String strokeData, {
+    bool showProgress = false,
+  }) async {
+    final List<KanjisCompanion> kanjiList = [];
+    final List<KanjiReadingsCompanion> kanjiReadingList = [];
+    final List<KanjiMeaningWordsCompanion> kanjiMeaningWordList = [];
 
-    final kanjidic2Doc = XmlDocument.parse(kanjiDict);
+    final xmlKanjiList =
+        XmlDocument.parse(kanjiDict).childElements.first.childElements.toList();
 
-    final rawKanjiList = kanjidic2Doc.childElements.first.childElements;
+    if (showProgress) {
+      stdout.write('\nKanji progress 0%');
+    }
 
     // Top level of kanji items (skip first element which is header)
-    for (int i = 1; i < rawKanjiList.length; i++) {
-      // Write to database every 1000 iterations
-      if (i % 1000 == 0 && i != 0) {
-        print("At kanji $i");
-        await isar.writeTxn(() async {
-          for (var kanji in kanjiList) {
-            await isar.kanjis.put(kanji);
-          }
-        });
-        kanjiList.clear();
+    double progress = 0;
+    for (int i = 1; i < xmlKanjiList.length; i++) {
+      if (showProgress) {
+        double currentProgress = i / xmlKanjiList.length;
+        if (currentProgress != progress) {
+          progress = currentProgress;
+          stdout.write(
+            '\rKanji progress ${(progress * 100).toStringAsFixed(0)}%',
+          );
+        }
       }
 
-      final kanji = Kanji();
+      var kanji = KanjisCompanion();
+      _KanjiReadingMeaning? readingMeaning;
 
       // Elements within kanji
-      final rawKanjiItem = rawKanjiList.elementAt(i);
-      for (var kanjiElement in rawKanjiItem.childElements) {
-        switch (kanjiElement.name.local) {
+      for (var xmlKanjiChild in xmlKanjiList[i].childElements) {
+        switch (xmlKanjiChild.name.local) {
           case 'literal':
-            kanji.id = kanjiElement.innerText.kanjiCodePoint();
-            kanji.kanji = kanjiElement.innerText;
+            kanji = kanji.copyWith(
+              id: Value(xmlKanjiChild.innerText.kanjiCodePoint()),
+              kanji: Value(xmlKanjiChild.innerText),
+            );
             break;
           case 'codepoint':
             // Kanji codepoint
             break;
           case 'radical':
-            await _handleKanjiRadicalElements(
-              kanjiElement.childElements,
+            kanji = await _handleRadicalElements(
+              db,
+              xmlKanjiChild.childElements,
               kanji,
-              isar,
             );
             break;
           case 'misc':
-            _handleKanjiMiscElements(kanjiElement.childElements, kanji);
+            kanji = _handleKanjiMiscElements(
+              xmlKanjiChild.childElements,
+              kanji,
+            );
             break;
           case 'dic_number':
             // Index numbers referencing published dictionaries
@@ -1605,17 +1660,96 @@ class DictionaryBuilder {
             // Information related to the glyph
             break;
           case 'reading_meaning':
-            _handleKanjiReadingElements(kanjiElement.childElements, kanji);
+            readingMeaning = _handleKanjiReadingMeaningElements(
+              xmlKanjiChild.childElements,
+            );
+
             break;
         }
       }
 
-      // Search vocab for kanji and add them as compounds
-      final vocabList = (await isar.vocabs
-          .filter()
-          .japaneseTextIndexElementContains(kanji.kanji)
-          .findAll())
-        ..sort(_compareVocab);
+      // Add readings and meanings
+      if (readingMeaning != null) {
+        if (readingMeaning.meanings.isNotEmpty) {
+          kanji = kanji.copyWith(
+            meaning: Value(readingMeaning.meanings.join('; ')),
+          );
+
+          for (final meaning in readingMeaning.meanings) {
+            final words = meaning.toLowerCase().splitWords().toSet().toList();
+            for (final word in words) {
+              kanjiMeaningWordList.add(KanjiMeaningWordsCompanion(
+                word: Value(word),
+                kanjiId: kanji.id,
+              ));
+            }
+          }
+        }
+        final cleanReadingRegExp = RegExp(r'\.|-');
+        for (var reading in readingMeaning.onReadings) {
+          final cleaned = reading.replaceAll(cleanReadingRegExp, '');
+          final searchForm = _kanaKit.toHiragana(cleaned);
+          final romaji = _kanaKit.toRomaji(cleaned).toLowerCase();
+          final romajiSimplified = _kanaKit
+              .toRomaji(cleaned.replaceAll(_simplifyVerbRegex, ''))
+              .toLowerCase();
+          kanjiReadingList.add(
+            KanjiReadingsCompanion(
+              kanjiId: kanji.id,
+              reading: Value(reading),
+              readingSearchForm:
+                  Value.absentIfNull(reading == searchForm ? null : searchForm),
+              readingRomaji: Value(romaji),
+              readingRomajiSimplified: Value.absentIfNull(
+                  romaji == romajiSimplified ? null : romajiSimplified),
+              type: Value(KanjiReadingType.on),
+            ),
+          );
+        }
+        for (var reading in readingMeaning.kunReadings) {
+          final cleaned = reading.replaceAll(cleanReadingRegExp, '');
+          final searchForm = _kanaKit.toHiragana(cleaned);
+          final romaji = _kanaKit.toRomaji(cleaned).toLowerCase();
+          final romajiSimplified = _kanaKit
+              .toRomaji(cleaned.replaceAll(_simplifyVerbRegex, ''))
+              .toLowerCase();
+          kanjiReadingList.add(
+            KanjiReadingsCompanion(
+              kanjiId: kanji.id,
+              reading: Value(reading),
+              readingSearchForm:
+                  Value.absentIfNull(reading == searchForm ? null : searchForm),
+              readingRomaji: Value(romaji),
+              readingRomajiSimplified: Value.absentIfNull(
+                  romaji == romajiSimplified ? null : romajiSimplified),
+              type: Value(KanjiReadingType.kun),
+            ),
+          );
+        }
+        for (var reading in readingMeaning.nanori) {
+          final cleaned = reading.replaceAll(cleanReadingRegExp, '');
+          final searchForm = _kanaKit.toHiragana(cleaned);
+          final romaji = _kanaKit.toRomaji(cleaned).toLowerCase();
+          final romajiSimplified = _kanaKit
+              .toRomaji(cleaned.replaceAll(_simplifyVerbRegex, ''))
+              .toLowerCase();
+          kanjiReadingList.add(
+            KanjiReadingsCompanion(
+              kanjiId: kanji.id,
+              reading: Value(reading),
+              readingSearchForm:
+                  Value.absentIfNull(reading == searchForm ? null : searchForm),
+              readingRomaji: Value(romaji),
+              readingRomajiSimplified: Value.absentIfNull(
+                  romaji == romajiSimplified ? null : romajiSimplified),
+              type: Value(KanjiReadingType.nanori),
+            ),
+          );
+        }
+      }
+
+      // Search vocab for kanji and add top 10 as compounds
+      final vocabList = await db.vocabsDao.getUsingKanji(kanji.kanji.value);
 
       if (vocabList.isNotEmpty) {
         List<int> onlyKanji = [];
@@ -1623,146 +1757,137 @@ class DictionaryBuilder {
         List<int> other = [];
 
         for (var vocab in vocabList) {
-          // Verify vocab actually has kanji writings
-          // Found kanji could all be a search only form
-          if (vocab.kanjiReadingPairs[0].kanjiWritings == null) continue;
-
           // Sort by where in compound kanji appears
-          if (vocab.kanjiReadingPairs[0].kanjiWritings![0].kanji ==
-              kanji.kanji) {
+          if (vocab.writings![0].writing == kanji.kanji.value) {
             onlyKanji.add(vocab.id);
-          } else if (vocab.kanjiReadingPairs[0].kanjiWritings![0].kanji
-              .contains(kanji.kanji)) {
+          } else if (vocab.writings![0].writing.contains(kanji.kanji.value)) {
             inPrimaryWriting.add(vocab.id);
           } else {
             other.add(vocab.id);
           }
         }
 
-        kanji.compounds = onlyKanji + inPrimaryWriting + other;
-      }
-
-      // Create reading index
-      final simplifyRegex = RegExp(r'(?<=.{1})(う|っ|ー)');
-      List<String> readingIndex = [];
-      if (kanji.kunReadings != null) {
-        for (var reading in kanji.kunReadings!) {
-          String cleaned = reading.replaceAll('.', '');
-          readingIndex.add(_kanaKit.toHiragana(cleaned));
-          readingIndex.add(_kanaKit.toRomaji(cleaned).toLowerCase());
-          readingIndex.add(_kanaKit
-              .toRomaji(cleaned.replaceAll(simplifyRegex, ''))
-              .toLowerCase());
-        }
-      }
-      if (kanji.onReadings != null) {
-        for (var reading in kanji.onReadings!) {
-          readingIndex.add(_kanaKit.toHiragana(reading));
-          readingIndex.add(_kanaKit.toRomaji(reading).toLowerCase());
-          readingIndex.add(_kanaKit
-              .toRomaji(reading.replaceAll(simplifyRegex, ''))
-              .toLowerCase());
-        }
-      }
-      if (kanji.nanori != null) {
-        for (var reading in kanji.nanori!) {
-          readingIndex.add(_kanaKit.toHiragana(reading));
-          readingIndex.add(_kanaKit.toRomaji(reading).toLowerCase());
-          readingIndex.add(_kanaKit
-              .toRomaji(reading.replaceAll(simplifyRegex, ''))
-              .toLowerCase());
-        }
-      }
-      if (readingIndex.isNotEmpty) {
-        readingIndex = readingIndex.toSet().toList();
-        kanji.readingIndex = readingIndex;
+        final compounds = onlyKanji + inPrimaryWriting + other;
+        kanji = kanji.copyWith(
+          compounds: Value(compounds.sublist(0, min(10, compounds.length))),
+        );
       }
 
       // Finally, add kanji to list
       kanjiList.add(kanji);
     }
 
-    // Write the remaining kanji
-    await isar.writeTxn(() async {
-      for (var kanji in kanjiList) {
-        await isar.kanjis.put(kanji);
-      }
+    // Write kanji, readings, and meaning words
+    await db.batch((batch) {
+      batch.insertAll(db.kanjis, kanjiList);
+      batch.insertAll(db.kanjiReadings, kanjiReadingList);
+      batch.insertAll(db.kanjiMeaningWords, kanjiMeaningWordList);
     });
 
     // Add components to kanji
-    await isar.writeTxn(() async {
+    await db.transaction(() async {
       Map<String, dynamic> kanjiComponentMap = jsonDecode(kanjiComponentData);
 
       for (var entry in kanjiComponentMap.entries) {
-        final kanji = await isar.kanjis.get(entry.key.kanjiCodePoint());
-        if (kanji == null) continue;
+        final kanjiResults = await (db.select(db.kanjis)
+              ..where((kanji) => kanji.id.equals(entry.key.kanjiCodePoint())))
+            .get();
+        if (kanjiResults.length != 1) continue;
+        final kanji = kanjiResults[0];
 
-        final radical = await isar.kanjiRadicals.getByRadical(kanji.radical);
+        final radical = await (db.select(db.radicals)
+              ..where((radical) => radical.radical.equals(kanji.radical)))
+            .getSingle();
         // If kanji is itself the radical (or a variant), skip component check
-        if (kanji.kanji == radical?.radical) continue;
-        if (radical?.variants?.contains(kanji.kanji) ?? false) continue;
+        if (kanji.kanji == radical.radical) continue;
+        if (radical.variants?.contains(kanji.kanji) ?? false) continue;
+
+        List<String>? components;
 
         // Go through component strings
         for (String componentString in entry.value) {
           // If component is the same as kanji's radical (or a variant) skip it
-          if (componentString == radical?.radical) continue;
-          if (radical?.variants?.contains(componentString) ?? false) continue;
+          if (componentString == radical.radical) continue;
+          if (radical.variants?.contains(componentString) ?? false) continue;
 
           // Try to load component and add it
-          final componentKanji =
-              await isar.kanjis.get(componentString.kanjiCodePoint());
-          if (componentKanji != null) {
-            kanji.components ??= [];
-            kanji.components!.add(componentKanji.kanji);
+          final componentResult = await (db.select(db.kanjis)
+                ..where((kanji) =>
+                    kanji.id.equals(componentString.kanjiCodePoint())))
+              .get();
+          if (componentResult.length == 1) {
+            components ??= [];
+            components.add(componentResult[0].kanji);
           }
         }
 
-        await isar.kanjis.put(kanji);
+        await (db.update(db.kanjis)
+              ..where((kanji) => kanji.id.equals(entry.key.kanjiCodePoint())))
+            .write(
+          KanjisCompanion(
+            components: Value.absentIfNull(components),
+          ),
+        );
       }
     });
 
     // Add stroke data
-    await isar.writeTxn(() async {
+    return db.transaction(() async {
       Map<String, dynamic> strokeMap = jsonDecode(strokeData);
 
       for (var entry in strokeMap.entries) {
-        final kanji = await isar.kanjis.get(entry.key.kanjiCodePoint());
-        if (kanji != null) {
-          kanji.strokes = entry.value.cast<String>();
-          await isar.kanjis.put(kanji);
-        }
+        await (db.update(db.kanjis)
+              ..where((kanji) => kanji.id.equals(entry.key.kanjiCodePoint())))
+            .write(
+          KanjisCompanion(
+            strokes: Value(entry.value.cast<String>()),
+          ),
+        );
       }
     });
   }
 
-  static Future<void> _handleKanjiRadicalElements(
+  static Future<KanjisCompanion> _handleRadicalElements(
+    AppDatabase db,
     Iterable<XmlElement> elements,
-    Kanji kanji,
-    Isar isar,
+    KanjisCompanion kanji,
   ) async {
     for (var element in elements) {
       if (element.getAttribute('rad_type') == 'classical') {
-        kanji.radical = (await isar.kanjiRadicals
-                .filter()
-                .kangxiIdEqualTo(int.parse(element.innerText))
-                .findFirst())!
-            .radical;
-        return;
+        return kanji.copyWith(
+          radical: Value((await (db.select(db.radicals)
+                    ..where((radical) =>
+                        radical.kangxiId.equals(int.parse(element.innerText))))
+                  .getSingle())
+              .radical),
+        );
       }
     }
+
+    // Should always find radical so throw exception if we get here
+    throw Exception();
   }
 
-  static void _handleKanjiMiscElements(
+  static KanjisCompanion _handleKanjiMiscElements(
     Iterable<XmlElement> elements,
-    Kanji kanji,
+    KanjisCompanion kanji,
   ) {
+    KanjiGrade? grade;
     int? strokeCount;
+    int? frequency;
+    JlptLevel? jlpt;
 
     for (var element in elements) {
       switch (element.name.local) {
         case 'grade':
-          int grade = int.parse(element.innerText);
-          if (grade <= 8) kanji.grade = grade;
+          int g = int.parse(element.innerText);
+          if (g <= 6) {
+            grade = KanjiGrade.values[g - 1];
+          } else if (g == 8) {
+            grade = KanjiGrade.middleSchool;
+          } else if (g == 9 || g == 10) {
+            grade = KanjiGrade.jinmeiyou;
+          }
           break;
         case 'stroke_count':
           strokeCount ??= int.parse(element.innerText);
@@ -1771,30 +1896,36 @@ class DictionaryBuilder {
           // Variant of the current kanji
           break;
         case 'freq':
-          kanji.frequency = int.parse(element.innerText);
+          frequency = int.parse(element.innerText);
           break;
         case 'rad_name':
           // This kanji is itself a radical
           break;
         case 'jlpt':
-          kanji.jlpt = int.parse(element.innerText);
+          // TODO should stop relying on this because it uses lists from before n5
+          jlpt = JlptLevel.values[int.parse(element.innerText) - 1];
           break;
       }
     }
 
-    kanji.strokeCount = strokeCount!;
+    return kanji.copyWith(
+      grade: Value.absentIfNull(grade),
+      strokeCount: Value(strokeCount!),
+      frequency: Value.absentIfNull(frequency),
+      jlpt: Value.absentIfNull(jlpt),
+    );
   }
 
-  static void _handleKanjiReadingElements(
+  static _KanjiReadingMeaning _handleKanjiReadingMeaningElements(
     Iterable<XmlElement> elements,
-    Kanji kanji,
   ) {
+    late _KanjiReadingMeaning result;
     List<String> nanori = [];
 
     for (var element in elements) {
       switch (element.name.local) {
         case 'rmgroup':
-          _handleKanjiRmgroupElements(element.childElements, kanji);
+          result = _handleKanjiRmgroupElements(element.childElements);
           break;
         case 'nanori':
           nanori.add(element.innerText);
@@ -1802,12 +1933,12 @@ class DictionaryBuilder {
       }
     }
 
-    kanji.nanori = nanori.isEmpty ? null : nanori;
+    result.nanori = nanori;
+    return result;
   }
 
-  static void _handleKanjiRmgroupElements(
+  static _KanjiReadingMeaning _handleKanjiRmgroupElements(
     Iterable<XmlElement> elements,
-    Kanji kanji,
   ) {
     List<String> meanings = [];
     List<String> onReadings = [];
@@ -1828,15 +1959,17 @@ class DictionaryBuilder {
       }
     }
 
-    kanji.meanings = meanings.isEmpty ? null : meanings;
-    kanji.onReadings = onReadings.isEmpty ? null : onReadings;
-    kanji.kunReadings = kunReadings.isEmpty ? null : kunReadings;
+    return _KanjiReadingMeaning(
+      meanings: meanings,
+      onReadings: onReadings,
+      kunReadings: kunReadings,
+    );
   }
 
   // Creates the built-in dictionary lists
   @visibleForTesting
   static Future<void> createDictionaryLists(
-    Isar isar,
+    AppDatabase db,
     String vocabLists,
     String kanjiLists,
   ) async {
@@ -1847,413 +1980,420 @@ class DictionaryBuilder {
     final vocabMap = jsonDecode(vocabLists);
 
     // JLPT vocab N5
-    await isar.writeTxn(() async {
-      final jlptVocabN5List = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN5
-        ..name = 'N5 Vocab';
-      final jlptVocabN5ListRaw = vocabMap['jlpt_n5'].cast<int>();
-      assert(!(await isar.vocabs.getAll(jlptVocabN5ListRaw)).contains(null));
-      jlptVocabN5List.vocab = jlptVocabN5ListRaw;
-      await isar.predefinedDictionaryLists.put(jlptVocabN5List);
-    });
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptVocabN5,
+      'N5 Vocab',
+      vocab: vocabMap['jlpt_n5'].cast<int>(),
+    );
 
     // JLPT vocab N4
-    await isar.writeTxn(() async {
-      final jlptVocabN4List = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN4
-        ..name = 'N4 Vocab';
-      final jlptVocabN4ListRaw = vocabMap['jlpt_n4'].cast<int>();
-      assert(!(await isar.vocabs.getAll(jlptVocabN4ListRaw)).contains(null));
-      jlptVocabN4List.vocab = jlptVocabN4ListRaw;
-      await isar.predefinedDictionaryLists.put(jlptVocabN4List);
-    });
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptVocabN4,
+      'N4 Vocab',
+      vocab: vocabMap['jlpt_n4'].cast<int>(),
+    );
 
     // JLPT vocab N3
-    await isar.writeTxn(() async {
-      final jlptVocabN3List = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN3
-        ..name = 'N3 Vocab';
-      final jlptVocabN3ListRaw = vocabMap['jlpt_n3'].cast<int>();
-      assert(!(await isar.vocabs.getAll(jlptVocabN3ListRaw)).contains(null));
-      jlptVocabN3List.vocab = jlptVocabN3ListRaw;
-      await isar.predefinedDictionaryLists.put(jlptVocabN3List);
-    });
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptVocabN3,
+      'N3 Vocab',
+      vocab: vocabMap['jlpt_n3'].cast<int>(),
+    );
 
     // JLPT vocab N2
-    await isar.writeTxn(() async {
-      final jlptVocabN2List = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN2
-        ..name = 'N2 Vocab';
-      final jlptVocabN2ListRaw = vocabMap['jlpt_n2'].cast<int>();
-      assert(!(await isar.vocabs.getAll(jlptVocabN2ListRaw)).contains(null));
-      jlptVocabN2List.vocab = jlptVocabN2ListRaw;
-      await isar.predefinedDictionaryLists.put(jlptVocabN2List);
-    });
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptVocabN2,
+      'N2 Vocab',
+      vocab: vocabMap['jlpt_n2'].cast<int>(),
+    );
 
     // JLPT vocab N1
-    await isar.writeTxn(() async {
-      final jlptVocabN1List = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdJlptVocabN1
-        ..name = 'N1 Vocab';
-      final jlptVocabN1ListRaw = vocabMap['jlpt_n1'].cast<int>();
-      assert(!(await isar.vocabs.getAll(jlptVocabN1ListRaw)).contains(null));
-      jlptVocabN1List.vocab = jlptVocabN1ListRaw;
-      await isar.predefinedDictionaryLists.put(jlptVocabN1List);
-    });
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptVocabN1,
+      'N1 Vocab',
+      vocab: vocabMap['jlpt_n1'].cast<int>(),
+    );
 
     // Parse kanji lists
     final kanjiListsMap = jsonDecode(kanjiLists);
 
     // Jouyou
-    await isar.writeTxn(() async {
-      final jouyouList = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdJouyou
-        ..name = 'Jouyou';
-      final jouyouListRaw = kanjiListsMap['jouyou']
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJouyou,
+      'Jouyou',
+      kanji: kanjiListsMap['jouyou']
           .map((e) => (e as String).kanjiCodePoint())
           .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(jouyouListRaw)).contains(null));
-      jouyouList.kanji = jouyouListRaw;
-      await isar.predefinedDictionaryLists.put(jouyouList);
-    });
+          .cast<int>(),
+    );
 
     // Jinmeiyou
-    await isar.writeTxn(() async {
-      final jinmeiyouList = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdJinmeiyou
-        ..name = 'Jinmeiyou';
-      final jinmeiyouListRaw = kanjiListsMap['jinmeiyou']
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJinmeiyou,
+      'Jinmeiyou',
+      kanji: kanjiListsMap['jinmeiyou']
           .map((e) => (e as String).kanjiCodePoint())
           .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(jinmeiyouListRaw)).contains(null));
-      jinmeiyouList.kanji = jinmeiyouListRaw;
-      await isar.predefinedDictionaryLists.put(jinmeiyouList);
-    });
+          .cast<int>(),
+    );
 
     // JLPT kanji N5
-    await isar.writeTxn(() async {
-      final jlptKanjiN5List = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN5
-        ..name = 'N5 Kanji';
-      final jlptKanjiN5ListRaw = kanjiListsMap['jlpt_n5']
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptKanjiN5,
+      'N5 Kanji',
+      kanji: kanjiListsMap['jlpt_n5']
           .map((e) => (e as String).kanjiCodePoint())
           .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(jlptKanjiN5ListRaw)).contains(null));
-      jlptKanjiN5List.kanji = jlptKanjiN5ListRaw;
-      await isar.predefinedDictionaryLists.put(jlptKanjiN5List);
-    });
+          .cast<int>(),
+    );
 
     // JLPT kanji N4
-    await isar.writeTxn(() async {
-      final jlptKanjiN4List = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN4
-        ..name = 'N4 Kanji';
-      final jlptKanjiN4ListRaw = kanjiListsMap['jlpt_n4']
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptKanjiN4,
+      'N4 Kanji',
+      kanji: kanjiListsMap['jlpt_n4']
           .map((e) => (e as String).kanjiCodePoint())
           .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(jlptKanjiN4ListRaw)).contains(null));
-      jlptKanjiN4List.kanji = jlptKanjiN4ListRaw;
-      await isar.predefinedDictionaryLists.put(jlptKanjiN4List);
-    });
+          .cast<int>(),
+    );
 
     // JLPT kanji N3
-    await isar.writeTxn(() async {
-      final jlptKanjiN3List = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN3
-        ..name = 'N3 Kanji';
-      final jlptKanjiN3ListRaw = kanjiListsMap['jlpt_n3']
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptKanjiN3,
+      'N3 Kanji',
+      kanji: kanjiListsMap['jlpt_n3']
           .map((e) => (e as String).kanjiCodePoint())
           .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(jlptKanjiN3ListRaw)).contains(null));
-      jlptKanjiN3List.kanji = jlptKanjiN3ListRaw;
-      await isar.predefinedDictionaryLists.put(jlptKanjiN3List);
-    });
+          .cast<int>(),
+    );
 
     // JLPT kanji N2
-    await isar.writeTxn(() async {
-      final jlptKanjiN2List = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN2
-        ..name = 'N2 Kanji';
-      final jlptKanjiN2ListRaw = kanjiListsMap['jlpt_n2']
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptKanjiN2,
+      'N2 Kanji',
+      kanji: kanjiListsMap['jlpt_n2']
           .map((e) => (e as String).kanjiCodePoint())
           .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(jlptKanjiN2ListRaw)).contains(null));
-      jlptKanjiN2List.kanji = jlptKanjiN2ListRaw;
-      await isar.predefinedDictionaryLists.put(jlptKanjiN2List);
-    });
+          .cast<int>(),
+    );
 
     // JLPT kanji N1
-    await isar.writeTxn(() async {
-      final jlptKanjiN1List = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdJlptKanjiN1
-        ..name = 'N1 Kanji';
-      final jlptKanjiN1ListRaw = kanjiListsMap['jlpt_n1']
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptKanjiN1,
+      'N1 Kanji',
+      kanji: kanjiListsMap['jlpt_n1']
           .map((e) => (e as String).kanjiCodePoint())
           .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(jlptKanjiN1ListRaw)).contains(null));
-      jlptKanjiN1List.kanji = jlptKanjiN1ListRaw;
-      await isar.predefinedDictionaryLists.put(jlptKanjiN1List);
-    });
+          .cast<int>(),
+    );
 
     // Grade level 1 and kanji kentei level 10
-    await isar.writeTxn(() async {
-      final gradeLevel1 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel1
-        ..name = '1st Grade Kanji';
-      final gradeLevel1Raw = kanjiListsMap['grade_level_1']
-          .map((e) => (e as String).kanjiCodePoint())
-          .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(gradeLevel1Raw)).contains(null));
-      gradeLevel1.kanji = gradeLevel1Raw;
-      await isar.predefinedDictionaryLists.put(gradeLevel1);
-
-      final kenteiLevel10 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel10
-        ..name = 'Kanji Kentei level 10';
-      kenteiLevel10.kanji = gradeLevel1Raw;
-      await isar.predefinedDictionaryLists.put(kenteiLevel10);
-    });
+    final gradeLevel1Raw = kanjiListsMap['grade_level_1']
+        .map((e) => (e as String).kanjiCodePoint())
+        .toList()
+        .cast<int>();
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdGradeLevel1,
+      '1st Grade Kanji',
+      kanji: gradeLevel1Raw,
+    );
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdKenteiLevel10,
+      'Kanji Kentei level 10',
+      kanji: gradeLevel1Raw,
+    );
 
     // Grade level 2 and kanji kentei level 9
-    await isar.writeTxn(() async {
-      final gradeLevel2 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel2
-        ..name = '2nd Grade Kanji';
-      final gradeLevel2Raw = kanjiListsMap['grade_level_2']
-          .map((e) => (e as String).kanjiCodePoint())
-          .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(gradeLevel2Raw)).contains(null));
-      gradeLevel2.kanji = gradeLevel2Raw;
-      await isar.predefinedDictionaryLists.put(gradeLevel2);
-
-      final kenteiLevel9 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel9
-        ..name = 'Kanji Kentei level 9';
-      kenteiLevel9.kanji = gradeLevel2Raw;
-      await isar.predefinedDictionaryLists.put(kenteiLevel9);
-    });
+    final gradeLevel2Raw = kanjiListsMap['grade_level_2']
+        .map((e) => (e as String).kanjiCodePoint())
+        .toList()
+        .cast<int>();
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdGradeLevel2,
+      '2nd Grade Kanji',
+      kanji: gradeLevel2Raw,
+    );
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdKenteiLevel9,
+      'Kanji Kentei level 9',
+      kanji: gradeLevel2Raw,
+    );
 
     // Grade level 3 and kanji kentei level 8
-    await isar.writeTxn(() async {
-      final gradeLevel3 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel3
-        ..name = '3rd Grade Kanji';
-      final gradeLevel3Raw = kanjiListsMap['grade_level_3']
-          .map((e) => (e as String).kanjiCodePoint())
-          .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(gradeLevel3Raw)).contains(null));
-      gradeLevel3.kanji = gradeLevel3Raw;
-      await isar.predefinedDictionaryLists.put(gradeLevel3);
-
-      final kenteiLevel8 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel8
-        ..name = 'Kanji Kentei level 8';
-      kenteiLevel8.kanji = gradeLevel3Raw;
-      await isar.predefinedDictionaryLists.put(kenteiLevel8);
-    });
+    final gradeLevel3Raw = kanjiListsMap['grade_level_3']
+        .map((e) => (e as String).kanjiCodePoint())
+        .toList()
+        .cast<int>();
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdGradeLevel3,
+      '3rd Grade Kanji',
+      kanji: gradeLevel3Raw,
+    );
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdKenteiLevel8,
+      'Kanji Kentei level 8',
+      kanji: gradeLevel3Raw,
+    );
 
     // Grade level 4 and kanji kentei level 7
-    await isar.writeTxn(() async {
-      final gradeLevel4 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel4
-        ..name = '4th Grade Kanji';
-      final gradeLevel4Raw = kanjiListsMap['grade_level_4']
-          .map((e) => (e as String).kanjiCodePoint())
-          .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(gradeLevel4Raw)).contains(null));
-      gradeLevel4.kanji = gradeLevel4Raw;
-      await isar.predefinedDictionaryLists.put(gradeLevel4);
-
-      final kenteiLevel7 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel7
-        ..name = 'Kanji Kentei level 7';
-      kenteiLevel7.kanji = gradeLevel4Raw;
-      await isar.predefinedDictionaryLists.put(kenteiLevel7);
-    });
+    final gradeLevel4Raw = kanjiListsMap['grade_level_4']
+        .map((e) => (e as String).kanjiCodePoint())
+        .toList()
+        .cast<int>();
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdGradeLevel4,
+      '4th Grade Kanji',
+      kanji: gradeLevel4Raw,
+    );
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdKenteiLevel7,
+      'Kanji Kentei level 7',
+      kanji: gradeLevel4Raw,
+    );
 
     // Grade level 5 and kanji kentei level 6
-    await isar.writeTxn(() async {
-      final gradeLevel5 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel5
-        ..name = '5th Grade Kanji';
-      final gradeLevel5Raw = kanjiListsMap['grade_level_5']
-          .map((e) => (e as String).kanjiCodePoint())
-          .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(gradeLevel5Raw)).contains(null));
-      gradeLevel5.kanji = gradeLevel5Raw;
-      await isar.predefinedDictionaryLists.put(gradeLevel5);
-
-      final kenteiLevel6 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel6
-        ..name = 'Kanji Kentei level 6';
-      kenteiLevel6.kanji = gradeLevel5Raw;
-      await isar.predefinedDictionaryLists.put(kenteiLevel6);
-    });
+    final gradeLevel5Raw = kanjiListsMap['grade_level_5']
+        .map((e) => (e as String).kanjiCodePoint())
+        .toList()
+        .cast<int>();
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdGradeLevel5,
+      '5th Grade Kanji',
+      kanji: gradeLevel5Raw,
+    );
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdKenteiLevel6,
+      'Kanji Kentei level 6',
+      kanji: gradeLevel5Raw,
+    );
 
     // Grade level 6 and kanji kentei level 5
-    await isar.writeTxn(() async {
-      final gradeLevel6 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdGradeLevel6
-        ..name = '6th Grade Kanji';
-      final gradeLevel6Raw = kanjiListsMap['grade_level_6']
-          .map((e) => (e as String).kanjiCodePoint())
-          .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(gradeLevel6Raw)).contains(null));
-      gradeLevel6.kanji = gradeLevel6Raw;
-      await isar.predefinedDictionaryLists.put(gradeLevel6);
-
-      final kenteiLevel5 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel5
-        ..name = 'Kanji Kentei level 5';
-      kenteiLevel5.kanji = gradeLevel6Raw;
-      await isar.predefinedDictionaryLists.put(kenteiLevel5);
-    });
+    final gradeLevel6Raw = kanjiListsMap['grade_level_6']
+        .map((e) => (e as String).kanjiCodePoint())
+        .toList()
+        .cast<int>();
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdGradeLevel6,
+      '6th Grade Kanji',
+      kanji: gradeLevel6Raw,
+    );
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdKenteiLevel5,
+      'Kanji Kentei level 5',
+      kanji: gradeLevel6Raw,
+    );
 
     // Kanji kentei level 4
-    await isar.writeTxn(() async {
-      final kenteiLevel4 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel4
-        ..name = 'Kanji Kentei level 4';
-      final kenteiLevel4Raw = kanjiListsMap['kentei_level_4']
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdKenteiLevel4,
+      'Kanji Kentei level 4',
+      kanji: kanjiListsMap['kentei_level_4']
           .map((e) => (e as String).kanjiCodePoint())
           .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(kenteiLevel4Raw)).contains(null));
-      kenteiLevel4.kanji = kenteiLevel4Raw;
-      await isar.predefinedDictionaryLists.put(kenteiLevel4);
-    });
+          .cast<int>(),
+    );
 
     // Kanji kentei level 3
-    await isar.writeTxn(() async {
-      final kenteiLevel3 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel3
-        ..name = 'Kanji Kentei level 3';
-      final kenteiLevel3Raw = kanjiListsMap['kentei_level_3']
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdKenteiLevel3,
+      'Kanji Kentei level 3',
+      kanji: kanjiListsMap['kentei_level_3']
           .map((e) => (e as String).kanjiCodePoint())
           .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(kenteiLevel3Raw)).contains(null));
-      kenteiLevel3.kanji = kenteiLevel3Raw;
-      await isar.predefinedDictionaryLists.put(kenteiLevel3);
-    });
+          .cast<int>(),
+    );
 
     // Kanji kentei level Pre 2
-    await isar.writeTxn(() async {
-      final kenteiLevelPre2 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevelPre2
-        ..name = 'Kanji Kentei level Pre-2';
-      final kenteiLevelPre2Raw = kanjiListsMap['kentei_level_pre_2']
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdKenteiLevelPre2,
+      'Kanji Kentei level pre-2',
+      kanji: kanjiListsMap['kentei_level_pre_2']
           .map((e) => (e as String).kanjiCodePoint())
           .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(kenteiLevelPre2Raw)).contains(null));
-      kenteiLevelPre2.kanji = kenteiLevelPre2Raw;
-      await isar.predefinedDictionaryLists.put(kenteiLevelPre2);
-    });
+          .cast<int>(),
+    );
 
     // Kanji kentei level 2
-    await isar.writeTxn(() async {
-      final kenteiLevel2 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel2
-        ..name = 'Kanji Kentei level 2';
-      final kenteiLevel2Raw = kanjiListsMap['kentei_level_2']
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdKenteiLevel2,
+      'Kanji Kentei level 2',
+      kanji: kanjiListsMap['kentei_level_2']
           .map((e) => (e as String).kanjiCodePoint())
           .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(kenteiLevel2Raw)).contains(null));
-      kenteiLevel2.kanji = kenteiLevel2Raw;
-      await isar.predefinedDictionaryLists.put(kenteiLevel2);
-    });
+          .cast<int>(),
+    );
 
     // Kanji kentei level Pre 1
-    await isar.writeTxn(() async {
-      final kenteiLevelPre1 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevelPre1
-        ..name = 'Kanji Kentei level Pre-1';
-      final kenteiLevelPre1Raw = kanjiListsMap['kentei_level_pre_1']
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdKenteiLevelPre1,
+      'Kanji Kentei level pre-1',
+      kanji: kanjiListsMap['kentei_level_pre_1']
           .map((e) => (e as String).kanjiCodePoint())
           .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(kenteiLevelPre1Raw)).contains(null));
-      kenteiLevelPre1.kanji = kenteiLevelPre1Raw;
-      await isar.predefinedDictionaryLists.put(kenteiLevelPre1);
-    });
+          .cast<int>(),
+    );
 
     // Kanji kentei level 1
-    await isar.writeTxn(() async {
-      final kenteiLevel1 = PredefinedDictionaryList()
-        ..id = SagaseDictionaryConstants.dictionaryListIdKenteiLevel1
-        ..name = 'Kanji Kentei level 1';
-      final kenteiLevel1Raw = kanjiListsMap['kentei_level_1']
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdKenteiLevel1,
+      'Kanji Kentei level 1',
+      kanji: kanjiListsMap['kentei_level_1']
           .map((e) => (e as String).kanjiCodePoint())
           .toList()
-          .cast<int>();
-      assert(!(await isar.kanjis.getAll(kenteiLevel1Raw)).contains(null));
-      kenteiLevel1.kanji = kenteiLevel1Raw;
-      await isar.predefinedDictionaryLists.put(kenteiLevel1);
-    });
+          .cast<int>(),
+    );
 
     // Add favorites my list
-    await isar.writeTxn(() async {
-      await isar.myDictionaryLists.put(
-        MyDictionaryList()
-          ..name = 'Favorites'
-          ..timestamp = DateTime.now(),
-      );
-    });
+    await db.myDictionaryListsDao.create('Favorites');
+  }
+
+  static Future<void> _createPredefinedDictionaryList(
+    AppDatabase db,
+    int id,
+    String name, {
+    List<int> vocab = const [],
+    List<int> kanji = const [],
+  }) async {
+    // Confirm all vocab exist in database
+    if (vocab.isNotEmpty) {
+      final results = await (db.select(db.vocabs)
+            ..where((row) => row.id.isIn(vocab)))
+          .get();
+      assert(results.length == vocab.length);
+    }
+
+    // Confirm all kanji exist in database
+    if (kanji.isNotEmpty) {
+      final results = await (db.select(db.kanjis)
+            ..where((row) => row.id.isIn(kanji)))
+          .get();
+      assert(results.length == kanji.length);
+    }
+
+    await db.into(db.predefinedDictionaryLists).insert(
+          PredefinedDictionaryListsCompanion(
+            id: Value(id),
+            name: Value(name),
+            vocab: Value(vocab),
+            kanji: Value(kanji),
+          ),
+        );
   }
 
   // Creates the proper noun database from the raw dictionary file
   static Future<void> createProperNounDictionary(
-    Isar isar,
-    String enamdictString,
-  ) async {
-    // Set up
-    await isar.writeTxn(() async {
-      await isar.clear();
-    });
+    AppDatabase db,
+    String enamdict, {
+    bool showProgress = false,
+  }) async {
+    if (showProgress) {
+      stdout.write('\nProper noun progress 0%');
+    }
 
-    // Create
-    await isar.writeTxn(() async {
-      final lines = enamdictString.split('\n');
-      for (var line in lines) {
-        String writing = line.substring(0, line.indexOf(' '));
-        line = line.substring(writing.length + 1);
-        String? reading;
-        if (line[0] == '[') {
-          reading = line.substring(1, line.indexOf(' ') - 1);
-          line = line.substring(reading.length + 3);
+    final lines = enamdict.split('\n');
+    List<ProperNounsCompanion> properNouns = [];
+    double progress = 0;
+    for (int i = 0; i < lines.length; i++) {
+      if (showProgress) {
+        double currentProgress = i / lines.length;
+        if (currentProgress != progress) {
+          progress = currentProgress;
+          stdout.write(
+            '\rProper noun progress ${(progress * 100).toStringAsFixed(0)}%',
+          );
         }
-        String typesString = line.substring(2, line.indexOf(')'));
-        line = line.substring(typesString.length + 4);
-        String romaji = line.substring(0, line.length - 1);
-
-        List<ProperNounType> types = [];
-        for (var typeString in typesString.split(',')) {
-          types.add(_properNounTypeStringToEnum(typeString));
-        }
-
-        ProperNoun current = ProperNoun()
-          ..writing = writing
-          ..reading = reading
-          ..romaji = romaji
-          ..types = types;
-
-        await isar.properNouns.put(current);
       }
+
+      var line = lines[i];
+
+      // Set initial writing
+      String? writing = line.substring(0, line.indexOf(' '));
+      line = line.substring(writing.length + 1);
+      // Try to get reading
+      late String reading;
+      String? writingSearchForm;
+      if (line[0] == '[') {
+        // Set reading
+        reading = line.substring(1, line.indexOf(' ') - 1);
+        line = line.substring(reading.length + 3);
+        // Create writing search form
+        writingSearchForm =
+            _kanaKit.toHiragana(writing.toLowerCase().romajiToHalfWidth());
+        if (writing == writingSearchForm) writingSearchForm = null;
+      } else {
+        // No reading available so set reading to writing and writing to null
+        reading = writing;
+        writing = null;
+      }
+      // Create reading search form
+      String? readingSearchForm = _kanaKit.toHiragana(reading);
+      if (reading == readingSearchForm) readingSearchForm = null;
+
+      // Create reading romaji
+      String readingRomaji = _kanaKit.toRomaji(reading).toLowerCase();
+      String? readingRomajiSimplified = _kanaKit
+          .toRomaji(reading.replaceAll(_simplifyNonVerbRegex, ''))
+          .toLowerCase();
+      if (readingRomaji == readingRomajiSimplified) {
+        readingRomajiSimplified = null;
+      }
+
+      // Get proper noun types
+      String typesString = line.substring(2, line.indexOf(')'));
+      List<ProperNounType> types = [];
+      for (var typeString in typesString.split(',')) {
+        types.add(_properNounTypeStringToEnum(typeString));
+      }
+      // Get romaji
+      line = line.substring(typesString.length + 4);
+      String romaji = line.substring(0, line.length - 1);
+
+      properNouns.add(
+        ProperNounsCompanion(
+          writing: Value.absentIfNull(writing),
+          writingSearchForm: Value.absentIfNull(writingSearchForm),
+          reading: Value(reading),
+          readingSearchForm: Value.absentIfNull(readingSearchForm),
+          readingRomaji: Value(readingRomaji),
+          readingRomajiSimplified: Value.absentIfNull(readingRomajiSimplified),
+          romaji: Value(romaji),
+          types: Value(types),
+        ),
+      );
+    }
+
+    await db.batch((batch) {
+      batch.insertAll(db.properNouns, properNouns);
     });
   }
 
@@ -2313,4 +2453,17 @@ class DictionaryBuilder {
         return ProperNounType.unknown;
     }
   }
+}
+
+class _KanjiReadingMeaning {
+  List<String> meanings;
+  List<String> onReadings;
+  List<String> kunReadings;
+  late List<String> nanori;
+
+  _KanjiReadingMeaning({
+    required this.meanings,
+    required this.onReadings,
+    required this.kunReadings,
+  });
 }

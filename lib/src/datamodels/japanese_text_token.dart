@@ -1,4 +1,5 @@
-import 'package:sagase_dictionary/src/datamodels/vocab.dart';
+import 'package:sagase_dictionary/src/datamodels/vocabs.dart';
+import 'package:sagase_dictionary/src/utils/enums.dart';
 
 class JapaneseTextToken {
   final String original;

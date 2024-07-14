@@ -1,16 +1,18 @@
-import 'package:sagase_dictionary/sagase_dictionary.dart';
+import 'package:sagase_dictionary/src/datamodels/my_dictionary_lists.dart';
+import 'package:sagase_dictionary/src/utils/string_utils.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('MyDictionaryListTest', () {
     test('toBackupJson and fromBackupJson', () async {
       final now = DateTime.now();
-      final myList = MyDictionaryList()
-        ..id = 1
-        ..name = 'list1'
-        ..timestamp = now
-        ..vocab = [0, 1]
-        ..kanji = ['a'.kanjiCodePoint(), 'b'.kanjiCodePoint()];
+      final myList = MyDictionaryList(
+        id: 1,
+        name: 'list1',
+        timestamp: now,
+        vocab: [0, 1],
+        kanji: ['a'.kanjiCodePoint(), 'b'.kanjiCodePoint()],
+      );
 
       // Backup and import
       final newMyList = MyDictionaryList.fromBackupJson(myList.toBackupJson());
@@ -28,12 +30,13 @@ void main() {
     });
 
     test('toShareJson and fromShareJson', () {
-      final myList = MyDictionaryList()
-        ..id = 1
-        ..name = 'list1'
-        ..timestamp = DateTime.now()
-        ..vocab = [0, 1]
-        ..kanji = ['a'.kanjiCodePoint(), 'b'.kanjiCodePoint()];
+      final myList = MyDictionaryList(
+        id: 1,
+        name: 'list1',
+        timestamp: DateTime.now(),
+        vocab: [0, 1],
+        kanji: ['a'.kanjiCodePoint(), 'b'.kanjiCodePoint()],
+      );
 
       // Export and import
       final newMyList = MyDictionaryList.fromShareJson(myList.toShareJson());

@@ -1,0 +1,7 @@
+import 'spaced_repetition_datas.dart';
+
+CREATE INDEX IX_spaced_repetition_datas_vocab_id
+ON spaced_repetition_datas(vocab_id) WHERE vocab_id != 0;
+
+CREATE INDEX IX_spaced_repetition_datas_kanji_id
+ON spaced_repetition_datas(kanji_id) WHERE kanji_id != 0;
