@@ -11,13 +11,9 @@ void main() {
   group('DictionaryBuilderTest', () {
     late AppDatabase database;
 
-    setUp(() => database = AppDatabase());
+    setUpAll(() async {
+      database = AppDatabase();
 
-    tearDown(() async {
-      await database.close();
-    });
-
-    test('Dictionary creation with short version', () async {
       await DictionaryBuilder.createDictionary(
         database,
         shortJMdict,
@@ -31,6 +27,17 @@ void main() {
         shortFrequencyListData,
       );
 
+      await DictionaryBuilder.createProperNounDictionary(
+        database,
+        shortEnamdict,
+      );
+    });
+
+    tearDownAll(() async {
+      await database.close();
+    });
+
+    test('Vocab', () async {
       // Dictionary info
       final dictionaryInfo = await database.dictionaryInfosDao.get();
       expect(dictionaryInfo!.id, 0);
@@ -512,7 +519,9 @@ void main() {
       expect(vocab9.definitions[0].antonyms!.length, 1);
       expect(vocab9.definitions[0].antonyms![0].ids, null);
       expect(vocab9.definitions[0].antonyms![0].text, '活語');
+    });
 
+    test('Radicals', () async {
       // Radicals
       final radical1 = await database.radicalsDao.get('一');
       expect(radical1.radical, '一');
@@ -547,7 +556,9 @@ void main() {
       expect(radical3.importance, null);
       expect(radical3.variants, null);
       expect(radical3.variantOf, '乙');
+    });
 
+    test('Kanji', () async {
       // Kanji
       final kanji1 = await database.kanjisDao.getKanji('亜');
       expect(kanji1.kanji, '亜');
@@ -758,7 +769,9 @@ void main() {
       expect(kanji4.nanori![5].readingSearchForm, null);
       expect(kanji4.nanori![5].readingRomaji, 'yuku');
       expect(kanji4.nanori![5].readingRomajiSimplified, null);
+    });
 
+    test('Predefined dictionary lists', () async {
       // Predefined dictionary lists
       final n5List = await database.predefinedDictionaryListsDao
           .get(SagaseDictionaryConstants.dictionaryListIdJlptVocabN5);
@@ -769,6 +782,123 @@ void main() {
           .get(SagaseDictionaryConstants.dictionaryListIdJouyou);
       expect(jouyouList.kanji.length, 1);
       expect(jouyouList.kanji[0], '亜'.kanjiCodePoint());
+    });
+
+    test('Proper nouns', () async {
+      // Proper nouns
+      final properNouns = await database.select(database.properNouns).get();
+
+      expect(properNouns[0].writing, null);
+      expect(properNouns[0].writingSearchForm, null);
+      expect(properNouns[0].reading, 'さくら');
+      expect(properNouns[0].readingSearchForm, null);
+      expect(properNouns[0].readingRomaji, 'sakura');
+      expect(properNouns[0].readingRomajiSimplified, null);
+      expect(properNouns[0].romaji, 'Sakura');
+      expect(properNouns[0].types, [ProperNounType.femaleName]);
+      var properNounRomajiWords =
+          await (database.select(database.properNounRomajiWords)
+                ..where((word) => word.properNounId.equals(properNouns[0].id)))
+              .get();
+      expect(properNounRomajiWords.length, 0);
+
+      expect(properNouns[1].writing, null);
+      expect(properNouns[1].writingSearchForm, null);
+      expect(properNouns[1].reading, 'たなかさくら');
+      expect(properNouns[1].readingSearchForm, null);
+      expect(properNouns[1].readingRomaji, 'tanakasakura');
+      expect(properNouns[1].readingRomajiSimplified, null);
+      expect(properNouns[1].romaji, 'Tanaka Sakura');
+      expect(properNouns[1].types, [ProperNounType.fullName]);
+      properNounRomajiWords =
+          await (database.select(database.properNounRomajiWords)
+                ..where((word) => word.properNounId.equals(properNouns[1].id)))
+              .get();
+      expect(properNounRomajiWords.length, 2);
+      expect(properNounRomajiWords[0].word, 'tanaka');
+      expect(properNounRomajiWords[1].word, 'sakura');
+
+      expect(properNouns[2].writing, '東京');
+      expect(properNouns[2].writingSearchForm, null);
+      expect(properNouns[2].reading, 'とうきょう');
+      expect(properNouns[2].readingSearchForm, null);
+      expect(properNouns[2].readingRomaji, 'toukyou');
+      expect(properNouns[2].readingRomajiSimplified, 'tokyo');
+      expect(properNouns[2].romaji, 'Tokyo');
+      expect(properNouns[2].types, [
+        ProperNounType.placeName,
+        ProperNounType.surname,
+      ]);
+      properNounRomajiWords =
+          await (database.select(database.properNounRomajiWords)
+                ..where((word) => word.properNounId.equals(properNouns[2].id)))
+              .get();
+      expect(properNounRomajiWords.length, 0);
+
+      expect(properNouns[3].writing, null);
+      expect(properNouns[3].writingSearchForm, null);
+      expect(properNouns[3].reading, 'ヴィナス');
+      expect(properNouns[3].readingSearchForm, 'ゔぃなす');
+      expect(properNouns[3].readingRomaji, 'vyinasu');
+      expect(properNouns[3].readingRomajiSimplified, null);
+      expect(properNouns[3].romaji, 'Venus');
+      expect(properNouns[3].types, [ProperNounType.personName]);
+      properNounRomajiWords =
+          await (database.select(database.properNounRomajiWords)
+                ..where((word) => word.properNounId.equals(properNouns[3].id)))
+              .get();
+      expect(properNounRomajiWords.length, 0);
+
+      expect(properNouns[4].writing, '宇宙機構');
+      expect(properNouns[4].writingSearchForm, null);
+      expect(properNouns[4].reading, 'うちゅうきかん');
+      expect(properNouns[4].readingSearchForm, null);
+      expect(properNouns[4].readingRomaji, 'uchuukikan');
+      expect(properNouns[4].readingRomajiSimplified, 'uchukikan');
+      expect(
+        properNouns[4].romaji,
+        'Japanese Aerospace Exploration Agency (JAXA) (formerly NASDA)',
+      );
+      expect(properNouns[4].types, [ProperNounType.organization]);
+      properNounRomajiWords =
+          await (database.select(database.properNounRomajiWords)
+                ..where((word) => word.properNounId.equals(properNouns[4].id)))
+              .get();
+      expect(properNounRomajiWords.length, 7);
+      expect(properNounRomajiWords[0].word, 'japanese');
+      expect(properNounRomajiWords[1].word, 'aerospace');
+      expect(properNounRomajiWords[2].word, 'exploration');
+      expect(properNounRomajiWords[3].word, 'agency');
+      expect(properNounRomajiWords[4].word, 'jaxa');
+      expect(properNounRomajiWords[5].word, 'formerly');
+      expect(properNounRomajiWords[6].word, 'nasda');
+
+      expect(properNouns[5].writing, '安倍晋三');
+      expect(properNouns[5].writingSearchForm, null);
+      expect(properNouns[5].reading, 'あべしんぞう');
+      expect(properNouns[5].readingSearchForm, null);
+      expect(properNouns[5].readingRomaji, 'abeshinzou');
+      expect(properNouns[5].readingRomajiSimplified, 'abeshinzo');
+      expect(
+        properNouns[5].romaji,
+        'Shinzō Abe (1954.9.21-2022.7.8; Prime Minister of Japan 2006-2007 and 2012-2020)',
+      );
+      expect(properNouns[5].types, [ProperNounType.fullName]);
+      properNounRomajiWords =
+          await (database.select(database.properNounRomajiWords)
+                ..where((word) => word.properNounId.equals(properNouns[5].id)))
+              .get();
+      expect(properNounRomajiWords.length, 10);
+      expect(properNounRomajiWords[0].word, 'shinzo');
+      expect(properNounRomajiWords[1].word, 'abe');
+      expect(properNounRomajiWords[2].word, '1954.9.21-2022.7.8');
+      expect(properNounRomajiWords[3].word, 'prime');
+      expect(properNounRomajiWords[4].word, 'minister');
+      expect(properNounRomajiWords[5].word, 'of');
+      expect(properNounRomajiWords[6].word, 'japan');
+      expect(properNounRomajiWords[7].word, '2006-2007');
+      expect(properNounRomajiWords[8].word, 'and');
+      expect(properNounRomajiWords[9].word, '2012-2020');
     });
   });
 }

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:drift/drift.dart';
 import 'package:path/path.dart' as path;
-import 'package:sagase_dictionary/src/database.dart';
+import 'package:sagase_dictionary/sagase_dictionary.dart';
 import 'package:sagase_dictionary/src/dictionary_builder.dart';
 
 void main() async {
@@ -17,9 +17,6 @@ void main() async {
   Directory(tempFilesPath).createSync(recursive: true);
   String outputFilesPath = path.join(examplePath, 'output_files');
   Directory(outputFilesPath).createSync(recursive: true);
-  if (File(path.join(outputFilesPath, 'dictionary.zip')).existsSync()) {
-    File(path.join(outputFilesPath, 'dictionary.zip')).deleteSync();
-  }
 
   print('Creating dictionary');
 
@@ -66,17 +63,119 @@ void main() async {
   int kanjiCount = await database.kanjis.count().getSingle();
   print('Kanji ${kanjiCount == 13108 ? "valid" : "INVALID"} - $kanjiCount');
 
-  // Export database to file
+  // Export database without proper nouns to file
+  await _exportAndCompressDatabase(
+    database,
+    path.join(tempFilesPath, SagaseDictionaryConstants.dictionaryDatabaseFile),
+    path.join(outputFilesPath, SagaseDictionaryConstants.dictionaryZip),
+  );
+
+  // Add proper nouns to database
+  print('Adding proper nouns...');
+  await DictionaryBuilder.createProperNounDictionary(
+    database,
+    File(path.join(inputFilesPath, 'enamdict_utf-8')).readAsStringSync(),
+    showProgress: true,
+  );
+
+  int properNounCount = await database.properNouns.count().getSingle();
+  print('\nProper noun count - $properNounCount');
+
+  // Export database with proper nouns to file
+  await _exportAndCompressDatabase(
+    database,
+    path.join(tempFilesPath, SagaseDictionaryConstants.dictionaryDatabaseFile),
+    path.join(
+      outputFilesPath,
+      SagaseDictionaryConstants.dictionaryWithProperNounsZip,
+    ),
+  );
+
+  // Close database
+  await database.close();
+
+  // Open proper noun database
+  print('Creating proper noun dictionary...');
+  final properNounDatabase = AppDatabase();
+  await DictionaryBuilder.createProperNounDictionary(
+    properNounDatabase,
+    File(path.join(inputFilesPath, 'enamdict_utf-8')).readAsStringSync(),
+    showProgress: true,
+  );
+  print('');
+
+  // Export proper noun database
+  await _exportAndCompressDatabase(
+    properNounDatabase,
+    path.join(
+      tempFilesPath,
+      SagaseDictionaryConstants.properNounDictionaryDatabaseFile,
+    ),
+    path.join(
+      outputFilesPath,
+      SagaseDictionaryConstants.properNounDictionaryZip,
+    ),
+  );
+
+  // Close proper noun database
+  await properNounDatabase.close();
+
+  // Create required assets tar
+  print("Creating required assets tar");
+  final archive = Archive();
+
+  String dictionaryPath = path.join(
+    outputFilesPath,
+    SagaseDictionaryConstants.dictionaryZip,
+  );
+  String mecabPath = path.join(
+    inputFilesPath,
+    SagaseDictionaryConstants.mecabZip,
+  );
+
+  final dictionaryBytes = await File(dictionaryPath).readAsBytes();
+  final dictionaryArchiveFile = ArchiveFile(
+      SagaseDictionaryConstants.dictionaryZip,
+      dictionaryBytes.length,
+      dictionaryBytes);
+  archive.addFile(dictionaryArchiveFile);
+
+  final mecabBytes = await File(mecabPath).readAsBytes();
+  final mecabArchiveFile = ArchiveFile(
+    SagaseDictionaryConstants.mecabZip,
+    mecabBytes.length,
+    mecabBytes,
+  );
+  archive.addFile(mecabArchiveFile);
+
+  final encodedArchive = TarEncoder().encode(archive);
+
+  File(path.join(
+    outputFilesPath,
+    SagaseDictionaryConstants.requiredAssetsTar,
+  )).writeAsBytesSync(encodedArchive);
+
+  // Delete temp files
+  await Directory(tempFilesPath).delete(recursive: true);
+
+  print('Done!');
+}
+
+Future<void> _exportAndCompressDatabase(
+  AppDatabase database,
+  String dbFilePath,
+  String archiveFilePath,
+) async {
   print('Exporting...');
-  final file = File(path.join(tempFilesPath, 'dictionary.sqlite'));
-  if (file.existsSync()) file.deleteSync();
-  await database.customStatement('VACUUM INTO ?', [file.path]);
+  final dbFile = File(dbFilePath);
+  if (dbFile.existsSync()) dbFile.deleteSync();
+  await database.customStatement('VACUUM INTO ?', [dbFile.path]);
 
   // Compress the exported file
   print('Compressing...');
-  final bytes =
-      await File(path.join(tempFilesPath, 'dictionary.sqlite')).readAsBytes();
-  final archiveFile = ArchiveFile('dictionary.sqlite', bytes.length, bytes);
+  final bytes = dbFile.readAsBytesSync();
+  final archiveFile =
+      ArchiveFile(dbFile.uri.pathSegments.last, bytes.length, bytes);
   final archive = Archive();
   archive.addFile(archiveFile);
   final encodedArchive =
@@ -85,12 +184,5 @@ void main() async {
     print('Compression did not work');
     return;
   }
-  await File(path.join(outputFilesPath, 'dictionary.zip'))
-      .writeAsBytes(encodedArchive);
-
-  // Close database and delete the temp files
-  await database.close();
-  await Directory(tempFilesPath).delete(recursive: true);
-
-  print('Done!');
+  File(archiveFilePath).writeAsBytesSync(encodedArchive);
 }

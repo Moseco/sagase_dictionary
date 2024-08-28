@@ -32,6 +32,17 @@ class SagaseDictionaryConstants {
   static const int dictionaryListIdKenteiLevelPre1 = 28;
   static const int dictionaryListIdKenteiLevel1 = 29;
 
+  static const dictionaryDatabaseFile = 'dictionary.sqlite';
+  static const properNounDictionaryDatabaseFile =
+      'proper_noun_dictionary.sqlite';
+
+  static const requiredAssetsTar = 'required_assets.tar';
+  static const dictionaryZip = 'dictionary.zip';
+  static const dictionaryWithProperNounsZip =
+      'dictionary_with_proper_nouns.zip';
+  static const properNounDictionaryZip = 'proper_noun_dictionary.zip';
+  static const mecabZip = 'mecab.zip';
+
   static const backupDictionaryVersion = 'dictionary_version';
   static const backupTimestamp = 'timestamp';
   static const backupMyDictionaryLists = 'my_dictionary_lists';

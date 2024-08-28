@@ -11,3 +11,6 @@ ON proper_nouns(reading_search_form) WHERE reading_search_form IS NOT NULL;
 
 CREATE INDEX IX_proper_nouns_reading_romaji_simplified
 ON proper_nouns(reading_romaji_simplified) WHERE reading_romaji_simplified IS NOT NULL;
+
+CREATE INDEX IX_proper_nouns_romaji
+ON proper_nouns(romaji COLLATE NOCASE) WHERE romaji;

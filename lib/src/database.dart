@@ -4,6 +4,7 @@ import 'package:sagase_dictionary/src/dao/flashcard_sets_dao.dart';
 import 'package:sagase_dictionary/src/dao/kanjis_dao.dart';
 import 'package:sagase_dictionary/src/dao/my_dictionary_lists_dao.dart';
 import 'package:sagase_dictionary/src/dao/predefined_dictionary_lists_dao.dart';
+import 'package:sagase_dictionary/src/dao/proper_nouns_dao.dart';
 import 'package:sagase_dictionary/src/dao/radicals_dao.dart';
 import 'package:sagase_dictionary/src/dao/search_history_items_dao.dart';
 import 'package:sagase_dictionary/src/dao/spaced_repetition_datas_dao.dart';
@@ -37,6 +38,7 @@ part 'database.g.dart';
     MyDictionaryListItems,
     PredefinedDictionaryLists,
     ProperNouns,
+    ProperNounRomajiWords,
     Radicals,
     SearchHistoryItems,
     SpacedRepetitionDatas,
@@ -59,6 +61,7 @@ part 'database.g.dart';
     KanjisDao,
     MyDictionaryListsDao,
     PredefinedDictionaryListsDao,
+    ProperNounsDao,
     RadicalsDao,
     SearchHistoryItemsDao,
     SpacedRepetitionDatasDao,

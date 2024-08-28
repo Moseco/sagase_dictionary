@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:diacritic/diacritic.dart' as diacritic;
 
 extension JapaneseTextHelpers on String {
   static const fullWidthRegExp = r'([\uff01-\uff5e])';
@@ -40,5 +41,9 @@ extension JapaneseTextHelpers on String {
 
   List<String> splitWords() {
     return splitWordsRegExp.allMatches(this).map((e) => e[0]!).toList();
+  }
+
+  String removeDiacritics() {
+    return diacritic.removeDiacritics(this);
   }
 }

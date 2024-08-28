@@ -1,4 +1,4 @@
-import 'package:sagase_dictionary/src/datamodels/vocabs.dart';
+import 'package:sagase_dictionary/src/datamodels/dictionary_item.dart';
 import 'package:sagase_dictionary/src/utils/enums.dart';
 
 class JapaneseTextToken {
@@ -8,7 +8,7 @@ class JapaneseTextToken {
   final List<RubyTextPair> rubyTextPairs;
   List<JapaneseTextToken>? trailing;
   PartOfSpeech? pos;
-  List<Vocab>? associatedVocab;
+  List<DictionaryItem>? associatedDictionaryItems;
 
   JapaneseTextToken({
     required this.original,
@@ -17,7 +17,7 @@ class JapaneseTextToken {
     required this.rubyTextPairs,
     this.trailing,
     this.pos,
-    this.associatedVocab,
+    this.associatedDictionaryItems,
   });
 }
 

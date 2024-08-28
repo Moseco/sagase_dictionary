@@ -2317,11 +2317,12 @@ class DictionaryBuilder {
     bool showProgress = false,
   }) async {
     if (showProgress) {
-      stdout.write('\nProper noun progress 0%');
+      stdout.write('Proper noun progress 0%');
     }
 
     final lines = enamdict.split('\n');
     List<ProperNounsCompanion> properNouns = [];
+    List<ProperNounRomajiWordsCompanion> properNounRomajiWords = [];
     double progress = 0;
     for (int i = 0; i < lines.length; i++) {
       if (showProgress) {
@@ -2378,8 +2379,21 @@ class DictionaryBuilder {
       line = line.substring(typesString.length + 4);
       String romaji = line.substring(0, line.length - 1);
 
+      // If romaji contains multiple words or was changed by removing diacritics add them to romaji words
+      final words =
+          romaji.toLowerCase().removeDiacritics().splitWords().toSet().toList();
+      if (words.isNotEmpty && words[0] != romaji.toLowerCase()) {
+        for (final word in words) {
+          properNounRomajiWords.add(ProperNounRomajiWordsCompanion(
+            word: Value(word),
+            properNounId: Value(i),
+          ));
+        }
+      }
+
       properNouns.add(
         ProperNounsCompanion(
+          id: Value(i),
           writing: Value.absentIfNull(writing),
           writingSearchForm: Value.absentIfNull(writingSearchForm),
           reading: Value(reading),
@@ -2394,6 +2408,7 @@ class DictionaryBuilder {
 
     await db.batch((batch) {
       batch.insertAll(db.properNouns, properNouns);
+      batch.insertAll(db.properNounRomajiWords, properNounRomajiWords);
     });
   }
 

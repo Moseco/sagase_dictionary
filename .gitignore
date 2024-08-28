@@ -12,6 +12,7 @@ example/input_files/kanjidic2.xml
 example/input_files/pitch_accents.txt
 example/input_files/frequency_list.txt
 example/input_files/enamdict_utf-8
+example/input_files/mecab.zip
 
 # Temporary and output files
 example/temp_files/
