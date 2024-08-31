@@ -106,6 +106,7 @@ class VocabDefinitions extends Table {
 
 @TableIndex(name: 'IX_vocab_definition_words_word', columns: {#word})
 class VocabDefinitionWords extends Table {
+  IntColumn get id => integer().autoIncrement()();
   TextColumn get word => text()();
   IntColumn get vocabId => integer()();
 }

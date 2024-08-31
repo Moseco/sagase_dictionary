@@ -99,6 +99,7 @@ class KanjiReading {
 
 @TableIndex(name: 'IX_kanji_meaning_words_word', columns: {#word})
 class KanjiMeaningWords extends Table {
+  IntColumn get id => integer().autoIncrement()();
   TextColumn get word => text()();
   IntColumn get kanjiId => integer()();
 }

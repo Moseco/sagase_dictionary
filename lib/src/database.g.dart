@@ -1703,6 +1703,15 @@ class $VocabDefinitionWordsTable extends VocabDefinitionWords
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $VocabDefinitionWordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
   static const VerificationMeta _wordMeta = const VerificationMeta('word');
   @override
   late final GeneratedColumn<String> word = GeneratedColumn<String>(
@@ -1715,7 +1724,7 @@ class $VocabDefinitionWordsTable extends VocabDefinitionWords
       'vocab_id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [word, vocabId];
+  List<GeneratedColumn> get $columns => [id, word, vocabId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1727,6 +1736,9 @@ class $VocabDefinitionWordsTable extends VocabDefinitionWords
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
     if (data.containsKey('word')) {
       context.handle(
           _wordMeta, word.isAcceptableOrUnknown(data['word']!, _wordMeta));
@@ -1743,11 +1755,13 @@ class $VocabDefinitionWordsTable extends VocabDefinitionWords
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => const {};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   VocabDefinitionWord map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return VocabDefinitionWord(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       word: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}word'])!,
       vocabId: attachedDatabase.typeMapping
@@ -1763,12 +1777,15 @@ class $VocabDefinitionWordsTable extends VocabDefinitionWords
 
 class VocabDefinitionWord extends DataClass
     implements Insertable<VocabDefinitionWord> {
+  final int id;
   final String word;
   final int vocabId;
-  const VocabDefinitionWord({required this.word, required this.vocabId});
+  const VocabDefinitionWord(
+      {required this.id, required this.word, required this.vocabId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
     map['word'] = Variable<String>(word);
     map['vocab_id'] = Variable<int>(vocabId);
     return map;
@@ -1776,6 +1793,7 @@ class VocabDefinitionWord extends DataClass
 
   VocabDefinitionWordsCompanion toCompanion(bool nullToAbsent) {
     return VocabDefinitionWordsCompanion(
+      id: Value(id),
       word: Value(word),
       vocabId: Value(vocabId),
     );
@@ -1785,6 +1803,7 @@ class VocabDefinitionWord extends DataClass
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return VocabDefinitionWord(
+      id: serializer.fromJson<int>(json['id']),
       word: serializer.fromJson<String>(json['word']),
       vocabId: serializer.fromJson<int>(json['vocabId']),
     );
@@ -1793,19 +1812,22 @@ class VocabDefinitionWord extends DataClass
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
       'word': serializer.toJson<String>(word),
       'vocabId': serializer.toJson<int>(vocabId),
     };
   }
 
-  VocabDefinitionWord copyWith({String? word, int? vocabId}) =>
+  VocabDefinitionWord copyWith({int? id, String? word, int? vocabId}) =>
       VocabDefinitionWord(
+        id: id ?? this.id,
         word: word ?? this.word,
         vocabId: vocabId ?? this.vocabId,
       );
   @override
   String toString() {
     return (StringBuffer('VocabDefinitionWord(')
+          ..write('id: $id, ')
           ..write('word: $word, ')
           ..write('vocabId: $vocabId')
           ..write(')'))
@@ -1813,63 +1835,64 @@ class VocabDefinitionWord extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(word, vocabId);
+  int get hashCode => Object.hash(id, word, vocabId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is VocabDefinitionWord &&
+          other.id == this.id &&
           other.word == this.word &&
           other.vocabId == this.vocabId);
 }
 
 class VocabDefinitionWordsCompanion
     extends UpdateCompanion<VocabDefinitionWord> {
+  final Value<int> id;
   final Value<String> word;
   final Value<int> vocabId;
-  final Value<int> rowid;
   const VocabDefinitionWordsCompanion({
+    this.id = const Value.absent(),
     this.word = const Value.absent(),
     this.vocabId = const Value.absent(),
-    this.rowid = const Value.absent(),
   });
   VocabDefinitionWordsCompanion.insert({
+    this.id = const Value.absent(),
     required String word,
     required int vocabId,
-    this.rowid = const Value.absent(),
   })  : word = Value(word),
         vocabId = Value(vocabId);
   static Insertable<VocabDefinitionWord> custom({
+    Expression<int>? id,
     Expression<String>? word,
     Expression<int>? vocabId,
-    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
+      if (id != null) 'id': id,
       if (word != null) 'word': word,
       if (vocabId != null) 'vocab_id': vocabId,
-      if (rowid != null) 'rowid': rowid,
     });
   }
 
   VocabDefinitionWordsCompanion copyWith(
-      {Value<String>? word, Value<int>? vocabId, Value<int>? rowid}) {
+      {Value<int>? id, Value<String>? word, Value<int>? vocabId}) {
     return VocabDefinitionWordsCompanion(
+      id: id ?? this.id,
       word: word ?? this.word,
       vocabId: vocabId ?? this.vocabId,
-      rowid: rowid ?? this.rowid,
     );
   }
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
     if (word.present) {
       map['word'] = Variable<String>(word.value);
     }
     if (vocabId.present) {
       map['vocab_id'] = Variable<int>(vocabId.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
     }
     return map;
   }
@@ -1877,9 +1900,9 @@ class VocabDefinitionWordsCompanion
   @override
   String toString() {
     return (StringBuffer('VocabDefinitionWordsCompanion(')
+          ..write('id: $id, ')
           ..write('word: $word, ')
-          ..write('vocabId: $vocabId, ')
-          ..write('rowid: $rowid')
+          ..write('vocabId: $vocabId')
           ..write(')'))
         .toString();
   }
@@ -2508,6 +2531,15 @@ class $KanjiMeaningWordsTable extends KanjiMeaningWords
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $KanjiMeaningWordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
   static const VerificationMeta _wordMeta = const VerificationMeta('word');
   @override
   late final GeneratedColumn<String> word = GeneratedColumn<String>(
@@ -2520,7 +2552,7 @@ class $KanjiMeaningWordsTable extends KanjiMeaningWords
       'kanji_id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [word, kanjiId];
+  List<GeneratedColumn> get $columns => [id, word, kanjiId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2531,6 +2563,9 @@ class $KanjiMeaningWordsTable extends KanjiMeaningWords
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
     if (data.containsKey('word')) {
       context.handle(
           _wordMeta, word.isAcceptableOrUnknown(data['word']!, _wordMeta));
@@ -2547,11 +2582,13 @@ class $KanjiMeaningWordsTable extends KanjiMeaningWords
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => const {};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   KanjiMeaningWord map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return KanjiMeaningWord(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       word: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}word'])!,
       kanjiId: attachedDatabase.typeMapping
@@ -2567,12 +2604,15 @@ class $KanjiMeaningWordsTable extends KanjiMeaningWords
 
 class KanjiMeaningWord extends DataClass
     implements Insertable<KanjiMeaningWord> {
+  final int id;
   final String word;
   final int kanjiId;
-  const KanjiMeaningWord({required this.word, required this.kanjiId});
+  const KanjiMeaningWord(
+      {required this.id, required this.word, required this.kanjiId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
     map['word'] = Variable<String>(word);
     map['kanji_id'] = Variable<int>(kanjiId);
     return map;
@@ -2580,6 +2620,7 @@ class KanjiMeaningWord extends DataClass
 
   KanjiMeaningWordsCompanion toCompanion(bool nullToAbsent) {
     return KanjiMeaningWordsCompanion(
+      id: Value(id),
       word: Value(word),
       kanjiId: Value(kanjiId),
     );
@@ -2589,6 +2630,7 @@ class KanjiMeaningWord extends DataClass
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return KanjiMeaningWord(
+      id: serializer.fromJson<int>(json['id']),
       word: serializer.fromJson<String>(json['word']),
       kanjiId: serializer.fromJson<int>(json['kanjiId']),
     );
@@ -2597,18 +2639,22 @@ class KanjiMeaningWord extends DataClass
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
       'word': serializer.toJson<String>(word),
       'kanjiId': serializer.toJson<int>(kanjiId),
     };
   }
 
-  KanjiMeaningWord copyWith({String? word, int? kanjiId}) => KanjiMeaningWord(
+  KanjiMeaningWord copyWith({int? id, String? word, int? kanjiId}) =>
+      KanjiMeaningWord(
+        id: id ?? this.id,
         word: word ?? this.word,
         kanjiId: kanjiId ?? this.kanjiId,
       );
   @override
   String toString() {
     return (StringBuffer('KanjiMeaningWord(')
+          ..write('id: $id, ')
           ..write('word: $word, ')
           ..write('kanjiId: $kanjiId')
           ..write(')'))
@@ -2616,62 +2662,63 @@ class KanjiMeaningWord extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(word, kanjiId);
+  int get hashCode => Object.hash(id, word, kanjiId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is KanjiMeaningWord &&
+          other.id == this.id &&
           other.word == this.word &&
           other.kanjiId == this.kanjiId);
 }
 
 class KanjiMeaningWordsCompanion extends UpdateCompanion<KanjiMeaningWord> {
+  final Value<int> id;
   final Value<String> word;
   final Value<int> kanjiId;
-  final Value<int> rowid;
   const KanjiMeaningWordsCompanion({
+    this.id = const Value.absent(),
     this.word = const Value.absent(),
     this.kanjiId = const Value.absent(),
-    this.rowid = const Value.absent(),
   });
   KanjiMeaningWordsCompanion.insert({
+    this.id = const Value.absent(),
     required String word,
     required int kanjiId,
-    this.rowid = const Value.absent(),
   })  : word = Value(word),
         kanjiId = Value(kanjiId);
   static Insertable<KanjiMeaningWord> custom({
+    Expression<int>? id,
     Expression<String>? word,
     Expression<int>? kanjiId,
-    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
+      if (id != null) 'id': id,
       if (word != null) 'word': word,
       if (kanjiId != null) 'kanji_id': kanjiId,
-      if (rowid != null) 'rowid': rowid,
     });
   }
 
   KanjiMeaningWordsCompanion copyWith(
-      {Value<String>? word, Value<int>? kanjiId, Value<int>? rowid}) {
+      {Value<int>? id, Value<String>? word, Value<int>? kanjiId}) {
     return KanjiMeaningWordsCompanion(
+      id: id ?? this.id,
       word: word ?? this.word,
       kanjiId: kanjiId ?? this.kanjiId,
-      rowid: rowid ?? this.rowid,
     );
   }
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
     if (word.present) {
       map['word'] = Variable<String>(word.value);
     }
     if (kanjiId.present) {
       map['kanji_id'] = Variable<int>(kanjiId.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
     }
     return map;
   }
@@ -2679,9 +2726,9 @@ class KanjiMeaningWordsCompanion extends UpdateCompanion<KanjiMeaningWord> {
   @override
   String toString() {
     return (StringBuffer('KanjiMeaningWordsCompanion(')
+          ..write('id: $id, ')
           ..write('word: $word, ')
-          ..write('kanjiId: $kanjiId, ')
-          ..write('rowid: $rowid')
+          ..write('kanjiId: $kanjiId')
           ..write(')'))
         .toString();
   }
@@ -6434,15 +6481,15 @@ class $$VocabDefinitionsTableOrderingComposer
 
 typedef $$VocabDefinitionWordsTableInsertCompanionBuilder
     = VocabDefinitionWordsCompanion Function({
+  Value<int> id,
   required String word,
   required int vocabId,
-  Value<int> rowid,
 });
 typedef $$VocabDefinitionWordsTableUpdateCompanionBuilder
     = VocabDefinitionWordsCompanion Function({
+  Value<int> id,
   Value<String> word,
   Value<int> vocabId,
-  Value<int> rowid,
 });
 
 class $$VocabDefinitionWordsTableTableManager extends RootTableManager<
@@ -6466,24 +6513,24 @@ class $$VocabDefinitionWordsTableTableManager extends RootTableManager<
           getChildManagerBuilder: (p) =>
               $$VocabDefinitionWordsTableProcessedTableManager(p),
           getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
             Value<String> word = const Value.absent(),
             Value<int> vocabId = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
           }) =>
               VocabDefinitionWordsCompanion(
+            id: id,
             word: word,
             vocabId: vocabId,
-            rowid: rowid,
           ),
           getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
             required String word,
             required int vocabId,
-            Value<int> rowid = const Value.absent(),
           }) =>
               VocabDefinitionWordsCompanion.insert(
+            id: id,
             word: word,
             vocabId: vocabId,
-            rowid: rowid,
           ),
         ));
 }
@@ -6504,6 +6551,11 @@ class $$VocabDefinitionWordsTableProcessedTableManager
 class $$VocabDefinitionWordsTableFilterComposer
     extends FilterComposer<_$AppDatabase, $VocabDefinitionWordsTable> {
   $$VocabDefinitionWordsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
   ColumnFilters<String> get word => $state.composableBuilder(
       column: $state.table.word,
       builder: (column, joinBuilders) =>
@@ -6518,6 +6570,11 @@ class $$VocabDefinitionWordsTableFilterComposer
 class $$VocabDefinitionWordsTableOrderingComposer
     extends OrderingComposer<_$AppDatabase, $VocabDefinitionWordsTable> {
   $$VocabDefinitionWordsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
   ColumnOrderings<String> get word => $state.composableBuilder(
       column: $state.table.word,
       builder: (column, joinBuilders) =>
@@ -6531,15 +6588,15 @@ class $$VocabDefinitionWordsTableOrderingComposer
 
 typedef $$KanjiMeaningWordsTableInsertCompanionBuilder
     = KanjiMeaningWordsCompanion Function({
+  Value<int> id,
   required String word,
   required int kanjiId,
-  Value<int> rowid,
 });
 typedef $$KanjiMeaningWordsTableUpdateCompanionBuilder
     = KanjiMeaningWordsCompanion Function({
+  Value<int> id,
   Value<String> word,
   Value<int> kanjiId,
-  Value<int> rowid,
 });
 
 class $$KanjiMeaningWordsTableTableManager extends RootTableManager<
@@ -6563,24 +6620,24 @@ class $$KanjiMeaningWordsTableTableManager extends RootTableManager<
           getChildManagerBuilder: (p) =>
               $$KanjiMeaningWordsTableProcessedTableManager(p),
           getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
             Value<String> word = const Value.absent(),
             Value<int> kanjiId = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
           }) =>
               KanjiMeaningWordsCompanion(
+            id: id,
             word: word,
             kanjiId: kanjiId,
-            rowid: rowid,
           ),
           getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
             required String word,
             required int kanjiId,
-            Value<int> rowid = const Value.absent(),
           }) =>
               KanjiMeaningWordsCompanion.insert(
+            id: id,
             word: word,
             kanjiId: kanjiId,
-            rowid: rowid,
           ),
         ));
 }
@@ -6601,6 +6658,11 @@ class $$KanjiMeaningWordsTableProcessedTableManager
 class $$KanjiMeaningWordsTableFilterComposer
     extends FilterComposer<_$AppDatabase, $KanjiMeaningWordsTable> {
   $$KanjiMeaningWordsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
   ColumnFilters<String> get word => $state.composableBuilder(
       column: $state.table.word,
       builder: (column, joinBuilders) =>
@@ -6615,6 +6677,11 @@ class $$KanjiMeaningWordsTableFilterComposer
 class $$KanjiMeaningWordsTableOrderingComposer
     extends OrderingComposer<_$AppDatabase, $KanjiMeaningWordsTable> {
   $$KanjiMeaningWordsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
   ColumnOrderings<String> get word => $state.composableBuilder(
       column: $state.table.word,
       builder: (column, joinBuilders) =>
