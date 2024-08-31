@@ -137,30 +137,28 @@ class DictionaryBuilder {
         }
       }
 
-      // Extract pos to general list if shared by all definitions (skip if single definition)
-      if (currentDefinitions.length > 1) {
-        if (currentDefinitions[0].pos.value != null) {
-          outer:
-          for (var pos in currentDefinitions[0].pos.value!) {
-            for (int i = 1; i < currentDefinitions.length; i++) {
-              if (!(currentDefinitions[i].pos.value?.contains(pos) ?? false)) {
-                continue outer;
-              }
-            }
-            if (vocab.pos.value == null) {
-              vocab = vocab.copyWith(pos: Value([pos]));
-            } else {
-              vocab.pos.value!.add(pos);
+      // Extract pos to general list if shared by all definitions
+      if (currentDefinitions[0].pos.value != null) {
+        outer:
+        for (var pos in currentDefinitions[0].pos.value!) {
+          for (int i = 1; i < currentDefinitions.length; i++) {
+            if (!(currentDefinitions[i].pos.value?.contains(pos) ?? false)) {
+              continue outer;
             }
           }
-          if (vocab.pos.value != null) {
-            for (var pos in vocab.pos.value!) {
-              for (int i = 0; i < currentDefinitions.length; i++) {
-                currentDefinitions[i].pos.value?.remove(pos);
-                if (currentDefinitions[i].pos.value?.isEmpty ?? false) {
-                  currentDefinitions[i] =
-                      currentDefinitions[i].copyWith(pos: Value.absent());
-                }
+          if (vocab.pos.value == null) {
+            vocab = vocab.copyWith(pos: Value([pos]));
+          } else {
+            vocab.pos.value!.add(pos);
+          }
+        }
+        if (vocab.pos.value != null) {
+          for (var pos in vocab.pos.value!) {
+            for (int i = 0; i < currentDefinitions.length; i++) {
+              currentDefinitions[i].pos.value?.remove(pos);
+              if (currentDefinitions[i].pos.value?.isEmpty ?? false) {
+                currentDefinitions[i] =
+                    currentDefinitions[i].copyWith(pos: Value.absent());
               }
             }
           }

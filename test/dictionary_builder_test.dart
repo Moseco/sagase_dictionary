@@ -48,7 +48,7 @@ void main() {
 
       // Vocab
       final vocab0 = await database.vocabsDao.get(1000220);
-      expect(vocab0.pos, null);
+      expect(vocab0.pos, [PartOfSpeech.adjectiveNa]);
       expect(vocab0.common, true);
       expect(vocab0.frequencyScore, 15145);
       // Writings
@@ -70,7 +70,7 @@ void main() {
       expect(vocab0.definitions[0].definition,
           'obvious; clear; plain; evident; apparent; explicit; overt');
       expect(vocab0.definitions[0].additionalInfo, null);
-      expect(vocab0.definitions[0].pos, [PartOfSpeech.adjectiveNa]);
+      expect(vocab0.definitions[0].pos, null);
       expect(vocab0.definitions[0].appliesTo, null);
       expect(vocab0.definitions[0].miscInfo, null);
       expect(vocab0.definitions[0].dialects, null);
@@ -82,7 +82,7 @@ void main() {
       expect(vocab0.definitions[0].antonyms, null);
 
       final vocab1 = await database.vocabsDao.get(1000390);
-      expect(vocab1.pos, null);
+      expect(vocab1.pos, [PartOfSpeech.expressions, PartOfSpeech.adverb]);
       expect(vocab1.common, true);
       expect(vocab1.frequencyScore, 0);
       // Writings
@@ -118,8 +118,7 @@ void main() {
       expect(vocab1.definitions.length, 1);
       expect(vocab1.definitions[0].definition,
           'in an instant; in a flash; in the blink of an eye; in no time at all; just like that');
-      expect(vocab1.definitions[0].pos,
-          [PartOfSpeech.expressions, PartOfSpeech.adverb]);
+      expect(vocab1.definitions[0].pos, null);
       expect(vocab1.definitions[0].examples!.length, 1);
       expect(vocab1.definitions[0].examples![0].japanese, '休暇はあっという間に終わった。');
       expect(vocab1.definitions[0].examples![0].english,
@@ -362,7 +361,7 @@ void main() {
       expect(vocab4.definitions[2].antonyms, null);
 
       final vocab5 = await database.vocabsDao.get(1002360);
-      expect(vocab5.pos, null);
+      expect(vocab5.pos, [PartOfSpeech.expressions]);
       expect(vocab5.common, false);
       expect(vocab5.frequencyScore, 0);
       // Writings
@@ -418,10 +417,10 @@ void main() {
       expect(vocab5.definitions.length, 1);
       expect(vocab5.definitions[0].definition,
           'I\'m sorry to have kept you waiting');
-      expect(vocab5.definitions[0].pos, [PartOfSpeech.expressions]);
+      expect(vocab5.definitions[0].pos, null);
 
       final vocab6 = await database.vocabsDao.get(1001390);
-      expect(vocab6.pos, null);
+      expect(vocab6.pos, [PartOfSpeech.noun]);
       expect(vocab6.common, true);
       expect(vocab6.frequencyScore, 0);
       // Writings
@@ -445,14 +444,14 @@ void main() {
       expect(vocab6.definitions.length, 1);
       expect(vocab6.definitions[0].definition,
           'oden; dish of various ingredients, e.g. egg, daikon, potato, chikuwa, konnyaku stewed in soy-flavored dashi');
-      expect(vocab6.definitions[0].pos, [PartOfSpeech.noun]);
+      expect(vocab6.definitions[0].pos, null);
       expect(vocab6.definitions[0].fields!.length, 1);
       expect(vocab6.definitions[0].fields![0], Field.foodCooking);
       expect(
           vocab6.definitions[0].miscInfo, [MiscellaneousInfo.usuallyKanaAlone]);
 
       final vocab7 = await database.vocabsDao.get(2067590);
-      expect(vocab7.pos, null);
+      expect(vocab7.pos![0], PartOfSpeech.adjectiveI);
       expect(vocab7.common, false);
       expect(vocab7.frequencyScore, 0);
       // Writings
@@ -484,14 +483,13 @@ void main() {
       expect(vocab7.definitions.length, 1);
       expect(vocab7.definitions[0].definition,
           'dear; darling; adorable; precious; cute; lovely; sweet; beloved; charming');
-      expect(vocab7.definitions[0].pos!.length, 1);
-      expect(vocab7.definitions[0].pos![0], PartOfSpeech.adjectiveI);
+      expect(vocab7.definitions[0].pos, null);
       expect(vocab7.definitions[0].dialects!.length, 2);
       expect(vocab7.definitions[0].dialects![0], Dialect.touhokuBen);
       expect(vocab7.definitions[0].dialects![1], Dialect.hokkaidoBen);
 
       final vocab8 = await database.vocabsDao.get(1000160);
-      expect(vocab8.pos, null);
+      expect(vocab8.pos, [PartOfSpeech.noun]);
       expect(vocab8.common, true);
       expect(vocab8.frequencyScore, 0);
       // Writings
@@ -511,8 +509,7 @@ void main() {
       // Definition
       expect(vocab8.definitions.length, 1);
       expect(vocab8.definitions[0].definition, 'T-shirt; tee shirt');
-      expect(vocab8.definitions[0].pos!.length, 1);
-      expect(vocab8.definitions[0].pos![0], PartOfSpeech.noun);
+      expect(vocab8.definitions[0].pos, null);
 
       final vocab9 = await database.vocabsDao.get(1310840);
       expect(vocab9.definitions[0].crossReferences, null);
