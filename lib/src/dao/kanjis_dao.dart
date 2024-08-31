@@ -231,7 +231,7 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
   }
 
   Future<List<Kanji>> search(String text) async {
-    final cleanedText = RegExp.escape(text).toLowerCase();
+    final cleanedText = RegExp.escape(text).toLowerCase().removeDiacritics();
 
     // If given a single kanji character return only that
     if (cleanedText.length == 1 && _kanaKit.isKanji(cleanedText)) {

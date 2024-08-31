@@ -379,7 +379,7 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
   }
 
   Future<List<Vocab>> search(String text) async {
-    final cleanedText = RegExp.escape(text).toLowerCase();
+    final cleanedText = RegExp.escape(text).toLowerCase().removeDiacritics();
 
     if (_kanaKit.isRomaji(cleanedText)) {
       // Romaji
@@ -643,7 +643,7 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
     outer:
     for (var vocab in vocabList) {
       for (int i = 0; i < vocab.definitions.length; i++) {
-        final definition = vocab.definitions[i].definition;
+        final definition = vocab.definitions[i].definition.removeDiacritics();
         if (definition.contains(searchTextRegExp)) {
           if (i == 0) {
             int foundIndex = definition.indexOf(startingRegExp);

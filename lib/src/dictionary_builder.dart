@@ -234,6 +234,7 @@ class DictionaryBuilder {
           .toList()
           .join('\n')
           .toLowerCase()
+          .removeDiacritics()
           .splitWords()
           .toSet()
           .toList();
@@ -1676,7 +1677,12 @@ class DictionaryBuilder {
           );
 
           for (final meaning in readingMeaning.meanings) {
-            final words = meaning.toLowerCase().splitWords().toSet().toList();
+            final words = meaning
+                .toLowerCase()
+                .removeDiacritics()
+                .splitWords()
+                .toSet()
+                .toList();
             for (final word in words) {
               kanjiMeaningWordList.add(KanjiMeaningWordsCompanion(
                 word: Value(word),
