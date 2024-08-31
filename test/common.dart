@@ -1442,11 +1442,17 @@ const shortKanjiListData = '''{
   "grade_level_4": [],
   "grade_level_5": [],
   "grade_level_6": [],
-  "jlpt_n5": [],
+  "jlpt_n5": [
+    "行"
+  ],
   "jlpt_n4": [],
-  "jlpt_n3": [],
+  "jlpt_n3": [
+    "悪"
+  ],
   "jlpt_n2": [],
-  "jlpt_n1": [],
+  "jlpt_n1": [
+    "亜"
+  ],
   "jinmeiyou": [],
   "kentei_level_4": [],
   "kentei_level_3": [],

@@ -71,6 +71,9 @@ class DictionaryBuilder {
       vocabLists,
       kanjiLists,
     );
+
+    // Set kanji JLPT level
+    await _setKanjiJlptLevel(db);
   }
 
   // Creates the vocab database from the raw dictionary file
@@ -1879,7 +1882,6 @@ class DictionaryBuilder {
     KanjiGrade? grade;
     int? strokeCount;
     int? frequency;
-    JlptLevel? jlpt;
 
     for (var element in elements) {
       switch (element.name.local) {
@@ -1906,8 +1908,7 @@ class DictionaryBuilder {
           // This kanji is itself a radical
           break;
         case 'jlpt':
-          // TODO should stop relying on this because it uses lists from before n5
-          jlpt = JlptLevel.values[int.parse(element.innerText) - 1];
+          // JLPT level. Not using it because they are the old levels that don't include n5
           break;
       }
     }
@@ -1916,7 +1917,6 @@ class DictionaryBuilder {
       grade: Value.absentIfNull(grade),
       strokeCount: Value(strokeCount!),
       frequency: Value.absentIfNull(frequency),
-      jlpt: Value.absentIfNull(jlpt),
     );
   }
 
@@ -2312,6 +2312,44 @@ class DictionaryBuilder {
             kanji: Value(kanji),
           ),
         );
+  }
+
+  // Sets the kanji JLPT level based on the predefined dictionary lists
+  static Future<void> _setKanjiJlptLevel(AppDatabase db) async {
+    final jlptN5Kanji = await db.predefinedDictionaryListsDao
+        .get(SagaseDictionaryConstants.dictionaryListIdJlptKanjiN5);
+    for (final kanjiId in jlptN5Kanji.kanji) {
+      await (db.update(db.kanjis)..where((kanji) => kanji.id.equals(kanjiId)))
+          .write(KanjisCompanion(jlpt: Value(JlptLevel.n5)));
+    }
+
+    final jlptN4Kanji = await db.predefinedDictionaryListsDao
+        .get(SagaseDictionaryConstants.dictionaryListIdJlptKanjiN4);
+    for (final kanjiId in jlptN4Kanji.kanji) {
+      await (db.update(db.kanjis)..where((kanji) => kanji.id.equals(kanjiId)))
+          .write(KanjisCompanion(jlpt: Value(JlptLevel.n4)));
+    }
+
+    final jlptN3Kanji = await db.predefinedDictionaryListsDao
+        .get(SagaseDictionaryConstants.dictionaryListIdJlptKanjiN3);
+    for (final kanjiId in jlptN3Kanji.kanji) {
+      await (db.update(db.kanjis)..where((kanji) => kanji.id.equals(kanjiId)))
+          .write(KanjisCompanion(jlpt: Value(JlptLevel.n3)));
+    }
+
+    final jlptN2Kanji = await db.predefinedDictionaryListsDao
+        .get(SagaseDictionaryConstants.dictionaryListIdJlptKanjiN2);
+    for (final kanjiId in jlptN2Kanji.kanji) {
+      await (db.update(db.kanjis)..where((kanji) => kanji.id.equals(kanjiId)))
+          .write(KanjisCompanion(jlpt: Value(JlptLevel.n2)));
+    }
+
+    final jlptN1Kanji = await db.predefinedDictionaryListsDao
+        .get(SagaseDictionaryConstants.dictionaryListIdJlptKanjiN1);
+    for (final kanjiId in jlptN1Kanji.kanji) {
+      await (db.update(db.kanjis)..where((kanji) => kanji.id.equals(kanjiId)))
+          .write(KanjisCompanion(jlpt: Value(JlptLevel.n1)));
+    }
   }
 
   // Creates the proper noun database from the raw dictionary file

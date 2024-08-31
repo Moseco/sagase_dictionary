@@ -690,7 +690,7 @@ void main() {
       expect(kanji4.grade, KanjiGrade.second);
       expect(kanji4.strokeCount, 6);
       expect(kanji4.frequency, 20);
-      expect(kanji4.jlpt, JlptLevel.n4);
+      expect(kanji4.jlpt, JlptLevel.n5);
       expect(kanji4.strokes, null);
       expect(kanji4.compounds!.length, 2);
       expect(kanji4.compounds![0], 1310500);
