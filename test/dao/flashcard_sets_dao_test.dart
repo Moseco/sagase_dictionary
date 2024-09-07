@@ -109,5 +109,17 @@ void main() {
       expect(importedFlashcardSet.myDictionaryLists[0], dictionaryList.id);
       expect(importedFlashcardSet.predefinedDictionaryLists.length, 0);
     });
+
+    test('deleteAll', () async {
+      await database.flashcardSetsDao.create('set');
+
+      var flashcardSets = await database.flashcardSetsDao.getAll();
+      expect(flashcardSets.length, 1);
+
+      await database.flashcardSetsDao.deleteAll();
+
+      flashcardSets = await database.flashcardSetsDao.getAll();
+      expect(flashcardSets.length, 0);
+    });
   });
 }

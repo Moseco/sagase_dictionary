@@ -79,4 +79,8 @@ class FlashcardSetsDao extends DatabaseAccessor<AppDatabase>
     // Add flashcard set itself
     await setFlashcardSet(flashcardSet);
   }
+
+  Future<void> deleteAll() async {
+    await db.delete(db.flashcardSets).go();
+  }
 }

@@ -6,4 +6,6 @@ part of 'my_dictionary_lists_dao.dart';
 mixin _$MyDictionaryListsDaoMixin on DatabaseAccessor<AppDatabase> {
   $MyDictionaryListsTable get myDictionaryLists =>
       attachedDatabase.myDictionaryLists;
+  $MyDictionaryListItemsTable get myDictionaryListItems =>
+      attachedDatabase.myDictionaryListItems;
 }

@@ -138,5 +138,28 @@ void main() {
       final results = await database.spacedRepetitionDatasDao.getAll();
       expect(results.length, 2);
     });
+
+    test('deleteAll', () async {
+      final vocab = await database.vocabsDao.get(1000160);
+
+      await database.spacedRepetitionDatasDao.set(
+        SpacedRepetitionData.initial(
+          dictionaryItem: vocab,
+          frontType: FrontType.japanese,
+        ),
+      );
+
+      expect(
+        (await database.spacedRepetitionDatasDao.getAll()).length,
+        1,
+      );
+
+      await database.spacedRepetitionDatasDao.deleteAll();
+
+      expect(
+        (await database.spacedRepetitionDatasDao.getAll()).length,
+        0,
+      );
+    });
   });
 }

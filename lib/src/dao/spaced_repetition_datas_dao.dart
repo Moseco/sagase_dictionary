@@ -35,4 +35,8 @@ class SpacedRepetitionDatasDao extends DatabaseAccessor<AppDatabase>
   Future<List<SpacedRepetitionData>> getAll() async {
     return db.select(db.spacedRepetitionDatas).get();
   }
+
+  Future<void> deleteAll() async {
+    await db.delete(db.spacedRepetitionDatas).go();
+  }
 }

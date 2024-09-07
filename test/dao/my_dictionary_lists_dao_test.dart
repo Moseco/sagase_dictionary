@@ -421,5 +421,33 @@ void main() {
       expect(result.kanjiIds.length, 1);
       expect(result.kanjiIds[0], '亞'.kanjiCodePoint());
     });
+
+    test('deleteAll', () async {
+      final dictionaryList1 =
+          await database.myDictionaryListsDao.create('list1');
+
+      await database.myDictionaryListsDao.addDictionaryItem(
+        dictionaryList1,
+        await database.vocabsDao.get(1000220),
+      );
+      await database.myDictionaryListsDao.addDictionaryItem(
+        dictionaryList1,
+        await database.kanjisDao.get('亞'.kanjiCodePoint()),
+      );
+
+      var myDictionaryLists = await database.myDictionaryListsDao.getAll();
+      expect(myDictionaryLists.length, 1);
+      var myDictionaryListItems =
+          await database.select(database.myDictionaryListItems).get();
+      expect(myDictionaryListItems.length, 2);
+
+      await database.myDictionaryListsDao.deleteAll();
+
+      myDictionaryLists = await database.myDictionaryListsDao.getAll();
+      expect(myDictionaryLists.length, 0);
+      myDictionaryListItems =
+          await database.select(database.myDictionaryListItems).get();
+      expect(myDictionaryListItems.length, 0);
+    });
   });
 }

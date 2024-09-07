@@ -9,7 +9,7 @@ import 'package:sagase_dictionary/src/utils/string_utils.dart';
 
 part 'my_dictionary_lists_dao.g.dart';
 
-@DriftAccessor(tables: [MyDictionaryLists])
+@DriftAccessor(tables: [MyDictionaryLists, MyDictionaryListItems])
 class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
     with _$MyDictionaryListsDaoMixin {
   MyDictionaryListsDao(super.db);
@@ -273,5 +273,10 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
 
       return myList;
     });
+  }
+
+  Future<void> deleteAll() async {
+    await db.delete(db.myDictionaryLists).go();
+    await db.delete(db.myDictionaryListItems).go();
   }
 }
