@@ -8,6 +8,7 @@ import 'package:sagase_dictionary/src/dao/proper_nouns_dao.dart';
 import 'package:sagase_dictionary/src/dao/radicals_dao.dart';
 import 'package:sagase_dictionary/src/dao/search_history_items_dao.dart';
 import 'package:sagase_dictionary/src/dao/spaced_repetition_datas_dao.dart';
+import 'package:sagase_dictionary/src/dao/text_analysis_history_items_dao.dart';
 import 'package:sagase_dictionary/src/dao/vocabs_dao.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_infos.dart';
 import 'package:sagase_dictionary/src/datamodels/flashcard_sets.dart';
@@ -18,6 +19,7 @@ import 'package:sagase_dictionary/src/datamodels/proper_nouns.dart';
 import 'package:sagase_dictionary/src/datamodels/radicals.dart';
 import 'package:sagase_dictionary/src/datamodels/search_history_items.dart';
 import 'package:sagase_dictionary/src/datamodels/spaced_repetition_datas.dart';
+import 'package:sagase_dictionary/src/datamodels/text_analysis_history_items.dart';
 import 'package:sagase_dictionary/src/datamodels/vocabs.dart';
 import 'package:drift/native.dart';
 // Start imports required for the generated database.g.dart
@@ -42,6 +44,7 @@ part 'database.g.dart';
     Radicals,
     SearchHistoryItems,
     SpacedRepetitionDatas,
+    TextAnalysisHistoryItems,
     Vocabs,
     VocabWritings,
     VocabReadings,
@@ -65,6 +68,7 @@ part 'database.g.dart';
     RadicalsDao,
     SearchHistoryItemsDao,
     SpacedRepetitionDatasDao,
+    TextAnalysisHistoryItemsDao,
     VocabsDao,
   ],
 )

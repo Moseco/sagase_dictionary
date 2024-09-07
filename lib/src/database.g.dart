@@ -2734,6 +2734,187 @@ class KanjiMeaningWordsCompanion extends UpdateCompanion<KanjiMeaningWord> {
   }
 }
 
+class $TextAnalysisHistoryItemsTable extends TextAnalysisHistoryItems
+    with TableInfo<$TextAnalysisHistoryItemsTable, TextAnalysisHistoryItem> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TextAnalysisHistoryItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _analysisTextMeta =
+      const VerificationMeta('analysisText');
+  @override
+  late final GeneratedColumn<String> analysisText = GeneratedColumn<String>(
+      'analysis_text', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, analysisText];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'text_analysis_history_items';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<TextAnalysisHistoryItem> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('analysis_text')) {
+      context.handle(
+          _analysisTextMeta,
+          analysisText.isAcceptableOrUnknown(
+              data['analysis_text']!, _analysisTextMeta));
+    } else if (isInserting) {
+      context.missing(_analysisTextMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TextAnalysisHistoryItem map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TextAnalysisHistoryItem(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      analysisText: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}analysis_text'])!,
+    );
+  }
+
+  @override
+  $TextAnalysisHistoryItemsTable createAlias(String alias) {
+    return $TextAnalysisHistoryItemsTable(attachedDatabase, alias);
+  }
+}
+
+class TextAnalysisHistoryItem extends DataClass
+    implements Insertable<TextAnalysisHistoryItem> {
+  final int id;
+  final String analysisText;
+  const TextAnalysisHistoryItem({required this.id, required this.analysisText});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['analysis_text'] = Variable<String>(analysisText);
+    return map;
+  }
+
+  TextAnalysisHistoryItemsCompanion toCompanion(bool nullToAbsent) {
+    return TextAnalysisHistoryItemsCompanion(
+      id: Value(id),
+      analysisText: Value(analysisText),
+    );
+  }
+
+  factory TextAnalysisHistoryItem.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TextAnalysisHistoryItem(
+      id: serializer.fromJson<int>(json['id']),
+      analysisText: serializer.fromJson<String>(json['analysisText']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'analysisText': serializer.toJson<String>(analysisText),
+    };
+  }
+
+  TextAnalysisHistoryItem copyWith({int? id, String? analysisText}) =>
+      TextAnalysisHistoryItem(
+        id: id ?? this.id,
+        analysisText: analysisText ?? this.analysisText,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TextAnalysisHistoryItem(')
+          ..write('id: $id, ')
+          ..write('analysisText: $analysisText')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, analysisText);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TextAnalysisHistoryItem &&
+          other.id == this.id &&
+          other.analysisText == this.analysisText);
+}
+
+class TextAnalysisHistoryItemsCompanion
+    extends UpdateCompanion<TextAnalysisHistoryItem> {
+  final Value<int> id;
+  final Value<String> analysisText;
+  const TextAnalysisHistoryItemsCompanion({
+    this.id = const Value.absent(),
+    this.analysisText = const Value.absent(),
+  });
+  TextAnalysisHistoryItemsCompanion.insert({
+    this.id = const Value.absent(),
+    required String analysisText,
+  }) : analysisText = Value(analysisText);
+  static Insertable<TextAnalysisHistoryItem> custom({
+    Expression<int>? id,
+    Expression<String>? analysisText,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (analysisText != null) 'analysis_text': analysisText,
+    });
+  }
+
+  TextAnalysisHistoryItemsCompanion copyWith(
+      {Value<int>? id, Value<String>? analysisText}) {
+    return TextAnalysisHistoryItemsCompanion(
+      id: id ?? this.id,
+      analysisText: analysisText ?? this.analysisText,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (analysisText.present) {
+      map['analysis_text'] = Variable<String>(analysisText.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TextAnalysisHistoryItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('analysisText: $analysisText')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $SpacedRepetitionDatasTable extends SpacedRepetitionDatas
     with TableInfo<$SpacedRepetitionDatasTable, SpacedRepetitionData> {
   @override
@@ -3082,16 +3263,8 @@ class $SearchHistoryItemsTable extends SearchHistoryItems
   late final GeneratedColumn<String> searchText = GeneratedColumn<String>(
       'search_text', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _timestampMeta =
-      const VerificationMeta('timestamp');
   @override
-  late final GeneratedColumn<DateTime> timestamp = GeneratedColumn<DateTime>(
-      'timestamp', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
-  @override
-  List<GeneratedColumn> get $columns => [id, searchText, timestamp];
+  List<GeneratedColumn> get $columns => [id, searchText];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -3113,10 +3286,6 @@ class $SearchHistoryItemsTable extends SearchHistoryItems
     } else if (isInserting) {
       context.missing(_searchTextMeta);
     }
-    if (data.containsKey('timestamp')) {
-      context.handle(_timestampMeta,
-          timestamp.isAcceptableOrUnknown(data['timestamp']!, _timestampMeta));
-    }
     return context;
   }
 
@@ -3130,8 +3299,6 @@ class $SearchHistoryItemsTable extends SearchHistoryItems
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       searchText: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}search_text'])!,
-      timestamp: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}timestamp'])!,
     );
   }
 
@@ -3145,15 +3312,12 @@ class SearchHistoryItem extends DataClass
     implements Insertable<SearchHistoryItem> {
   final int id;
   final String searchText;
-  final DateTime timestamp;
-  const SearchHistoryItem(
-      {required this.id, required this.searchText, required this.timestamp});
+  const SearchHistoryItem({required this.id, required this.searchText});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['search_text'] = Variable<String>(searchText);
-    map['timestamp'] = Variable<DateTime>(timestamp);
     return map;
   }
 
@@ -3161,7 +3325,6 @@ class SearchHistoryItem extends DataClass
     return SearchHistoryItemsCompanion(
       id: Value(id),
       searchText: Value(searchText),
-      timestamp: Value(timestamp),
     );
   }
 
@@ -3171,7 +3334,6 @@ class SearchHistoryItem extends DataClass
     return SearchHistoryItem(
       id: serializer.fromJson<int>(json['id']),
       searchText: serializer.fromJson<String>(json['searchText']),
-      timestamp: serializer.fromJson<DateTime>(json['timestamp']),
     );
   }
   @override
@@ -3180,70 +3342,59 @@ class SearchHistoryItem extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'searchText': serializer.toJson<String>(searchText),
-      'timestamp': serializer.toJson<DateTime>(timestamp),
     };
   }
 
-  SearchHistoryItem copyWith(
-          {int? id, String? searchText, DateTime? timestamp}) =>
+  SearchHistoryItem copyWith({int? id, String? searchText}) =>
       SearchHistoryItem(
         id: id ?? this.id,
         searchText: searchText ?? this.searchText,
-        timestamp: timestamp ?? this.timestamp,
       );
   @override
   String toString() {
     return (StringBuffer('SearchHistoryItem(')
           ..write('id: $id, ')
-          ..write('searchText: $searchText, ')
-          ..write('timestamp: $timestamp')
+          ..write('searchText: $searchText')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, searchText, timestamp);
+  int get hashCode => Object.hash(id, searchText);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is SearchHistoryItem &&
           other.id == this.id &&
-          other.searchText == this.searchText &&
-          other.timestamp == this.timestamp);
+          other.searchText == this.searchText);
 }
 
 class SearchHistoryItemsCompanion extends UpdateCompanion<SearchHistoryItem> {
   final Value<int> id;
   final Value<String> searchText;
-  final Value<DateTime> timestamp;
   const SearchHistoryItemsCompanion({
     this.id = const Value.absent(),
     this.searchText = const Value.absent(),
-    this.timestamp = const Value.absent(),
   });
   SearchHistoryItemsCompanion.insert({
     this.id = const Value.absent(),
     required String searchText,
-    this.timestamp = const Value.absent(),
   }) : searchText = Value(searchText);
   static Insertable<SearchHistoryItem> custom({
     Expression<int>? id,
     Expression<String>? searchText,
-    Expression<DateTime>? timestamp,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (searchText != null) 'search_text': searchText,
-      if (timestamp != null) 'timestamp': timestamp,
     });
   }
 
   SearchHistoryItemsCompanion copyWith(
-      {Value<int>? id, Value<String>? searchText, Value<DateTime>? timestamp}) {
+      {Value<int>? id, Value<String>? searchText}) {
     return SearchHistoryItemsCompanion(
       id: id ?? this.id,
       searchText: searchText ?? this.searchText,
-      timestamp: timestamp ?? this.timestamp,
     );
   }
 
@@ -3256,9 +3407,6 @@ class SearchHistoryItemsCompanion extends UpdateCompanion<SearchHistoryItem> {
     if (searchText.present) {
       map['search_text'] = Variable<String>(searchText.value);
     }
-    if (timestamp.present) {
-      map['timestamp'] = Variable<DateTime>(timestamp.value);
-    }
     return map;
   }
 
@@ -3266,8 +3414,7 @@ class SearchHistoryItemsCompanion extends UpdateCompanion<SearchHistoryItem> {
   String toString() {
     return (StringBuffer('SearchHistoryItemsCompanion(')
           ..write('id: $id, ')
-          ..write('searchText: $searchText, ')
-          ..write('timestamp: $timestamp')
+          ..write('searchText: $searchText')
           ..write(')'))
         .toString();
   }
@@ -5690,6 +5837,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Index iXKanjiMeaningWordsWord = Index(
       'IX_kanji_meaning_words_word',
       'CREATE INDEX IX_kanji_meaning_words_word ON kanji_meaning_words (word)');
+  late final $TextAnalysisHistoryItemsTable textAnalysisHistoryItems =
+      $TextAnalysisHistoryItemsTable(this);
   late final $SpacedRepetitionDatasTable spacedRepetitionDatas =
       $SpacedRepetitionDatasTable(this);
   late final $SearchHistoryItemsTable searchHistoryItems =
@@ -5767,6 +5916,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       SearchHistoryItemsDao(this as AppDatabase);
   late final SpacedRepetitionDatasDao spacedRepetitionDatasDao =
       SpacedRepetitionDatasDao(this as AppDatabase);
+  late final TextAnalysisHistoryItemsDao textAnalysisHistoryItemsDao =
+      TextAnalysisHistoryItemsDao(this as AppDatabase);
   late final VocabsDao vocabsDao = VocabsDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -5796,6 +5947,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         iXKanjiReadingsReading,
         iXKanjiReadingsReadingRomaji,
         iXKanjiMeaningWordsWord,
+        textAnalysisHistoryItems,
         spacedRepetitionDatas,
         searchHistoryItems,
         radicals,
@@ -6693,17 +6845,106 @@ class $$KanjiMeaningWordsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+typedef $$TextAnalysisHistoryItemsTableInsertCompanionBuilder
+    = TextAnalysisHistoryItemsCompanion Function({
+  Value<int> id,
+  required String analysisText,
+});
+typedef $$TextAnalysisHistoryItemsTableUpdateCompanionBuilder
+    = TextAnalysisHistoryItemsCompanion Function({
+  Value<int> id,
+  Value<String> analysisText,
+});
+
+class $$TextAnalysisHistoryItemsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TextAnalysisHistoryItemsTable,
+    TextAnalysisHistoryItem,
+    $$TextAnalysisHistoryItemsTableFilterComposer,
+    $$TextAnalysisHistoryItemsTableOrderingComposer,
+    $$TextAnalysisHistoryItemsTableProcessedTableManager,
+    $$TextAnalysisHistoryItemsTableInsertCompanionBuilder,
+    $$TextAnalysisHistoryItemsTableUpdateCompanionBuilder> {
+  $$TextAnalysisHistoryItemsTableTableManager(
+      _$AppDatabase db, $TextAnalysisHistoryItemsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$TextAnalysisHistoryItemsTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$TextAnalysisHistoryItemsTableOrderingComposer(
+              ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$TextAnalysisHistoryItemsTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<String> analysisText = const Value.absent(),
+          }) =>
+              TextAnalysisHistoryItemsCompanion(
+            id: id,
+            analysisText: analysisText,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            required String analysisText,
+          }) =>
+              TextAnalysisHistoryItemsCompanion.insert(
+            id: id,
+            analysisText: analysisText,
+          ),
+        ));
+}
+
+class $$TextAnalysisHistoryItemsTableProcessedTableManager
+    extends ProcessedTableManager<
+        _$AppDatabase,
+        $TextAnalysisHistoryItemsTable,
+        TextAnalysisHistoryItem,
+        $$TextAnalysisHistoryItemsTableFilterComposer,
+        $$TextAnalysisHistoryItemsTableOrderingComposer,
+        $$TextAnalysisHistoryItemsTableProcessedTableManager,
+        $$TextAnalysisHistoryItemsTableInsertCompanionBuilder,
+        $$TextAnalysisHistoryItemsTableUpdateCompanionBuilder> {
+  $$TextAnalysisHistoryItemsTableProcessedTableManager(super.$state);
+}
+
+class $$TextAnalysisHistoryItemsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $TextAnalysisHistoryItemsTable> {
+  $$TextAnalysisHistoryItemsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get analysisText => $state.composableBuilder(
+      column: $state.table.analysisText,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$TextAnalysisHistoryItemsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $TextAnalysisHistoryItemsTable> {
+  $$TextAnalysisHistoryItemsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get analysisText => $state.composableBuilder(
+      column: $state.table.analysisText,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 typedef $$SearchHistoryItemsTableInsertCompanionBuilder
     = SearchHistoryItemsCompanion Function({
   Value<int> id,
   required String searchText,
-  Value<DateTime> timestamp,
 });
 typedef $$SearchHistoryItemsTableUpdateCompanionBuilder
     = SearchHistoryItemsCompanion Function({
   Value<int> id,
   Value<String> searchText,
-  Value<DateTime> timestamp,
 });
 
 class $$SearchHistoryItemsTableTableManager extends RootTableManager<
@@ -6729,22 +6970,18 @@ class $$SearchHistoryItemsTableTableManager extends RootTableManager<
           getUpdateCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             Value<String> searchText = const Value.absent(),
-            Value<DateTime> timestamp = const Value.absent(),
           }) =>
               SearchHistoryItemsCompanion(
             id: id,
             searchText: searchText,
-            timestamp: timestamp,
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             required String searchText,
-            Value<DateTime> timestamp = const Value.absent(),
           }) =>
               SearchHistoryItemsCompanion.insert(
             id: id,
             searchText: searchText,
-            timestamp: timestamp,
           ),
         ));
 }
@@ -6774,11 +7011,6 @@ class $$SearchHistoryItemsTableFilterComposer
       column: $state.table.searchText,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<DateTime> get timestamp => $state.composableBuilder(
-      column: $state.table.timestamp,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
 }
 
 class $$SearchHistoryItemsTableOrderingComposer
@@ -6791,11 +7023,6 @@ class $$SearchHistoryItemsTableOrderingComposer
 
   ColumnOrderings<String> get searchText => $state.composableBuilder(
       column: $state.table.searchText,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<DateTime> get timestamp => $state.composableBuilder(
-      column: $state.table.timestamp,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
@@ -7378,6 +7605,9 @@ class _$AppDatabaseManager {
       $$VocabDefinitionWordsTableTableManager(_db, _db.vocabDefinitionWords);
   $$KanjiMeaningWordsTableTableManager get kanjiMeaningWords =>
       $$KanjiMeaningWordsTableTableManager(_db, _db.kanjiMeaningWords);
+  $$TextAnalysisHistoryItemsTableTableManager get textAnalysisHistoryItems =>
+      $$TextAnalysisHistoryItemsTableTableManager(
+          _db, _db.textAnalysisHistoryItems);
   $$SearchHistoryItemsTableTableManager get searchHistoryItems =>
       $$SearchHistoryItemsTableTableManager(_db, _db.searchHistoryItems);
   $$RadicalsTableTableManager get radicals =>

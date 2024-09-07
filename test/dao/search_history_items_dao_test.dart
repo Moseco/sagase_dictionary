@@ -14,27 +14,15 @@ void main() {
     });
 
     test('set', () async {
-      final item = SearchHistoryItem(
-        id: 0,
-        searchText: 'text',
-        timestamp: DateTime.now(),
-      );
+      final item = SearchHistoryItem(id: 0, searchText: 'text');
 
       await database.searchHistoryItemsDao.set(item);
     });
 
     test('getAll', () async {
       // Create search history items
-      final item1 = SearchHistoryItem(
-        id: 0,
-        searchText: 'text',
-        timestamp: DateTime.now(),
-      );
-      final item2 = SearchHistoryItem(
-        id: 1,
-        searchText: 'other',
-        timestamp: DateTime.now(),
-      );
+      final item1 = SearchHistoryItem(id: 0, searchText: 'text');
+      final item2 = SearchHistoryItem(id: 1, searchText: 'other');
 
       await database.searchHistoryItemsDao.set(item1);
       await database.searchHistoryItemsDao.set(item2);
@@ -60,16 +48,8 @@ void main() {
 
     test('deleteItem', () async {
       // Create search history items
-      final item1 = SearchHistoryItem(
-        id: 0,
-        searchText: 'text',
-        timestamp: DateTime.now(),
-      );
-      final item2 = SearchHistoryItem(
-        id: 1,
-        searchText: 'other',
-        timestamp: DateTime.now(),
-      );
+      final item1 = SearchHistoryItem(id: 0, searchText: 'text');
+      final item2 = SearchHistoryItem(id: 1, searchText: 'other');
 
       await database.searchHistoryItemsDao.set(item1);
       await database.searchHistoryItemsDao.set(item2);
@@ -93,16 +73,8 @@ void main() {
 
     test('deleteAll', () async {
       // Create search history items
-      final item1 = SearchHistoryItem(
-        id: 0,
-        searchText: 'text',
-        timestamp: DateTime.now(),
-      );
-      final item2 = SearchHistoryItem(
-        id: 1,
-        searchText: 'other',
-        timestamp: DateTime.now(),
-      );
+      final item1 = SearchHistoryItem(id: 0, searchText: 'text');
+      final item2 = SearchHistoryItem(id: 1, searchText: 'other');
 
       await database.searchHistoryItemsDao.set(item1);
       await database.searchHistoryItemsDao.set(item2);
