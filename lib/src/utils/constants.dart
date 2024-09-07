@@ -88,6 +88,8 @@ class SagaseDictionaryConstants {
   static const backupSpacedRepetitionDataTotalAnswers = 'total_answers';
   static const backupSpacedRepetitionDataTotalWrongAnswers =
       'total_wrong_answers';
+  static const backupSearchHistory = 'search_history';
+  static const backupTextAnalysisHistory = 'text_analysis_history';
 
   static const exportType = 'type';
   static const exportTypeBackup = 'backup';
