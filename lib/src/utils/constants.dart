@@ -69,13 +69,17 @@ class SagaseDictionaryConstants {
   static const backupFlashcardSetVocabShowPartsOfSpeech =
       'vocab_show_parts_of_speech';
   static const backupFlashcardSetTimestamp = 'timestamp';
-  static const backupFlashcardSetFlashcardsCompletedToday =
-      'flashcards_completed_today';
-  static const backupFlashcardSetNewFlashcardsCompletedToday =
-      'new_flashcards_completed_today';
   static const backupFlashcardSetPredefinedDictionaryLists =
       'predefined_dictionary_lists';
   static const backupFlashcardSetMyDictionaryLists = 'my_dictionary_lists';
+  static const backupFlashcardSetLogId = 'id';
+  static const backupFlashcardSetLogFlashcardSetId = 'flashcard_set_id';
+  static const backupFlashcardSetLogDate = 'date';
+  static const backupFlashcardSetLogFlashcardsCompleted =
+      'flashcards_completed';
+  static const backupFlashcardSetLogFlashcardsGotWrong = 'flashcards_got_wrong';
+  static const backupFlashcardSetLogNewFlashcardsCompleted =
+      'new_flashcards_completed';
   static const backupMyDictionaryListId = 'id';
   static const backupMyDictionaryListName = 'name';
   static const backupMyDictionaryListTimestamp = 'timestamp';

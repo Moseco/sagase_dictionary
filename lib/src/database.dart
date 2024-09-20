@@ -33,6 +33,7 @@ part 'database.g.dart';
   tables: [
     DictionaryInfos,
     FlashcardSets,
+    FlashcardSetLogs,
     Kanjis,
     KanjiReadings,
     KanjiMeaningWords,

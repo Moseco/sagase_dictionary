@@ -6,7 +6,7 @@ import 'package:sagase_dictionary/src/utils/string_utils.dart';
 
 part 'flashcard_sets_dao.g.dart';
 
-@DriftAccessor(tables: [FlashcardSets])
+@DriftAccessor(tables: [FlashcardSets, FlashcardSetLogs])
 class FlashcardSetsDao extends DatabaseAccessor<AppDatabase>
     with _$FlashcardSetsDaoMixin {
   FlashcardSetsDao(super.db);
@@ -80,7 +80,63 @@ class FlashcardSetsDao extends DatabaseAccessor<AppDatabase>
     await setFlashcardSet(flashcardSet);
   }
 
+  Future<FlashcardSetLog> createFlashcardSetLog(
+    FlashcardSet flashcardSet,
+    int date,
+  ) async {
+    int id = await db.into(db.flashcardSetLogs).insert(
+          FlashcardSetLogsCompanion(
+            flashcardSetId: Value(flashcardSet.id),
+            date: Value(date),
+          ),
+        );
+
+    return (db.select(db.flashcardSetLogs)
+          ..where((stats) => stats.id.equals(id)))
+        .getSingle();
+  }
+
+  Future<void> setFlashcardSetLog(FlashcardSetLog flashcardSetLog) async {
+    await db
+        .into(db.flashcardSetLogs)
+        .insert(flashcardSetLog, mode: InsertMode.insertOrReplace);
+  }
+
+  Future<FlashcardSetLog?> getFlashcardSetLog(
+    FlashcardSet flashcardSet,
+    int date,
+  ) async {
+    return (db.select(db.flashcardSetLogs)
+          ..where((stats) => Expression.and([
+                stats.flashcardSetId.equals(flashcardSet.id),
+                stats.date.equals(date),
+              ])))
+        .getSingleOrNull();
+  }
+
+  Future<List<FlashcardSetLog>> getFlashcardSetLogRange(
+    FlashcardSet flashcardSet,
+    int startDate,
+    int endDate,
+  ) async {
+    return (db.select(db.flashcardSetLogs)
+          ..where((stats) => Expression.and([
+                stats.flashcardSetId.equals(flashcardSet.id),
+                stats.date.isBiggerOrEqualValue(startDate),
+                stats.date.isSmallerOrEqualValue(endDate),
+              ]))
+          ..orderBy([(stats) => OrderingTerm.desc(stats.date)]))
+        .get();
+  }
+
+  Future<void> deleteFlashcardSetLogs(FlashcardSet flashcardSet) async {
+    await (db.delete(db.flashcardSetLogs)
+          ..where((stats) => stats.flashcardSetId.equals(flashcardSet.id)))
+        .go();
+  }
+
   Future<void> deleteAll() async {
     await db.delete(db.flashcardSets).go();
+    await db.delete(db.flashcardSetLogs).go();
   }
 }

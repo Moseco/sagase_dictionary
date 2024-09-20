@@ -29,11 +29,6 @@ class FlashcardSets extends Table {
       boolean().withDefault(const Constant(false))();
   DateTimeColumn get timestamp => dateTime().withDefault(currentDateAndTime)();
 
-  IntColumn get flashcardsCompletedToday =>
-      integer().withDefault(const Constant(0))();
-  IntColumn get newFlashcardsCompletedToday =>
-      integer().withDefault(const Constant(0))();
-
   TextColumn get predefinedDictionaryLists =>
       text().map(const IntListConverter()).withDefault(const Constant('[]'))();
   TextColumn get myDictionaryLists =>
@@ -53,9 +48,6 @@ class FlashcardSet implements Insertable<FlashcardSet> {
   bool vocabShowPartsOfSpeech;
   DateTime timestamp;
 
-  int flashcardsCompletedToday;
-  int newFlashcardsCompletedToday;
-
   List<int> predefinedDictionaryLists;
   List<int> myDictionaryLists;
 
@@ -71,8 +63,6 @@ class FlashcardSet implements Insertable<FlashcardSet> {
     required this.kanjiShowReading,
     required this.vocabShowPartsOfSpeech,
     required this.timestamp,
-    required this.flashcardsCompletedToday,
-    required this.newFlashcardsCompletedToday,
     required this.predefinedDictionaryLists,
     required this.myDictionaryLists,
   });
@@ -92,9 +82,6 @@ class FlashcardSet implements Insertable<FlashcardSet> {
       kanjiShowReading: Value.absentIfNull(kanjiShowReading),
       vocabShowPartsOfSpeech: Value.absentIfNull(vocabShowPartsOfSpeech),
       timestamp: Value.absentIfNull(timestamp),
-      flashcardsCompletedToday: Value.absentIfNull(flashcardsCompletedToday),
-      newFlashcardsCompletedToday:
-          Value.absentIfNull(newFlashcardsCompletedToday),
       predefinedDictionaryLists: Value.absentIfNull(predefinedDictionaryLists),
       myDictionaryLists: Value.absentIfNull(myDictionaryLists),
     ).toColumns(nullToAbsent);
@@ -122,10 +109,6 @@ class FlashcardSet implements Insertable<FlashcardSet> {
             vocabShowPartsOfSpeech,
         SagaseDictionaryConstants.backupFlashcardSetTimestamp:
             timestamp.millisecondsSinceEpoch,
-        SagaseDictionaryConstants.backupFlashcardSetFlashcardsCompletedToday:
-            flashcardsCompletedToday,
-        SagaseDictionaryConstants.backupFlashcardSetNewFlashcardsCompletedToday:
-            newFlashcardsCompletedToday,
         SagaseDictionaryConstants.backupFlashcardSetPredefinedDictionaryLists:
             predefinedDictionaryLists,
         SagaseDictionaryConstants.backupFlashcardSetMyDictionaryLists:
@@ -157,16 +140,100 @@ class FlashcardSet implements Insertable<FlashcardSet> {
           SagaseDictionaryConstants.backupFlashcardSetVocabShowPartsOfSpeech],
       timestamp: DateTime.fromMillisecondsSinceEpoch(
           map[SagaseDictionaryConstants.backupFlashcardSetTimestamp]),
-      flashcardsCompletedToday: map[
-          SagaseDictionaryConstants.backupFlashcardSetFlashcardsCompletedToday],
-      newFlashcardsCompletedToday: map[SagaseDictionaryConstants
-          .backupFlashcardSetNewFlashcardsCompletedToday],
       predefinedDictionaryLists: map[SagaseDictionaryConstants
               .backupFlashcardSetPredefinedDictionaryLists]
           .cast<int>(),
       myDictionaryLists:
           map[SagaseDictionaryConstants.backupFlashcardSetMyDictionaryLists]
               .cast<int>(),
+    );
+  }
+}
+
+@UseRowClass(FlashcardSetLog)
+@TableIndex(
+  name: 'IX_flashcard_set_logs_flashcard_set_id',
+  columns: {#flashcardSetId},
+)
+@TableIndex(name: 'IX_flashcard_set_logs_date', columns: {#date})
+@TableIndex(
+  name: 'UX_flashcard_set_logs_flashcard_set_id_and_date',
+  columns: {#flashcardSetId, #date},
+  unique: true,
+)
+class FlashcardSetLogs extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get flashcardSetId => integer()();
+  IntColumn get date => integer()();
+
+  IntColumn get flashcardsCompleted =>
+      integer().withDefault(const Constant(0))();
+  IntColumn get flashcardsGotWrong =>
+      integer().withDefault(const Constant(0))();
+  IntColumn get newFlashcardsCompleted =>
+      integer().withDefault(const Constant(0))();
+}
+
+class FlashcardSetLog implements Insertable<FlashcardSetLog> {
+  final int id;
+  final int flashcardSetId;
+  final int date;
+  int flashcardsCompleted;
+  int flashcardsGotWrong;
+  int newFlashcardsCompleted;
+
+  FlashcardSetLog({
+    required this.id,
+    required this.flashcardSetId,
+    required this.date,
+    required this.flashcardsCompleted,
+    required this.flashcardsGotWrong,
+    required this.newFlashcardsCompleted,
+  });
+
+  @override
+  Map<String, Expression<Object>> toColumns(bool nullToAbsent) {
+    return FlashcardSetLogsCompanion(
+      id: Value(id),
+      flashcardSetId: Value(flashcardSetId),
+      date: Value(date),
+      flashcardsCompleted: Value(flashcardsCompleted),
+      flashcardsGotWrong: Value(flashcardsGotWrong),
+      newFlashcardsCompleted: Value(newFlashcardsCompleted),
+    ).toColumns(nullToAbsent);
+  }
+
+  String toBackupJson() {
+    return jsonEncode(
+      {
+        SagaseDictionaryConstants.backupFlashcardSetLogId: id,
+        SagaseDictionaryConstants.backupFlashcardSetLogFlashcardSetId:
+            flashcardSetId,
+        SagaseDictionaryConstants.backupFlashcardSetLogDate: date,
+        SagaseDictionaryConstants.backupFlashcardSetLogFlashcardsCompleted:
+            flashcardsCompleted,
+        SagaseDictionaryConstants.backupFlashcardSetLogFlashcardsGotWrong:
+            flashcardsGotWrong,
+        SagaseDictionaryConstants.backupFlashcardSetLogNewFlashcardsCompleted:
+            newFlashcardsCompleted,
+      },
+    );
+  }
+
+  static FlashcardSetLog fromBackupJson(String json) {
+    final map = jsonDecode(json);
+    return FlashcardSetLog(
+      id: map[SagaseDictionaryConstants.backupFlashcardSetLogId],
+      flashcardSetId:
+          map[SagaseDictionaryConstants.backupFlashcardSetLogFlashcardSetId],
+      date: map[SagaseDictionaryConstants.backupFlashcardSetLogDate],
+      flashcardsCompleted: map[
+          SagaseDictionaryConstants.backupFlashcardSetLogFlashcardsCompleted],
+      flashcardsGotWrong: map[
+          SagaseDictionaryConstants.backupFlashcardSetLogFlashcardsGotWrong],
+      newFlashcardsCompleted: map[SagaseDictionaryConstants
+          .backupFlashcardSetLogNewFlashcardsCompleted],
     );
   }
 }

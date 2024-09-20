@@ -5175,22 +5175,6 @@ class $FlashcardSetsTable extends FlashcardSets
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _flashcardsCompletedTodayMeta =
-      const VerificationMeta('flashcardsCompletedToday');
-  @override
-  late final GeneratedColumn<int> flashcardsCompletedToday =
-      GeneratedColumn<int>('flashcards_completed_today', aliasedName, false,
-          type: DriftSqlType.int,
-          requiredDuringInsert: false,
-          defaultValue: const Constant(0));
-  static const VerificationMeta _newFlashcardsCompletedTodayMeta =
-      const VerificationMeta('newFlashcardsCompletedToday');
-  @override
-  late final GeneratedColumn<int> newFlashcardsCompletedToday =
-      GeneratedColumn<int>('new_flashcards_completed_today', aliasedName, false,
-          type: DriftSqlType.int,
-          requiredDuringInsert: false,
-          defaultValue: const Constant(0));
   static const VerificationMeta _predefinedDictionaryListsMeta =
       const VerificationMeta('predefinedDictionaryLists');
   @override
@@ -5226,8 +5210,6 @@ class $FlashcardSetsTable extends FlashcardSets
         kanjiShowReading,
         vocabShowPartsOfSpeech,
         timestamp,
-        flashcardsCompletedToday,
-        newFlashcardsCompletedToday,
         predefinedDictionaryLists,
         myDictionaryLists
       ];
@@ -5299,20 +5281,6 @@ class $FlashcardSetsTable extends FlashcardSets
       context.handle(_timestampMeta,
           timestamp.isAcceptableOrUnknown(data['timestamp']!, _timestampMeta));
     }
-    if (data.containsKey('flashcards_completed_today')) {
-      context.handle(
-          _flashcardsCompletedTodayMeta,
-          flashcardsCompletedToday.isAcceptableOrUnknown(
-              data['flashcards_completed_today']!,
-              _flashcardsCompletedTodayMeta));
-    }
-    if (data.containsKey('new_flashcards_completed_today')) {
-      context.handle(
-          _newFlashcardsCompletedTodayMeta,
-          newFlashcardsCompletedToday.isAcceptableOrUnknown(
-              data['new_flashcards_completed_today']!,
-              _newFlashcardsCompletedTodayMeta));
-    }
     context.handle(
         _predefinedDictionaryListsMeta, const VerificationResult.success());
     context.handle(_myDictionaryListsMeta, const VerificationResult.success());
@@ -5352,12 +5320,6 @@ class $FlashcardSetsTable extends FlashcardSets
           data['${effectivePrefix}vocab_show_parts_of_speech'])!,
       timestamp: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}timestamp'])!,
-      flashcardsCompletedToday: attachedDatabase.typeMapping.read(
-          DriftSqlType.int,
-          data['${effectivePrefix}flashcards_completed_today'])!,
-      newFlashcardsCompletedToday: attachedDatabase.typeMapping.read(
-          DriftSqlType.int,
-          data['${effectivePrefix}new_flashcards_completed_today'])!,
       predefinedDictionaryLists: $FlashcardSetsTable
           .$converterpredefinedDictionaryLists
           .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
@@ -5393,8 +5355,6 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
   final Value<bool> kanjiShowReading;
   final Value<bool> vocabShowPartsOfSpeech;
   final Value<DateTime> timestamp;
-  final Value<int> flashcardsCompletedToday;
-  final Value<int> newFlashcardsCompletedToday;
   final Value<List<int>> predefinedDictionaryLists;
   final Value<List<int>> myDictionaryLists;
   const FlashcardSetsCompanion({
@@ -5409,8 +5369,6 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     this.kanjiShowReading = const Value.absent(),
     this.vocabShowPartsOfSpeech = const Value.absent(),
     this.timestamp = const Value.absent(),
-    this.flashcardsCompletedToday = const Value.absent(),
-    this.newFlashcardsCompletedToday = const Value.absent(),
     this.predefinedDictionaryLists = const Value.absent(),
     this.myDictionaryLists = const Value.absent(),
   });
@@ -5426,8 +5384,6 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     this.kanjiShowReading = const Value.absent(),
     this.vocabShowPartsOfSpeech = const Value.absent(),
     this.timestamp = const Value.absent(),
-    this.flashcardsCompletedToday = const Value.absent(),
-    this.newFlashcardsCompletedToday = const Value.absent(),
     this.predefinedDictionaryLists = const Value.absent(),
     this.myDictionaryLists = const Value.absent(),
   }) : name = Value(name);
@@ -5443,8 +5399,6 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     Expression<bool>? kanjiShowReading,
     Expression<bool>? vocabShowPartsOfSpeech,
     Expression<DateTime>? timestamp,
-    Expression<int>? flashcardsCompletedToday,
-    Expression<int>? newFlashcardsCompletedToday,
     Expression<String>? predefinedDictionaryLists,
     Expression<String>? myDictionaryLists,
   }) {
@@ -5465,10 +5419,6 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
       if (vocabShowPartsOfSpeech != null)
         'vocab_show_parts_of_speech': vocabShowPartsOfSpeech,
       if (timestamp != null) 'timestamp': timestamp,
-      if (flashcardsCompletedToday != null)
-        'flashcards_completed_today': flashcardsCompletedToday,
-      if (newFlashcardsCompletedToday != null)
-        'new_flashcards_completed_today': newFlashcardsCompletedToday,
       if (predefinedDictionaryLists != null)
         'predefined_dictionary_lists': predefinedDictionaryLists,
       if (myDictionaryLists != null) 'my_dictionary_lists': myDictionaryLists,
@@ -5487,8 +5437,6 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
       Value<bool>? kanjiShowReading,
       Value<bool>? vocabShowPartsOfSpeech,
       Value<DateTime>? timestamp,
-      Value<int>? flashcardsCompletedToday,
-      Value<int>? newFlashcardsCompletedToday,
       Value<List<int>>? predefinedDictionaryLists,
       Value<List<int>>? myDictionaryLists}) {
     return FlashcardSetsCompanion(
@@ -5507,10 +5455,6 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
       vocabShowPartsOfSpeech:
           vocabShowPartsOfSpeech ?? this.vocabShowPartsOfSpeech,
       timestamp: timestamp ?? this.timestamp,
-      flashcardsCompletedToday:
-          flashcardsCompletedToday ?? this.flashcardsCompletedToday,
-      newFlashcardsCompletedToday:
-          newFlashcardsCompletedToday ?? this.newFlashcardsCompletedToday,
       predefinedDictionaryLists:
           predefinedDictionaryLists ?? this.predefinedDictionaryLists,
       myDictionaryLists: myDictionaryLists ?? this.myDictionaryLists,
@@ -5559,14 +5503,6 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     if (timestamp.present) {
       map['timestamp'] = Variable<DateTime>(timestamp.value);
     }
-    if (flashcardsCompletedToday.present) {
-      map['flashcards_completed_today'] =
-          Variable<int>(flashcardsCompletedToday.value);
-    }
-    if (newFlashcardsCompletedToday.present) {
-      map['new_flashcards_completed_today'] =
-          Variable<int>(newFlashcardsCompletedToday.value);
-    }
     if (predefinedDictionaryLists.present) {
       map['predefined_dictionary_lists'] = Variable<String>($FlashcardSetsTable
           .$converterpredefinedDictionaryLists
@@ -5594,10 +5530,245 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
           ..write('kanjiShowReading: $kanjiShowReading, ')
           ..write('vocabShowPartsOfSpeech: $vocabShowPartsOfSpeech, ')
           ..write('timestamp: $timestamp, ')
-          ..write('flashcardsCompletedToday: $flashcardsCompletedToday, ')
-          ..write('newFlashcardsCompletedToday: $newFlashcardsCompletedToday, ')
           ..write('predefinedDictionaryLists: $predefinedDictionaryLists, ')
           ..write('myDictionaryLists: $myDictionaryLists')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FlashcardSetLogsTable extends FlashcardSetLogs
+    with TableInfo<$FlashcardSetLogsTable, FlashcardSetLog> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FlashcardSetLogsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _flashcardSetIdMeta =
+      const VerificationMeta('flashcardSetId');
+  @override
+  late final GeneratedColumn<int> flashcardSetId = GeneratedColumn<int>(
+      'flashcard_set_id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<int> date = GeneratedColumn<int>(
+      'date', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _flashcardsCompletedMeta =
+      const VerificationMeta('flashcardsCompleted');
+  @override
+  late final GeneratedColumn<int> flashcardsCompleted = GeneratedColumn<int>(
+      'flashcards_completed', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _flashcardsGotWrongMeta =
+      const VerificationMeta('flashcardsGotWrong');
+  @override
+  late final GeneratedColumn<int> flashcardsGotWrong = GeneratedColumn<int>(
+      'flashcards_got_wrong', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _newFlashcardsCompletedMeta =
+      const VerificationMeta('newFlashcardsCompleted');
+  @override
+  late final GeneratedColumn<int> newFlashcardsCompleted = GeneratedColumn<int>(
+      'new_flashcards_completed', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        flashcardSetId,
+        date,
+        flashcardsCompleted,
+        flashcardsGotWrong,
+        newFlashcardsCompleted
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'flashcard_set_logs';
+  @override
+  VerificationContext validateIntegrity(Insertable<FlashcardSetLog> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('flashcard_set_id')) {
+      context.handle(
+          _flashcardSetIdMeta,
+          flashcardSetId.isAcceptableOrUnknown(
+              data['flashcard_set_id']!, _flashcardSetIdMeta));
+    } else if (isInserting) {
+      context.missing(_flashcardSetIdMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+          _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('flashcards_completed')) {
+      context.handle(
+          _flashcardsCompletedMeta,
+          flashcardsCompleted.isAcceptableOrUnknown(
+              data['flashcards_completed']!, _flashcardsCompletedMeta));
+    }
+    if (data.containsKey('flashcards_got_wrong')) {
+      context.handle(
+          _flashcardsGotWrongMeta,
+          flashcardsGotWrong.isAcceptableOrUnknown(
+              data['flashcards_got_wrong']!, _flashcardsGotWrongMeta));
+    }
+    if (data.containsKey('new_flashcards_completed')) {
+      context.handle(
+          _newFlashcardsCompletedMeta,
+          newFlashcardsCompleted.isAcceptableOrUnknown(
+              data['new_flashcards_completed']!, _newFlashcardsCompletedMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FlashcardSetLog map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FlashcardSetLog(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      flashcardSetId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}flashcard_set_id'])!,
+      date: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}date'])!,
+      flashcardsCompleted: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}flashcards_completed'])!,
+      flashcardsGotWrong: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}flashcards_got_wrong'])!,
+      newFlashcardsCompleted: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}new_flashcards_completed'])!,
+    );
+  }
+
+  @override
+  $FlashcardSetLogsTable createAlias(String alias) {
+    return $FlashcardSetLogsTable(attachedDatabase, alias);
+  }
+}
+
+class FlashcardSetLogsCompanion extends UpdateCompanion<FlashcardSetLog> {
+  final Value<int> id;
+  final Value<int> flashcardSetId;
+  final Value<int> date;
+  final Value<int> flashcardsCompleted;
+  final Value<int> flashcardsGotWrong;
+  final Value<int> newFlashcardsCompleted;
+  const FlashcardSetLogsCompanion({
+    this.id = const Value.absent(),
+    this.flashcardSetId = const Value.absent(),
+    this.date = const Value.absent(),
+    this.flashcardsCompleted = const Value.absent(),
+    this.flashcardsGotWrong = const Value.absent(),
+    this.newFlashcardsCompleted = const Value.absent(),
+  });
+  FlashcardSetLogsCompanion.insert({
+    this.id = const Value.absent(),
+    required int flashcardSetId,
+    required int date,
+    this.flashcardsCompleted = const Value.absent(),
+    this.flashcardsGotWrong = const Value.absent(),
+    this.newFlashcardsCompleted = const Value.absent(),
+  })  : flashcardSetId = Value(flashcardSetId),
+        date = Value(date);
+  static Insertable<FlashcardSetLog> custom({
+    Expression<int>? id,
+    Expression<int>? flashcardSetId,
+    Expression<int>? date,
+    Expression<int>? flashcardsCompleted,
+    Expression<int>? flashcardsGotWrong,
+    Expression<int>? newFlashcardsCompleted,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (flashcardSetId != null) 'flashcard_set_id': flashcardSetId,
+      if (date != null) 'date': date,
+      if (flashcardsCompleted != null)
+        'flashcards_completed': flashcardsCompleted,
+      if (flashcardsGotWrong != null)
+        'flashcards_got_wrong': flashcardsGotWrong,
+      if (newFlashcardsCompleted != null)
+        'new_flashcards_completed': newFlashcardsCompleted,
+    });
+  }
+
+  FlashcardSetLogsCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? flashcardSetId,
+      Value<int>? date,
+      Value<int>? flashcardsCompleted,
+      Value<int>? flashcardsGotWrong,
+      Value<int>? newFlashcardsCompleted}) {
+    return FlashcardSetLogsCompanion(
+      id: id ?? this.id,
+      flashcardSetId: flashcardSetId ?? this.flashcardSetId,
+      date: date ?? this.date,
+      flashcardsCompleted: flashcardsCompleted ?? this.flashcardsCompleted,
+      flashcardsGotWrong: flashcardsGotWrong ?? this.flashcardsGotWrong,
+      newFlashcardsCompleted:
+          newFlashcardsCompleted ?? this.newFlashcardsCompleted,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (flashcardSetId.present) {
+      map['flashcard_set_id'] = Variable<int>(flashcardSetId.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<int>(date.value);
+    }
+    if (flashcardsCompleted.present) {
+      map['flashcards_completed'] = Variable<int>(flashcardsCompleted.value);
+    }
+    if (flashcardsGotWrong.present) {
+      map['flashcards_got_wrong'] = Variable<int>(flashcardsGotWrong.value);
+    }
+    if (newFlashcardsCompleted.present) {
+      map['new_flashcards_completed'] =
+          Variable<int>(newFlashcardsCompleted.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FlashcardSetLogsCompanion(')
+          ..write('id: $id, ')
+          ..write('flashcardSetId: $flashcardSetId, ')
+          ..write('date: $date, ')
+          ..write('flashcardsCompleted: $flashcardsCompleted, ')
+          ..write('flashcardsGotWrong: $flashcardsGotWrong, ')
+          ..write('newFlashcardsCompleted: $newFlashcardsCompleted')
           ..write(')'))
         .toString();
   }
@@ -5867,6 +6038,16 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       'IX_my_dictionary_list_items_list_id',
       'CREATE INDEX IX_my_dictionary_list_items_list_id ON my_dictionary_list_items (list_id)');
   late final $FlashcardSetsTable flashcardSets = $FlashcardSetsTable(this);
+  late final $FlashcardSetLogsTable flashcardSetLogs =
+      $FlashcardSetLogsTable(this);
+  late final Index iXFlashcardSetLogsFlashcardSetId = Index(
+      'IX_flashcard_set_logs_flashcard_set_id',
+      'CREATE INDEX IX_flashcard_set_logs_flashcard_set_id ON flashcard_set_logs (flashcard_set_id)');
+  late final Index iXFlashcardSetLogsDate = Index('IX_flashcard_set_logs_date',
+      'CREATE INDEX IX_flashcard_set_logs_date ON flashcard_set_logs (date)');
+  late final Index uXFlashcardSetLogsFlashcardSetIdAndDate = Index(
+      'UX_flashcard_set_logs_flashcard_set_id_and_date',
+      'CREATE UNIQUE INDEX UX_flashcard_set_logs_flashcard_set_id_and_date ON flashcard_set_logs (flashcard_set_id, date)');
   late final $DictionaryInfosTable dictionaryInfos =
       $DictionaryInfosTable(this);
   late final Index iXSpacedRepetitionDatasVocabId = Index(
@@ -5962,6 +6143,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         myDictionaryListItems,
         iXMyDictionaryListItemsListId,
         flashcardSets,
+        flashcardSetLogs,
+        iXFlashcardSetLogsFlashcardSetId,
+        iXFlashcardSetLogsDate,
+        uXFlashcardSetLogsFlashcardSetIdAndDate,
         dictionaryInfos,
         iXSpacedRepetitionDatasVocabId,
         iXSpacedRepetitionDatasKanjiId,
