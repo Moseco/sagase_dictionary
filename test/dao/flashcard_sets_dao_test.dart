@@ -1,4 +1,6 @@
+import 'package:drift/native.dart';
 import 'package:sagase_dictionary/src/database.dart';
+import 'package:sagase_dictionary/src/datamodels/flashcard_sets.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -108,6 +110,161 @@ void main() {
       expect(importedFlashcardSet.myDictionaryLists.length, 1);
       expect(importedFlashcardSet.myDictionaryLists[0], dictionaryList.id);
       expect(importedFlashcardSet.predefinedDictionaryLists.length, 0);
+    });
+
+    group('createFlashcardSetReport', () {
+      test('valid', () async {
+        final flashcardSet = await database.flashcardSetsDao.create('set');
+        final flashcardSetReport = await database.flashcardSetsDao
+            .createFlashcardSetReport(flashcardSet, 20240910);
+
+        expect(flashcardSetReport.flashcardSetId, flashcardSet.id);
+        expect(flashcardSetReport.date, 20240910);
+        expect(flashcardSetReport.flashcardsCompleted, 0);
+        expect(flashcardSetReport.flashcardsGotWrong, 0);
+        expect(flashcardSetReport.newFlashcardsCompleted, 0);
+      });
+
+      test('try to create for same date', () async {
+        final flashcardSet = await database.flashcardSetsDao.create('set');
+        await database.flashcardSetsDao
+            .createFlashcardSetReport(flashcardSet, 20240910);
+
+        expect(
+          database.flashcardSetsDao
+              .createFlashcardSetReport(flashcardSet, 20240910),
+          throwsA(isA<SqliteException>()),
+        );
+      });
+    });
+
+    test('setFlashcardSetReport', () async {
+      final flashcardSet = await database.flashcardSetsDao.create('set');
+      final flashcardSetReport = await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet, 20240910);
+
+      flashcardSetReport.flashcardsCompleted++;
+      await database.flashcardSetsDao.setFlashcardSetReport(
+        flashcardSetReport,
+      );
+
+      final updatedFlashcardSetReport = await database.flashcardSetsDao
+          .getFlashcardSetReport(flashcardSet, 20240910);
+
+      expect(updatedFlashcardSetReport!.flashcardsCompleted, 1);
+    });
+
+    test('getFlashcardSetReport', () async {
+      final flashcardSet = await database.flashcardSetsDao.create('set');
+
+      var flashcardSetReport = await database.flashcardSetsDao
+          .getFlashcardSetReport(flashcardSet, 20240910);
+      expect(flashcardSetReport, null);
+
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet, 20240910);
+
+      flashcardSetReport = await database.flashcardSetsDao
+          .getFlashcardSetReport(flashcardSet, 20240910);
+      expect(flashcardSetReport!.date, 20240910);
+    });
+
+    test('getRecentFlashcardSetReport', () async {
+      final flashcardSet = await database.flashcardSetsDao.create('set');
+
+      var flashcardSetReport = await database.flashcardSetsDao
+          .getRecentFlashcardSetReport(flashcardSet);
+      expect(flashcardSetReport, null);
+
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet, 20240910);
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet, 20240909);
+
+      flashcardSetReport = await database.flashcardSetsDao
+          .getRecentFlashcardSetReport(flashcardSet);
+      expect(flashcardSetReport!.date, 20240910);
+    });
+
+    test('getAllFlashcardSetReports', () async {
+      final flashcardSet1 = await database.flashcardSetsDao.create('set1');
+      final flashcardSet2 = await database.flashcardSetsDao.create('set2');
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet1, 20240910);
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet2, 20240909);
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet1, 20240908);
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet2, 20240907);
+
+      final flashcardSetReports =
+          await database.flashcardSetsDao.getAllFlashcardSetReports();
+      expect(flashcardSetReports.length, 4);
+    });
+
+    test('getFlashcardSetReportRange', () async {
+      final flashcardSet = await database.flashcardSetsDao.create('set');
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet, 20240910);
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet, 20240909);
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet, 20240908);
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet, 20240907);
+
+      final flashcardSetReports = await database.flashcardSetsDao
+          .getFlashcardSetReportRange(flashcardSet, 20240908, 20240909);
+      expect(flashcardSetReports.length, 2);
+      expect(flashcardSetReports[0].date, 20240908);
+      expect(flashcardSetReports[1].date, 20240909);
+    });
+
+    test('deleteFlashcardSetReports', () async {
+      final flashcardSet1 = await database.flashcardSetsDao.create('set1');
+      final flashcardSet2 = await database.flashcardSetsDao.create('set2');
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet1, 20240910);
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet2, 20240909);
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet1, 20240908);
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet2, 20240907);
+
+      await database.flashcardSetsDao.deleteFlashcardSetReports(flashcardSet1);
+
+      final flashcardSetReports1 = await database.flashcardSetsDao
+          .getFlashcardSetReportRange(flashcardSet1, 20240907, 20240910);
+      expect(flashcardSetReports1.length, 0);
+
+      final flashcardSetReports2 = await database.flashcardSetsDao
+          .getFlashcardSetReportRange(flashcardSet2, 20240907, 20240910);
+      expect(flashcardSetReports2.length, 2);
+      expect(flashcardSetReports2[0].date, 20240907);
+      expect(flashcardSetReports2[1].date, 20240909);
+    });
+
+    test('toBackupJson/fromBackupJson', () {
+      final flashcardSetReport = FlashcardSetReport(
+        id: 1,
+        flashcardSetId: 2,
+        date: 3,
+        flashcardsCompleted: 4,
+        flashcardsGotWrong: 5,
+        newFlashcardsCompleted: 6,
+      );
+
+      final importedFlashcardSetReport =
+          FlashcardSetReport.fromBackupJson(flashcardSetReport.toBackupJson());
+
+      expect(importedFlashcardSetReport.id, 1);
+      expect(importedFlashcardSetReport.flashcardSetId, 2);
+      expect(importedFlashcardSetReport.date, 3);
+      expect(importedFlashcardSetReport.flashcardsCompleted, 4);
+      expect(importedFlashcardSetReport.flashcardsGotWrong, 5);
+      expect(importedFlashcardSetReport.newFlashcardsCompleted, 6);
     });
 
     test('deleteAll', () async {

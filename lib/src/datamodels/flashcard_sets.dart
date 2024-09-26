@@ -29,15 +29,12 @@ class FlashcardSets extends Table {
       boolean().withDefault(const Constant(false))();
   DateTimeColumn get timestamp => dateTime().withDefault(currentDateAndTime)();
 
-  IntColumn get flashcardsCompletedToday =>
-      integer().withDefault(const Constant(0))();
-  IntColumn get newFlashcardsCompletedToday =>
-      integer().withDefault(const Constant(0))();
-
   TextColumn get predefinedDictionaryLists =>
       text().map(const IntListConverter()).withDefault(const Constant('[]'))();
   TextColumn get myDictionaryLists =>
       text().map(const IntListConverter()).withDefault(const Constant('[]'))();
+
+  IntColumn get streak => integer().withDefault(const Constant(0))();
 }
 
 class FlashcardSet implements Insertable<FlashcardSet> {
@@ -53,11 +50,10 @@ class FlashcardSet implements Insertable<FlashcardSet> {
   bool vocabShowPartsOfSpeech;
   DateTime timestamp;
 
-  int flashcardsCompletedToday;
-  int newFlashcardsCompletedToday;
-
   List<int> predefinedDictionaryLists;
   List<int> myDictionaryLists;
+
+  int streak;
 
   FlashcardSet({
     required this.id,
@@ -71,10 +67,9 @@ class FlashcardSet implements Insertable<FlashcardSet> {
     required this.kanjiShowReading,
     required this.vocabShowPartsOfSpeech,
     required this.timestamp,
-    required this.flashcardsCompletedToday,
-    required this.newFlashcardsCompletedToday,
     required this.predefinedDictionaryLists,
     required this.myDictionaryLists,
+    required this.streak,
   });
 
   @override
@@ -92,11 +87,9 @@ class FlashcardSet implements Insertable<FlashcardSet> {
       kanjiShowReading: Value.absentIfNull(kanjiShowReading),
       vocabShowPartsOfSpeech: Value.absentIfNull(vocabShowPartsOfSpeech),
       timestamp: Value.absentIfNull(timestamp),
-      flashcardsCompletedToday: Value.absentIfNull(flashcardsCompletedToday),
-      newFlashcardsCompletedToday:
-          Value.absentIfNull(newFlashcardsCompletedToday),
       predefinedDictionaryLists: Value.absentIfNull(predefinedDictionaryLists),
       myDictionaryLists: Value.absentIfNull(myDictionaryLists),
+      streak: Value(streak),
     ).toColumns(nullToAbsent);
   }
 
@@ -122,14 +115,11 @@ class FlashcardSet implements Insertable<FlashcardSet> {
             vocabShowPartsOfSpeech,
         SagaseDictionaryConstants.backupFlashcardSetTimestamp:
             timestamp.millisecondsSinceEpoch,
-        SagaseDictionaryConstants.backupFlashcardSetFlashcardsCompletedToday:
-            flashcardsCompletedToday,
-        SagaseDictionaryConstants.backupFlashcardSetNewFlashcardsCompletedToday:
-            newFlashcardsCompletedToday,
         SagaseDictionaryConstants.backupFlashcardSetPredefinedDictionaryLists:
             predefinedDictionaryLists,
         SagaseDictionaryConstants.backupFlashcardSetMyDictionaryLists:
-            myDictionaryLists
+            myDictionaryLists,
+        SagaseDictionaryConstants.backupFlashcardSetStreak: streak,
       },
     );
   }
@@ -157,16 +147,98 @@ class FlashcardSet implements Insertable<FlashcardSet> {
           SagaseDictionaryConstants.backupFlashcardSetVocabShowPartsOfSpeech],
       timestamp: DateTime.fromMillisecondsSinceEpoch(
           map[SagaseDictionaryConstants.backupFlashcardSetTimestamp]),
-      flashcardsCompletedToday: map[
-          SagaseDictionaryConstants.backupFlashcardSetFlashcardsCompletedToday],
-      newFlashcardsCompletedToday: map[SagaseDictionaryConstants
-          .backupFlashcardSetNewFlashcardsCompletedToday],
       predefinedDictionaryLists: map[SagaseDictionaryConstants
               .backupFlashcardSetPredefinedDictionaryLists]
           .cast<int>(),
       myDictionaryLists:
           map[SagaseDictionaryConstants.backupFlashcardSetMyDictionaryLists]
               .cast<int>(),
+      streak:
+          map[SagaseDictionaryConstants.backupFlashcardSetStreak] as int? ?? 0,
+    );
+  }
+}
+
+@UseRowClass(FlashcardSetReport)
+@TableIndex(
+  name: 'UX_flashcard_set_reports_flashcard_set_id_and_date',
+  columns: {#flashcardSetId, #date},
+  unique: true,
+)
+class FlashcardSetReports extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get flashcardSetId => integer()();
+  IntColumn get date => integer()();
+
+  IntColumn get flashcardsCompleted =>
+      integer().withDefault(const Constant(0))();
+  IntColumn get flashcardsGotWrong =>
+      integer().withDefault(const Constant(0))();
+  IntColumn get newFlashcardsCompleted =>
+      integer().withDefault(const Constant(0))();
+}
+
+class FlashcardSetReport implements Insertable<FlashcardSetReport> {
+  final int id;
+  final int flashcardSetId;
+  final int date;
+  int flashcardsCompleted;
+  int flashcardsGotWrong;
+  int newFlashcardsCompleted;
+
+  FlashcardSetReport({
+    required this.id,
+    required this.flashcardSetId,
+    required this.date,
+    required this.flashcardsCompleted,
+    required this.flashcardsGotWrong,
+    required this.newFlashcardsCompleted,
+  });
+
+  @override
+  Map<String, Expression<Object>> toColumns(bool nullToAbsent) {
+    return FlashcardSetReportsCompanion(
+      id: Value(id),
+      flashcardSetId: Value(flashcardSetId),
+      date: Value(date),
+      flashcardsCompleted: Value(flashcardsCompleted),
+      flashcardsGotWrong: Value(flashcardsGotWrong),
+      newFlashcardsCompleted: Value(newFlashcardsCompleted),
+    ).toColumns(nullToAbsent);
+  }
+
+  String toBackupJson() {
+    return jsonEncode(
+      {
+        SagaseDictionaryConstants.backupFlashcardSetReportId: id,
+        SagaseDictionaryConstants.backupFlashcardSetReportFlashcardSetId:
+            flashcardSetId,
+        SagaseDictionaryConstants.backupFlashcardSetReportDate: date,
+        SagaseDictionaryConstants.backupFlashcardSetReportFlashcardsCompleted:
+            flashcardsCompleted,
+        SagaseDictionaryConstants.backupFlashcardSetReportFlashcardsGotWrong:
+            flashcardsGotWrong,
+        SagaseDictionaryConstants
+                .backupFlashcardSetReportNewFlashcardsCompleted:
+            newFlashcardsCompleted,
+      },
+    );
+  }
+
+  static FlashcardSetReport fromBackupJson(String json) {
+    final map = jsonDecode(json);
+    return FlashcardSetReport(
+      id: map[SagaseDictionaryConstants.backupFlashcardSetReportId],
+      flashcardSetId:
+          map[SagaseDictionaryConstants.backupFlashcardSetReportFlashcardSetId],
+      date: map[SagaseDictionaryConstants.backupFlashcardSetReportDate],
+      flashcardsCompleted: map[SagaseDictionaryConstants
+          .backupFlashcardSetReportFlashcardsCompleted],
+      flashcardsGotWrong: map[
+          SagaseDictionaryConstants.backupFlashcardSetReportFlashcardsGotWrong],
+      newFlashcardsCompleted: map[SagaseDictionaryConstants
+          .backupFlashcardSetReportNewFlashcardsCompleted],
     );
   }
 }

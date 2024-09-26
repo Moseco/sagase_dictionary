@@ -1,3 +1,15 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
 # https://dart.dev/guides/libraries/private-files
 # Created by `dart pub`
 .dart_tool/

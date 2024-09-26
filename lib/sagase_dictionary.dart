@@ -5,7 +5,8 @@ export 'src/database.dart';
 export 'src/datamodels/dictionary_item_ids_result.dart';
 export 'src/datamodels/dictionary_item.dart';
 export 'src/datamodels/dictionary_list.dart';
-export 'src/datamodels/flashcard_sets.dart' show FlashcardSet;
+export 'src/datamodels/flashcard_sets.dart'
+    show FlashcardSet, FlashcardSetReport;
 export 'src/datamodels/japanese_text_token.dart';
 export 'src/datamodels/kanjis.dart' show Kanji, KanjiReading;
 export 'src/datamodels/my_dictionary_lists.dart' show MyDictionaryList;

@@ -6,7 +6,7 @@ import 'package:sagase_dictionary/src/utils/string_utils.dart';
 
 part 'flashcard_sets_dao.g.dart';
 
-@DriftAccessor(tables: [FlashcardSets])
+@DriftAccessor(tables: [FlashcardSets, FlashcardSetReports])
 class FlashcardSetsDao extends DatabaseAccessor<AppDatabase>
     with _$FlashcardSetsDaoMixin {
   FlashcardSetsDao(super.db);
@@ -80,7 +80,78 @@ class FlashcardSetsDao extends DatabaseAccessor<AppDatabase>
     await setFlashcardSet(flashcardSet);
   }
 
+  Future<FlashcardSetReport> createFlashcardSetReport(
+    FlashcardSet flashcardSet,
+    int date,
+  ) async {
+    int id = await db.into(db.flashcardSetReports).insert(
+          FlashcardSetReportsCompanion(
+            flashcardSetId: Value(flashcardSet.id),
+            date: Value(date),
+          ),
+        );
+
+    return (db.select(db.flashcardSetReports)
+          ..where((report) => report.id.equals(id)))
+        .getSingle();
+  }
+
+  Future<void> setFlashcardSetReport(
+    FlashcardSetReport flashcardSetReport,
+  ) async {
+    await db
+        .into(db.flashcardSetReports)
+        .insert(flashcardSetReport, mode: InsertMode.insertOrReplace);
+  }
+
+  Future<FlashcardSetReport?> getFlashcardSetReport(
+    FlashcardSet flashcardSet,
+    int date,
+  ) async {
+    return (db.select(db.flashcardSetReports)
+          ..where((report) => Expression.and([
+                report.flashcardSetId.equals(flashcardSet.id),
+                report.date.equals(date),
+              ])))
+        .getSingleOrNull();
+  }
+
+  Future<FlashcardSetReport?> getRecentFlashcardSetReport(
+    FlashcardSet flashcardSet,
+  ) async {
+    return (db.select(db.flashcardSetReports)
+          ..orderBy([(report) => OrderingTerm.desc(report.date)])
+          ..limit(1))
+        .getSingleOrNull();
+  }
+
+  Future<List<FlashcardSetReport>> getAllFlashcardSetReports() async {
+    return db.select(db.flashcardSetReports).get();
+  }
+
+  Future<List<FlashcardSetReport>> getFlashcardSetReportRange(
+    FlashcardSet flashcardSet,
+    int startDate,
+    int endDate,
+  ) async {
+    return (db.select(db.flashcardSetReports)
+          ..where((report) => Expression.and([
+                report.flashcardSetId.equals(flashcardSet.id),
+                report.date.isBiggerOrEqualValue(startDate),
+                report.date.isSmallerOrEqualValue(endDate),
+              ]))
+          ..orderBy([(report) => OrderingTerm.asc(report.date)]))
+        .get();
+  }
+
+  Future<void> deleteFlashcardSetReports(FlashcardSet flashcardSet) async {
+    await (db.delete(db.flashcardSetReports)
+          ..where((report) => report.flashcardSetId.equals(flashcardSet.id)))
+        .go();
+  }
+
   Future<void> deleteAll() async {
     await db.delete(db.flashcardSets).go();
+    await db.delete(db.flashcardSetReports).go();
   }
 }
