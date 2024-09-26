@@ -33,6 +33,8 @@ class FlashcardSets extends Table {
       text().map(const IntListConverter()).withDefault(const Constant('[]'))();
   TextColumn get myDictionaryLists =>
       text().map(const IntListConverter()).withDefault(const Constant('[]'))();
+
+  IntColumn get streak => integer().withDefault(const Constant(0))();
 }
 
 class FlashcardSet implements Insertable<FlashcardSet> {
@@ -51,6 +53,8 @@ class FlashcardSet implements Insertable<FlashcardSet> {
   List<int> predefinedDictionaryLists;
   List<int> myDictionaryLists;
 
+  int streak;
+
   FlashcardSet({
     required this.id,
     required this.name,
@@ -65,6 +69,7 @@ class FlashcardSet implements Insertable<FlashcardSet> {
     required this.timestamp,
     required this.predefinedDictionaryLists,
     required this.myDictionaryLists,
+    required this.streak,
   });
 
   @override
@@ -84,6 +89,7 @@ class FlashcardSet implements Insertable<FlashcardSet> {
       timestamp: Value.absentIfNull(timestamp),
       predefinedDictionaryLists: Value.absentIfNull(predefinedDictionaryLists),
       myDictionaryLists: Value.absentIfNull(myDictionaryLists),
+      streak: Value(streak),
     ).toColumns(nullToAbsent);
   }
 
@@ -112,7 +118,8 @@ class FlashcardSet implements Insertable<FlashcardSet> {
         SagaseDictionaryConstants.backupFlashcardSetPredefinedDictionaryLists:
             predefinedDictionaryLists,
         SagaseDictionaryConstants.backupFlashcardSetMyDictionaryLists:
-            myDictionaryLists
+            myDictionaryLists,
+        SagaseDictionaryConstants.backupFlashcardSetStreak: streak,
       },
     );
   }
@@ -146,22 +153,19 @@ class FlashcardSet implements Insertable<FlashcardSet> {
       myDictionaryLists:
           map[SagaseDictionaryConstants.backupFlashcardSetMyDictionaryLists]
               .cast<int>(),
+      streak:
+          map[SagaseDictionaryConstants.backupFlashcardSetStreak] as int? ?? 0,
     );
   }
 }
 
-@UseRowClass(FlashcardSetLog)
+@UseRowClass(FlashcardSetReport)
 @TableIndex(
-  name: 'IX_flashcard_set_logs_flashcard_set_id',
-  columns: {#flashcardSetId},
-)
-@TableIndex(name: 'IX_flashcard_set_logs_date', columns: {#date})
-@TableIndex(
-  name: 'UX_flashcard_set_logs_flashcard_set_id_and_date',
+  name: 'UX_flashcard_set_reports_flashcard_set_id_and_date',
   columns: {#flashcardSetId, #date},
   unique: true,
 )
-class FlashcardSetLogs extends Table {
+class FlashcardSetReports extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   IntColumn get flashcardSetId => integer()();
@@ -175,7 +179,7 @@ class FlashcardSetLogs extends Table {
       integer().withDefault(const Constant(0))();
 }
 
-class FlashcardSetLog implements Insertable<FlashcardSetLog> {
+class FlashcardSetReport implements Insertable<FlashcardSetReport> {
   final int id;
   final int flashcardSetId;
   final int date;
@@ -183,7 +187,7 @@ class FlashcardSetLog implements Insertable<FlashcardSetLog> {
   int flashcardsGotWrong;
   int newFlashcardsCompleted;
 
-  FlashcardSetLog({
+  FlashcardSetReport({
     required this.id,
     required this.flashcardSetId,
     required this.date,
@@ -194,7 +198,7 @@ class FlashcardSetLog implements Insertable<FlashcardSetLog> {
 
   @override
   Map<String, Expression<Object>> toColumns(bool nullToAbsent) {
-    return FlashcardSetLogsCompanion(
+    return FlashcardSetReportsCompanion(
       id: Value(id),
       flashcardSetId: Value(flashcardSetId),
       date: Value(date),
@@ -207,33 +211,34 @@ class FlashcardSetLog implements Insertable<FlashcardSetLog> {
   String toBackupJson() {
     return jsonEncode(
       {
-        SagaseDictionaryConstants.backupFlashcardSetLogId: id,
-        SagaseDictionaryConstants.backupFlashcardSetLogFlashcardSetId:
+        SagaseDictionaryConstants.backupFlashcardSetReportId: id,
+        SagaseDictionaryConstants.backupFlashcardSetReportFlashcardSetId:
             flashcardSetId,
-        SagaseDictionaryConstants.backupFlashcardSetLogDate: date,
-        SagaseDictionaryConstants.backupFlashcardSetLogFlashcardsCompleted:
+        SagaseDictionaryConstants.backupFlashcardSetReportDate: date,
+        SagaseDictionaryConstants.backupFlashcardSetReportFlashcardsCompleted:
             flashcardsCompleted,
-        SagaseDictionaryConstants.backupFlashcardSetLogFlashcardsGotWrong:
+        SagaseDictionaryConstants.backupFlashcardSetReportFlashcardsGotWrong:
             flashcardsGotWrong,
-        SagaseDictionaryConstants.backupFlashcardSetLogNewFlashcardsCompleted:
+        SagaseDictionaryConstants
+                .backupFlashcardSetReportNewFlashcardsCompleted:
             newFlashcardsCompleted,
       },
     );
   }
 
-  static FlashcardSetLog fromBackupJson(String json) {
+  static FlashcardSetReport fromBackupJson(String json) {
     final map = jsonDecode(json);
-    return FlashcardSetLog(
-      id: map[SagaseDictionaryConstants.backupFlashcardSetLogId],
+    return FlashcardSetReport(
+      id: map[SagaseDictionaryConstants.backupFlashcardSetReportId],
       flashcardSetId:
-          map[SagaseDictionaryConstants.backupFlashcardSetLogFlashcardSetId],
-      date: map[SagaseDictionaryConstants.backupFlashcardSetLogDate],
-      flashcardsCompleted: map[
-          SagaseDictionaryConstants.backupFlashcardSetLogFlashcardsCompleted],
+          map[SagaseDictionaryConstants.backupFlashcardSetReportFlashcardSetId],
+      date: map[SagaseDictionaryConstants.backupFlashcardSetReportDate],
+      flashcardsCompleted: map[SagaseDictionaryConstants
+          .backupFlashcardSetReportFlashcardsCompleted],
       flashcardsGotWrong: map[
-          SagaseDictionaryConstants.backupFlashcardSetLogFlashcardsGotWrong],
+          SagaseDictionaryConstants.backupFlashcardSetReportFlashcardsGotWrong],
       newFlashcardsCompleted: map[SagaseDictionaryConstants
-          .backupFlashcardSetLogNewFlashcardsCompleted],
+          .backupFlashcardSetReportNewFlashcardsCompleted],
     );
   }
 }

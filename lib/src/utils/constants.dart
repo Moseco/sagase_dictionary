@@ -47,12 +47,16 @@ class SagaseDictionaryConstants {
   static const backupTimestamp = 'timestamp';
   static const backupMyDictionaryLists = 'my_dictionary_lists';
   static const backupFlashcardSets = 'flashcard_sets';
+  static const backupFlashcardSetReports = 'flashcard_set_reports';
   static const backupVocabSpacedRepetitionData = 'vocab_spaced_repetition_data';
   static const backupVocabSpacedRepetitionDataEnglish =
       'vocab_spaced_repetition_data_english';
   static const backupKanjiSpacedRepetitionData = 'kanji_spaced_repetition_data';
   static const backupKanjiSpacedRepetitionDataEnglish =
       'kanji_spaced_repetition_data_english';
+  static const backupSearchHistory = 'search_history';
+  static const backupTextAnalysisHistory = 'text_analysis_history';
+
   static const backupFlashcardSetId = 'id';
   static const backupFlashcardSetName = 'name';
   static const backupFlashcardSetUsingSpacedRepetition =
@@ -72,13 +76,15 @@ class SagaseDictionaryConstants {
   static const backupFlashcardSetPredefinedDictionaryLists =
       'predefined_dictionary_lists';
   static const backupFlashcardSetMyDictionaryLists = 'my_dictionary_lists';
-  static const backupFlashcardSetLogId = 'id';
-  static const backupFlashcardSetLogFlashcardSetId = 'flashcard_set_id';
-  static const backupFlashcardSetLogDate = 'date';
-  static const backupFlashcardSetLogFlashcardsCompleted =
+  static const backupFlashcardSetStreak = 'streak';
+  static const backupFlashcardSetReportId = 'id';
+  static const backupFlashcardSetReportFlashcardSetId = 'flashcard_set_id';
+  static const backupFlashcardSetReportDate = 'date';
+  static const backupFlashcardSetReportFlashcardsCompleted =
       'flashcards_completed';
-  static const backupFlashcardSetLogFlashcardsGotWrong = 'flashcards_got_wrong';
-  static const backupFlashcardSetLogNewFlashcardsCompleted =
+  static const backupFlashcardSetReportFlashcardsGotWrong =
+      'flashcards_got_wrong';
+  static const backupFlashcardSetReportNewFlashcardsCompleted =
       'new_flashcards_completed';
   static const backupMyDictionaryListId = 'id';
   static const backupMyDictionaryListName = 'name';
@@ -92,8 +98,6 @@ class SagaseDictionaryConstants {
   static const backupSpacedRepetitionDataTotalAnswers = 'total_answers';
   static const backupSpacedRepetitionDataTotalWrongAnswers =
       'total_wrong_answers';
-  static const backupSearchHistory = 'search_history';
-  static const backupTextAnalysisHistory = 'text_analysis_history';
 
   static const exportType = 'type';
   static const exportTypeBackup = 'backup';

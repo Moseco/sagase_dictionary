@@ -5197,6 +5197,13 @@ class $FlashcardSetsTable extends FlashcardSets
               defaultValue: const Constant('[]'))
           .withConverter<List<int>>(
               $FlashcardSetsTable.$convertermyDictionaryLists);
+  static const VerificationMeta _streakMeta = const VerificationMeta('streak');
+  @override
+  late final GeneratedColumn<int> streak = GeneratedColumn<int>(
+      'streak', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -5211,7 +5218,8 @@ class $FlashcardSetsTable extends FlashcardSets
         vocabShowPartsOfSpeech,
         timestamp,
         predefinedDictionaryLists,
-        myDictionaryLists
+        myDictionaryLists,
+        streak
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -5284,6 +5292,10 @@ class $FlashcardSetsTable extends FlashcardSets
     context.handle(
         _predefinedDictionaryListsMeta, const VerificationResult.success());
     context.handle(_myDictionaryListsMeta, const VerificationResult.success());
+    if (data.containsKey('streak')) {
+      context.handle(_streakMeta,
+          streak.isAcceptableOrUnknown(data['streak']!, _streakMeta));
+    }
     return context;
   }
 
@@ -5327,6 +5339,8 @@ class $FlashcardSetsTable extends FlashcardSets
       myDictionaryLists: $FlashcardSetsTable.$convertermyDictionaryLists
           .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
               data['${effectivePrefix}my_dictionary_lists'])!),
+      streak: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}streak'])!,
     );
   }
 
@@ -5357,6 +5371,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
   final Value<DateTime> timestamp;
   final Value<List<int>> predefinedDictionaryLists;
   final Value<List<int>> myDictionaryLists;
+  final Value<int> streak;
   const FlashcardSetsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -5371,6 +5386,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     this.timestamp = const Value.absent(),
     this.predefinedDictionaryLists = const Value.absent(),
     this.myDictionaryLists = const Value.absent(),
+    this.streak = const Value.absent(),
   });
   FlashcardSetsCompanion.insert({
     this.id = const Value.absent(),
@@ -5386,6 +5402,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     this.timestamp = const Value.absent(),
     this.predefinedDictionaryLists = const Value.absent(),
     this.myDictionaryLists = const Value.absent(),
+    this.streak = const Value.absent(),
   }) : name = Value(name);
   static Insertable<FlashcardSet> custom({
     Expression<int>? id,
@@ -5401,6 +5418,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     Expression<DateTime>? timestamp,
     Expression<String>? predefinedDictionaryLists,
     Expression<String>? myDictionaryLists,
+    Expression<int>? streak,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -5422,6 +5440,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
       if (predefinedDictionaryLists != null)
         'predefined_dictionary_lists': predefinedDictionaryLists,
       if (myDictionaryLists != null) 'my_dictionary_lists': myDictionaryLists,
+      if (streak != null) 'streak': streak,
     });
   }
 
@@ -5438,7 +5457,8 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
       Value<bool>? vocabShowPartsOfSpeech,
       Value<DateTime>? timestamp,
       Value<List<int>>? predefinedDictionaryLists,
-      Value<List<int>>? myDictionaryLists}) {
+      Value<List<int>>? myDictionaryLists,
+      Value<int>? streak}) {
     return FlashcardSetsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -5458,6 +5478,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
       predefinedDictionaryLists:
           predefinedDictionaryLists ?? this.predefinedDictionaryLists,
       myDictionaryLists: myDictionaryLists ?? this.myDictionaryLists,
+      streak: streak ?? this.streak,
     );
   }
 
@@ -5513,6 +5534,9 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
           .$convertermyDictionaryLists
           .toSql(myDictionaryLists.value));
     }
+    if (streak.present) {
+      map['streak'] = Variable<int>(streak.value);
+    }
     return map;
   }
 
@@ -5531,18 +5555,19 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
           ..write('vocabShowPartsOfSpeech: $vocabShowPartsOfSpeech, ')
           ..write('timestamp: $timestamp, ')
           ..write('predefinedDictionaryLists: $predefinedDictionaryLists, ')
-          ..write('myDictionaryLists: $myDictionaryLists')
+          ..write('myDictionaryLists: $myDictionaryLists, ')
+          ..write('streak: $streak')
           ..write(')'))
         .toString();
   }
 }
 
-class $FlashcardSetLogsTable extends FlashcardSetLogs
-    with TableInfo<$FlashcardSetLogsTable, FlashcardSetLog> {
+class $FlashcardSetReportsTable extends FlashcardSetReports
+    with TableInfo<$FlashcardSetReportsTable, FlashcardSetReport> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $FlashcardSetLogsTable(this.attachedDatabase, [this._alias]);
+  $FlashcardSetReportsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -5600,9 +5625,9 @@ class $FlashcardSetLogsTable extends FlashcardSetLogs
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'flashcard_set_logs';
+  static const String $name = 'flashcard_set_reports';
   @override
-  VerificationContext validateIntegrity(Insertable<FlashcardSetLog> instance,
+  VerificationContext validateIntegrity(Insertable<FlashcardSetReport> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -5647,9 +5672,9 @@ class $FlashcardSetLogsTable extends FlashcardSetLogs
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  FlashcardSetLog map(Map<String, dynamic> data, {String? tablePrefix}) {
+  FlashcardSetReport map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return FlashcardSetLog(
+    return FlashcardSetReport(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       flashcardSetId: attachedDatabase.typeMapping
@@ -5667,19 +5692,19 @@ class $FlashcardSetLogsTable extends FlashcardSetLogs
   }
 
   @override
-  $FlashcardSetLogsTable createAlias(String alias) {
-    return $FlashcardSetLogsTable(attachedDatabase, alias);
+  $FlashcardSetReportsTable createAlias(String alias) {
+    return $FlashcardSetReportsTable(attachedDatabase, alias);
   }
 }
 
-class FlashcardSetLogsCompanion extends UpdateCompanion<FlashcardSetLog> {
+class FlashcardSetReportsCompanion extends UpdateCompanion<FlashcardSetReport> {
   final Value<int> id;
   final Value<int> flashcardSetId;
   final Value<int> date;
   final Value<int> flashcardsCompleted;
   final Value<int> flashcardsGotWrong;
   final Value<int> newFlashcardsCompleted;
-  const FlashcardSetLogsCompanion({
+  const FlashcardSetReportsCompanion({
     this.id = const Value.absent(),
     this.flashcardSetId = const Value.absent(),
     this.date = const Value.absent(),
@@ -5687,7 +5712,7 @@ class FlashcardSetLogsCompanion extends UpdateCompanion<FlashcardSetLog> {
     this.flashcardsGotWrong = const Value.absent(),
     this.newFlashcardsCompleted = const Value.absent(),
   });
-  FlashcardSetLogsCompanion.insert({
+  FlashcardSetReportsCompanion.insert({
     this.id = const Value.absent(),
     required int flashcardSetId,
     required int date,
@@ -5696,7 +5721,7 @@ class FlashcardSetLogsCompanion extends UpdateCompanion<FlashcardSetLog> {
     this.newFlashcardsCompleted = const Value.absent(),
   })  : flashcardSetId = Value(flashcardSetId),
         date = Value(date);
-  static Insertable<FlashcardSetLog> custom({
+  static Insertable<FlashcardSetReport> custom({
     Expression<int>? id,
     Expression<int>? flashcardSetId,
     Expression<int>? date,
@@ -5717,14 +5742,14 @@ class FlashcardSetLogsCompanion extends UpdateCompanion<FlashcardSetLog> {
     });
   }
 
-  FlashcardSetLogsCompanion copyWith(
+  FlashcardSetReportsCompanion copyWith(
       {Value<int>? id,
       Value<int>? flashcardSetId,
       Value<int>? date,
       Value<int>? flashcardsCompleted,
       Value<int>? flashcardsGotWrong,
       Value<int>? newFlashcardsCompleted}) {
-    return FlashcardSetLogsCompanion(
+    return FlashcardSetReportsCompanion(
       id: id ?? this.id,
       flashcardSetId: flashcardSetId ?? this.flashcardSetId,
       date: date ?? this.date,
@@ -5762,7 +5787,7 @@ class FlashcardSetLogsCompanion extends UpdateCompanion<FlashcardSetLog> {
 
   @override
   String toString() {
-    return (StringBuffer('FlashcardSetLogsCompanion(')
+    return (StringBuffer('FlashcardSetReportsCompanion(')
           ..write('id: $id, ')
           ..write('flashcardSetId: $flashcardSetId, ')
           ..write('date: $date, ')
@@ -6038,16 +6063,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       'IX_my_dictionary_list_items_list_id',
       'CREATE INDEX IX_my_dictionary_list_items_list_id ON my_dictionary_list_items (list_id)');
   late final $FlashcardSetsTable flashcardSets = $FlashcardSetsTable(this);
-  late final $FlashcardSetLogsTable flashcardSetLogs =
-      $FlashcardSetLogsTable(this);
-  late final Index iXFlashcardSetLogsFlashcardSetId = Index(
-      'IX_flashcard_set_logs_flashcard_set_id',
-      'CREATE INDEX IX_flashcard_set_logs_flashcard_set_id ON flashcard_set_logs (flashcard_set_id)');
-  late final Index iXFlashcardSetLogsDate = Index('IX_flashcard_set_logs_date',
-      'CREATE INDEX IX_flashcard_set_logs_date ON flashcard_set_logs (date)');
-  late final Index uXFlashcardSetLogsFlashcardSetIdAndDate = Index(
-      'UX_flashcard_set_logs_flashcard_set_id_and_date',
-      'CREATE UNIQUE INDEX UX_flashcard_set_logs_flashcard_set_id_and_date ON flashcard_set_logs (flashcard_set_id, date)');
+  late final $FlashcardSetReportsTable flashcardSetReports =
+      $FlashcardSetReportsTable(this);
+  late final Index uXFlashcardSetReportsFlashcardSetIdAndDate = Index(
+      'UX_flashcard_set_reports_flashcard_set_id_and_date',
+      'CREATE UNIQUE INDEX UX_flashcard_set_reports_flashcard_set_id_and_date ON flashcard_set_reports (flashcard_set_id, date)');
   late final $DictionaryInfosTable dictionaryInfos =
       $DictionaryInfosTable(this);
   late final Index iXSpacedRepetitionDatasVocabId = Index(
@@ -6143,10 +6163,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         myDictionaryListItems,
         iXMyDictionaryListItemsListId,
         flashcardSets,
-        flashcardSetLogs,
-        iXFlashcardSetLogsFlashcardSetId,
-        iXFlashcardSetLogsDate,
-        uXFlashcardSetLogsFlashcardSetIdAndDate,
+        flashcardSetReports,
+        uXFlashcardSetReportsFlashcardSetIdAndDate,
         dictionaryInfos,
         iXSpacedRepetitionDatasVocabId,
         iXSpacedRepetitionDatasKanjiId,
