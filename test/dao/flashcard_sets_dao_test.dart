@@ -120,8 +120,8 @@ void main() {
 
         expect(flashcardSetReport.flashcardSetId, flashcardSet.id);
         expect(flashcardSetReport.date, 20240910);
-        expect(flashcardSetReport.flashcardsCompleted, 0);
-        expect(flashcardSetReport.flashcardsGotWrong, 0);
+        expect(flashcardSetReport.dueFlashcardsCompleted, 0);
+        expect(flashcardSetReport.dueFlashcardsGotWrong, 0);
         expect(flashcardSetReport.newFlashcardsCompleted, 0);
       });
 
@@ -143,7 +143,7 @@ void main() {
       final flashcardSetReport = await database.flashcardSetsDao
           .createFlashcardSetReport(flashcardSet, 20240910);
 
-      flashcardSetReport.flashcardsCompleted++;
+      flashcardSetReport.dueFlashcardsCompleted++;
       await database.flashcardSetsDao.setFlashcardSetReport(
         flashcardSetReport,
       );
@@ -151,7 +151,7 @@ void main() {
       final updatedFlashcardSetReport = await database.flashcardSetsDao
           .getFlashcardSetReport(flashcardSet, 20240910);
 
-      expect(updatedFlashcardSetReport!.flashcardsCompleted, 1);
+      expect(updatedFlashcardSetReport!.dueFlashcardsCompleted, 1);
     });
 
     test('getFlashcardSetReport', () async {
@@ -251,8 +251,8 @@ void main() {
         id: 1,
         flashcardSetId: 2,
         date: 3,
-        flashcardsCompleted: 4,
-        flashcardsGotWrong: 5,
+        dueFlashcardsCompleted: 4,
+        dueFlashcardsGotWrong: 5,
         newFlashcardsCompleted: 6,
       );
 
@@ -262,8 +262,8 @@ void main() {
       expect(importedFlashcardSetReport.id, 1);
       expect(importedFlashcardSetReport.flashcardSetId, 2);
       expect(importedFlashcardSetReport.date, 3);
-      expect(importedFlashcardSetReport.flashcardsCompleted, 4);
-      expect(importedFlashcardSetReport.flashcardsGotWrong, 5);
+      expect(importedFlashcardSetReport.dueFlashcardsCompleted, 4);
+      expect(importedFlashcardSetReport.dueFlashcardsGotWrong, 5);
       expect(importedFlashcardSetReport.newFlashcardsCompleted, 6);
     });
 

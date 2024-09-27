@@ -80,10 +80,10 @@ class SagaseDictionaryConstants {
   static const backupFlashcardSetReportId = 'id';
   static const backupFlashcardSetReportFlashcardSetId = 'flashcard_set_id';
   static const backupFlashcardSetReportDate = 'date';
-  static const backupFlashcardSetReportFlashcardsCompleted =
-      'flashcards_completed';
-  static const backupFlashcardSetReportFlashcardsGotWrong =
-      'flashcards_got_wrong';
+  static const backupFlashcardSetReportDueFlashcardsCompleted =
+      'due_flashcards_completed';
+  static const backupFlashcardSetReportDueFlashcardsGotWrong =
+      'due_flashcards_got_wrong';
   static const backupFlashcardSetReportNewFlashcardsCompleted =
       'new_flashcards_completed';
   static const backupMyDictionaryListId = 'id';

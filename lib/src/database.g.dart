@@ -5588,19 +5588,19 @@ class $FlashcardSetReportsTable extends FlashcardSetReports
   late final GeneratedColumn<int> date = GeneratedColumn<int>(
       'date', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _flashcardsCompletedMeta =
-      const VerificationMeta('flashcardsCompleted');
+  static const VerificationMeta _dueFlashcardsCompletedMeta =
+      const VerificationMeta('dueFlashcardsCompleted');
   @override
-  late final GeneratedColumn<int> flashcardsCompleted = GeneratedColumn<int>(
-      'flashcards_completed', aliasedName, false,
+  late final GeneratedColumn<int> dueFlashcardsCompleted = GeneratedColumn<int>(
+      'due_flashcards_completed', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
-  static const VerificationMeta _flashcardsGotWrongMeta =
-      const VerificationMeta('flashcardsGotWrong');
+  static const VerificationMeta _dueFlashcardsGotWrongMeta =
+      const VerificationMeta('dueFlashcardsGotWrong');
   @override
-  late final GeneratedColumn<int> flashcardsGotWrong = GeneratedColumn<int>(
-      'flashcards_got_wrong', aliasedName, false,
+  late final GeneratedColumn<int> dueFlashcardsGotWrong = GeneratedColumn<int>(
+      'due_flashcards_got_wrong', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
@@ -5617,8 +5617,8 @@ class $FlashcardSetReportsTable extends FlashcardSetReports
         id,
         flashcardSetId,
         date,
-        flashcardsCompleted,
-        flashcardsGotWrong,
+        dueFlashcardsCompleted,
+        dueFlashcardsGotWrong,
         newFlashcardsCompleted
       ];
   @override
@@ -5648,17 +5648,17 @@ class $FlashcardSetReportsTable extends FlashcardSetReports
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
-    if (data.containsKey('flashcards_completed')) {
+    if (data.containsKey('due_flashcards_completed')) {
       context.handle(
-          _flashcardsCompletedMeta,
-          flashcardsCompleted.isAcceptableOrUnknown(
-              data['flashcards_completed']!, _flashcardsCompletedMeta));
+          _dueFlashcardsCompletedMeta,
+          dueFlashcardsCompleted.isAcceptableOrUnknown(
+              data['due_flashcards_completed']!, _dueFlashcardsCompletedMeta));
     }
-    if (data.containsKey('flashcards_got_wrong')) {
+    if (data.containsKey('due_flashcards_got_wrong')) {
       context.handle(
-          _flashcardsGotWrongMeta,
-          flashcardsGotWrong.isAcceptableOrUnknown(
-              data['flashcards_got_wrong']!, _flashcardsGotWrongMeta));
+          _dueFlashcardsGotWrongMeta,
+          dueFlashcardsGotWrong.isAcceptableOrUnknown(
+              data['due_flashcards_got_wrong']!, _dueFlashcardsGotWrongMeta));
     }
     if (data.containsKey('new_flashcards_completed')) {
       context.handle(
@@ -5681,10 +5681,11 @@ class $FlashcardSetReportsTable extends FlashcardSetReports
           .read(DriftSqlType.int, data['${effectivePrefix}flashcard_set_id'])!,
       date: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}date'])!,
-      flashcardsCompleted: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}flashcards_completed'])!,
-      flashcardsGotWrong: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}flashcards_got_wrong'])!,
+      dueFlashcardsCompleted: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}due_flashcards_completed'])!,
+      dueFlashcardsGotWrong: attachedDatabase.typeMapping.read(DriftSqlType.int,
+          data['${effectivePrefix}due_flashcards_got_wrong'])!,
       newFlashcardsCompleted: attachedDatabase.typeMapping.read(
           DriftSqlType.int,
           data['${effectivePrefix}new_flashcards_completed'])!,
@@ -5701,23 +5702,23 @@ class FlashcardSetReportsCompanion extends UpdateCompanion<FlashcardSetReport> {
   final Value<int> id;
   final Value<int> flashcardSetId;
   final Value<int> date;
-  final Value<int> flashcardsCompleted;
-  final Value<int> flashcardsGotWrong;
+  final Value<int> dueFlashcardsCompleted;
+  final Value<int> dueFlashcardsGotWrong;
   final Value<int> newFlashcardsCompleted;
   const FlashcardSetReportsCompanion({
     this.id = const Value.absent(),
     this.flashcardSetId = const Value.absent(),
     this.date = const Value.absent(),
-    this.flashcardsCompleted = const Value.absent(),
-    this.flashcardsGotWrong = const Value.absent(),
+    this.dueFlashcardsCompleted = const Value.absent(),
+    this.dueFlashcardsGotWrong = const Value.absent(),
     this.newFlashcardsCompleted = const Value.absent(),
   });
   FlashcardSetReportsCompanion.insert({
     this.id = const Value.absent(),
     required int flashcardSetId,
     required int date,
-    this.flashcardsCompleted = const Value.absent(),
-    this.flashcardsGotWrong = const Value.absent(),
+    this.dueFlashcardsCompleted = const Value.absent(),
+    this.dueFlashcardsGotWrong = const Value.absent(),
     this.newFlashcardsCompleted = const Value.absent(),
   })  : flashcardSetId = Value(flashcardSetId),
         date = Value(date);
@@ -5725,18 +5726,18 @@ class FlashcardSetReportsCompanion extends UpdateCompanion<FlashcardSetReport> {
     Expression<int>? id,
     Expression<int>? flashcardSetId,
     Expression<int>? date,
-    Expression<int>? flashcardsCompleted,
-    Expression<int>? flashcardsGotWrong,
+    Expression<int>? dueFlashcardsCompleted,
+    Expression<int>? dueFlashcardsGotWrong,
     Expression<int>? newFlashcardsCompleted,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (flashcardSetId != null) 'flashcard_set_id': flashcardSetId,
       if (date != null) 'date': date,
-      if (flashcardsCompleted != null)
-        'flashcards_completed': flashcardsCompleted,
-      if (flashcardsGotWrong != null)
-        'flashcards_got_wrong': flashcardsGotWrong,
+      if (dueFlashcardsCompleted != null)
+        'due_flashcards_completed': dueFlashcardsCompleted,
+      if (dueFlashcardsGotWrong != null)
+        'due_flashcards_got_wrong': dueFlashcardsGotWrong,
       if (newFlashcardsCompleted != null)
         'new_flashcards_completed': newFlashcardsCompleted,
     });
@@ -5746,15 +5747,17 @@ class FlashcardSetReportsCompanion extends UpdateCompanion<FlashcardSetReport> {
       {Value<int>? id,
       Value<int>? flashcardSetId,
       Value<int>? date,
-      Value<int>? flashcardsCompleted,
-      Value<int>? flashcardsGotWrong,
+      Value<int>? dueFlashcardsCompleted,
+      Value<int>? dueFlashcardsGotWrong,
       Value<int>? newFlashcardsCompleted}) {
     return FlashcardSetReportsCompanion(
       id: id ?? this.id,
       flashcardSetId: flashcardSetId ?? this.flashcardSetId,
       date: date ?? this.date,
-      flashcardsCompleted: flashcardsCompleted ?? this.flashcardsCompleted,
-      flashcardsGotWrong: flashcardsGotWrong ?? this.flashcardsGotWrong,
+      dueFlashcardsCompleted:
+          dueFlashcardsCompleted ?? this.dueFlashcardsCompleted,
+      dueFlashcardsGotWrong:
+          dueFlashcardsGotWrong ?? this.dueFlashcardsGotWrong,
       newFlashcardsCompleted:
           newFlashcardsCompleted ?? this.newFlashcardsCompleted,
     );
@@ -5772,11 +5775,13 @@ class FlashcardSetReportsCompanion extends UpdateCompanion<FlashcardSetReport> {
     if (date.present) {
       map['date'] = Variable<int>(date.value);
     }
-    if (flashcardsCompleted.present) {
-      map['flashcards_completed'] = Variable<int>(flashcardsCompleted.value);
+    if (dueFlashcardsCompleted.present) {
+      map['due_flashcards_completed'] =
+          Variable<int>(dueFlashcardsCompleted.value);
     }
-    if (flashcardsGotWrong.present) {
-      map['flashcards_got_wrong'] = Variable<int>(flashcardsGotWrong.value);
+    if (dueFlashcardsGotWrong.present) {
+      map['due_flashcards_got_wrong'] =
+          Variable<int>(dueFlashcardsGotWrong.value);
     }
     if (newFlashcardsCompleted.present) {
       map['new_flashcards_completed'] =
@@ -5791,8 +5796,8 @@ class FlashcardSetReportsCompanion extends UpdateCompanion<FlashcardSetReport> {
           ..write('id: $id, ')
           ..write('flashcardSetId: $flashcardSetId, ')
           ..write('date: $date, ')
-          ..write('flashcardsCompleted: $flashcardsCompleted, ')
-          ..write('flashcardsGotWrong: $flashcardsGotWrong, ')
+          ..write('dueFlashcardsCompleted: $dueFlashcardsCompleted, ')
+          ..write('dueFlashcardsGotWrong: $dueFlashcardsGotWrong, ')
           ..write('newFlashcardsCompleted: $newFlashcardsCompleted')
           ..write(')'))
         .toString();

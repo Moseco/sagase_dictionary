@@ -171,9 +171,9 @@ class FlashcardSetReports extends Table {
   IntColumn get flashcardSetId => integer()();
   IntColumn get date => integer()();
 
-  IntColumn get flashcardsCompleted =>
+  IntColumn get dueFlashcardsCompleted =>
       integer().withDefault(const Constant(0))();
-  IntColumn get flashcardsGotWrong =>
+  IntColumn get dueFlashcardsGotWrong =>
       integer().withDefault(const Constant(0))();
   IntColumn get newFlashcardsCompleted =>
       integer().withDefault(const Constant(0))();
@@ -183,16 +183,16 @@ class FlashcardSetReport implements Insertable<FlashcardSetReport> {
   final int id;
   final int flashcardSetId;
   final int date;
-  int flashcardsCompleted;
-  int flashcardsGotWrong;
+  int dueFlashcardsCompleted;
+  int dueFlashcardsGotWrong;
   int newFlashcardsCompleted;
 
   FlashcardSetReport({
     required this.id,
     required this.flashcardSetId,
     required this.date,
-    required this.flashcardsCompleted,
-    required this.flashcardsGotWrong,
+    required this.dueFlashcardsCompleted,
+    required this.dueFlashcardsGotWrong,
     required this.newFlashcardsCompleted,
   });
 
@@ -202,8 +202,8 @@ class FlashcardSetReport implements Insertable<FlashcardSetReport> {
       id: Value(id),
       flashcardSetId: Value(flashcardSetId),
       date: Value(date),
-      flashcardsCompleted: Value(flashcardsCompleted),
-      flashcardsGotWrong: Value(flashcardsGotWrong),
+      dueFlashcardsCompleted: Value(dueFlashcardsCompleted),
+      dueFlashcardsGotWrong: Value(dueFlashcardsGotWrong),
       newFlashcardsCompleted: Value(newFlashcardsCompleted),
     ).toColumns(nullToAbsent);
   }
@@ -215,10 +215,11 @@ class FlashcardSetReport implements Insertable<FlashcardSetReport> {
         SagaseDictionaryConstants.backupFlashcardSetReportFlashcardSetId:
             flashcardSetId,
         SagaseDictionaryConstants.backupFlashcardSetReportDate: date,
-        SagaseDictionaryConstants.backupFlashcardSetReportFlashcardsCompleted:
-            flashcardsCompleted,
-        SagaseDictionaryConstants.backupFlashcardSetReportFlashcardsGotWrong:
-            flashcardsGotWrong,
+        SagaseDictionaryConstants
+                .backupFlashcardSetReportDueFlashcardsCompleted:
+            dueFlashcardsCompleted,
+        SagaseDictionaryConstants.backupFlashcardSetReportDueFlashcardsGotWrong:
+            dueFlashcardsGotWrong,
         SagaseDictionaryConstants
                 .backupFlashcardSetReportNewFlashcardsCompleted:
             newFlashcardsCompleted,
@@ -233,10 +234,10 @@ class FlashcardSetReport implements Insertable<FlashcardSetReport> {
       flashcardSetId:
           map[SagaseDictionaryConstants.backupFlashcardSetReportFlashcardSetId],
       date: map[SagaseDictionaryConstants.backupFlashcardSetReportDate],
-      flashcardsCompleted: map[SagaseDictionaryConstants
-          .backupFlashcardSetReportFlashcardsCompleted],
-      flashcardsGotWrong: map[
-          SagaseDictionaryConstants.backupFlashcardSetReportFlashcardsGotWrong],
+      dueFlashcardsCompleted: map[SagaseDictionaryConstants
+          .backupFlashcardSetReportDueFlashcardsCompleted],
+      dueFlashcardsGotWrong: map[SagaseDictionaryConstants
+          .backupFlashcardSetReportDueFlashcardsGotWrong],
       newFlashcardsCompleted: map[SagaseDictionaryConstants
           .backupFlashcardSetReportNewFlashcardsCompleted],
     );
