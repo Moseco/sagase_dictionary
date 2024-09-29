@@ -35,14 +35,22 @@ void main() {
 
     test('deleteFlashcardSet', () async {
       final flashcardSet = await database.flashcardSetsDao.create('set');
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet, 20240929);
 
       var flashcardSets = await database.flashcardSetsDao.getAll();
       expect(flashcardSets.length, 1);
+      var flashcardSetReports =
+          await database.flashcardSetsDao.getAllFlashcardSetReports();
+      expect(flashcardSetReports.length, 1);
 
       await database.flashcardSetsDao.deleteFlashcardSet(flashcardSet);
 
       flashcardSets = await database.flashcardSetsDao.getAll();
       expect(flashcardSets.length, 0);
+      flashcardSetReports =
+          await database.flashcardSetsDao.getAllFlashcardSetReports();
+      expect(flashcardSetReports.length, 0);
     });
 
     test('getAll', () async {
@@ -170,19 +178,27 @@ void main() {
     });
 
     test('getRecentFlashcardSetReport', () async {
-      final flashcardSet = await database.flashcardSetsDao.create('set');
+      final flashcardSet1 = await database.flashcardSetsDao.create('set1');
+      final flashcardSet2 = await database.flashcardSetsDao.create('set2');
+
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet2, 20240907);
 
       var flashcardSetReport = await database.flashcardSetsDao
-          .getRecentFlashcardSetReport(flashcardSet);
+          .getRecentFlashcardSetReport(flashcardSet1);
       expect(flashcardSetReport, null);
 
       await database.flashcardSetsDao
-          .createFlashcardSetReport(flashcardSet, 20240910);
+          .createFlashcardSetReport(flashcardSet2, 20240911);
       await database.flashcardSetsDao
-          .createFlashcardSetReport(flashcardSet, 20240909);
+          .createFlashcardSetReport(flashcardSet1, 20240910);
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet1, 20240909);
+      await database.flashcardSetsDao
+          .createFlashcardSetReport(flashcardSet2, 20240908);
 
       flashcardSetReport = await database.flashcardSetsDao
-          .getRecentFlashcardSetReport(flashcardSet);
+          .getRecentFlashcardSetReport(flashcardSet1);
       expect(flashcardSetReport!.date, 20240910);
     });
 
