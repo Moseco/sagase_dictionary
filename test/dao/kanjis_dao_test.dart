@@ -36,18 +36,33 @@ void main() {
     });
 
     group('get', () {
-      test('No front type', () async {
-        final kanji = await database.kanjisDao.get('亜'.kanjiCodePoint());
-        expect(kanji.kanji, '亜');
+      group('Without front type', () {
+        test('Kanji does not exist', () async {
+          final kanji = await database.kanjisDao.get('s'.kanjiCodePoint());
+          expect(kanji, null);
+        });
+
+        test('Kanji exists', () async {
+          final kanji = await database.kanjisDao.get('亜'.kanjiCodePoint());
+          expect(kanji!.kanji, '亜');
+        });
       });
 
       group('With front type', () {
+        test('Kanji does not exist', () async {
+          final kanji = await database.kanjisDao.get(
+            's'.kanjiCodePoint(),
+            frontType: FrontType.japanese,
+          );
+          expect(kanji, null);
+        });
+
         test('Spaced repetition does not exist', () async {
           final kanji = await database.kanjisDao.get(
             '亜'.kanjiCodePoint(),
             frontType: FrontType.japanese,
           );
-          expect(kanji.kanji, '亜');
+          expect(kanji!.kanji, '亜');
           expect(kanji.spacedRepetitionData, null);
         });
 
@@ -55,7 +70,7 @@ void main() {
           await database.spacedRepetitionDatasDao.set(
             SpacedRepetitionData.initial(
               dictionaryItem:
-                  await database.kanjisDao.get('亜'.kanjiCodePoint()),
+                  (await database.kanjisDao.get('亜'.kanjiCodePoint()))!,
               frontType: FrontType.japanese,
             ),
           );
@@ -64,7 +79,7 @@ void main() {
             '亜'.kanjiCodePoint(),
             frontType: FrontType.japanese,
           );
-          expect(kanji.kanji, '亜');
+          expect(kanji!.kanji, '亜');
           expect(kanji.spacedRepetitionData!.frontType, FrontType.japanese);
         });
 
@@ -72,14 +87,14 @@ void main() {
           await database.spacedRepetitionDatasDao.set(
             SpacedRepetitionData.initial(
               dictionaryItem:
-                  await database.kanjisDao.get('亜'.kanjiCodePoint()),
+                  (await database.kanjisDao.get('亜'.kanjiCodePoint()))!,
               frontType: FrontType.japanese,
             ),
           );
           await database.spacedRepetitionDatasDao.set(
             SpacedRepetitionData.initial(
               dictionaryItem:
-                  await database.kanjisDao.get('亜'.kanjiCodePoint()),
+                  (await database.kanjisDao.get('亜'.kanjiCodePoint()))!,
               frontType: FrontType.english,
             ),
           );
@@ -88,18 +103,33 @@ void main() {
             '亜'.kanjiCodePoint(),
             frontType: FrontType.english,
           );
-          expect(kanji.kanji, '亜');
+          expect(kanji!.kanji, '亜');
           expect(kanji.spacedRepetitionData!.frontType, FrontType.english);
         });
       });
     });
 
-    test('getKanji', () async {
-      final kanji = await database.kanjisDao.getKanji('悪');
-      expect(kanji.kanji, '悪');
+    group('getKanji', () {
+      test('Kanji does not exist', () async {
+        final kanji = await database.kanjisDao.getKanji('s');
+        expect(kanji, null);
+      });
+
+      test('Kanji exists', () async {
+        final kanji = await database.kanjisDao.getKanji('悪');
+        expect(kanji!.kanji, '悪');
+      });
     });
 
     group('getAll', () {
+      test('One kanji does not exist', () async {
+        final kanjiList = await database.kanjisDao.getAll(
+          ['亜'.kanjiCodePoint(), 's'.kanjiCodePoint()],
+        );
+        expect(kanjiList.length, 1);
+        expect(kanjiList[0].kanji, '亜');
+      });
+
       test('No front type', () async {
         final kanjiList = await database.kanjisDao.getAll(
           ['亜'.kanjiCodePoint(), '悪'.kanjiCodePoint()],
@@ -136,7 +166,7 @@ void main() {
           await database.spacedRepetitionDatasDao.set(
             SpacedRepetitionData.initial(
               dictionaryItem:
-                  await database.kanjisDao.get('亜'.kanjiCodePoint()),
+                  (await database.kanjisDao.get('亜'.kanjiCodePoint()))!,
               frontType: FrontType.japanese,
             ),
           );
@@ -162,14 +192,14 @@ void main() {
           await database.spacedRepetitionDatasDao.set(
             SpacedRepetitionData.initial(
               dictionaryItem:
-                  await database.kanjisDao.get('亜'.kanjiCodePoint()),
+                  (await database.kanjisDao.get('亜'.kanjiCodePoint()))!,
               frontType: FrontType.japanese,
             ),
           );
           await database.spacedRepetitionDatasDao.set(
             SpacedRepetitionData.initial(
               dictionaryItem:
-                  await database.kanjisDao.get('悪'.kanjiCodePoint()),
+                  (await database.kanjisDao.get('悪'.kanjiCodePoint()))!,
               frontType: FrontType.japanese,
             ),
           );
@@ -202,28 +232,28 @@ void main() {
           await database.spacedRepetitionDatasDao.set(
             SpacedRepetitionData.initial(
               dictionaryItem:
-                  await database.kanjisDao.get('亜'.kanjiCodePoint()),
+                  (await database.kanjisDao.get('亜'.kanjiCodePoint()))!,
               frontType: FrontType.japanese,
             ),
           );
           await database.spacedRepetitionDatasDao.set(
             SpacedRepetitionData.initial(
               dictionaryItem:
-                  await database.kanjisDao.get('亜'.kanjiCodePoint()),
+                  (await database.kanjisDao.get('亜'.kanjiCodePoint()))!,
               frontType: FrontType.english,
             ),
           );
           await database.spacedRepetitionDatasDao.set(
             SpacedRepetitionData.initial(
               dictionaryItem:
-                  await database.kanjisDao.get('悪'.kanjiCodePoint()),
+                  (await database.kanjisDao.get('悪'.kanjiCodePoint()))!,
               frontType: FrontType.japanese,
             ),
           );
           await database.spacedRepetitionDatasDao.set(
             SpacedRepetitionData.initial(
               dictionaryItem:
-                  await database.kanjisDao.get('悪'.kanjiCodePoint()),
+                  (await database.kanjisDao.get('悪'.kanjiCodePoint()))!,
               frontType: FrontType.english,
             ),
           );

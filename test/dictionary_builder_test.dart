@@ -558,7 +558,7 @@ void main() {
     test('Kanji', () async {
       // Kanji
       final kanji1 = await database.kanjisDao.getKanji('亜');
-      expect(kanji1.kanji, '亜');
+      expect(kanji1!.kanji, '亜');
       expect(kanji1.meaning, 'Asia; rank next; come after; -ous');
       expect(kanji1.radical, '二');
       expect(kanji1.components!.length, 2);
@@ -595,7 +595,7 @@ void main() {
       expect(kanji1.nanori![2].readingRomajiSimplified, null);
 
       final kanji2 = await database.kanjisDao.getKanji('悪');
-      expect(kanji2.kanji, '悪');
+      expect(kanji2!.kanji, '悪');
       expect(kanji2.meaning, 'bad; vice; rascal; false; evil; wrong');
       expect(kanji2.radical, '心');
       expect(kanji2.components!.length, 2);
@@ -656,7 +656,7 @@ void main() {
       expect(kanji2.nanori, null);
 
       final kanji3 = await database.kanjisDao.getKanji('亞');
-      expect(kanji3.kanji, '亞');
+      expect(kanji3!.kanji, '亞');
       expect(kanji3.meaning, 'rank; follow');
       expect(kanji3.radical, '二');
       expect(kanji3.components!.length, 1);
@@ -680,7 +680,7 @@ void main() {
       expect(kanji3.nanori, null);
 
       final kanji4 = await database.kanjisDao.getKanji('行');
-      expect(kanji4.kanji, '行');
+      expect(kanji4!.kanji, '行');
       expect(
         kanji4.meaning,
         'going; journey; carry out; conduct; act; line; row; bank',

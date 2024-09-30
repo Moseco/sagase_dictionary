@@ -14,13 +14,13 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
 
   KanjisDao(super.db);
 
-  Future<Kanji> get(int id, {FrontType? frontType}) async {
+  Future<Kanji?> get(int id, {FrontType? frontType}) async {
     final baseQuery = db.select(db.kanjis)..where((row) => row.id.equals(id));
 
-    late Kanji kanji;
+    Kanji? kanji;
     if (frontType == null) {
       // Get kanji only
-      kanji = await baseQuery.getSingle();
+      kanji = await baseQuery.getSingleOrNull();
     } else {
       // If front type is given get that spaced repetition data too
       kanji = await baseQuery
@@ -37,15 +37,17 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
               ..spacedRepetitionData =
                   row.readTableOrNull(db.spacedRepetitionDatas),
           )
-          .getSingle();
+          .getSingleOrNull();
     }
+
+    if (kanji == null) return null;
 
     List<KanjiReading> onReadings = [];
     List<KanjiReading> kunReadings = [];
     List<KanjiReading> nanori = [];
 
     final readings = await (db.select(db.kanjiReadings)
-          ..where((reading) => reading.kanjiId.equals(kanji.id))
+          ..where((reading) => reading.kanjiId.equals(kanji!.id))
           ..orderBy([(reading) => OrderingTerm.asc(reading.id)]))
         .get();
 
@@ -69,7 +71,7 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
       ..nanori = nanori.isEmpty ? null : nanori;
   }
 
-  Future<Kanji> getKanji(String kanji, {FrontType? frontType}) async {
+  Future<Kanji?> getKanji(String kanji, {FrontType? frontType}) async {
     return get(kanji.kanjiCodePoint(), frontType: frontType);
   }
 
@@ -144,7 +146,8 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
     // Put the results in the same order as the input
     List<Kanji> kanjiList = [];
     for (final id in idList) {
-      kanjiList.add(kanjiMap[id]!);
+      final kanji = kanjiMap[id];
+      if (kanji != null) kanjiList.add(kanji);
     }
 
     return kanjiList;
@@ -235,7 +238,8 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
 
     // If given a single kanji character return only that
     if (cleanedText.length == 1 && _kanaKit.isKanji(cleanedText)) {
-      return [await getKanji(cleanedText)];
+      final kanji = await getKanji(cleanedText);
+      if (kanji != null) return [kanji];
     }
 
     if (_kanaKit.isRomaji(cleanedText)) {

@@ -192,7 +192,7 @@ void main() {
       );
       await database.myDictionaryListsDao.addDictionaryItem(
         dictionaryList1,
-        await database.kanjisDao.get('亞'.kanjiCodePoint()),
+        (await database.kanjisDao.get('亞'.kanjiCodePoint()))!,
       );
 
       // Add one of the same items to dictionary list 2
@@ -432,7 +432,7 @@ void main() {
       );
       await database.myDictionaryListsDao.addDictionaryItem(
         dictionaryList1,
-        await database.kanjisDao.get('亞'.kanjiCodePoint()),
+        (await database.kanjisDao.get('亞'.kanjiCodePoint()))!,
       );
 
       var myDictionaryLists = await database.myDictionaryListsDao.getAll();
