@@ -191,6 +191,18 @@ class VocabWriting extends DataClass implements Insertable<VocabWriting> {
             : this.writingSearchForm,
         info: info.present ? info.value : this.info,
       );
+  VocabWriting copyWithCompanion(VocabWritingsCompanion data) {
+    return VocabWriting(
+      id: data.id.present ? data.id.value : this.id,
+      vocabId: data.vocabId.present ? data.vocabId.value : this.vocabId,
+      writing: data.writing.present ? data.writing.value : this.writing,
+      writingSearchForm: data.writingSearchForm.present
+          ? data.writingSearchForm.value
+          : this.writingSearchForm,
+      info: data.info.present ? data.info.value : this.info,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('VocabWriting(')
@@ -623,6 +635,30 @@ class VocabReading extends DataClass implements Insertable<VocabReading> {
         pitchAccents:
             pitchAccents.present ? pitchAccents.value : this.pitchAccents,
       );
+  VocabReading copyWithCompanion(VocabReadingsCompanion data) {
+    return VocabReading(
+      id: data.id.present ? data.id.value : this.id,
+      vocabId: data.vocabId.present ? data.vocabId.value : this.vocabId,
+      reading: data.reading.present ? data.reading.value : this.reading,
+      readingSearchForm: data.readingSearchForm.present
+          ? data.readingSearchForm.value
+          : this.readingSearchForm,
+      readingRomaji: data.readingRomaji.present
+          ? data.readingRomaji.value
+          : this.readingRomaji,
+      readingRomajiSimplified: data.readingRomajiSimplified.present
+          ? data.readingRomajiSimplified.value
+          : this.readingRomajiSimplified,
+      associatedWritings: data.associatedWritings.present
+          ? data.associatedWritings.value
+          : this.associatedWritings,
+      info: data.info.present ? data.info.value : this.info,
+      pitchAccents: data.pitchAccents.present
+          ? data.pitchAccents.value
+          : this.pitchAccents,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('VocabReading(')
@@ -1443,6 +1479,32 @@ class VocabDefinition extends DataClass implements Insertable<VocabDefinition> {
             : this.crossReferences,
         antonyms: antonyms.present ? antonyms.value : this.antonyms,
       );
+  VocabDefinition copyWithCompanion(VocabDefinitionsCompanion data) {
+    return VocabDefinition(
+      id: data.id.present ? data.id.value : this.id,
+      vocabId: data.vocabId.present ? data.vocabId.value : this.vocabId,
+      definition:
+          data.definition.present ? data.definition.value : this.definition,
+      additionalInfo: data.additionalInfo.present
+          ? data.additionalInfo.value
+          : this.additionalInfo,
+      pos: data.pos.present ? data.pos.value : this.pos,
+      appliesTo: data.appliesTo.present ? data.appliesTo.value : this.appliesTo,
+      fields: data.fields.present ? data.fields.value : this.fields,
+      miscInfo: data.miscInfo.present ? data.miscInfo.value : this.miscInfo,
+      dialects: data.dialects.present ? data.dialects.value : this.dialects,
+      examples: data.examples.present ? data.examples.value : this.examples,
+      languageSource: data.languageSource.present
+          ? data.languageSource.value
+          : this.languageSource,
+      waseieigo: data.waseieigo.present ? data.waseieigo.value : this.waseieigo,
+      crossReferences: data.crossReferences.present
+          ? data.crossReferences.value
+          : this.crossReferences,
+      antonyms: data.antonyms.present ? data.antonyms.value : this.antonyms,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('VocabDefinition(')
@@ -1824,6 +1886,14 @@ class VocabDefinitionWord extends DataClass
         word: word ?? this.word,
         vocabId: vocabId ?? this.vocabId,
       );
+  VocabDefinitionWord copyWithCompanion(VocabDefinitionWordsCompanion data) {
+    return VocabDefinitionWord(
+      id: data.id.present ? data.id.value : this.id,
+      word: data.word.present ? data.word.value : this.word,
+      vocabId: data.vocabId.present ? data.vocabId.value : this.vocabId,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('VocabDefinitionWord(')
@@ -2651,6 +2721,14 @@ class KanjiMeaningWord extends DataClass
         word: word ?? this.word,
         kanjiId: kanjiId ?? this.kanjiId,
       );
+  KanjiMeaningWord copyWithCompanion(KanjiMeaningWordsCompanion data) {
+    return KanjiMeaningWord(
+      id: data.id.present ? data.id.value : this.id,
+      word: data.word.present ? data.word.value : this.word,
+      kanjiId: data.kanjiId.present ? data.kanjiId.value : this.kanjiId,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('KanjiMeaningWord(')
@@ -2844,6 +2922,16 @@ class TextAnalysisHistoryItem extends DataClass
         id: id ?? this.id,
         analysisText: analysisText ?? this.analysisText,
       );
+  TextAnalysisHistoryItem copyWithCompanion(
+      TextAnalysisHistoryItemsCompanion data) {
+    return TextAnalysisHistoryItem(
+      id: data.id.present ? data.id.value : this.id,
+      analysisText: data.analysisText.present
+          ? data.analysisText.value
+          : this.analysisText,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('TextAnalysisHistoryItem(')
@@ -3350,6 +3438,14 @@ class SearchHistoryItem extends DataClass
         id: id ?? this.id,
         searchText: searchText ?? this.searchText,
       );
+  SearchHistoryItem copyWithCompanion(SearchHistoryItemsCompanion data) {
+    return SearchHistoryItem(
+      id: data.id.present ? data.id.value : this.id,
+      searchText:
+          data.searchText.present ? data.searchText.value : this.searchText,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('SearchHistoryItem(')
@@ -3775,6 +3871,24 @@ class Radical extends DataClass implements Insertable<Radical> {
         variants: variants.present ? variants.value : this.variants,
         variantOf: variantOf.present ? variantOf.value : this.variantOf,
       );
+  Radical copyWithCompanion(RadicalsCompanion data) {
+    return Radical(
+      id: data.id.present ? data.id.value : this.id,
+      radical: data.radical.present ? data.radical.value : this.radical,
+      kangxiId: data.kangxiId.present ? data.kangxiId.value : this.kangxiId,
+      strokeCount:
+          data.strokeCount.present ? data.strokeCount.value : this.strokeCount,
+      meaning: data.meaning.present ? data.meaning.value : this.meaning,
+      reading: data.reading.present ? data.reading.value : this.reading,
+      position: data.position.present ? data.position.value : this.position,
+      importance:
+          data.importance.present ? data.importance.value : this.importance,
+      strokes: data.strokes.present ? data.strokes.value : this.strokes,
+      variants: data.variants.present ? data.variants.value : this.variants,
+      variantOf: data.variantOf.present ? data.variantOf.value : this.variantOf,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('Radical(')
@@ -4409,6 +4523,16 @@ class ProperNounRomajiWord extends DataClass
         word: word ?? this.word,
         properNounId: properNounId ?? this.properNounId,
       );
+  ProperNounRomajiWord copyWithCompanion(ProperNounRomajiWordsCompanion data) {
+    return ProperNounRomajiWord(
+      id: data.id.present ? data.id.value : this.id,
+      word: data.word.present ? data.word.value : this.word,
+      properNounId: data.properNounId.present
+          ? data.properNounId.value
+          : this.properNounId,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('ProperNounRomajiWord(')
@@ -4512,7 +4636,7 @@ class $PredefinedDictionaryListsTable extends PredefinedDictionaryLists
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
-      check: () => name.length.isBiggerThan(Constant(0)),
+      check: () => ComparableExpr(name.length).isBiggerThan(Constant(0)),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
   static const VerificationMeta _vocabMeta = const VerificationMeta('vocab');
@@ -4685,7 +4809,7 @@ class $MyDictionaryListsTable extends MyDictionaryLists
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
-      check: () => name.length.isBiggerThan(Constant(0)),
+      check: () => ComparableExpr(name.length).isBiggerThan(Constant(0)),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
   static const VerificationMeta _timestampMeta =
@@ -4967,6 +5091,15 @@ class MyDictionaryListItem extends DataClass
         vocabId: vocabId ?? this.vocabId,
         kanjiId: kanjiId ?? this.kanjiId,
       );
+  MyDictionaryListItem copyWithCompanion(MyDictionaryListItemsCompanion data) {
+    return MyDictionaryListItem(
+      id: data.id.present ? data.id.value : this.id,
+      listId: data.listId.present ? data.listId.value : this.listId,
+      vocabId: data.vocabId.present ? data.vocabId.value : this.vocabId,
+      kanjiId: data.kanjiId.present ? data.kanjiId.value : this.kanjiId,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('MyDictionaryListItem(')
@@ -5906,6 +6039,13 @@ class DictionaryInfo extends DataClass implements Insertable<DictionaryInfo> {
         id: id ?? this.id,
         version: version ?? this.version,
       );
+  DictionaryInfo copyWithCompanion(DictionaryInfosCompanion data) {
+    return DictionaryInfo(
+      id: data.id.present ? data.id.value : this.id,
+      version: data.version.present ? data.version.value : this.version,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('DictionaryInfo(')
@@ -5988,7 +6128,7 @@ class DictionaryInfosCompanion extends UpdateCompanion<DictionaryInfo> {
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
-  _$AppDatabaseManager get managers => _$AppDatabaseManager(this);
+  $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $VocabWritingsTable vocabWritings = $VocabWritingsTable(this);
   late final Index iXVocabWritingsWritingSearchForm = Index(
       'IX_vocab_writings_writing_search_form',
@@ -6185,7 +6325,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       ];
 }
 
-typedef $$VocabWritingsTableInsertCompanionBuilder = VocabWritingsCompanion
+typedef $$VocabWritingsTableCreateCompanionBuilder = VocabWritingsCompanion
     Function({
   Value<int> id,
   required int vocabId,
@@ -6201,68 +6341,6 @@ typedef $$VocabWritingsTableUpdateCompanionBuilder = VocabWritingsCompanion
   Value<String?> writingSearchForm,
   Value<List<WritingInfo>?> info,
 });
-
-class $$VocabWritingsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $VocabWritingsTable,
-    VocabWriting,
-    $$VocabWritingsTableFilterComposer,
-    $$VocabWritingsTableOrderingComposer,
-    $$VocabWritingsTableProcessedTableManager,
-    $$VocabWritingsTableInsertCompanionBuilder,
-    $$VocabWritingsTableUpdateCompanionBuilder> {
-  $$VocabWritingsTableTableManager(_$AppDatabase db, $VocabWritingsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$VocabWritingsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$VocabWritingsTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$VocabWritingsTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            Value<int> vocabId = const Value.absent(),
-            Value<String> writing = const Value.absent(),
-            Value<String?> writingSearchForm = const Value.absent(),
-            Value<List<WritingInfo>?> info = const Value.absent(),
-          }) =>
-              VocabWritingsCompanion(
-            id: id,
-            vocabId: vocabId,
-            writing: writing,
-            writingSearchForm: writingSearchForm,
-            info: info,
-          ),
-          getInsertCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            required int vocabId,
-            required String writing,
-            Value<String?> writingSearchForm = const Value.absent(),
-            Value<List<WritingInfo>?> info = const Value.absent(),
-          }) =>
-              VocabWritingsCompanion.insert(
-            id: id,
-            vocabId: vocabId,
-            writing: writing,
-            writingSearchForm: writingSearchForm,
-            info: info,
-          ),
-        ));
-}
-
-class $$VocabWritingsTableProcessedTableManager extends ProcessedTableManager<
-    _$AppDatabase,
-    $VocabWritingsTable,
-    VocabWriting,
-    $$VocabWritingsTableFilterComposer,
-    $$VocabWritingsTableOrderingComposer,
-    $$VocabWritingsTableProcessedTableManager,
-    $$VocabWritingsTableInsertCompanionBuilder,
-    $$VocabWritingsTableUpdateCompanionBuilder> {
-  $$VocabWritingsTableProcessedTableManager(super.$state);
-}
 
 class $$VocabWritingsTableFilterComposer
     extends FilterComposer<_$AppDatabase, $VocabWritingsTable> {
@@ -6324,7 +6402,78 @@ class $$VocabWritingsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$VocabReadingsTableInsertCompanionBuilder = VocabReadingsCompanion
+class $$VocabWritingsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $VocabWritingsTable,
+    VocabWriting,
+    $$VocabWritingsTableFilterComposer,
+    $$VocabWritingsTableOrderingComposer,
+    $$VocabWritingsTableCreateCompanionBuilder,
+    $$VocabWritingsTableUpdateCompanionBuilder,
+    (
+      VocabWriting,
+      BaseReferences<_$AppDatabase, $VocabWritingsTable, VocabWriting>
+    ),
+    VocabWriting,
+    PrefetchHooks Function()> {
+  $$VocabWritingsTableTableManager(_$AppDatabase db, $VocabWritingsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$VocabWritingsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$VocabWritingsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> vocabId = const Value.absent(),
+            Value<String> writing = const Value.absent(),
+            Value<String?> writingSearchForm = const Value.absent(),
+            Value<List<WritingInfo>?> info = const Value.absent(),
+          }) =>
+              VocabWritingsCompanion(
+            id: id,
+            vocabId: vocabId,
+            writing: writing,
+            writingSearchForm: writingSearchForm,
+            info: info,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int vocabId,
+            required String writing,
+            Value<String?> writingSearchForm = const Value.absent(),
+            Value<List<WritingInfo>?> info = const Value.absent(),
+          }) =>
+              VocabWritingsCompanion.insert(
+            id: id,
+            vocabId: vocabId,
+            writing: writing,
+            writingSearchForm: writingSearchForm,
+            info: info,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$VocabWritingsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $VocabWritingsTable,
+    VocabWriting,
+    $$VocabWritingsTableFilterComposer,
+    $$VocabWritingsTableOrderingComposer,
+    $$VocabWritingsTableCreateCompanionBuilder,
+    $$VocabWritingsTableUpdateCompanionBuilder,
+    (
+      VocabWriting,
+      BaseReferences<_$AppDatabase, $VocabWritingsTable, VocabWriting>
+    ),
+    VocabWriting,
+    PrefetchHooks Function()>;
+typedef $$VocabReadingsTableCreateCompanionBuilder = VocabReadingsCompanion
     Function({
   Value<int> id,
   required int vocabId,
@@ -6348,84 +6497,6 @@ typedef $$VocabReadingsTableUpdateCompanionBuilder = VocabReadingsCompanion
   Value<List<ReadingInfo>?> info,
   Value<List<int>?> pitchAccents,
 });
-
-class $$VocabReadingsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $VocabReadingsTable,
-    VocabReading,
-    $$VocabReadingsTableFilterComposer,
-    $$VocabReadingsTableOrderingComposer,
-    $$VocabReadingsTableProcessedTableManager,
-    $$VocabReadingsTableInsertCompanionBuilder,
-    $$VocabReadingsTableUpdateCompanionBuilder> {
-  $$VocabReadingsTableTableManager(_$AppDatabase db, $VocabReadingsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$VocabReadingsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$VocabReadingsTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$VocabReadingsTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            Value<int> vocabId = const Value.absent(),
-            Value<String> reading = const Value.absent(),
-            Value<String?> readingSearchForm = const Value.absent(),
-            Value<String> readingRomaji = const Value.absent(),
-            Value<String?> readingRomajiSimplified = const Value.absent(),
-            Value<List<String>?> associatedWritings = const Value.absent(),
-            Value<List<ReadingInfo>?> info = const Value.absent(),
-            Value<List<int>?> pitchAccents = const Value.absent(),
-          }) =>
-              VocabReadingsCompanion(
-            id: id,
-            vocabId: vocabId,
-            reading: reading,
-            readingSearchForm: readingSearchForm,
-            readingRomaji: readingRomaji,
-            readingRomajiSimplified: readingRomajiSimplified,
-            associatedWritings: associatedWritings,
-            info: info,
-            pitchAccents: pitchAccents,
-          ),
-          getInsertCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            required int vocabId,
-            required String reading,
-            Value<String?> readingSearchForm = const Value.absent(),
-            required String readingRomaji,
-            Value<String?> readingRomajiSimplified = const Value.absent(),
-            Value<List<String>?> associatedWritings = const Value.absent(),
-            Value<List<ReadingInfo>?> info = const Value.absent(),
-            Value<List<int>?> pitchAccents = const Value.absent(),
-          }) =>
-              VocabReadingsCompanion.insert(
-            id: id,
-            vocabId: vocabId,
-            reading: reading,
-            readingSearchForm: readingSearchForm,
-            readingRomaji: readingRomaji,
-            readingRomajiSimplified: readingRomajiSimplified,
-            associatedWritings: associatedWritings,
-            info: info,
-            pitchAccents: pitchAccents,
-          ),
-        ));
-}
-
-class $$VocabReadingsTableProcessedTableManager extends ProcessedTableManager<
-    _$AppDatabase,
-    $VocabReadingsTable,
-    VocabReading,
-    $$VocabReadingsTableFilterComposer,
-    $$VocabReadingsTableOrderingComposer,
-    $$VocabReadingsTableProcessedTableManager,
-    $$VocabReadingsTableInsertCompanionBuilder,
-    $$VocabReadingsTableUpdateCompanionBuilder> {
-  $$VocabReadingsTableProcessedTableManager(super.$state);
-}
 
 class $$VocabReadingsTableFilterComposer
     extends FilterComposer<_$AppDatabase, $VocabReadingsTable> {
@@ -6532,7 +6603,219 @@ class $$VocabReadingsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$VocabDefinitionsTableInsertCompanionBuilder
+class $$VocabReadingsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $VocabReadingsTable,
+    VocabReading,
+    $$VocabReadingsTableFilterComposer,
+    $$VocabReadingsTableOrderingComposer,
+    $$VocabReadingsTableCreateCompanionBuilder,
+    $$VocabReadingsTableUpdateCompanionBuilder,
+    (
+      VocabReading,
+      BaseReferences<_$AppDatabase, $VocabReadingsTable, VocabReading>
+    ),
+    VocabReading,
+    PrefetchHooks Function()> {
+  $$VocabReadingsTableTableManager(_$AppDatabase db, $VocabReadingsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$VocabReadingsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$VocabReadingsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> vocabId = const Value.absent(),
+            Value<String> reading = const Value.absent(),
+            Value<String?> readingSearchForm = const Value.absent(),
+            Value<String> readingRomaji = const Value.absent(),
+            Value<String?> readingRomajiSimplified = const Value.absent(),
+            Value<List<String>?> associatedWritings = const Value.absent(),
+            Value<List<ReadingInfo>?> info = const Value.absent(),
+            Value<List<int>?> pitchAccents = const Value.absent(),
+          }) =>
+              VocabReadingsCompanion(
+            id: id,
+            vocabId: vocabId,
+            reading: reading,
+            readingSearchForm: readingSearchForm,
+            readingRomaji: readingRomaji,
+            readingRomajiSimplified: readingRomajiSimplified,
+            associatedWritings: associatedWritings,
+            info: info,
+            pitchAccents: pitchAccents,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int vocabId,
+            required String reading,
+            Value<String?> readingSearchForm = const Value.absent(),
+            required String readingRomaji,
+            Value<String?> readingRomajiSimplified = const Value.absent(),
+            Value<List<String>?> associatedWritings = const Value.absent(),
+            Value<List<ReadingInfo>?> info = const Value.absent(),
+            Value<List<int>?> pitchAccents = const Value.absent(),
+          }) =>
+              VocabReadingsCompanion.insert(
+            id: id,
+            vocabId: vocabId,
+            reading: reading,
+            readingSearchForm: readingSearchForm,
+            readingRomaji: readingRomaji,
+            readingRomajiSimplified: readingRomajiSimplified,
+            associatedWritings: associatedWritings,
+            info: info,
+            pitchAccents: pitchAccents,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$VocabReadingsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $VocabReadingsTable,
+    VocabReading,
+    $$VocabReadingsTableFilterComposer,
+    $$VocabReadingsTableOrderingComposer,
+    $$VocabReadingsTableCreateCompanionBuilder,
+    $$VocabReadingsTableUpdateCompanionBuilder,
+    (
+      VocabReading,
+      BaseReferences<_$AppDatabase, $VocabReadingsTable, VocabReading>
+    ),
+    VocabReading,
+    PrefetchHooks Function()>;
+typedef $$VocabsTableCreateCompanionBuilder = VocabsCompanion Function({
+  Value<int> id,
+  Value<List<PartOfSpeech>?> pos,
+  Value<bool> common,
+  Value<int> frequencyScore,
+});
+typedef $$VocabsTableUpdateCompanionBuilder = VocabsCompanion Function({
+  Value<int> id,
+  Value<List<PartOfSpeech>?> pos,
+  Value<bool> common,
+  Value<int> frequencyScore,
+});
+
+class $$VocabsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $VocabsTable> {
+  $$VocabsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<PartOfSpeech>?, List<PartOfSpeech>,
+          String>
+      get pos => $state.composableBuilder(
+          column: $state.table.pos,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get common => $state.composableBuilder(
+      column: $state.table.common,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get frequencyScore => $state.composableBuilder(
+      column: $state.table.frequencyScore,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$VocabsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $VocabsTable> {
+  $$VocabsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get pos => $state.composableBuilder(
+      column: $state.table.pos,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get common => $state.composableBuilder(
+      column: $state.table.common,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get frequencyScore => $state.composableBuilder(
+      column: $state.table.frequencyScore,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$VocabsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $VocabsTable,
+    Vocab,
+    $$VocabsTableFilterComposer,
+    $$VocabsTableOrderingComposer,
+    $$VocabsTableCreateCompanionBuilder,
+    $$VocabsTableUpdateCompanionBuilder,
+    (Vocab, BaseReferences<_$AppDatabase, $VocabsTable, Vocab>),
+    Vocab,
+    PrefetchHooks Function()> {
+  $$VocabsTableTableManager(_$AppDatabase db, $VocabsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$VocabsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$VocabsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<List<PartOfSpeech>?> pos = const Value.absent(),
+            Value<bool> common = const Value.absent(),
+            Value<int> frequencyScore = const Value.absent(),
+          }) =>
+              VocabsCompanion(
+            id: id,
+            pos: pos,
+            common: common,
+            frequencyScore: frequencyScore,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<List<PartOfSpeech>?> pos = const Value.absent(),
+            Value<bool> common = const Value.absent(),
+            Value<int> frequencyScore = const Value.absent(),
+          }) =>
+              VocabsCompanion.insert(
+            id: id,
+            pos: pos,
+            common: common,
+            frequencyScore: frequencyScore,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$VocabsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $VocabsTable,
+    Vocab,
+    $$VocabsTableFilterComposer,
+    $$VocabsTableOrderingComposer,
+    $$VocabsTableCreateCompanionBuilder,
+    $$VocabsTableUpdateCompanionBuilder,
+    (Vocab, BaseReferences<_$AppDatabase, $VocabsTable, Vocab>),
+    Vocab,
+    PrefetchHooks Function()>;
+typedef $$VocabDefinitionsTableCreateCompanionBuilder
     = VocabDefinitionsCompanion Function({
   Value<int> id,
   required int vocabId,
@@ -6566,106 +6849,6 @@ typedef $$VocabDefinitionsTableUpdateCompanionBuilder
   Value<List<VocabReference>?> crossReferences,
   Value<List<VocabReference>?> antonyms,
 });
-
-class $$VocabDefinitionsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $VocabDefinitionsTable,
-    VocabDefinition,
-    $$VocabDefinitionsTableFilterComposer,
-    $$VocabDefinitionsTableOrderingComposer,
-    $$VocabDefinitionsTableProcessedTableManager,
-    $$VocabDefinitionsTableInsertCompanionBuilder,
-    $$VocabDefinitionsTableUpdateCompanionBuilder> {
-  $$VocabDefinitionsTableTableManager(
-      _$AppDatabase db, $VocabDefinitionsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$VocabDefinitionsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$VocabDefinitionsTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$VocabDefinitionsTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            Value<int> vocabId = const Value.absent(),
-            Value<String> definition = const Value.absent(),
-            Value<String?> additionalInfo = const Value.absent(),
-            Value<List<PartOfSpeech>?> pos = const Value.absent(),
-            Value<List<String>?> appliesTo = const Value.absent(),
-            Value<List<Field>?> fields = const Value.absent(),
-            Value<List<MiscellaneousInfo>?> miscInfo = const Value.absent(),
-            Value<List<Dialect>?> dialects = const Value.absent(),
-            Value<List<VocabExample>?> examples = const Value.absent(),
-            Value<List<LanguageSource>?> languageSource = const Value.absent(),
-            Value<bool> waseieigo = const Value.absent(),
-            Value<List<VocabReference>?> crossReferences = const Value.absent(),
-            Value<List<VocabReference>?> antonyms = const Value.absent(),
-          }) =>
-              VocabDefinitionsCompanion(
-            id: id,
-            vocabId: vocabId,
-            definition: definition,
-            additionalInfo: additionalInfo,
-            pos: pos,
-            appliesTo: appliesTo,
-            fields: fields,
-            miscInfo: miscInfo,
-            dialects: dialects,
-            examples: examples,
-            languageSource: languageSource,
-            waseieigo: waseieigo,
-            crossReferences: crossReferences,
-            antonyms: antonyms,
-          ),
-          getInsertCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            required int vocabId,
-            required String definition,
-            Value<String?> additionalInfo = const Value.absent(),
-            Value<List<PartOfSpeech>?> pos = const Value.absent(),
-            Value<List<String>?> appliesTo = const Value.absent(),
-            Value<List<Field>?> fields = const Value.absent(),
-            Value<List<MiscellaneousInfo>?> miscInfo = const Value.absent(),
-            Value<List<Dialect>?> dialects = const Value.absent(),
-            Value<List<VocabExample>?> examples = const Value.absent(),
-            Value<List<LanguageSource>?> languageSource = const Value.absent(),
-            required bool waseieigo,
-            Value<List<VocabReference>?> crossReferences = const Value.absent(),
-            Value<List<VocabReference>?> antonyms = const Value.absent(),
-          }) =>
-              VocabDefinitionsCompanion.insert(
-            id: id,
-            vocabId: vocabId,
-            definition: definition,
-            additionalInfo: additionalInfo,
-            pos: pos,
-            appliesTo: appliesTo,
-            fields: fields,
-            miscInfo: miscInfo,
-            dialects: dialects,
-            examples: examples,
-            languageSource: languageSource,
-            waseieigo: waseieigo,
-            crossReferences: crossReferences,
-            antonyms: antonyms,
-          ),
-        ));
-}
-
-class $$VocabDefinitionsTableProcessedTableManager
-    extends ProcessedTableManager<
-        _$AppDatabase,
-        $VocabDefinitionsTable,
-        VocabDefinition,
-        $$VocabDefinitionsTableFilterComposer,
-        $$VocabDefinitionsTableOrderingComposer,
-        $$VocabDefinitionsTableProcessedTableManager,
-        $$VocabDefinitionsTableInsertCompanionBuilder,
-        $$VocabDefinitionsTableUpdateCompanionBuilder> {
-  $$VocabDefinitionsTableProcessedTableManager(super.$state);
-}
 
 class $$VocabDefinitionsTableFilterComposer
     extends FilterComposer<_$AppDatabase, $VocabDefinitionsTable> {
@@ -6839,7 +7022,115 @@ class $$VocabDefinitionsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$VocabDefinitionWordsTableInsertCompanionBuilder
+class $$VocabDefinitionsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $VocabDefinitionsTable,
+    VocabDefinition,
+    $$VocabDefinitionsTableFilterComposer,
+    $$VocabDefinitionsTableOrderingComposer,
+    $$VocabDefinitionsTableCreateCompanionBuilder,
+    $$VocabDefinitionsTableUpdateCompanionBuilder,
+    (
+      VocabDefinition,
+      BaseReferences<_$AppDatabase, $VocabDefinitionsTable, VocabDefinition>
+    ),
+    VocabDefinition,
+    PrefetchHooks Function()> {
+  $$VocabDefinitionsTableTableManager(
+      _$AppDatabase db, $VocabDefinitionsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$VocabDefinitionsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$VocabDefinitionsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> vocabId = const Value.absent(),
+            Value<String> definition = const Value.absent(),
+            Value<String?> additionalInfo = const Value.absent(),
+            Value<List<PartOfSpeech>?> pos = const Value.absent(),
+            Value<List<String>?> appliesTo = const Value.absent(),
+            Value<List<Field>?> fields = const Value.absent(),
+            Value<List<MiscellaneousInfo>?> miscInfo = const Value.absent(),
+            Value<List<Dialect>?> dialects = const Value.absent(),
+            Value<List<VocabExample>?> examples = const Value.absent(),
+            Value<List<LanguageSource>?> languageSource = const Value.absent(),
+            Value<bool> waseieigo = const Value.absent(),
+            Value<List<VocabReference>?> crossReferences = const Value.absent(),
+            Value<List<VocabReference>?> antonyms = const Value.absent(),
+          }) =>
+              VocabDefinitionsCompanion(
+            id: id,
+            vocabId: vocabId,
+            definition: definition,
+            additionalInfo: additionalInfo,
+            pos: pos,
+            appliesTo: appliesTo,
+            fields: fields,
+            miscInfo: miscInfo,
+            dialects: dialects,
+            examples: examples,
+            languageSource: languageSource,
+            waseieigo: waseieigo,
+            crossReferences: crossReferences,
+            antonyms: antonyms,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int vocabId,
+            required String definition,
+            Value<String?> additionalInfo = const Value.absent(),
+            Value<List<PartOfSpeech>?> pos = const Value.absent(),
+            Value<List<String>?> appliesTo = const Value.absent(),
+            Value<List<Field>?> fields = const Value.absent(),
+            Value<List<MiscellaneousInfo>?> miscInfo = const Value.absent(),
+            Value<List<Dialect>?> dialects = const Value.absent(),
+            Value<List<VocabExample>?> examples = const Value.absent(),
+            Value<List<LanguageSource>?> languageSource = const Value.absent(),
+            required bool waseieigo,
+            Value<List<VocabReference>?> crossReferences = const Value.absent(),
+            Value<List<VocabReference>?> antonyms = const Value.absent(),
+          }) =>
+              VocabDefinitionsCompanion.insert(
+            id: id,
+            vocabId: vocabId,
+            definition: definition,
+            additionalInfo: additionalInfo,
+            pos: pos,
+            appliesTo: appliesTo,
+            fields: fields,
+            miscInfo: miscInfo,
+            dialects: dialects,
+            examples: examples,
+            languageSource: languageSource,
+            waseieigo: waseieigo,
+            crossReferences: crossReferences,
+            antonyms: antonyms,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$VocabDefinitionsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $VocabDefinitionsTable,
+    VocabDefinition,
+    $$VocabDefinitionsTableFilterComposer,
+    $$VocabDefinitionsTableOrderingComposer,
+    $$VocabDefinitionsTableCreateCompanionBuilder,
+    $$VocabDefinitionsTableUpdateCompanionBuilder,
+    (
+      VocabDefinition,
+      BaseReferences<_$AppDatabase, $VocabDefinitionsTable, VocabDefinition>
+    ),
+    VocabDefinition,
+    PrefetchHooks Function()>;
+typedef $$VocabDefinitionWordsTableCreateCompanionBuilder
     = VocabDefinitionWordsCompanion Function({
   Value<int> id,
   required String word,
@@ -6851,62 +7142,6 @@ typedef $$VocabDefinitionWordsTableUpdateCompanionBuilder
   Value<String> word,
   Value<int> vocabId,
 });
-
-class $$VocabDefinitionWordsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $VocabDefinitionWordsTable,
-    VocabDefinitionWord,
-    $$VocabDefinitionWordsTableFilterComposer,
-    $$VocabDefinitionWordsTableOrderingComposer,
-    $$VocabDefinitionWordsTableProcessedTableManager,
-    $$VocabDefinitionWordsTableInsertCompanionBuilder,
-    $$VocabDefinitionWordsTableUpdateCompanionBuilder> {
-  $$VocabDefinitionWordsTableTableManager(
-      _$AppDatabase db, $VocabDefinitionWordsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer: $$VocabDefinitionWordsTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$VocabDefinitionWordsTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$VocabDefinitionWordsTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            Value<String> word = const Value.absent(),
-            Value<int> vocabId = const Value.absent(),
-          }) =>
-              VocabDefinitionWordsCompanion(
-            id: id,
-            word: word,
-            vocabId: vocabId,
-          ),
-          getInsertCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            required String word,
-            required int vocabId,
-          }) =>
-              VocabDefinitionWordsCompanion.insert(
-            id: id,
-            word: word,
-            vocabId: vocabId,
-          ),
-        ));
-}
-
-class $$VocabDefinitionWordsTableProcessedTableManager
-    extends ProcessedTableManager<
-        _$AppDatabase,
-        $VocabDefinitionWordsTable,
-        VocabDefinitionWord,
-        $$VocabDefinitionWordsTableFilterComposer,
-        $$VocabDefinitionWordsTableOrderingComposer,
-        $$VocabDefinitionWordsTableProcessedTableManager,
-        $$VocabDefinitionWordsTableInsertCompanionBuilder,
-        $$VocabDefinitionWordsTableUpdateCompanionBuilder> {
-  $$VocabDefinitionWordsTableProcessedTableManager(super.$state);
-}
 
 class $$VocabDefinitionWordsTableFilterComposer
     extends FilterComposer<_$AppDatabase, $VocabDefinitionWordsTable> {
@@ -6946,7 +7181,499 @@ class $$VocabDefinitionWordsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$KanjiMeaningWordsTableInsertCompanionBuilder
+class $$VocabDefinitionWordsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $VocabDefinitionWordsTable,
+    VocabDefinitionWord,
+    $$VocabDefinitionWordsTableFilterComposer,
+    $$VocabDefinitionWordsTableOrderingComposer,
+    $$VocabDefinitionWordsTableCreateCompanionBuilder,
+    $$VocabDefinitionWordsTableUpdateCompanionBuilder,
+    (
+      VocabDefinitionWord,
+      BaseReferences<_$AppDatabase, $VocabDefinitionWordsTable,
+          VocabDefinitionWord>
+    ),
+    VocabDefinitionWord,
+    PrefetchHooks Function()> {
+  $$VocabDefinitionWordsTableTableManager(
+      _$AppDatabase db, $VocabDefinitionWordsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$VocabDefinitionWordsTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$VocabDefinitionWordsTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> word = const Value.absent(),
+            Value<int> vocabId = const Value.absent(),
+          }) =>
+              VocabDefinitionWordsCompanion(
+            id: id,
+            word: word,
+            vocabId: vocabId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String word,
+            required int vocabId,
+          }) =>
+              VocabDefinitionWordsCompanion.insert(
+            id: id,
+            word: word,
+            vocabId: vocabId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$VocabDefinitionWordsTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $VocabDefinitionWordsTable,
+        VocabDefinitionWord,
+        $$VocabDefinitionWordsTableFilterComposer,
+        $$VocabDefinitionWordsTableOrderingComposer,
+        $$VocabDefinitionWordsTableCreateCompanionBuilder,
+        $$VocabDefinitionWordsTableUpdateCompanionBuilder,
+        (
+          VocabDefinitionWord,
+          BaseReferences<_$AppDatabase, $VocabDefinitionWordsTable,
+              VocabDefinitionWord>
+        ),
+        VocabDefinitionWord,
+        PrefetchHooks Function()>;
+typedef $$KanjisTableCreateCompanionBuilder = KanjisCompanion Function({
+  Value<int> id,
+  required String kanji,
+  required String radical,
+  Value<List<String>?> components,
+  Value<KanjiGrade?> grade,
+  required int strokeCount,
+  Value<int?> frequency,
+  Value<JlptLevel?> jlpt,
+  Value<String?> meaning,
+  Value<List<String>?> strokes,
+  Value<List<int>?> compounds,
+});
+typedef $$KanjisTableUpdateCompanionBuilder = KanjisCompanion Function({
+  Value<int> id,
+  Value<String> kanji,
+  Value<String> radical,
+  Value<List<String>?> components,
+  Value<KanjiGrade?> grade,
+  Value<int> strokeCount,
+  Value<int?> frequency,
+  Value<JlptLevel?> jlpt,
+  Value<String?> meaning,
+  Value<List<String>?> strokes,
+  Value<List<int>?> compounds,
+});
+
+class $$KanjisTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $KanjisTable> {
+  $$KanjisTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get kanji => $state.composableBuilder(
+      column: $state.table.kanji,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get radical => $state.composableBuilder(
+      column: $state.table.radical,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<String>?, List<String>, String>
+      get components => $state.composableBuilder(
+          column: $state.table.components,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<KanjiGrade?, KanjiGrade, int> get grade =>
+      $state.composableBuilder(
+          column: $state.table.grade,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get strokeCount => $state.composableBuilder(
+      column: $state.table.strokeCount,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get frequency => $state.composableBuilder(
+      column: $state.table.frequency,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<JlptLevel?, JlptLevel, int> get jlpt =>
+      $state.composableBuilder(
+          column: $state.table.jlpt,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get meaning => $state.composableBuilder(
+      column: $state.table.meaning,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<String>?, List<String>, String>
+      get strokes => $state.composableBuilder(
+          column: $state.table.strokes,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<int>?, List<int>, String> get compounds =>
+      $state.composableBuilder(
+          column: $state.table.compounds,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+}
+
+class $$KanjisTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $KanjisTable> {
+  $$KanjisTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get kanji => $state.composableBuilder(
+      column: $state.table.kanji,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get radical => $state.composableBuilder(
+      column: $state.table.radical,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get components => $state.composableBuilder(
+      column: $state.table.components,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get grade => $state.composableBuilder(
+      column: $state.table.grade,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get strokeCount => $state.composableBuilder(
+      column: $state.table.strokeCount,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get frequency => $state.composableBuilder(
+      column: $state.table.frequency,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get jlpt => $state.composableBuilder(
+      column: $state.table.jlpt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get meaning => $state.composableBuilder(
+      column: $state.table.meaning,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get strokes => $state.composableBuilder(
+      column: $state.table.strokes,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get compounds => $state.composableBuilder(
+      column: $state.table.compounds,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$KanjisTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $KanjisTable,
+    Kanji,
+    $$KanjisTableFilterComposer,
+    $$KanjisTableOrderingComposer,
+    $$KanjisTableCreateCompanionBuilder,
+    $$KanjisTableUpdateCompanionBuilder,
+    (Kanji, BaseReferences<_$AppDatabase, $KanjisTable, Kanji>),
+    Kanji,
+    PrefetchHooks Function()> {
+  $$KanjisTableTableManager(_$AppDatabase db, $KanjisTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$KanjisTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$KanjisTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> kanji = const Value.absent(),
+            Value<String> radical = const Value.absent(),
+            Value<List<String>?> components = const Value.absent(),
+            Value<KanjiGrade?> grade = const Value.absent(),
+            Value<int> strokeCount = const Value.absent(),
+            Value<int?> frequency = const Value.absent(),
+            Value<JlptLevel?> jlpt = const Value.absent(),
+            Value<String?> meaning = const Value.absent(),
+            Value<List<String>?> strokes = const Value.absent(),
+            Value<List<int>?> compounds = const Value.absent(),
+          }) =>
+              KanjisCompanion(
+            id: id,
+            kanji: kanji,
+            radical: radical,
+            components: components,
+            grade: grade,
+            strokeCount: strokeCount,
+            frequency: frequency,
+            jlpt: jlpt,
+            meaning: meaning,
+            strokes: strokes,
+            compounds: compounds,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String kanji,
+            required String radical,
+            Value<List<String>?> components = const Value.absent(),
+            Value<KanjiGrade?> grade = const Value.absent(),
+            required int strokeCount,
+            Value<int?> frequency = const Value.absent(),
+            Value<JlptLevel?> jlpt = const Value.absent(),
+            Value<String?> meaning = const Value.absent(),
+            Value<List<String>?> strokes = const Value.absent(),
+            Value<List<int>?> compounds = const Value.absent(),
+          }) =>
+              KanjisCompanion.insert(
+            id: id,
+            kanji: kanji,
+            radical: radical,
+            components: components,
+            grade: grade,
+            strokeCount: strokeCount,
+            frequency: frequency,
+            jlpt: jlpt,
+            meaning: meaning,
+            strokes: strokes,
+            compounds: compounds,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$KanjisTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $KanjisTable,
+    Kanji,
+    $$KanjisTableFilterComposer,
+    $$KanjisTableOrderingComposer,
+    $$KanjisTableCreateCompanionBuilder,
+    $$KanjisTableUpdateCompanionBuilder,
+    (Kanji, BaseReferences<_$AppDatabase, $KanjisTable, Kanji>),
+    Kanji,
+    PrefetchHooks Function()>;
+typedef $$KanjiReadingsTableCreateCompanionBuilder = KanjiReadingsCompanion
+    Function({
+  Value<int> id,
+  required int kanjiId,
+  required String reading,
+  Value<String?> readingSearchForm,
+  required String readingRomaji,
+  Value<String?> readingRomajiSimplified,
+  required KanjiReadingType type,
+});
+typedef $$KanjiReadingsTableUpdateCompanionBuilder = KanjiReadingsCompanion
+    Function({
+  Value<int> id,
+  Value<int> kanjiId,
+  Value<String> reading,
+  Value<String?> readingSearchForm,
+  Value<String> readingRomaji,
+  Value<String?> readingRomajiSimplified,
+  Value<KanjiReadingType> type,
+});
+
+class $$KanjiReadingsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $KanjiReadingsTable> {
+  $$KanjiReadingsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get kanjiId => $state.composableBuilder(
+      column: $state.table.kanjiId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get reading => $state.composableBuilder(
+      column: $state.table.reading,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get readingSearchForm => $state.composableBuilder(
+      column: $state.table.readingSearchForm,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get readingRomaji => $state.composableBuilder(
+      column: $state.table.readingRomaji,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get readingRomajiSimplified => $state.composableBuilder(
+      column: $state.table.readingRomajiSimplified,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<KanjiReadingType, KanjiReadingType, int>
+      get type => $state.composableBuilder(
+          column: $state.table.type,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+}
+
+class $$KanjiReadingsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $KanjiReadingsTable> {
+  $$KanjiReadingsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get kanjiId => $state.composableBuilder(
+      column: $state.table.kanjiId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get reading => $state.composableBuilder(
+      column: $state.table.reading,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get readingSearchForm => $state.composableBuilder(
+      column: $state.table.readingSearchForm,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get readingRomaji => $state.composableBuilder(
+      column: $state.table.readingRomaji,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get readingRomajiSimplified =>
+      $state.composableBuilder(
+          column: $state.table.readingRomajiSimplified,
+          builder: (column, joinBuilders) =>
+              ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get type => $state.composableBuilder(
+      column: $state.table.type,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$KanjiReadingsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $KanjiReadingsTable,
+    KanjiReading,
+    $$KanjiReadingsTableFilterComposer,
+    $$KanjiReadingsTableOrderingComposer,
+    $$KanjiReadingsTableCreateCompanionBuilder,
+    $$KanjiReadingsTableUpdateCompanionBuilder,
+    (
+      KanjiReading,
+      BaseReferences<_$AppDatabase, $KanjiReadingsTable, KanjiReading>
+    ),
+    KanjiReading,
+    PrefetchHooks Function()> {
+  $$KanjiReadingsTableTableManager(_$AppDatabase db, $KanjiReadingsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$KanjiReadingsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$KanjiReadingsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> kanjiId = const Value.absent(),
+            Value<String> reading = const Value.absent(),
+            Value<String?> readingSearchForm = const Value.absent(),
+            Value<String> readingRomaji = const Value.absent(),
+            Value<String?> readingRomajiSimplified = const Value.absent(),
+            Value<KanjiReadingType> type = const Value.absent(),
+          }) =>
+              KanjiReadingsCompanion(
+            id: id,
+            kanjiId: kanjiId,
+            reading: reading,
+            readingSearchForm: readingSearchForm,
+            readingRomaji: readingRomaji,
+            readingRomajiSimplified: readingRomajiSimplified,
+            type: type,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int kanjiId,
+            required String reading,
+            Value<String?> readingSearchForm = const Value.absent(),
+            required String readingRomaji,
+            Value<String?> readingRomajiSimplified = const Value.absent(),
+            required KanjiReadingType type,
+          }) =>
+              KanjiReadingsCompanion.insert(
+            id: id,
+            kanjiId: kanjiId,
+            reading: reading,
+            readingSearchForm: readingSearchForm,
+            readingRomaji: readingRomaji,
+            readingRomajiSimplified: readingRomajiSimplified,
+            type: type,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$KanjiReadingsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $KanjiReadingsTable,
+    KanjiReading,
+    $$KanjiReadingsTableFilterComposer,
+    $$KanjiReadingsTableOrderingComposer,
+    $$KanjiReadingsTableCreateCompanionBuilder,
+    $$KanjiReadingsTableUpdateCompanionBuilder,
+    (
+      KanjiReading,
+      BaseReferences<_$AppDatabase, $KanjiReadingsTable, KanjiReading>
+    ),
+    KanjiReading,
+    PrefetchHooks Function()>;
+typedef $$KanjiMeaningWordsTableCreateCompanionBuilder
     = KanjiMeaningWordsCompanion Function({
   Value<int> id,
   required String word,
@@ -6958,62 +7685,6 @@ typedef $$KanjiMeaningWordsTableUpdateCompanionBuilder
   Value<String> word,
   Value<int> kanjiId,
 });
-
-class $$KanjiMeaningWordsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $KanjiMeaningWordsTable,
-    KanjiMeaningWord,
-    $$KanjiMeaningWordsTableFilterComposer,
-    $$KanjiMeaningWordsTableOrderingComposer,
-    $$KanjiMeaningWordsTableProcessedTableManager,
-    $$KanjiMeaningWordsTableInsertCompanionBuilder,
-    $$KanjiMeaningWordsTableUpdateCompanionBuilder> {
-  $$KanjiMeaningWordsTableTableManager(
-      _$AppDatabase db, $KanjiMeaningWordsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$KanjiMeaningWordsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer: $$KanjiMeaningWordsTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$KanjiMeaningWordsTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            Value<String> word = const Value.absent(),
-            Value<int> kanjiId = const Value.absent(),
-          }) =>
-              KanjiMeaningWordsCompanion(
-            id: id,
-            word: word,
-            kanjiId: kanjiId,
-          ),
-          getInsertCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            required String word,
-            required int kanjiId,
-          }) =>
-              KanjiMeaningWordsCompanion.insert(
-            id: id,
-            word: word,
-            kanjiId: kanjiId,
-          ),
-        ));
-}
-
-class $$KanjiMeaningWordsTableProcessedTableManager
-    extends ProcessedTableManager<
-        _$AppDatabase,
-        $KanjiMeaningWordsTable,
-        KanjiMeaningWord,
-        $$KanjiMeaningWordsTableFilterComposer,
-        $$KanjiMeaningWordsTableOrderingComposer,
-        $$KanjiMeaningWordsTableProcessedTableManager,
-        $$KanjiMeaningWordsTableInsertCompanionBuilder,
-        $$KanjiMeaningWordsTableUpdateCompanionBuilder> {
-  $$KanjiMeaningWordsTableProcessedTableManager(super.$state);
-}
 
 class $$KanjiMeaningWordsTableFilterComposer
     extends FilterComposer<_$AppDatabase, $KanjiMeaningWordsTable> {
@@ -7053,7 +7724,71 @@ class $$KanjiMeaningWordsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$TextAnalysisHistoryItemsTableInsertCompanionBuilder
+class $$KanjiMeaningWordsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $KanjiMeaningWordsTable,
+    KanjiMeaningWord,
+    $$KanjiMeaningWordsTableFilterComposer,
+    $$KanjiMeaningWordsTableOrderingComposer,
+    $$KanjiMeaningWordsTableCreateCompanionBuilder,
+    $$KanjiMeaningWordsTableUpdateCompanionBuilder,
+    (
+      KanjiMeaningWord,
+      BaseReferences<_$AppDatabase, $KanjiMeaningWordsTable, KanjiMeaningWord>
+    ),
+    KanjiMeaningWord,
+    PrefetchHooks Function()> {
+  $$KanjiMeaningWordsTableTableManager(
+      _$AppDatabase db, $KanjiMeaningWordsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$KanjiMeaningWordsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$KanjiMeaningWordsTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> word = const Value.absent(),
+            Value<int> kanjiId = const Value.absent(),
+          }) =>
+              KanjiMeaningWordsCompanion(
+            id: id,
+            word: word,
+            kanjiId: kanjiId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String word,
+            required int kanjiId,
+          }) =>
+              KanjiMeaningWordsCompanion.insert(
+            id: id,
+            word: word,
+            kanjiId: kanjiId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$KanjiMeaningWordsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $KanjiMeaningWordsTable,
+    KanjiMeaningWord,
+    $$KanjiMeaningWordsTableFilterComposer,
+    $$KanjiMeaningWordsTableOrderingComposer,
+    $$KanjiMeaningWordsTableCreateCompanionBuilder,
+    $$KanjiMeaningWordsTableUpdateCompanionBuilder,
+    (
+      KanjiMeaningWord,
+      BaseReferences<_$AppDatabase, $KanjiMeaningWordsTable, KanjiMeaningWord>
+    ),
+    KanjiMeaningWord,
+    PrefetchHooks Function()>;
+typedef $$TextAnalysisHistoryItemsTableCreateCompanionBuilder
     = TextAnalysisHistoryItemsCompanion Function({
   Value<int> id,
   required String analysisText,
@@ -7063,58 +7798,6 @@ typedef $$TextAnalysisHistoryItemsTableUpdateCompanionBuilder
   Value<int> id,
   Value<String> analysisText,
 });
-
-class $$TextAnalysisHistoryItemsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $TextAnalysisHistoryItemsTable,
-    TextAnalysisHistoryItem,
-    $$TextAnalysisHistoryItemsTableFilterComposer,
-    $$TextAnalysisHistoryItemsTableOrderingComposer,
-    $$TextAnalysisHistoryItemsTableProcessedTableManager,
-    $$TextAnalysisHistoryItemsTableInsertCompanionBuilder,
-    $$TextAnalysisHistoryItemsTableUpdateCompanionBuilder> {
-  $$TextAnalysisHistoryItemsTableTableManager(
-      _$AppDatabase db, $TextAnalysisHistoryItemsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer: $$TextAnalysisHistoryItemsTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$TextAnalysisHistoryItemsTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$TextAnalysisHistoryItemsTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            Value<String> analysisText = const Value.absent(),
-          }) =>
-              TextAnalysisHistoryItemsCompanion(
-            id: id,
-            analysisText: analysisText,
-          ),
-          getInsertCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            required String analysisText,
-          }) =>
-              TextAnalysisHistoryItemsCompanion.insert(
-            id: id,
-            analysisText: analysisText,
-          ),
-        ));
-}
-
-class $$TextAnalysisHistoryItemsTableProcessedTableManager
-    extends ProcessedTableManager<
-        _$AppDatabase,
-        $TextAnalysisHistoryItemsTable,
-        TextAnalysisHistoryItem,
-        $$TextAnalysisHistoryItemsTableFilterComposer,
-        $$TextAnalysisHistoryItemsTableOrderingComposer,
-        $$TextAnalysisHistoryItemsTableProcessedTableManager,
-        $$TextAnalysisHistoryItemsTableInsertCompanionBuilder,
-        $$TextAnalysisHistoryItemsTableUpdateCompanionBuilder> {
-  $$TextAnalysisHistoryItemsTableProcessedTableManager(super.$state);
-}
 
 class $$TextAnalysisHistoryItemsTableFilterComposer
     extends FilterComposer<_$AppDatabase, $TextAnalysisHistoryItemsTable> {
@@ -7144,7 +7827,286 @@ class $$TextAnalysisHistoryItemsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$SearchHistoryItemsTableInsertCompanionBuilder
+class $$TextAnalysisHistoryItemsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TextAnalysisHistoryItemsTable,
+    TextAnalysisHistoryItem,
+    $$TextAnalysisHistoryItemsTableFilterComposer,
+    $$TextAnalysisHistoryItemsTableOrderingComposer,
+    $$TextAnalysisHistoryItemsTableCreateCompanionBuilder,
+    $$TextAnalysisHistoryItemsTableUpdateCompanionBuilder,
+    (
+      TextAnalysisHistoryItem,
+      BaseReferences<_$AppDatabase, $TextAnalysisHistoryItemsTable,
+          TextAnalysisHistoryItem>
+    ),
+    TextAnalysisHistoryItem,
+    PrefetchHooks Function()> {
+  $$TextAnalysisHistoryItemsTableTableManager(
+      _$AppDatabase db, $TextAnalysisHistoryItemsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$TextAnalysisHistoryItemsTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$TextAnalysisHistoryItemsTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> analysisText = const Value.absent(),
+          }) =>
+              TextAnalysisHistoryItemsCompanion(
+            id: id,
+            analysisText: analysisText,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String analysisText,
+          }) =>
+              TextAnalysisHistoryItemsCompanion.insert(
+            id: id,
+            analysisText: analysisText,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$TextAnalysisHistoryItemsTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $TextAnalysisHistoryItemsTable,
+        TextAnalysisHistoryItem,
+        $$TextAnalysisHistoryItemsTableFilterComposer,
+        $$TextAnalysisHistoryItemsTableOrderingComposer,
+        $$TextAnalysisHistoryItemsTableCreateCompanionBuilder,
+        $$TextAnalysisHistoryItemsTableUpdateCompanionBuilder,
+        (
+          TextAnalysisHistoryItem,
+          BaseReferences<_$AppDatabase, $TextAnalysisHistoryItemsTable,
+              TextAnalysisHistoryItem>
+        ),
+        TextAnalysisHistoryItem,
+        PrefetchHooks Function()>;
+typedef $$SpacedRepetitionDatasTableCreateCompanionBuilder
+    = SpacedRepetitionDatasCompanion Function({
+  required int vocabId,
+  required int kanjiId,
+  required FrontType frontType,
+  required int interval,
+  required int repetitions,
+  required double easeFactor,
+  Value<int?> dueDate,
+  required int totalAnswers,
+  required int totalWrongAnswers,
+});
+typedef $$SpacedRepetitionDatasTableUpdateCompanionBuilder
+    = SpacedRepetitionDatasCompanion Function({
+  Value<int> vocabId,
+  Value<int> kanjiId,
+  Value<FrontType> frontType,
+  Value<int> interval,
+  Value<int> repetitions,
+  Value<double> easeFactor,
+  Value<int?> dueDate,
+  Value<int> totalAnswers,
+  Value<int> totalWrongAnswers,
+});
+
+class $$SpacedRepetitionDatasTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $SpacedRepetitionDatasTable> {
+  $$SpacedRepetitionDatasTableFilterComposer(super.$state);
+  ColumnFilters<int> get vocabId => $state.composableBuilder(
+      column: $state.table.vocabId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get kanjiId => $state.composableBuilder(
+      column: $state.table.kanjiId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<FrontType, FrontType, int> get frontType =>
+      $state.composableBuilder(
+          column: $state.table.frontType,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get interval => $state.composableBuilder(
+      column: $state.table.interval,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get repetitions => $state.composableBuilder(
+      column: $state.table.repetitions,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get easeFactor => $state.composableBuilder(
+      column: $state.table.easeFactor,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get dueDate => $state.composableBuilder(
+      column: $state.table.dueDate,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get totalAnswers => $state.composableBuilder(
+      column: $state.table.totalAnswers,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get totalWrongAnswers => $state.composableBuilder(
+      column: $state.table.totalWrongAnswers,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$SpacedRepetitionDatasTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $SpacedRepetitionDatasTable> {
+  $$SpacedRepetitionDatasTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get vocabId => $state.composableBuilder(
+      column: $state.table.vocabId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get kanjiId => $state.composableBuilder(
+      column: $state.table.kanjiId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get frontType => $state.composableBuilder(
+      column: $state.table.frontType,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get interval => $state.composableBuilder(
+      column: $state.table.interval,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get repetitions => $state.composableBuilder(
+      column: $state.table.repetitions,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get easeFactor => $state.composableBuilder(
+      column: $state.table.easeFactor,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get dueDate => $state.composableBuilder(
+      column: $state.table.dueDate,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get totalAnswers => $state.composableBuilder(
+      column: $state.table.totalAnswers,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get totalWrongAnswers => $state.composableBuilder(
+      column: $state.table.totalWrongAnswers,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$SpacedRepetitionDatasTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SpacedRepetitionDatasTable,
+    SpacedRepetitionData,
+    $$SpacedRepetitionDatasTableFilterComposer,
+    $$SpacedRepetitionDatasTableOrderingComposer,
+    $$SpacedRepetitionDatasTableCreateCompanionBuilder,
+    $$SpacedRepetitionDatasTableUpdateCompanionBuilder,
+    (
+      SpacedRepetitionData,
+      BaseReferences<_$AppDatabase, $SpacedRepetitionDatasTable,
+          SpacedRepetitionData>
+    ),
+    SpacedRepetitionData,
+    PrefetchHooks Function()> {
+  $$SpacedRepetitionDatasTableTableManager(
+      _$AppDatabase db, $SpacedRepetitionDatasTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$SpacedRepetitionDatasTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$SpacedRepetitionDatasTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> vocabId = const Value.absent(),
+            Value<int> kanjiId = const Value.absent(),
+            Value<FrontType> frontType = const Value.absent(),
+            Value<int> interval = const Value.absent(),
+            Value<int> repetitions = const Value.absent(),
+            Value<double> easeFactor = const Value.absent(),
+            Value<int?> dueDate = const Value.absent(),
+            Value<int> totalAnswers = const Value.absent(),
+            Value<int> totalWrongAnswers = const Value.absent(),
+          }) =>
+              SpacedRepetitionDatasCompanion(
+            vocabId: vocabId,
+            kanjiId: kanjiId,
+            frontType: frontType,
+            interval: interval,
+            repetitions: repetitions,
+            easeFactor: easeFactor,
+            dueDate: dueDate,
+            totalAnswers: totalAnswers,
+            totalWrongAnswers: totalWrongAnswers,
+          ),
+          createCompanionCallback: ({
+            required int vocabId,
+            required int kanjiId,
+            required FrontType frontType,
+            required int interval,
+            required int repetitions,
+            required double easeFactor,
+            Value<int?> dueDate = const Value.absent(),
+            required int totalAnswers,
+            required int totalWrongAnswers,
+          }) =>
+              SpacedRepetitionDatasCompanion.insert(
+            vocabId: vocabId,
+            kanjiId: kanjiId,
+            frontType: frontType,
+            interval: interval,
+            repetitions: repetitions,
+            easeFactor: easeFactor,
+            dueDate: dueDate,
+            totalAnswers: totalAnswers,
+            totalWrongAnswers: totalWrongAnswers,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$SpacedRepetitionDatasTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $SpacedRepetitionDatasTable,
+        SpacedRepetitionData,
+        $$SpacedRepetitionDatasTableFilterComposer,
+        $$SpacedRepetitionDatasTableOrderingComposer,
+        $$SpacedRepetitionDatasTableCreateCompanionBuilder,
+        $$SpacedRepetitionDatasTableUpdateCompanionBuilder,
+        (
+          SpacedRepetitionData,
+          BaseReferences<_$AppDatabase, $SpacedRepetitionDatasTable,
+              SpacedRepetitionData>
+        ),
+        SpacedRepetitionData,
+        PrefetchHooks Function()>;
+typedef $$SearchHistoryItemsTableCreateCompanionBuilder
     = SearchHistoryItemsCompanion Function({
   Value<int> id,
   required String searchText,
@@ -7154,58 +8116,6 @@ typedef $$SearchHistoryItemsTableUpdateCompanionBuilder
   Value<int> id,
   Value<String> searchText,
 });
-
-class $$SearchHistoryItemsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $SearchHistoryItemsTable,
-    SearchHistoryItem,
-    $$SearchHistoryItemsTableFilterComposer,
-    $$SearchHistoryItemsTableOrderingComposer,
-    $$SearchHistoryItemsTableProcessedTableManager,
-    $$SearchHistoryItemsTableInsertCompanionBuilder,
-    $$SearchHistoryItemsTableUpdateCompanionBuilder> {
-  $$SearchHistoryItemsTableTableManager(
-      _$AppDatabase db, $SearchHistoryItemsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$SearchHistoryItemsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer: $$SearchHistoryItemsTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$SearchHistoryItemsTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            Value<String> searchText = const Value.absent(),
-          }) =>
-              SearchHistoryItemsCompanion(
-            id: id,
-            searchText: searchText,
-          ),
-          getInsertCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            required String searchText,
-          }) =>
-              SearchHistoryItemsCompanion.insert(
-            id: id,
-            searchText: searchText,
-          ),
-        ));
-}
-
-class $$SearchHistoryItemsTableProcessedTableManager
-    extends ProcessedTableManager<
-        _$AppDatabase,
-        $SearchHistoryItemsTable,
-        SearchHistoryItem,
-        $$SearchHistoryItemsTableFilterComposer,
-        $$SearchHistoryItemsTableOrderingComposer,
-        $$SearchHistoryItemsTableProcessedTableManager,
-        $$SearchHistoryItemsTableInsertCompanionBuilder,
-        $$SearchHistoryItemsTableUpdateCompanionBuilder> {
-  $$SearchHistoryItemsTableProcessedTableManager(super.$state);
-}
 
 class $$SearchHistoryItemsTableFilterComposer
     extends FilterComposer<_$AppDatabase, $SearchHistoryItemsTable> {
@@ -7235,7 +8145,67 @@ class $$SearchHistoryItemsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$RadicalsTableInsertCompanionBuilder = RadicalsCompanion Function({
+class $$SearchHistoryItemsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SearchHistoryItemsTable,
+    SearchHistoryItem,
+    $$SearchHistoryItemsTableFilterComposer,
+    $$SearchHistoryItemsTableOrderingComposer,
+    $$SearchHistoryItemsTableCreateCompanionBuilder,
+    $$SearchHistoryItemsTableUpdateCompanionBuilder,
+    (
+      SearchHistoryItem,
+      BaseReferences<_$AppDatabase, $SearchHistoryItemsTable, SearchHistoryItem>
+    ),
+    SearchHistoryItem,
+    PrefetchHooks Function()> {
+  $$SearchHistoryItemsTableTableManager(
+      _$AppDatabase db, $SearchHistoryItemsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$SearchHistoryItemsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$SearchHistoryItemsTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> searchText = const Value.absent(),
+          }) =>
+              SearchHistoryItemsCompanion(
+            id: id,
+            searchText: searchText,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String searchText,
+          }) =>
+              SearchHistoryItemsCompanion.insert(
+            id: id,
+            searchText: searchText,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$SearchHistoryItemsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $SearchHistoryItemsTable,
+    SearchHistoryItem,
+    $$SearchHistoryItemsTableFilterComposer,
+    $$SearchHistoryItemsTableOrderingComposer,
+    $$SearchHistoryItemsTableCreateCompanionBuilder,
+    $$SearchHistoryItemsTableUpdateCompanionBuilder,
+    (
+      SearchHistoryItem,
+      BaseReferences<_$AppDatabase, $SearchHistoryItemsTable, SearchHistoryItem>
+    ),
+    SearchHistoryItem,
+    PrefetchHooks Function()>;
+typedef $$RadicalsTableCreateCompanionBuilder = RadicalsCompanion Function({
   Value<int> id,
   required String radical,
   Value<int?> kangxiId,
@@ -7261,92 +8231,6 @@ typedef $$RadicalsTableUpdateCompanionBuilder = RadicalsCompanion Function({
   Value<List<String>?> variants,
   Value<String?> variantOf,
 });
-
-class $$RadicalsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $RadicalsTable,
-    Radical,
-    $$RadicalsTableFilterComposer,
-    $$RadicalsTableOrderingComposer,
-    $$RadicalsTableProcessedTableManager,
-    $$RadicalsTableInsertCompanionBuilder,
-    $$RadicalsTableUpdateCompanionBuilder> {
-  $$RadicalsTableTableManager(_$AppDatabase db, $RadicalsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$RadicalsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$RadicalsTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$RadicalsTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            Value<String> radical = const Value.absent(),
-            Value<int?> kangxiId = const Value.absent(),
-            Value<int> strokeCount = const Value.absent(),
-            Value<String> meaning = const Value.absent(),
-            Value<String> reading = const Value.absent(),
-            Value<RadicalPosition?> position = const Value.absent(),
-            Value<RadicalImportance?> importance = const Value.absent(),
-            Value<List<String>?> strokes = const Value.absent(),
-            Value<List<String>?> variants = const Value.absent(),
-            Value<String?> variantOf = const Value.absent(),
-          }) =>
-              RadicalsCompanion(
-            id: id,
-            radical: radical,
-            kangxiId: kangxiId,
-            strokeCount: strokeCount,
-            meaning: meaning,
-            reading: reading,
-            position: position,
-            importance: importance,
-            strokes: strokes,
-            variants: variants,
-            variantOf: variantOf,
-          ),
-          getInsertCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            required String radical,
-            Value<int?> kangxiId = const Value.absent(),
-            required int strokeCount,
-            required String meaning,
-            required String reading,
-            Value<RadicalPosition?> position = const Value.absent(),
-            Value<RadicalImportance?> importance = const Value.absent(),
-            Value<List<String>?> strokes = const Value.absent(),
-            Value<List<String>?> variants = const Value.absent(),
-            Value<String?> variantOf = const Value.absent(),
-          }) =>
-              RadicalsCompanion.insert(
-            id: id,
-            radical: radical,
-            kangxiId: kangxiId,
-            strokeCount: strokeCount,
-            meaning: meaning,
-            reading: reading,
-            position: position,
-            importance: importance,
-            strokes: strokes,
-            variants: variants,
-            variantOf: variantOf,
-          ),
-        ));
-}
-
-class $$RadicalsTableProcessedTableManager extends ProcessedTableManager<
-    _$AppDatabase,
-    $RadicalsTable,
-    Radical,
-    $$RadicalsTableFilterComposer,
-    $$RadicalsTableOrderingComposer,
-    $$RadicalsTableProcessedTableManager,
-    $$RadicalsTableInsertCompanionBuilder,
-    $$RadicalsTableUpdateCompanionBuilder> {
-  $$RadicalsTableProcessedTableManager(super.$state);
-}
 
 class $$RadicalsTableFilterComposer
     extends FilterComposer<_$AppDatabase, $RadicalsTable> {
@@ -7474,7 +8358,304 @@ class $$RadicalsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$ProperNounRomajiWordsTableInsertCompanionBuilder
+class $$RadicalsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $RadicalsTable,
+    Radical,
+    $$RadicalsTableFilterComposer,
+    $$RadicalsTableOrderingComposer,
+    $$RadicalsTableCreateCompanionBuilder,
+    $$RadicalsTableUpdateCompanionBuilder,
+    (Radical, BaseReferences<_$AppDatabase, $RadicalsTable, Radical>),
+    Radical,
+    PrefetchHooks Function()> {
+  $$RadicalsTableTableManager(_$AppDatabase db, $RadicalsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$RadicalsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$RadicalsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> radical = const Value.absent(),
+            Value<int?> kangxiId = const Value.absent(),
+            Value<int> strokeCount = const Value.absent(),
+            Value<String> meaning = const Value.absent(),
+            Value<String> reading = const Value.absent(),
+            Value<RadicalPosition?> position = const Value.absent(),
+            Value<RadicalImportance?> importance = const Value.absent(),
+            Value<List<String>?> strokes = const Value.absent(),
+            Value<List<String>?> variants = const Value.absent(),
+            Value<String?> variantOf = const Value.absent(),
+          }) =>
+              RadicalsCompanion(
+            id: id,
+            radical: radical,
+            kangxiId: kangxiId,
+            strokeCount: strokeCount,
+            meaning: meaning,
+            reading: reading,
+            position: position,
+            importance: importance,
+            strokes: strokes,
+            variants: variants,
+            variantOf: variantOf,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String radical,
+            Value<int?> kangxiId = const Value.absent(),
+            required int strokeCount,
+            required String meaning,
+            required String reading,
+            Value<RadicalPosition?> position = const Value.absent(),
+            Value<RadicalImportance?> importance = const Value.absent(),
+            Value<List<String>?> strokes = const Value.absent(),
+            Value<List<String>?> variants = const Value.absent(),
+            Value<String?> variantOf = const Value.absent(),
+          }) =>
+              RadicalsCompanion.insert(
+            id: id,
+            radical: radical,
+            kangxiId: kangxiId,
+            strokeCount: strokeCount,
+            meaning: meaning,
+            reading: reading,
+            position: position,
+            importance: importance,
+            strokes: strokes,
+            variants: variants,
+            variantOf: variantOf,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$RadicalsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $RadicalsTable,
+    Radical,
+    $$RadicalsTableFilterComposer,
+    $$RadicalsTableOrderingComposer,
+    $$RadicalsTableCreateCompanionBuilder,
+    $$RadicalsTableUpdateCompanionBuilder,
+    (Radical, BaseReferences<_$AppDatabase, $RadicalsTable, Radical>),
+    Radical,
+    PrefetchHooks Function()>;
+typedef $$ProperNounsTableCreateCompanionBuilder = ProperNounsCompanion
+    Function({
+  Value<int> id,
+  Value<String?> writing,
+  Value<String?> writingSearchForm,
+  required String reading,
+  Value<String?> readingSearchForm,
+  required String readingRomaji,
+  Value<String?> readingRomajiSimplified,
+  required String romaji,
+  required List<ProperNounType> types,
+});
+typedef $$ProperNounsTableUpdateCompanionBuilder = ProperNounsCompanion
+    Function({
+  Value<int> id,
+  Value<String?> writing,
+  Value<String?> writingSearchForm,
+  Value<String> reading,
+  Value<String?> readingSearchForm,
+  Value<String> readingRomaji,
+  Value<String?> readingRomajiSimplified,
+  Value<String> romaji,
+  Value<List<ProperNounType>> types,
+});
+
+class $$ProperNounsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $ProperNounsTable> {
+  $$ProperNounsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get writing => $state.composableBuilder(
+      column: $state.table.writing,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get writingSearchForm => $state.composableBuilder(
+      column: $state.table.writingSearchForm,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get reading => $state.composableBuilder(
+      column: $state.table.reading,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get readingSearchForm => $state.composableBuilder(
+      column: $state.table.readingSearchForm,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get readingRomaji => $state.composableBuilder(
+      column: $state.table.readingRomaji,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get readingRomajiSimplified => $state.composableBuilder(
+      column: $state.table.readingRomajiSimplified,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get romaji => $state.composableBuilder(
+      column: $state.table.romaji,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<ProperNounType>, List<ProperNounType>,
+          String>
+      get types => $state.composableBuilder(
+          column: $state.table.types,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+}
+
+class $$ProperNounsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $ProperNounsTable> {
+  $$ProperNounsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get writing => $state.composableBuilder(
+      column: $state.table.writing,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get writingSearchForm => $state.composableBuilder(
+      column: $state.table.writingSearchForm,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get reading => $state.composableBuilder(
+      column: $state.table.reading,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get readingSearchForm => $state.composableBuilder(
+      column: $state.table.readingSearchForm,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get readingRomaji => $state.composableBuilder(
+      column: $state.table.readingRomaji,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get readingRomajiSimplified =>
+      $state.composableBuilder(
+          column: $state.table.readingRomajiSimplified,
+          builder: (column, joinBuilders) =>
+              ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get romaji => $state.composableBuilder(
+      column: $state.table.romaji,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get types => $state.composableBuilder(
+      column: $state.table.types,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$ProperNounsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ProperNounsTable,
+    ProperNoun,
+    $$ProperNounsTableFilterComposer,
+    $$ProperNounsTableOrderingComposer,
+    $$ProperNounsTableCreateCompanionBuilder,
+    $$ProperNounsTableUpdateCompanionBuilder,
+    (ProperNoun, BaseReferences<_$AppDatabase, $ProperNounsTable, ProperNoun>),
+    ProperNoun,
+    PrefetchHooks Function()> {
+  $$ProperNounsTableTableManager(_$AppDatabase db, $ProperNounsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$ProperNounsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$ProperNounsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> writing = const Value.absent(),
+            Value<String?> writingSearchForm = const Value.absent(),
+            Value<String> reading = const Value.absent(),
+            Value<String?> readingSearchForm = const Value.absent(),
+            Value<String> readingRomaji = const Value.absent(),
+            Value<String?> readingRomajiSimplified = const Value.absent(),
+            Value<String> romaji = const Value.absent(),
+            Value<List<ProperNounType>> types = const Value.absent(),
+          }) =>
+              ProperNounsCompanion(
+            id: id,
+            writing: writing,
+            writingSearchForm: writingSearchForm,
+            reading: reading,
+            readingSearchForm: readingSearchForm,
+            readingRomaji: readingRomaji,
+            readingRomajiSimplified: readingRomajiSimplified,
+            romaji: romaji,
+            types: types,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> writing = const Value.absent(),
+            Value<String?> writingSearchForm = const Value.absent(),
+            required String reading,
+            Value<String?> readingSearchForm = const Value.absent(),
+            required String readingRomaji,
+            Value<String?> readingRomajiSimplified = const Value.absent(),
+            required String romaji,
+            required List<ProperNounType> types,
+          }) =>
+              ProperNounsCompanion.insert(
+            id: id,
+            writing: writing,
+            writingSearchForm: writingSearchForm,
+            reading: reading,
+            readingSearchForm: readingSearchForm,
+            readingRomaji: readingRomaji,
+            readingRomajiSimplified: readingRomajiSimplified,
+            romaji: romaji,
+            types: types,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ProperNounsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $ProperNounsTable,
+    ProperNoun,
+    $$ProperNounsTableFilterComposer,
+    $$ProperNounsTableOrderingComposer,
+    $$ProperNounsTableCreateCompanionBuilder,
+    $$ProperNounsTableUpdateCompanionBuilder,
+    (ProperNoun, BaseReferences<_$AppDatabase, $ProperNounsTable, ProperNoun>),
+    ProperNoun,
+    PrefetchHooks Function()>;
+typedef $$ProperNounRomajiWordsTableCreateCompanionBuilder
     = ProperNounRomajiWordsCompanion Function({
   Value<int> id,
   required String word,
@@ -7486,62 +8667,6 @@ typedef $$ProperNounRomajiWordsTableUpdateCompanionBuilder
   Value<String> word,
   Value<int> properNounId,
 });
-
-class $$ProperNounRomajiWordsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $ProperNounRomajiWordsTable,
-    ProperNounRomajiWord,
-    $$ProperNounRomajiWordsTableFilterComposer,
-    $$ProperNounRomajiWordsTableOrderingComposer,
-    $$ProperNounRomajiWordsTableProcessedTableManager,
-    $$ProperNounRomajiWordsTableInsertCompanionBuilder,
-    $$ProperNounRomajiWordsTableUpdateCompanionBuilder> {
-  $$ProperNounRomajiWordsTableTableManager(
-      _$AppDatabase db, $ProperNounRomajiWordsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer: $$ProperNounRomajiWordsTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$ProperNounRomajiWordsTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$ProperNounRomajiWordsTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            Value<String> word = const Value.absent(),
-            Value<int> properNounId = const Value.absent(),
-          }) =>
-              ProperNounRomajiWordsCompanion(
-            id: id,
-            word: word,
-            properNounId: properNounId,
-          ),
-          getInsertCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            required String word,
-            required int properNounId,
-          }) =>
-              ProperNounRomajiWordsCompanion.insert(
-            id: id,
-            word: word,
-            properNounId: properNounId,
-          ),
-        ));
-}
-
-class $$ProperNounRomajiWordsTableProcessedTableManager
-    extends ProcessedTableManager<
-        _$AppDatabase,
-        $ProperNounRomajiWordsTable,
-        ProperNounRomajiWord,
-        $$ProperNounRomajiWordsTableFilterComposer,
-        $$ProperNounRomajiWordsTableOrderingComposer,
-        $$ProperNounRomajiWordsTableProcessedTableManager,
-        $$ProperNounRomajiWordsTableInsertCompanionBuilder,
-        $$ProperNounRomajiWordsTableUpdateCompanionBuilder> {
-  $$ProperNounRomajiWordsTableProcessedTableManager(super.$state);
-}
 
 class $$ProperNounRomajiWordsTableFilterComposer
     extends FilterComposer<_$AppDatabase, $ProperNounRomajiWordsTable> {
@@ -7581,7 +8706,327 @@ class $$ProperNounRomajiWordsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$MyDictionaryListItemsTableInsertCompanionBuilder
+class $$ProperNounRomajiWordsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ProperNounRomajiWordsTable,
+    ProperNounRomajiWord,
+    $$ProperNounRomajiWordsTableFilterComposer,
+    $$ProperNounRomajiWordsTableOrderingComposer,
+    $$ProperNounRomajiWordsTableCreateCompanionBuilder,
+    $$ProperNounRomajiWordsTableUpdateCompanionBuilder,
+    (
+      ProperNounRomajiWord,
+      BaseReferences<_$AppDatabase, $ProperNounRomajiWordsTable,
+          ProperNounRomajiWord>
+    ),
+    ProperNounRomajiWord,
+    PrefetchHooks Function()> {
+  $$ProperNounRomajiWordsTableTableManager(
+      _$AppDatabase db, $ProperNounRomajiWordsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$ProperNounRomajiWordsTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$ProperNounRomajiWordsTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> word = const Value.absent(),
+            Value<int> properNounId = const Value.absent(),
+          }) =>
+              ProperNounRomajiWordsCompanion(
+            id: id,
+            word: word,
+            properNounId: properNounId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String word,
+            required int properNounId,
+          }) =>
+              ProperNounRomajiWordsCompanion.insert(
+            id: id,
+            word: word,
+            properNounId: properNounId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ProperNounRomajiWordsTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $ProperNounRomajiWordsTable,
+        ProperNounRomajiWord,
+        $$ProperNounRomajiWordsTableFilterComposer,
+        $$ProperNounRomajiWordsTableOrderingComposer,
+        $$ProperNounRomajiWordsTableCreateCompanionBuilder,
+        $$ProperNounRomajiWordsTableUpdateCompanionBuilder,
+        (
+          ProperNounRomajiWord,
+          BaseReferences<_$AppDatabase, $ProperNounRomajiWordsTable,
+              ProperNounRomajiWord>
+        ),
+        ProperNounRomajiWord,
+        PrefetchHooks Function()>;
+typedef $$PredefinedDictionaryListsTableCreateCompanionBuilder
+    = PredefinedDictionaryListsCompanion Function({
+  Value<int> id,
+  required String name,
+  required List<int> vocab,
+  required List<int> kanji,
+});
+typedef $$PredefinedDictionaryListsTableUpdateCompanionBuilder
+    = PredefinedDictionaryListsCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<List<int>> vocab,
+  Value<List<int>> kanji,
+});
+
+class $$PredefinedDictionaryListsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $PredefinedDictionaryListsTable> {
+  $$PredefinedDictionaryListsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<int>, List<int>, String> get vocab =>
+      $state.composableBuilder(
+          column: $state.table.vocab,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<int>, List<int>, String> get kanji =>
+      $state.composableBuilder(
+          column: $state.table.kanji,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+}
+
+class $$PredefinedDictionaryListsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $PredefinedDictionaryListsTable> {
+  $$PredefinedDictionaryListsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get vocab => $state.composableBuilder(
+      column: $state.table.vocab,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get kanji => $state.composableBuilder(
+      column: $state.table.kanji,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$PredefinedDictionaryListsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $PredefinedDictionaryListsTable,
+    PredefinedDictionaryList,
+    $$PredefinedDictionaryListsTableFilterComposer,
+    $$PredefinedDictionaryListsTableOrderingComposer,
+    $$PredefinedDictionaryListsTableCreateCompanionBuilder,
+    $$PredefinedDictionaryListsTableUpdateCompanionBuilder,
+    (
+      PredefinedDictionaryList,
+      BaseReferences<_$AppDatabase, $PredefinedDictionaryListsTable,
+          PredefinedDictionaryList>
+    ),
+    PredefinedDictionaryList,
+    PrefetchHooks Function()> {
+  $$PredefinedDictionaryListsTableTableManager(
+      _$AppDatabase db, $PredefinedDictionaryListsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$PredefinedDictionaryListsTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$PredefinedDictionaryListsTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<List<int>> vocab = const Value.absent(),
+            Value<List<int>> kanji = const Value.absent(),
+          }) =>
+              PredefinedDictionaryListsCompanion(
+            id: id,
+            name: name,
+            vocab: vocab,
+            kanji: kanji,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            required List<int> vocab,
+            required List<int> kanji,
+          }) =>
+              PredefinedDictionaryListsCompanion.insert(
+            id: id,
+            name: name,
+            vocab: vocab,
+            kanji: kanji,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$PredefinedDictionaryListsTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $PredefinedDictionaryListsTable,
+        PredefinedDictionaryList,
+        $$PredefinedDictionaryListsTableFilterComposer,
+        $$PredefinedDictionaryListsTableOrderingComposer,
+        $$PredefinedDictionaryListsTableCreateCompanionBuilder,
+        $$PredefinedDictionaryListsTableUpdateCompanionBuilder,
+        (
+          PredefinedDictionaryList,
+          BaseReferences<_$AppDatabase, $PredefinedDictionaryListsTable,
+              PredefinedDictionaryList>
+        ),
+        PredefinedDictionaryList,
+        PrefetchHooks Function()>;
+typedef $$MyDictionaryListsTableCreateCompanionBuilder
+    = MyDictionaryListsCompanion Function({
+  Value<int> id,
+  required String name,
+  Value<DateTime> timestamp,
+});
+typedef $$MyDictionaryListsTableUpdateCompanionBuilder
+    = MyDictionaryListsCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<DateTime> timestamp,
+});
+
+class $$MyDictionaryListsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $MyDictionaryListsTable> {
+  $$MyDictionaryListsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get timestamp => $state.composableBuilder(
+      column: $state.table.timestamp,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$MyDictionaryListsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $MyDictionaryListsTable> {
+  $$MyDictionaryListsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get timestamp => $state.composableBuilder(
+      column: $state.table.timestamp,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$MyDictionaryListsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $MyDictionaryListsTable,
+    MyDictionaryList,
+    $$MyDictionaryListsTableFilterComposer,
+    $$MyDictionaryListsTableOrderingComposer,
+    $$MyDictionaryListsTableCreateCompanionBuilder,
+    $$MyDictionaryListsTableUpdateCompanionBuilder,
+    (
+      MyDictionaryList,
+      BaseReferences<_$AppDatabase, $MyDictionaryListsTable, MyDictionaryList>
+    ),
+    MyDictionaryList,
+    PrefetchHooks Function()> {
+  $$MyDictionaryListsTableTableManager(
+      _$AppDatabase db, $MyDictionaryListsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$MyDictionaryListsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$MyDictionaryListsTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<DateTime> timestamp = const Value.absent(),
+          }) =>
+              MyDictionaryListsCompanion(
+            id: id,
+            name: name,
+            timestamp: timestamp,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            Value<DateTime> timestamp = const Value.absent(),
+          }) =>
+              MyDictionaryListsCompanion.insert(
+            id: id,
+            name: name,
+            timestamp: timestamp,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$MyDictionaryListsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $MyDictionaryListsTable,
+    MyDictionaryList,
+    $$MyDictionaryListsTableFilterComposer,
+    $$MyDictionaryListsTableOrderingComposer,
+    $$MyDictionaryListsTableCreateCompanionBuilder,
+    $$MyDictionaryListsTableUpdateCompanionBuilder,
+    (
+      MyDictionaryList,
+      BaseReferences<_$AppDatabase, $MyDictionaryListsTable, MyDictionaryList>
+    ),
+    MyDictionaryList,
+    PrefetchHooks Function()>;
+typedef $$MyDictionaryListItemsTableCreateCompanionBuilder
     = MyDictionaryListItemsCompanion Function({
   Value<int> id,
   required int listId,
@@ -7595,66 +9040,6 @@ typedef $$MyDictionaryListItemsTableUpdateCompanionBuilder
   Value<int> vocabId,
   Value<int> kanjiId,
 });
-
-class $$MyDictionaryListItemsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $MyDictionaryListItemsTable,
-    MyDictionaryListItem,
-    $$MyDictionaryListItemsTableFilterComposer,
-    $$MyDictionaryListItemsTableOrderingComposer,
-    $$MyDictionaryListItemsTableProcessedTableManager,
-    $$MyDictionaryListItemsTableInsertCompanionBuilder,
-    $$MyDictionaryListItemsTableUpdateCompanionBuilder> {
-  $$MyDictionaryListItemsTableTableManager(
-      _$AppDatabase db, $MyDictionaryListItemsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer: $$MyDictionaryListItemsTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$MyDictionaryListItemsTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$MyDictionaryListItemsTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            Value<int> listId = const Value.absent(),
-            Value<int> vocabId = const Value.absent(),
-            Value<int> kanjiId = const Value.absent(),
-          }) =>
-              MyDictionaryListItemsCompanion(
-            id: id,
-            listId: listId,
-            vocabId: vocabId,
-            kanjiId: kanjiId,
-          ),
-          getInsertCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            required int listId,
-            required int vocabId,
-            required int kanjiId,
-          }) =>
-              MyDictionaryListItemsCompanion.insert(
-            id: id,
-            listId: listId,
-            vocabId: vocabId,
-            kanjiId: kanjiId,
-          ),
-        ));
-}
-
-class $$MyDictionaryListItemsTableProcessedTableManager
-    extends ProcessedTableManager<
-        _$AppDatabase,
-        $MyDictionaryListItemsTable,
-        MyDictionaryListItem,
-        $$MyDictionaryListItemsTableFilterComposer,
-        $$MyDictionaryListItemsTableOrderingComposer,
-        $$MyDictionaryListItemsTableProcessedTableManager,
-        $$MyDictionaryListItemsTableInsertCompanionBuilder,
-        $$MyDictionaryListItemsTableUpdateCompanionBuilder> {
-  $$MyDictionaryListItemsTableProcessedTableManager(super.$state);
-}
 
 class $$MyDictionaryListItemsTableFilterComposer
     extends FilterComposer<_$AppDatabase, $MyDictionaryListItemsTable> {
@@ -7704,7 +9089,542 @@ class $$MyDictionaryListItemsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$DictionaryInfosTableInsertCompanionBuilder = DictionaryInfosCompanion
+class $$MyDictionaryListItemsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $MyDictionaryListItemsTable,
+    MyDictionaryListItem,
+    $$MyDictionaryListItemsTableFilterComposer,
+    $$MyDictionaryListItemsTableOrderingComposer,
+    $$MyDictionaryListItemsTableCreateCompanionBuilder,
+    $$MyDictionaryListItemsTableUpdateCompanionBuilder,
+    (
+      MyDictionaryListItem,
+      BaseReferences<_$AppDatabase, $MyDictionaryListItemsTable,
+          MyDictionaryListItem>
+    ),
+    MyDictionaryListItem,
+    PrefetchHooks Function()> {
+  $$MyDictionaryListItemsTableTableManager(
+      _$AppDatabase db, $MyDictionaryListItemsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$MyDictionaryListItemsTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$MyDictionaryListItemsTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> listId = const Value.absent(),
+            Value<int> vocabId = const Value.absent(),
+            Value<int> kanjiId = const Value.absent(),
+          }) =>
+              MyDictionaryListItemsCompanion(
+            id: id,
+            listId: listId,
+            vocabId: vocabId,
+            kanjiId: kanjiId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int listId,
+            required int vocabId,
+            required int kanjiId,
+          }) =>
+              MyDictionaryListItemsCompanion.insert(
+            id: id,
+            listId: listId,
+            vocabId: vocabId,
+            kanjiId: kanjiId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$MyDictionaryListItemsTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $MyDictionaryListItemsTable,
+        MyDictionaryListItem,
+        $$MyDictionaryListItemsTableFilterComposer,
+        $$MyDictionaryListItemsTableOrderingComposer,
+        $$MyDictionaryListItemsTableCreateCompanionBuilder,
+        $$MyDictionaryListItemsTableUpdateCompanionBuilder,
+        (
+          MyDictionaryListItem,
+          BaseReferences<_$AppDatabase, $MyDictionaryListItemsTable,
+              MyDictionaryListItem>
+        ),
+        MyDictionaryListItem,
+        PrefetchHooks Function()>;
+typedef $$FlashcardSetsTableCreateCompanionBuilder = FlashcardSetsCompanion
+    Function({
+  Value<int> id,
+  required String name,
+  Value<bool> usingSpacedRepetition,
+  Value<FrontType> frontType,
+  Value<bool> vocabShowReading,
+  Value<bool> vocabShowReadingIfRareKanji,
+  Value<bool> vocabShowAlternatives,
+  Value<bool> vocabShowPitchAccent,
+  Value<bool> kanjiShowReading,
+  Value<bool> vocabShowPartsOfSpeech,
+  Value<DateTime> timestamp,
+  Value<List<int>> predefinedDictionaryLists,
+  Value<List<int>> myDictionaryLists,
+  Value<int> streak,
+});
+typedef $$FlashcardSetsTableUpdateCompanionBuilder = FlashcardSetsCompanion
+    Function({
+  Value<int> id,
+  Value<String> name,
+  Value<bool> usingSpacedRepetition,
+  Value<FrontType> frontType,
+  Value<bool> vocabShowReading,
+  Value<bool> vocabShowReadingIfRareKanji,
+  Value<bool> vocabShowAlternatives,
+  Value<bool> vocabShowPitchAccent,
+  Value<bool> kanjiShowReading,
+  Value<bool> vocabShowPartsOfSpeech,
+  Value<DateTime> timestamp,
+  Value<List<int>> predefinedDictionaryLists,
+  Value<List<int>> myDictionaryLists,
+  Value<int> streak,
+});
+
+class $$FlashcardSetsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $FlashcardSetsTable> {
+  $$FlashcardSetsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get usingSpacedRepetition => $state.composableBuilder(
+      column: $state.table.usingSpacedRepetition,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<FrontType, FrontType, int> get frontType =>
+      $state.composableBuilder(
+          column: $state.table.frontType,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get vocabShowReading => $state.composableBuilder(
+      column: $state.table.vocabShowReading,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get vocabShowReadingIfRareKanji =>
+      $state.composableBuilder(
+          column: $state.table.vocabShowReadingIfRareKanji,
+          builder: (column, joinBuilders) =>
+              ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get vocabShowAlternatives => $state.composableBuilder(
+      column: $state.table.vocabShowAlternatives,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get vocabShowPitchAccent => $state.composableBuilder(
+      column: $state.table.vocabShowPitchAccent,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get kanjiShowReading => $state.composableBuilder(
+      column: $state.table.kanjiShowReading,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get vocabShowPartsOfSpeech => $state.composableBuilder(
+      column: $state.table.vocabShowPartsOfSpeech,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get timestamp => $state.composableBuilder(
+      column: $state.table.timestamp,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<int>, List<int>, String>
+      get predefinedDictionaryLists => $state.composableBuilder(
+          column: $state.table.predefinedDictionaryLists,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<int>, List<int>, String>
+      get myDictionaryLists => $state.composableBuilder(
+          column: $state.table.myDictionaryLists,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get streak => $state.composableBuilder(
+      column: $state.table.streak,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$FlashcardSetsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $FlashcardSetsTable> {
+  $$FlashcardSetsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get usingSpacedRepetition => $state.composableBuilder(
+      column: $state.table.usingSpacedRepetition,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get frontType => $state.composableBuilder(
+      column: $state.table.frontType,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get vocabShowReading => $state.composableBuilder(
+      column: $state.table.vocabShowReading,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get vocabShowReadingIfRareKanji => $state
+      .composableBuilder(
+          column: $state.table.vocabShowReadingIfRareKanji,
+          builder: (column, joinBuilders) =>
+              ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get vocabShowAlternatives => $state.composableBuilder(
+      column: $state.table.vocabShowAlternatives,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get vocabShowPitchAccent => $state.composableBuilder(
+      column: $state.table.vocabShowPitchAccent,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get kanjiShowReading => $state.composableBuilder(
+      column: $state.table.kanjiShowReading,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get vocabShowPartsOfSpeech => $state.composableBuilder(
+      column: $state.table.vocabShowPartsOfSpeech,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get timestamp => $state.composableBuilder(
+      column: $state.table.timestamp,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get predefinedDictionaryLists => $state
+      .composableBuilder(
+          column: $state.table.predefinedDictionaryLists,
+          builder: (column, joinBuilders) =>
+              ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get myDictionaryLists => $state.composableBuilder(
+      column: $state.table.myDictionaryLists,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get streak => $state.composableBuilder(
+      column: $state.table.streak,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$FlashcardSetsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $FlashcardSetsTable,
+    FlashcardSet,
+    $$FlashcardSetsTableFilterComposer,
+    $$FlashcardSetsTableOrderingComposer,
+    $$FlashcardSetsTableCreateCompanionBuilder,
+    $$FlashcardSetsTableUpdateCompanionBuilder,
+    (
+      FlashcardSet,
+      BaseReferences<_$AppDatabase, $FlashcardSetsTable, FlashcardSet>
+    ),
+    FlashcardSet,
+    PrefetchHooks Function()> {
+  $$FlashcardSetsTableTableManager(_$AppDatabase db, $FlashcardSetsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$FlashcardSetsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$FlashcardSetsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<bool> usingSpacedRepetition = const Value.absent(),
+            Value<FrontType> frontType = const Value.absent(),
+            Value<bool> vocabShowReading = const Value.absent(),
+            Value<bool> vocabShowReadingIfRareKanji = const Value.absent(),
+            Value<bool> vocabShowAlternatives = const Value.absent(),
+            Value<bool> vocabShowPitchAccent = const Value.absent(),
+            Value<bool> kanjiShowReading = const Value.absent(),
+            Value<bool> vocabShowPartsOfSpeech = const Value.absent(),
+            Value<DateTime> timestamp = const Value.absent(),
+            Value<List<int>> predefinedDictionaryLists = const Value.absent(),
+            Value<List<int>> myDictionaryLists = const Value.absent(),
+            Value<int> streak = const Value.absent(),
+          }) =>
+              FlashcardSetsCompanion(
+            id: id,
+            name: name,
+            usingSpacedRepetition: usingSpacedRepetition,
+            frontType: frontType,
+            vocabShowReading: vocabShowReading,
+            vocabShowReadingIfRareKanji: vocabShowReadingIfRareKanji,
+            vocabShowAlternatives: vocabShowAlternatives,
+            vocabShowPitchAccent: vocabShowPitchAccent,
+            kanjiShowReading: kanjiShowReading,
+            vocabShowPartsOfSpeech: vocabShowPartsOfSpeech,
+            timestamp: timestamp,
+            predefinedDictionaryLists: predefinedDictionaryLists,
+            myDictionaryLists: myDictionaryLists,
+            streak: streak,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            Value<bool> usingSpacedRepetition = const Value.absent(),
+            Value<FrontType> frontType = const Value.absent(),
+            Value<bool> vocabShowReading = const Value.absent(),
+            Value<bool> vocabShowReadingIfRareKanji = const Value.absent(),
+            Value<bool> vocabShowAlternatives = const Value.absent(),
+            Value<bool> vocabShowPitchAccent = const Value.absent(),
+            Value<bool> kanjiShowReading = const Value.absent(),
+            Value<bool> vocabShowPartsOfSpeech = const Value.absent(),
+            Value<DateTime> timestamp = const Value.absent(),
+            Value<List<int>> predefinedDictionaryLists = const Value.absent(),
+            Value<List<int>> myDictionaryLists = const Value.absent(),
+            Value<int> streak = const Value.absent(),
+          }) =>
+              FlashcardSetsCompanion.insert(
+            id: id,
+            name: name,
+            usingSpacedRepetition: usingSpacedRepetition,
+            frontType: frontType,
+            vocabShowReading: vocabShowReading,
+            vocabShowReadingIfRareKanji: vocabShowReadingIfRareKanji,
+            vocabShowAlternatives: vocabShowAlternatives,
+            vocabShowPitchAccent: vocabShowPitchAccent,
+            kanjiShowReading: kanjiShowReading,
+            vocabShowPartsOfSpeech: vocabShowPartsOfSpeech,
+            timestamp: timestamp,
+            predefinedDictionaryLists: predefinedDictionaryLists,
+            myDictionaryLists: myDictionaryLists,
+            streak: streak,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$FlashcardSetsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $FlashcardSetsTable,
+    FlashcardSet,
+    $$FlashcardSetsTableFilterComposer,
+    $$FlashcardSetsTableOrderingComposer,
+    $$FlashcardSetsTableCreateCompanionBuilder,
+    $$FlashcardSetsTableUpdateCompanionBuilder,
+    (
+      FlashcardSet,
+      BaseReferences<_$AppDatabase, $FlashcardSetsTable, FlashcardSet>
+    ),
+    FlashcardSet,
+    PrefetchHooks Function()>;
+typedef $$FlashcardSetReportsTableCreateCompanionBuilder
+    = FlashcardSetReportsCompanion Function({
+  Value<int> id,
+  required int flashcardSetId,
+  required int date,
+  Value<int> dueFlashcardsCompleted,
+  Value<int> dueFlashcardsGotWrong,
+  Value<int> newFlashcardsCompleted,
+});
+typedef $$FlashcardSetReportsTableUpdateCompanionBuilder
+    = FlashcardSetReportsCompanion Function({
+  Value<int> id,
+  Value<int> flashcardSetId,
+  Value<int> date,
+  Value<int> dueFlashcardsCompleted,
+  Value<int> dueFlashcardsGotWrong,
+  Value<int> newFlashcardsCompleted,
+});
+
+class $$FlashcardSetReportsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $FlashcardSetReportsTable> {
+  $$FlashcardSetReportsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get flashcardSetId => $state.composableBuilder(
+      column: $state.table.flashcardSetId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get date => $state.composableBuilder(
+      column: $state.table.date,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get dueFlashcardsCompleted => $state.composableBuilder(
+      column: $state.table.dueFlashcardsCompleted,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get dueFlashcardsGotWrong => $state.composableBuilder(
+      column: $state.table.dueFlashcardsGotWrong,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get newFlashcardsCompleted => $state.composableBuilder(
+      column: $state.table.newFlashcardsCompleted,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$FlashcardSetReportsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $FlashcardSetReportsTable> {
+  $$FlashcardSetReportsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get flashcardSetId => $state.composableBuilder(
+      column: $state.table.flashcardSetId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get date => $state.composableBuilder(
+      column: $state.table.date,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get dueFlashcardsCompleted => $state.composableBuilder(
+      column: $state.table.dueFlashcardsCompleted,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get dueFlashcardsGotWrong => $state.composableBuilder(
+      column: $state.table.dueFlashcardsGotWrong,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get newFlashcardsCompleted => $state.composableBuilder(
+      column: $state.table.newFlashcardsCompleted,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$FlashcardSetReportsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $FlashcardSetReportsTable,
+    FlashcardSetReport,
+    $$FlashcardSetReportsTableFilterComposer,
+    $$FlashcardSetReportsTableOrderingComposer,
+    $$FlashcardSetReportsTableCreateCompanionBuilder,
+    $$FlashcardSetReportsTableUpdateCompanionBuilder,
+    (
+      FlashcardSetReport,
+      BaseReferences<_$AppDatabase, $FlashcardSetReportsTable,
+          FlashcardSetReport>
+    ),
+    FlashcardSetReport,
+    PrefetchHooks Function()> {
+  $$FlashcardSetReportsTableTableManager(
+      _$AppDatabase db, $FlashcardSetReportsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$FlashcardSetReportsTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$FlashcardSetReportsTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> flashcardSetId = const Value.absent(),
+            Value<int> date = const Value.absent(),
+            Value<int> dueFlashcardsCompleted = const Value.absent(),
+            Value<int> dueFlashcardsGotWrong = const Value.absent(),
+            Value<int> newFlashcardsCompleted = const Value.absent(),
+          }) =>
+              FlashcardSetReportsCompanion(
+            id: id,
+            flashcardSetId: flashcardSetId,
+            date: date,
+            dueFlashcardsCompleted: dueFlashcardsCompleted,
+            dueFlashcardsGotWrong: dueFlashcardsGotWrong,
+            newFlashcardsCompleted: newFlashcardsCompleted,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int flashcardSetId,
+            required int date,
+            Value<int> dueFlashcardsCompleted = const Value.absent(),
+            Value<int> dueFlashcardsGotWrong = const Value.absent(),
+            Value<int> newFlashcardsCompleted = const Value.absent(),
+          }) =>
+              FlashcardSetReportsCompanion.insert(
+            id: id,
+            flashcardSetId: flashcardSetId,
+            date: date,
+            dueFlashcardsCompleted: dueFlashcardsCompleted,
+            dueFlashcardsGotWrong: dueFlashcardsGotWrong,
+            newFlashcardsCompleted: newFlashcardsCompleted,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$FlashcardSetReportsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $FlashcardSetReportsTable,
+    FlashcardSetReport,
+    $$FlashcardSetReportsTableFilterComposer,
+    $$FlashcardSetReportsTableOrderingComposer,
+    $$FlashcardSetReportsTableCreateCompanionBuilder,
+    $$FlashcardSetReportsTableUpdateCompanionBuilder,
+    (
+      FlashcardSetReport,
+      BaseReferences<_$AppDatabase, $FlashcardSetReportsTable,
+          FlashcardSetReport>
+    ),
+    FlashcardSetReport,
+    PrefetchHooks Function()>;
+typedef $$DictionaryInfosTableCreateCompanionBuilder = DictionaryInfosCompanion
     Function({
   Value<int> id,
   required int version,
@@ -7716,61 +9636,6 @@ typedef $$DictionaryInfosTableUpdateCompanionBuilder = DictionaryInfosCompanion
   Value<int> version,
   Value<int> rowid,
 });
-
-class $$DictionaryInfosTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $DictionaryInfosTable,
-    DictionaryInfo,
-    $$DictionaryInfosTableFilterComposer,
-    $$DictionaryInfosTableOrderingComposer,
-    $$DictionaryInfosTableProcessedTableManager,
-    $$DictionaryInfosTableInsertCompanionBuilder,
-    $$DictionaryInfosTableUpdateCompanionBuilder> {
-  $$DictionaryInfosTableTableManager(
-      _$AppDatabase db, $DictionaryInfosTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$DictionaryInfosTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$DictionaryInfosTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$DictionaryInfosTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            Value<int> version = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              DictionaryInfosCompanion(
-            id: id,
-            version: version,
-            rowid: rowid,
-          ),
-          getInsertCompanionBuilder: ({
-            Value<int> id = const Value.absent(),
-            required int version,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              DictionaryInfosCompanion.insert(
-            id: id,
-            version: version,
-            rowid: rowid,
-          ),
-        ));
-}
-
-class $$DictionaryInfosTableProcessedTableManager extends ProcessedTableManager<
-    _$AppDatabase,
-    $DictionaryInfosTable,
-    DictionaryInfo,
-    $$DictionaryInfosTableFilterComposer,
-    $$DictionaryInfosTableOrderingComposer,
-    $$DictionaryInfosTableProcessedTableManager,
-    $$DictionaryInfosTableInsertCompanionBuilder,
-    $$DictionaryInfosTableUpdateCompanionBuilder> {
-  $$DictionaryInfosTableProcessedTableManager(super.$state);
-}
 
 class $$DictionaryInfosTableFilterComposer
     extends FilterComposer<_$AppDatabase, $DictionaryInfosTable> {
@@ -7800,30 +9665,114 @@ class $$DictionaryInfosTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-class _$AppDatabaseManager {
+class $$DictionaryInfosTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $DictionaryInfosTable,
+    DictionaryInfo,
+    $$DictionaryInfosTableFilterComposer,
+    $$DictionaryInfosTableOrderingComposer,
+    $$DictionaryInfosTableCreateCompanionBuilder,
+    $$DictionaryInfosTableUpdateCompanionBuilder,
+    (
+      DictionaryInfo,
+      BaseReferences<_$AppDatabase, $DictionaryInfosTable, DictionaryInfo>
+    ),
+    DictionaryInfo,
+    PrefetchHooks Function()> {
+  $$DictionaryInfosTableTableManager(
+      _$AppDatabase db, $DictionaryInfosTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$DictionaryInfosTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$DictionaryInfosTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              DictionaryInfosCompanion(
+            id: id,
+            version: version,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int version,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              DictionaryInfosCompanion.insert(
+            id: id,
+            version: version,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$DictionaryInfosTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $DictionaryInfosTable,
+    DictionaryInfo,
+    $$DictionaryInfosTableFilterComposer,
+    $$DictionaryInfosTableOrderingComposer,
+    $$DictionaryInfosTableCreateCompanionBuilder,
+    $$DictionaryInfosTableUpdateCompanionBuilder,
+    (
+      DictionaryInfo,
+      BaseReferences<_$AppDatabase, $DictionaryInfosTable, DictionaryInfo>
+    ),
+    DictionaryInfo,
+    PrefetchHooks Function()>;
+
+class $AppDatabaseManager {
   final _$AppDatabase _db;
-  _$AppDatabaseManager(this._db);
+  $AppDatabaseManager(this._db);
   $$VocabWritingsTableTableManager get vocabWritings =>
       $$VocabWritingsTableTableManager(_db, _db.vocabWritings);
   $$VocabReadingsTableTableManager get vocabReadings =>
       $$VocabReadingsTableTableManager(_db, _db.vocabReadings);
+  $$VocabsTableTableManager get vocabs =>
+      $$VocabsTableTableManager(_db, _db.vocabs);
   $$VocabDefinitionsTableTableManager get vocabDefinitions =>
       $$VocabDefinitionsTableTableManager(_db, _db.vocabDefinitions);
   $$VocabDefinitionWordsTableTableManager get vocabDefinitionWords =>
       $$VocabDefinitionWordsTableTableManager(_db, _db.vocabDefinitionWords);
+  $$KanjisTableTableManager get kanjis =>
+      $$KanjisTableTableManager(_db, _db.kanjis);
+  $$KanjiReadingsTableTableManager get kanjiReadings =>
+      $$KanjiReadingsTableTableManager(_db, _db.kanjiReadings);
   $$KanjiMeaningWordsTableTableManager get kanjiMeaningWords =>
       $$KanjiMeaningWordsTableTableManager(_db, _db.kanjiMeaningWords);
   $$TextAnalysisHistoryItemsTableTableManager get textAnalysisHistoryItems =>
       $$TextAnalysisHistoryItemsTableTableManager(
           _db, _db.textAnalysisHistoryItems);
+  $$SpacedRepetitionDatasTableTableManager get spacedRepetitionDatas =>
+      $$SpacedRepetitionDatasTableTableManager(_db, _db.spacedRepetitionDatas);
   $$SearchHistoryItemsTableTableManager get searchHistoryItems =>
       $$SearchHistoryItemsTableTableManager(_db, _db.searchHistoryItems);
   $$RadicalsTableTableManager get radicals =>
       $$RadicalsTableTableManager(_db, _db.radicals);
+  $$ProperNounsTableTableManager get properNouns =>
+      $$ProperNounsTableTableManager(_db, _db.properNouns);
   $$ProperNounRomajiWordsTableTableManager get properNounRomajiWords =>
       $$ProperNounRomajiWordsTableTableManager(_db, _db.properNounRomajiWords);
+  $$PredefinedDictionaryListsTableTableManager get predefinedDictionaryLists =>
+      $$PredefinedDictionaryListsTableTableManager(
+          _db, _db.predefinedDictionaryLists);
+  $$MyDictionaryListsTableTableManager get myDictionaryLists =>
+      $$MyDictionaryListsTableTableManager(_db, _db.myDictionaryLists);
   $$MyDictionaryListItemsTableTableManager get myDictionaryListItems =>
       $$MyDictionaryListItemsTableTableManager(_db, _db.myDictionaryListItems);
+  $$FlashcardSetsTableTableManager get flashcardSets =>
+      $$FlashcardSetsTableTableManager(_db, _db.flashcardSets);
+  $$FlashcardSetReportsTableTableManager get flashcardSetReports =>
+      $$FlashcardSetReportsTableTableManager(_db, _db.flashcardSetReports);
   $$DictionaryInfosTableTableManager get dictionaryInfos =>
       $$DictionaryInfosTableTableManager(_db, _db.dictionaryInfos);
 }
