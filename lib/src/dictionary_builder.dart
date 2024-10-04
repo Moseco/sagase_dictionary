@@ -619,6 +619,7 @@ class DictionaryBuilder {
       case '&sK;':
         return WritingInfo.searchOnlyForm;
       default:
+        print('Unsupported writing info: $writingInfo');
         return null;
     }
   }
@@ -682,9 +683,12 @@ class DictionaryBuilder {
         return ReadingInfo.irregularKana;
       case '&ok;':
         return ReadingInfo.outdatedKana;
+      case '&rk;':
+        return ReadingInfo.rareKanaForm;
       case '&sk;':
         return ReadingInfo.searchOnlyForm;
       default:
+        print('Unsupported reading info: $readingInfo');
         return null;
     }
   }
@@ -993,7 +997,7 @@ class DictionaryBuilder {
       case "&vz;":
         return PartOfSpeech.verbIchidanZuru;
       default:
-        print('Unknown part-of-speech');
+        print('Unsupported part of speech: $partOfSpeech');
         return PartOfSpeech.unknown;
     }
   }
@@ -1024,6 +1028,8 @@ class DictionaryBuilder {
         return Field.biology;
       case '&bot;':
         return Field.botany;
+      case '&boxing;':
+        return Field.boxing;
       case '&Buddh;':
         return Field.buddhism;
       case '&bus;':
@@ -1032,8 +1038,12 @@ class DictionaryBuilder {
         return Field.cardGames;
       case '&chem;':
         return Field.chemistry;
+      case '&chmyth;':
+        return Field.chineseMythology;
       case '&Christn;':
         return Field.christianity;
+      case '&civeng;':
+        return Field.civilEngineering;
       case '&cloth;':
         return Field.clothing;
       case '&comp;':
@@ -1056,6 +1066,8 @@ class DictionaryBuilder {
         return Field.engineering;
       case '&ent;':
         return Field.entomology;
+      case '&figskt;':
+        return Field.figureSkating;
       case '&film;':
         return Field.film;
       case '&finc;':
@@ -1086,6 +1098,10 @@ class DictionaryBuilder {
         return Field.hanafuda;
       case '&horse;':
         return Field.horseRacing;
+      case '&internet;':
+        return Field.internet;
+      case '&jpmyth;':
+        return Field.japaneseMythology;
       case '&kabuki;':
         return Field.kabuki;
       case '&law;':
@@ -1110,8 +1126,12 @@ class DictionaryBuilder {
         return Field.meteorology;
       case '&mil;':
         return Field.military;
+      case '&min;':
+        return Field.mineralogy;
       case '&mining;':
         return Field.mining;
+      case '&motor;':
+        return Field.motorsport;
       case '&music;':
         return Field.music;
       case '&noh;':
@@ -1136,6 +1156,8 @@ class DictionaryBuilder {
         return Field.politics;
       case '&print;':
         return Field.printing;
+      case '&prowres;':
+        return Field.professionalWrestling;
       case '&psy;':
         return Field.psychiatry;
       case '&psyanal;':
@@ -1160,17 +1182,22 @@ class DictionaryBuilder {
         return Field.stockMarket;
       case '&sumo;':
         return Field.sumo;
+      case '&surg;':
+        return Field.surgery;
       case '&telec;':
         return Field.telecommunications;
       case '&tradem;':
         return Field.trademark;
       case '&tv;':
         return Field.television;
+      case '&vet;':
+        return Field.veterinaryTerms;
       case '&vidg;':
         return Field.videoGames;
       case '&zool;':
         return Field.zoology;
       default:
+        print('Unsupported field: $field');
         return null;
     }
   }
@@ -1288,6 +1315,7 @@ class DictionaryBuilder {
       case '&yoji;':
         return MiscellaneousInfo.yojijukugo;
       default:
+        print('Unsupported miscellaneous info: $miscellaneousInfo');
         return null;
     }
   }
@@ -1319,6 +1347,7 @@ class DictionaryBuilder {
       case '&tsug;':
         return Dialect.tsugaruBen;
       default:
+        print('Unsupported dialect: $dialect');
         return null;
     }
   }
@@ -1525,6 +1554,9 @@ class DictionaryBuilder {
         break;
       case 'urd':
         languageSource.add(LanguageSource.urd);
+        break;
+      case 'uzb':
+        languageSource.add(LanguageSource.uzb);
         break;
       case 'vie':
         languageSource.add(LanguageSource.vie);
@@ -2507,6 +2539,7 @@ class DictionaryBuilder {
       case 'rel':
         return ProperNounType.religion;
       default:
+        print('Unsupported proper noun type: $type');
         return ProperNounType.unknown;
     }
   }
