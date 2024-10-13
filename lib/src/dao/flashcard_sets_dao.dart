@@ -59,8 +59,6 @@ class FlashcardSetsDao extends DatabaseAccessor<AppDatabase>
 
   Future<void> importBackup(String source) async {
     final flashcardSet = FlashcardSet.fromBackupJson(source);
-    flashcardSet.name = flashcardSet.name.sanitizeName();
-    if (flashcardSet.name.isEmpty) flashcardSet.name = 'Flashcard set';
 
     // Remove predefined dictionary lists that don't exist
     for (int i = 0; i < flashcardSet.predefinedDictionaryLists.length; i++) {
