@@ -242,6 +242,15 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
     for (final kanji in kanjiList.reversed) {
       await addDictionaryItem(dictionaryList, kanji);
     }
+
+    // Set original timestamp
+    await (db.update(db.myDictionaryLists)
+          ..where((list) => list.id.equals(dictionaryList.id)))
+        .write(
+      MyDictionaryListsCompanion(
+        timestamp: Value(dictionaryList.timestamp),
+      ),
+    );
   }
 
   Future<MyDictionaryList?> importShare(String source) async {
