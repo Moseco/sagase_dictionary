@@ -12,10 +12,7 @@ dependencies:
   xml: ^6.4.2
   meta: ^1.10.0
   archive: ^3.4.9
-  kana_kit: # TODO change to main one after merge
-    git:
-      url: https://github.com/Moseco/kana_kit
-      ref: 'f79e782'
+  kana_kit: ^2.1.1
   diacritic: ^0.1.5
 
 dev_dependencies:
