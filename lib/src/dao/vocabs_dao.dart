@@ -380,6 +380,7 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
 
   Future<List<Vocab>> search(String text) async {
     final cleanedText = RegExp.escape(text).toLowerCase().removeDiacritics();
+    if (cleanedText.isEmpty) return [];
 
     if (_kanaKit.isRomaji(cleanedText)) {
       // Romaji

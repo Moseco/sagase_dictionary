@@ -74,6 +74,7 @@ class ProperNounsDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<ProperNoun>> search(String text) async {
     final cleanedText = RegExp.escape(text).toLowerCase().removeDiacritics();
+    if (cleanedText.isEmpty) return [];
 
     if (_kanaKit.isRomaji(cleanedText)) {
       // Romaji
