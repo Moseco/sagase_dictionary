@@ -384,6 +384,8 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
     if (_kanaKit.isRomaji(cleanedText)) {
       // Romaji
       final splits = cleanedText.splitWords();
+      if (splits.isEmpty) splits.add(cleanedText);
+
       if (splits.length > 1) {
         // Search by definition
         return _searchByDefinition(cleanedText, splits);

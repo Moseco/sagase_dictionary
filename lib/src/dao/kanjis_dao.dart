@@ -245,6 +245,8 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
     if (_kanaKit.isRomaji(cleanedText)) {
       // Romaji
       final splits = cleanedText.splitWords();
+      if (splits.isEmpty) splits.add(cleanedText);
+
       if (splits.length > 1) {
         // Search by meaning
         return _searchByMeaning(cleanedText, splits);

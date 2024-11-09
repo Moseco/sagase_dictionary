@@ -450,6 +450,11 @@ void main() {
         expect(results.length, 1);
         expect(results[0].kanji, '以');
       });
+
+      test('Searching only symbols', () async {
+        final results = await database.kanjisDao.search('.');
+        expect(results.length, 0);
+      });
     });
   });
 }

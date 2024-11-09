@@ -317,71 +317,84 @@ void main() {
     });
 
     group('search', () {
-      test('Definition single word', () async {
-        final results = await database.vocabsDao.search('shirt');
-        expect(results.length, 1);
-        expect(results[0].id, 1000160);
+      group('Definition', () {
+        test('Single word', () async {
+          final results = await database.vocabsDao.search('shirt');
+          expect(results.length, 1);
+          expect(results[0].id, 1000160);
+        });
+
+        test('Partial word', () async {
+          final results = await database.vocabsDao.search('shir');
+          expect(results.length, 1);
+          expect(results[0].id, 1000160);
+        });
+
+        test('Multiple words', () async {
+          final results = await database.vocabsDao.search('in a flash');
+          expect(results.length, 1);
+          expect(results[0].id, 1000390);
+        });
+
+        test('Single and partial word', () async {
+          final results = await database.vocabsDao.search('no ti');
+          expect(results.length, 2);
+          expect(results[0].id, 1000390);
+          expect(results[1].id, 1003430);
+        });
       });
 
-      test('Definition partial word', () async {
-        final results = await database.vocabsDao.search('shir');
-        expect(results.length, 1);
-        expect(results[0].id, 1000160);
+      group('Writing', () {
+        test('Complete', () async {
+          final results = await database.vocabsDao.search('行く');
+          expect(results.length, 1);
+          expect(results[0].id, 1578850);
+        });
+
+        test('Partial', () async {
+          final results = await database.vocabsDao.search('行');
+          expect(results.length, 1);
+          expect(results[0].id, 1578850);
+        });
       });
 
-      test('Definition multiple words', () async {
-        final results = await database.vocabsDao.search('in a flash');
-        expect(results.length, 1);
-        expect(results[0].id, 1000390);
+      group('Reading', () {
+        test('Complete', () async {
+          final results = await database.vocabsDao.search('きっと');
+          expect(results.length, 1);
+          expect(results[0].id, 1003430);
+        });
+
+        test('Partial', () async {
+          final results = await database.vocabsDao.search('きっ');
+          expect(results.length, 1);
+          expect(results[0].id, 1003430);
+        });
       });
 
-      test('Definition single and partial word', () async {
-        final results = await database.vocabsDao.search('no ti');
-        expect(results.length, 2);
-        expect(results[0].id, 1000390);
-        expect(results[1].id, 1003430);
+      group('Reading romaji', () {
+        test('Complete', () async {
+          final results = await database.vocabsDao.search('kitto');
+          expect(results.length, 1);
+          expect(results[0].id, 1003430);
+        });
+
+        test('Partial', () async {
+          final results = await database.vocabsDao.search('kitt');
+          expect(results.length, 1);
+          expect(results[0].id, 1003430);
+        });
+
+        test('Simplified', () async {
+          final results = await database.vocabsDao.search('kito');
+          expect(results.length, 1);
+          expect(results[0].id, 1003430);
+        });
       });
 
-      test('Writing complete', () async {
-        final results = await database.vocabsDao.search('行く');
-        expect(results.length, 1);
-        expect(results[0].id, 1578850);
-      });
-
-      test('Writing partial', () async {
-        final results = await database.vocabsDao.search('行');
-        expect(results.length, 1);
-        expect(results[0].id, 1578850);
-      });
-
-      test('Reading complete', () async {
-        final results = await database.vocabsDao.search('きっと');
-        expect(results.length, 1);
-        expect(results[0].id, 1003430);
-      });
-
-      test('Reading partial', () async {
-        final results = await database.vocabsDao.search('きっ');
-        expect(results.length, 1);
-        expect(results[0].id, 1003430);
-      });
-
-      test('Reading romaji complete', () async {
-        final results = await database.vocabsDao.search('kitto');
-        expect(results.length, 1);
-        expect(results[0].id, 1003430);
-      });
-
-      test('Reading romaji partial', () async {
-        final results = await database.vocabsDao.search('kitt');
-        expect(results.length, 1);
-        expect(results[0].id, 1003430);
-      });
-
-      test('Reading romaji simplified', () async {
-        final results = await database.vocabsDao.search('kito');
-        expect(results.length, 1);
-        expect(results[0].id, 1003430);
+      test('Searching only symbols', () async {
+        final results = await database.vocabsDao.search('.');
+        expect(results.length, 0);
       });
     });
   });

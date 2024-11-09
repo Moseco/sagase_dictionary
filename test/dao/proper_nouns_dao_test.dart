@@ -239,6 +239,11 @@ void main() {
         expect(results.length, 1);
         expect(results[0].reading, 'うちゅうきかん');
       });
+
+      test('Searching only symbols', () async {
+        final results = await database.properNounsDao.search('.');
+        expect(results.length, 0);
+      });
     });
   });
 }

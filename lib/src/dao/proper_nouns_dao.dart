@@ -78,6 +78,7 @@ class ProperNounsDao extends DatabaseAccessor<AppDatabase>
     if (_kanaKit.isRomaji(cleanedText)) {
       // Romaji
       final splits = cleanedText.splitWords();
+      if (splits.isEmpty) splits.add(cleanedText);
 
       if (splits.length == 1) {
         final lengthColumn = db.properNouns.romaji.length.iif(
