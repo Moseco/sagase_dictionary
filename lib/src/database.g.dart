@@ -3015,18 +3015,20 @@ class $SpacedRepetitionDatasTable extends SpacedRepetitionDatas
   late final GeneratedColumn<int> vocabId = GeneratedColumn<int>(
       'vocab_id', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       $customConstraints:
-          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )');
+          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )',
+      defaultValue: const CustomExpression('0'));
   static const VerificationMeta _kanjiIdMeta =
       const VerificationMeta('kanjiId');
   @override
   late final GeneratedColumn<int> kanjiId = GeneratedColumn<int>(
       'kanji_id', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       $customConstraints:
-          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )');
+          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )',
+      defaultValue: const CustomExpression('0'));
   static const VerificationMeta _frontTypeMeta =
       const VerificationMeta('frontType');
   @override
@@ -3097,14 +3099,10 @@ class $SpacedRepetitionDatasTable extends SpacedRepetitionDatas
     if (data.containsKey('vocab_id')) {
       context.handle(_vocabIdMeta,
           vocabId.isAcceptableOrUnknown(data['vocab_id']!, _vocabIdMeta));
-    } else if (isInserting) {
-      context.missing(_vocabIdMeta);
     }
     if (data.containsKey('kanji_id')) {
       context.handle(_kanjiIdMeta,
           kanjiId.isAcceptableOrUnknown(data['kanji_id']!, _kanjiIdMeta));
-    } else if (isInserting) {
-      context.missing(_kanjiIdMeta);
     }
     context.handle(_frontTypeMeta, const VerificationResult.success());
     if (data.containsKey('interval')) {
@@ -3214,8 +3212,8 @@ class SpacedRepetitionDatasCompanion
     this.totalWrongAnswers = const Value.absent(),
   });
   SpacedRepetitionDatasCompanion.insert({
-    required int vocabId,
-    required int kanjiId,
+    this.vocabId = const Value.absent(),
+    this.kanjiId = const Value.absent(),
     required FrontType frontType,
     required int interval,
     required int repetitions,
@@ -3223,9 +3221,7 @@ class SpacedRepetitionDatasCompanion
     this.dueDate = const Value.absent(),
     required int totalAnswers,
     required int totalWrongAnswers,
-  })  : vocabId = Value(vocabId),
-        kanjiId = Value(kanjiId),
-        frontType = Value(frontType),
+  })  : frontType = Value(frontType),
         interval = Value(interval),
         repetitions = Value(repetitions),
         easeFactor = Value(easeFactor),
@@ -4956,18 +4952,20 @@ class $MyDictionaryListItemsTable extends MyDictionaryListItems
   late final GeneratedColumn<int> vocabId = GeneratedColumn<int>(
       'vocab_id', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       $customConstraints:
-          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )');
+          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )',
+      defaultValue: const CustomExpression('0'));
   static const VerificationMeta _kanjiIdMeta =
       const VerificationMeta('kanjiId');
   @override
   late final GeneratedColumn<int> kanjiId = GeneratedColumn<int>(
       'kanji_id', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       $customConstraints:
-          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )');
+          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )',
+      defaultValue: const CustomExpression('0'));
   @override
   List<GeneratedColumn> get $columns => [id, listId, vocabId, kanjiId];
   @override
@@ -4993,14 +4991,10 @@ class $MyDictionaryListItemsTable extends MyDictionaryListItems
     if (data.containsKey('vocab_id')) {
       context.handle(_vocabIdMeta,
           vocabId.isAcceptableOrUnknown(data['vocab_id']!, _vocabIdMeta));
-    } else if (isInserting) {
-      context.missing(_vocabIdMeta);
     }
     if (data.containsKey('kanji_id')) {
       context.handle(_kanjiIdMeta,
           kanjiId.isAcceptableOrUnknown(data['kanji_id']!, _kanjiIdMeta));
-    } else if (isInserting) {
-      context.missing(_kanjiIdMeta);
     }
     return context;
   }
@@ -5138,11 +5132,9 @@ class MyDictionaryListItemsCompanion
   MyDictionaryListItemsCompanion.insert({
     this.id = const Value.absent(),
     required int listId,
-    required int vocabId,
-    required int kanjiId,
-  })  : listId = Value(listId),
-        vocabId = Value(vocabId),
-        kanjiId = Value(kanjiId);
+    this.vocabId = const Value.absent(),
+    this.kanjiId = const Value.absent(),
+  }) : listId = Value(listId);
   static Insertable<MyDictionaryListItem> custom({
     Expression<int>? id,
     Expression<int>? listId,
@@ -6343,63 +6335,82 @@ typedef $$VocabWritingsTableUpdateCompanionBuilder = VocabWritingsCompanion
 });
 
 class $$VocabWritingsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $VocabWritingsTable> {
-  $$VocabWritingsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $VocabWritingsTable> {
+  $$VocabWritingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get vocabId => $state.composableBuilder(
-      column: $state.table.vocabId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get vocabId => $composableBuilder(
+      column: $table.vocabId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get writing => $state.composableBuilder(
-      column: $state.table.writing,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get writing => $composableBuilder(
+      column: $table.writing, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get writingSearchForm => $state.composableBuilder(
-      column: $state.table.writingSearchForm,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get writingSearchForm => $composableBuilder(
+      column: $table.writingSearchForm,
+      builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<List<WritingInfo>?, List<WritingInfo>, String>
-      get info => $state.composableBuilder(
-          column: $state.table.info,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get info => $composableBuilder(
+          column: $table.info,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$VocabWritingsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $VocabWritingsTable> {
-  $$VocabWritingsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $VocabWritingsTable> {
+  $$VocabWritingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get vocabId => $state.composableBuilder(
-      column: $state.table.vocabId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get vocabId => $composableBuilder(
+      column: $table.vocabId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get writing => $state.composableBuilder(
-      column: $state.table.writing,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get writing => $composableBuilder(
+      column: $table.writing, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get writingSearchForm => $state.composableBuilder(
-      column: $state.table.writingSearchForm,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get writingSearchForm => $composableBuilder(
+      column: $table.writingSearchForm,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get info => $state.composableBuilder(
-      column: $state.table.info,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get info => $composableBuilder(
+      column: $table.info, builder: (column) => ColumnOrderings(column));
+}
+
+class $$VocabWritingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $VocabWritingsTable> {
+  $$VocabWritingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get vocabId =>
+      $composableBuilder(column: $table.vocabId, builder: (column) => column);
+
+  GeneratedColumn<String> get writing =>
+      $composableBuilder(column: $table.writing, builder: (column) => column);
+
+  GeneratedColumn<String> get writingSearchForm => $composableBuilder(
+      column: $table.writingSearchForm, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<WritingInfo>?, String> get info =>
+      $composableBuilder(column: $table.info, builder: (column) => column);
 }
 
 class $$VocabWritingsTableTableManager extends RootTableManager<
@@ -6408,6 +6419,7 @@ class $$VocabWritingsTableTableManager extends RootTableManager<
     VocabWriting,
     $$VocabWritingsTableFilterComposer,
     $$VocabWritingsTableOrderingComposer,
+    $$VocabWritingsTableAnnotationComposer,
     $$VocabWritingsTableCreateCompanionBuilder,
     $$VocabWritingsTableUpdateCompanionBuilder,
     (
@@ -6420,10 +6432,12 @@ class $$VocabWritingsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$VocabWritingsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$VocabWritingsTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$VocabWritingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VocabWritingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VocabWritingsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> vocabId = const Value.absent(),
@@ -6465,6 +6479,7 @@ typedef $$VocabWritingsTableProcessedTableManager = ProcessedTableManager<
     VocabWriting,
     $$VocabWritingsTableFilterComposer,
     $$VocabWritingsTableOrderingComposer,
+    $$VocabWritingsTableAnnotationComposer,
     $$VocabWritingsTableCreateCompanionBuilder,
     $$VocabWritingsTableUpdateCompanionBuilder,
     (
@@ -6499,108 +6514,129 @@ typedef $$VocabReadingsTableUpdateCompanionBuilder = VocabReadingsCompanion
 });
 
 class $$VocabReadingsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $VocabReadingsTable> {
-  $$VocabReadingsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $VocabReadingsTable> {
+  $$VocabReadingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get vocabId => $state.composableBuilder(
-      column: $state.table.vocabId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get vocabId => $composableBuilder(
+      column: $table.vocabId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get reading => $state.composableBuilder(
-      column: $state.table.reading,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get reading => $composableBuilder(
+      column: $table.reading, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get readingSearchForm => $state.composableBuilder(
-      column: $state.table.readingSearchForm,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get readingSearchForm => $composableBuilder(
+      column: $table.readingSearchForm,
+      builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get readingRomaji => $state.composableBuilder(
-      column: $state.table.readingRomaji,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get readingRomaji => $composableBuilder(
+      column: $table.readingRomaji, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get readingRomajiSimplified => $state.composableBuilder(
-      column: $state.table.readingRomajiSimplified,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get readingRomajiSimplified => $composableBuilder(
+      column: $table.readingRomajiSimplified,
+      builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<List<String>?, List<String>, String>
-      get associatedWritings => $state.composableBuilder(
-          column: $state.table.associatedWritings,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get associatedWritings => $composableBuilder(
+          column: $table.associatedWritings,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<List<ReadingInfo>?, List<ReadingInfo>, String>
-      get info => $state.composableBuilder(
-          column: $state.table.info,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get info => $composableBuilder(
+          column: $table.info,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<List<int>?, List<int>, String>
-      get pitchAccents => $state.composableBuilder(
-          column: $state.table.pitchAccents,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get pitchAccents => $composableBuilder(
+          column: $table.pitchAccents,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$VocabReadingsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $VocabReadingsTable> {
-  $$VocabReadingsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $VocabReadingsTable> {
+  $$VocabReadingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get vocabId => $state.composableBuilder(
-      column: $state.table.vocabId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get vocabId => $composableBuilder(
+      column: $table.vocabId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get reading => $state.composableBuilder(
-      column: $state.table.reading,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get reading => $composableBuilder(
+      column: $table.reading, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get readingSearchForm => $state.composableBuilder(
-      column: $state.table.readingSearchForm,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get readingSearchForm => $composableBuilder(
+      column: $table.readingSearchForm,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get readingRomaji => $state.composableBuilder(
-      column: $state.table.readingRomaji,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get readingRomaji => $composableBuilder(
+      column: $table.readingRomaji,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get readingRomajiSimplified =>
-      $state.composableBuilder(
-          column: $state.table.readingRomajiSimplified,
-          builder: (column, joinBuilders) =>
-              ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get readingRomajiSimplified => $composableBuilder(
+      column: $table.readingRomajiSimplified,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get associatedWritings => $state.composableBuilder(
-      column: $state.table.associatedWritings,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get associatedWritings => $composableBuilder(
+      column: $table.associatedWritings,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get info => $state.composableBuilder(
-      column: $state.table.info,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get info => $composableBuilder(
+      column: $table.info, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get pitchAccents => $state.composableBuilder(
-      column: $state.table.pitchAccents,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get pitchAccents => $composableBuilder(
+      column: $table.pitchAccents,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$VocabReadingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $VocabReadingsTable> {
+  $$VocabReadingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get vocabId =>
+      $composableBuilder(column: $table.vocabId, builder: (column) => column);
+
+  GeneratedColumn<String> get reading =>
+      $composableBuilder(column: $table.reading, builder: (column) => column);
+
+  GeneratedColumn<String> get readingSearchForm => $composableBuilder(
+      column: $table.readingSearchForm, builder: (column) => column);
+
+  GeneratedColumn<String> get readingRomaji => $composableBuilder(
+      column: $table.readingRomaji, builder: (column) => column);
+
+  GeneratedColumn<String> get readingRomajiSimplified => $composableBuilder(
+      column: $table.readingRomajiSimplified, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>?, String>
+      get associatedWritings => $composableBuilder(
+          column: $table.associatedWritings, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<ReadingInfo>?, String> get info =>
+      $composableBuilder(column: $table.info, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<int>?, String> get pitchAccents =>
+      $composableBuilder(
+          column: $table.pitchAccents, builder: (column) => column);
 }
 
 class $$VocabReadingsTableTableManager extends RootTableManager<
@@ -6609,6 +6645,7 @@ class $$VocabReadingsTableTableManager extends RootTableManager<
     VocabReading,
     $$VocabReadingsTableFilterComposer,
     $$VocabReadingsTableOrderingComposer,
+    $$VocabReadingsTableAnnotationComposer,
     $$VocabReadingsTableCreateCompanionBuilder,
     $$VocabReadingsTableUpdateCompanionBuilder,
     (
@@ -6621,10 +6658,12 @@ class $$VocabReadingsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$VocabReadingsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$VocabReadingsTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$VocabReadingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VocabReadingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VocabReadingsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> vocabId = const Value.absent(),
@@ -6682,6 +6721,7 @@ typedef $$VocabReadingsTableProcessedTableManager = ProcessedTableManager<
     VocabReading,
     $$VocabReadingsTableFilterComposer,
     $$VocabReadingsTableOrderingComposer,
+    $$VocabReadingsTableAnnotationComposer,
     $$VocabReadingsTableCreateCompanionBuilder,
     $$VocabReadingsTableUpdateCompanionBuilder,
     (
@@ -6704,54 +6744,74 @@ typedef $$VocabsTableUpdateCompanionBuilder = VocabsCompanion Function({
 });
 
 class $$VocabsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $VocabsTable> {
-  $$VocabsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $VocabsTable> {
+  $$VocabsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<List<PartOfSpeech>?, List<PartOfSpeech>,
           String>
-      get pos => $state.composableBuilder(
-          column: $state.table.pos,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get pos => $composableBuilder(
+          column: $table.pos,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
-  ColumnFilters<bool> get common => $state.composableBuilder(
-      column: $state.table.common,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<bool> get common => $composableBuilder(
+      column: $table.common, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get frequencyScore => $state.composableBuilder(
-      column: $state.table.frequencyScore,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get frequencyScore => $composableBuilder(
+      column: $table.frequencyScore,
+      builder: (column) => ColumnFilters(column));
 }
 
 class $$VocabsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $VocabsTable> {
-  $$VocabsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $VocabsTable> {
+  $$VocabsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get pos => $state.composableBuilder(
-      column: $state.table.pos,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get pos => $composableBuilder(
+      column: $table.pos, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get common => $state.composableBuilder(
-      column: $state.table.common,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<bool> get common => $composableBuilder(
+      column: $table.common, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get frequencyScore => $state.composableBuilder(
-      column: $state.table.frequencyScore,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get frequencyScore => $composableBuilder(
+      column: $table.frequencyScore,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$VocabsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $VocabsTable> {
+  $$VocabsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<PartOfSpeech>?, String> get pos =>
+      $composableBuilder(column: $table.pos, builder: (column) => column);
+
+  GeneratedColumn<bool> get common =>
+      $composableBuilder(column: $table.common, builder: (column) => column);
+
+  GeneratedColumn<int> get frequencyScore => $composableBuilder(
+      column: $table.frequencyScore, builder: (column) => column);
 }
 
 class $$VocabsTableTableManager extends RootTableManager<
@@ -6760,6 +6820,7 @@ class $$VocabsTableTableManager extends RootTableManager<
     Vocab,
     $$VocabsTableFilterComposer,
     $$VocabsTableOrderingComposer,
+    $$VocabsTableAnnotationComposer,
     $$VocabsTableCreateCompanionBuilder,
     $$VocabsTableUpdateCompanionBuilder,
     (Vocab, BaseReferences<_$AppDatabase, $VocabsTable, Vocab>),
@@ -6769,10 +6830,12 @@ class $$VocabsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$VocabsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$VocabsTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$VocabsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VocabsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VocabsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<List<PartOfSpeech>?> pos = const Value.absent(),
@@ -6810,6 +6873,7 @@ typedef $$VocabsTableProcessedTableManager = ProcessedTableManager<
     Vocab,
     $$VocabsTableFilterComposer,
     $$VocabsTableOrderingComposer,
+    $$VocabsTableAnnotationComposer,
     $$VocabsTableCreateCompanionBuilder,
     $$VocabsTableUpdateCompanionBuilder,
     (Vocab, BaseReferences<_$AppDatabase, $VocabsTable, Vocab>),
@@ -6851,175 +6915,191 @@ typedef $$VocabDefinitionsTableUpdateCompanionBuilder
 });
 
 class $$VocabDefinitionsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $VocabDefinitionsTable> {
-  $$VocabDefinitionsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $VocabDefinitionsTable> {
+  $$VocabDefinitionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get vocabId => $state.composableBuilder(
-      column: $state.table.vocabId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get vocabId => $composableBuilder(
+      column: $table.vocabId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get definition => $state.composableBuilder(
-      column: $state.table.definition,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get definition => $composableBuilder(
+      column: $table.definition, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get additionalInfo => $state.composableBuilder(
-      column: $state.table.additionalInfo,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get additionalInfo => $composableBuilder(
+      column: $table.additionalInfo,
+      builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<List<PartOfSpeech>?, List<PartOfSpeech>,
           String>
-      get pos => $state.composableBuilder(
-          column: $state.table.pos,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get pos => $composableBuilder(
+          column: $table.pos,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<List<String>?, List<String>, String>
-      get appliesTo => $state.composableBuilder(
-          column: $state.table.appliesTo,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get appliesTo => $composableBuilder(
+          column: $table.appliesTo,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<List<Field>?, List<Field>, String>
-      get fields => $state.composableBuilder(
-          column: $state.table.fields,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get fields => $composableBuilder(
+          column: $table.fields,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<List<MiscellaneousInfo>?,
           List<MiscellaneousInfo>, String>
-      get miscInfo => $state.composableBuilder(
-          column: $state.table.miscInfo,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get miscInfo => $composableBuilder(
+          column: $table.miscInfo,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<List<Dialect>?, List<Dialect>, String>
-      get dialects => $state.composableBuilder(
-          column: $state.table.dialects,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get dialects => $composableBuilder(
+          column: $table.dialects,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<List<VocabExample>?, List<VocabExample>,
           String>
-      get examples => $state.composableBuilder(
-          column: $state.table.examples,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get examples => $composableBuilder(
+          column: $table.examples,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<List<LanguageSource>?, List<LanguageSource>,
           String>
-      get languageSource => $state.composableBuilder(
-          column: $state.table.languageSource,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get languageSource => $composableBuilder(
+          column: $table.languageSource,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
-  ColumnFilters<bool> get waseieigo => $state.composableBuilder(
-      column: $state.table.waseieigo,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<bool> get waseieigo => $composableBuilder(
+      column: $table.waseieigo, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<List<VocabReference>?, List<VocabReference>,
           String>
-      get crossReferences => $state.composableBuilder(
-          column: $state.table.crossReferences,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get crossReferences => $composableBuilder(
+          column: $table.crossReferences,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<List<VocabReference>?, List<VocabReference>,
           String>
-      get antonyms => $state.composableBuilder(
-          column: $state.table.antonyms,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get antonyms => $composableBuilder(
+          column: $table.antonyms,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$VocabDefinitionsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $VocabDefinitionsTable> {
-  $$VocabDefinitionsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $VocabDefinitionsTable> {
+  $$VocabDefinitionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get vocabId => $state.composableBuilder(
-      column: $state.table.vocabId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get vocabId => $composableBuilder(
+      column: $table.vocabId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get definition => $state.composableBuilder(
-      column: $state.table.definition,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get definition => $composableBuilder(
+      column: $table.definition, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get additionalInfo => $state.composableBuilder(
-      column: $state.table.additionalInfo,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get additionalInfo => $composableBuilder(
+      column: $table.additionalInfo,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get pos => $state.composableBuilder(
-      column: $state.table.pos,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get pos => $composableBuilder(
+      column: $table.pos, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get appliesTo => $state.composableBuilder(
-      column: $state.table.appliesTo,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get appliesTo => $composableBuilder(
+      column: $table.appliesTo, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get fields => $state.composableBuilder(
-      column: $state.table.fields,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get fields => $composableBuilder(
+      column: $table.fields, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get miscInfo => $state.composableBuilder(
-      column: $state.table.miscInfo,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get miscInfo => $composableBuilder(
+      column: $table.miscInfo, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get dialects => $state.composableBuilder(
-      column: $state.table.dialects,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get dialects => $composableBuilder(
+      column: $table.dialects, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get examples => $state.composableBuilder(
-      column: $state.table.examples,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get examples => $composableBuilder(
+      column: $table.examples, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get languageSource => $state.composableBuilder(
-      column: $state.table.languageSource,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get languageSource => $composableBuilder(
+      column: $table.languageSource,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get waseieigo => $state.composableBuilder(
-      column: $state.table.waseieigo,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<bool> get waseieigo => $composableBuilder(
+      column: $table.waseieigo, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get crossReferences => $state.composableBuilder(
-      column: $state.table.crossReferences,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get crossReferences => $composableBuilder(
+      column: $table.crossReferences,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get antonyms => $state.composableBuilder(
-      column: $state.table.antonyms,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get antonyms => $composableBuilder(
+      column: $table.antonyms, builder: (column) => ColumnOrderings(column));
+}
+
+class $$VocabDefinitionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $VocabDefinitionsTable> {
+  $$VocabDefinitionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get vocabId =>
+      $composableBuilder(column: $table.vocabId, builder: (column) => column);
+
+  GeneratedColumn<String> get definition => $composableBuilder(
+      column: $table.definition, builder: (column) => column);
+
+  GeneratedColumn<String> get additionalInfo => $composableBuilder(
+      column: $table.additionalInfo, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<PartOfSpeech>?, String> get pos =>
+      $composableBuilder(column: $table.pos, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>?, String> get appliesTo =>
+      $composableBuilder(column: $table.appliesTo, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<Field>?, String> get fields =>
+      $composableBuilder(column: $table.fields, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<MiscellaneousInfo>?, String>
+      get miscInfo => $composableBuilder(
+          column: $table.miscInfo, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<Dialect>?, String> get dialects =>
+      $composableBuilder(column: $table.dialects, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<VocabExample>?, String> get examples =>
+      $composableBuilder(column: $table.examples, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<LanguageSource>?, String>
+      get languageSource => $composableBuilder(
+          column: $table.languageSource, builder: (column) => column);
+
+  GeneratedColumn<bool> get waseieigo =>
+      $composableBuilder(column: $table.waseieigo, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<VocabReference>?, String>
+      get crossReferences => $composableBuilder(
+          column: $table.crossReferences, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<VocabReference>?, String>
+      get antonyms => $composableBuilder(
+          column: $table.antonyms, builder: (column) => column);
 }
 
 class $$VocabDefinitionsTableTableManager extends RootTableManager<
@@ -7028,6 +7108,7 @@ class $$VocabDefinitionsTableTableManager extends RootTableManager<
     VocabDefinition,
     $$VocabDefinitionsTableFilterComposer,
     $$VocabDefinitionsTableOrderingComposer,
+    $$VocabDefinitionsTableAnnotationComposer,
     $$VocabDefinitionsTableCreateCompanionBuilder,
     $$VocabDefinitionsTableUpdateCompanionBuilder,
     (
@@ -7041,10 +7122,12 @@ class $$VocabDefinitionsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$VocabDefinitionsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$VocabDefinitionsTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$VocabDefinitionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VocabDefinitionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VocabDefinitionsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> vocabId = const Value.absent(),
@@ -7122,6 +7205,7 @@ typedef $$VocabDefinitionsTableProcessedTableManager = ProcessedTableManager<
     VocabDefinition,
     $$VocabDefinitionsTableFilterComposer,
     $$VocabDefinitionsTableOrderingComposer,
+    $$VocabDefinitionsTableAnnotationComposer,
     $$VocabDefinitionsTableCreateCompanionBuilder,
     $$VocabDefinitionsTableUpdateCompanionBuilder,
     (
@@ -7144,41 +7228,60 @@ typedef $$VocabDefinitionWordsTableUpdateCompanionBuilder
 });
 
 class $$VocabDefinitionWordsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $VocabDefinitionWordsTable> {
-  $$VocabDefinitionWordsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $VocabDefinitionWordsTable> {
+  $$VocabDefinitionWordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get word => $state.composableBuilder(
-      column: $state.table.word,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get word => $composableBuilder(
+      column: $table.word, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get vocabId => $state.composableBuilder(
-      column: $state.table.vocabId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get vocabId => $composableBuilder(
+      column: $table.vocabId, builder: (column) => ColumnFilters(column));
 }
 
 class $$VocabDefinitionWordsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $VocabDefinitionWordsTable> {
-  $$VocabDefinitionWordsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $VocabDefinitionWordsTable> {
+  $$VocabDefinitionWordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get word => $state.composableBuilder(
-      column: $state.table.word,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get word => $composableBuilder(
+      column: $table.word, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get vocabId => $state.composableBuilder(
-      column: $state.table.vocabId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get vocabId => $composableBuilder(
+      column: $table.vocabId, builder: (column) => ColumnOrderings(column));
+}
+
+class $$VocabDefinitionWordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $VocabDefinitionWordsTable> {
+  $$VocabDefinitionWordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get word =>
+      $composableBuilder(column: $table.word, builder: (column) => column);
+
+  GeneratedColumn<int> get vocabId =>
+      $composableBuilder(column: $table.vocabId, builder: (column) => column);
 }
 
 class $$VocabDefinitionWordsTableTableManager extends RootTableManager<
@@ -7187,6 +7290,7 @@ class $$VocabDefinitionWordsTableTableManager extends RootTableManager<
     VocabDefinitionWord,
     $$VocabDefinitionWordsTableFilterComposer,
     $$VocabDefinitionWordsTableOrderingComposer,
+    $$VocabDefinitionWordsTableAnnotationComposer,
     $$VocabDefinitionWordsTableCreateCompanionBuilder,
     $$VocabDefinitionWordsTableUpdateCompanionBuilder,
     (
@@ -7201,10 +7305,14 @@ class $$VocabDefinitionWordsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $$VocabDefinitionWordsTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$VocabDefinitionWordsTableOrderingComposer(
-              ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$VocabDefinitionWordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VocabDefinitionWordsTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VocabDefinitionWordsTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> word = const Value.absent(),
@@ -7239,6 +7347,7 @@ typedef $$VocabDefinitionWordsTableProcessedTableManager
         VocabDefinitionWord,
         $$VocabDefinitionWordsTableFilterComposer,
         $$VocabDefinitionWordsTableOrderingComposer,
+        $$VocabDefinitionWordsTableAnnotationComposer,
         $$VocabDefinitionWordsTableCreateCompanionBuilder,
         $$VocabDefinitionWordsTableUpdateCompanionBuilder,
         (
@@ -7276,131 +7385,143 @@ typedef $$KanjisTableUpdateCompanionBuilder = KanjisCompanion Function({
 });
 
 class $$KanjisTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $KanjisTable> {
-  $$KanjisTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $KanjisTable> {
+  $$KanjisTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get kanji => $state.composableBuilder(
-      column: $state.table.kanji,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get kanji => $composableBuilder(
+      column: $table.kanji, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get radical => $state.composableBuilder(
-      column: $state.table.radical,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get radical => $composableBuilder(
+      column: $table.radical, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<List<String>?, List<String>, String>
-      get components => $state.composableBuilder(
-          column: $state.table.components,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get components => $composableBuilder(
+          column: $table.components,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<KanjiGrade?, KanjiGrade, int> get grade =>
-      $state.composableBuilder(
-          column: $state.table.grade,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      $composableBuilder(
+          column: $table.grade,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
-  ColumnFilters<int> get strokeCount => $state.composableBuilder(
-      column: $state.table.strokeCount,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get strokeCount => $composableBuilder(
+      column: $table.strokeCount, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get frequency => $state.composableBuilder(
-      column: $state.table.frequency,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get frequency => $composableBuilder(
+      column: $table.frequency, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<JlptLevel?, JlptLevel, int> get jlpt =>
-      $state.composableBuilder(
-          column: $state.table.jlpt,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      $composableBuilder(
+          column: $table.jlpt,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
-  ColumnFilters<String> get meaning => $state.composableBuilder(
-      column: $state.table.meaning,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get meaning => $composableBuilder(
+      column: $table.meaning, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<List<String>?, List<String>, String>
-      get strokes => $state.composableBuilder(
-          column: $state.table.strokes,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get strokes => $composableBuilder(
+          column: $table.strokes,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<List<int>?, List<int>, String> get compounds =>
-      $state.composableBuilder(
-          column: $state.table.compounds,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      $composableBuilder(
+          column: $table.compounds,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$KanjisTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $KanjisTable> {
-  $$KanjisTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $KanjisTable> {
+  $$KanjisTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get kanji => $state.composableBuilder(
-      column: $state.table.kanji,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get kanji => $composableBuilder(
+      column: $table.kanji, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get radical => $state.composableBuilder(
-      column: $state.table.radical,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get radical => $composableBuilder(
+      column: $table.radical, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get components => $state.composableBuilder(
-      column: $state.table.components,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get components => $composableBuilder(
+      column: $table.components, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get grade => $state.composableBuilder(
-      column: $state.table.grade,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get grade => $composableBuilder(
+      column: $table.grade, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get strokeCount => $state.composableBuilder(
-      column: $state.table.strokeCount,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get strokeCount => $composableBuilder(
+      column: $table.strokeCount, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get frequency => $state.composableBuilder(
-      column: $state.table.frequency,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get frequency => $composableBuilder(
+      column: $table.frequency, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get jlpt => $state.composableBuilder(
-      column: $state.table.jlpt,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get jlpt => $composableBuilder(
+      column: $table.jlpt, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get meaning => $state.composableBuilder(
-      column: $state.table.meaning,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get meaning => $composableBuilder(
+      column: $table.meaning, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get strokes => $state.composableBuilder(
-      column: $state.table.strokes,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get strokes => $composableBuilder(
+      column: $table.strokes, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get compounds => $state.composableBuilder(
-      column: $state.table.compounds,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get compounds => $composableBuilder(
+      column: $table.compounds, builder: (column) => ColumnOrderings(column));
+}
+
+class $$KanjisTableAnnotationComposer
+    extends Composer<_$AppDatabase, $KanjisTable> {
+  $$KanjisTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get kanji =>
+      $composableBuilder(column: $table.kanji, builder: (column) => column);
+
+  GeneratedColumn<String> get radical =>
+      $composableBuilder(column: $table.radical, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>?, String> get components =>
+      $composableBuilder(
+          column: $table.components, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<KanjiGrade?, int> get grade =>
+      $composableBuilder(column: $table.grade, builder: (column) => column);
+
+  GeneratedColumn<int> get strokeCount => $composableBuilder(
+      column: $table.strokeCount, builder: (column) => column);
+
+  GeneratedColumn<int> get frequency =>
+      $composableBuilder(column: $table.frequency, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<JlptLevel?, int> get jlpt =>
+      $composableBuilder(column: $table.jlpt, builder: (column) => column);
+
+  GeneratedColumn<String> get meaning =>
+      $composableBuilder(column: $table.meaning, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>?, String> get strokes =>
+      $composableBuilder(column: $table.strokes, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<int>?, String> get compounds =>
+      $composableBuilder(column: $table.compounds, builder: (column) => column);
 }
 
 class $$KanjisTableTableManager extends RootTableManager<
@@ -7409,6 +7530,7 @@ class $$KanjisTableTableManager extends RootTableManager<
     Kanji,
     $$KanjisTableFilterComposer,
     $$KanjisTableOrderingComposer,
+    $$KanjisTableAnnotationComposer,
     $$KanjisTableCreateCompanionBuilder,
     $$KanjisTableUpdateCompanionBuilder,
     (Kanji, BaseReferences<_$AppDatabase, $KanjisTable, Kanji>),
@@ -7418,10 +7540,12 @@ class $$KanjisTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$KanjisTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$KanjisTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$KanjisTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$KanjisTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$KanjisTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> kanji = const Value.absent(),
@@ -7487,6 +7611,7 @@ typedef $$KanjisTableProcessedTableManager = ProcessedTableManager<
     Kanji,
     $$KanjisTableFilterComposer,
     $$KanjisTableOrderingComposer,
+    $$KanjisTableAnnotationComposer,
     $$KanjisTableCreateCompanionBuilder,
     $$KanjisTableUpdateCompanionBuilder,
     (Kanji, BaseReferences<_$AppDatabase, $KanjisTable, Kanji>),
@@ -7514,84 +7639,103 @@ typedef $$KanjiReadingsTableUpdateCompanionBuilder = KanjiReadingsCompanion
 });
 
 class $$KanjiReadingsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $KanjiReadingsTable> {
-  $$KanjiReadingsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $KanjiReadingsTable> {
+  $$KanjiReadingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get kanjiId => $state.composableBuilder(
-      column: $state.table.kanjiId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get kanjiId => $composableBuilder(
+      column: $table.kanjiId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get reading => $state.composableBuilder(
-      column: $state.table.reading,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get reading => $composableBuilder(
+      column: $table.reading, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get readingSearchForm => $state.composableBuilder(
-      column: $state.table.readingSearchForm,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get readingSearchForm => $composableBuilder(
+      column: $table.readingSearchForm,
+      builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get readingRomaji => $state.composableBuilder(
-      column: $state.table.readingRomaji,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get readingRomaji => $composableBuilder(
+      column: $table.readingRomaji, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get readingRomajiSimplified => $state.composableBuilder(
-      column: $state.table.readingRomajiSimplified,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get readingRomajiSimplified => $composableBuilder(
+      column: $table.readingRomajiSimplified,
+      builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<KanjiReadingType, KanjiReadingType, int>
-      get type => $state.composableBuilder(
-          column: $state.table.type,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get type => $composableBuilder(
+          column: $table.type,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$KanjiReadingsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $KanjiReadingsTable> {
-  $$KanjiReadingsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $KanjiReadingsTable> {
+  $$KanjiReadingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get kanjiId => $state.composableBuilder(
-      column: $state.table.kanjiId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get kanjiId => $composableBuilder(
+      column: $table.kanjiId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get reading => $state.composableBuilder(
-      column: $state.table.reading,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get reading => $composableBuilder(
+      column: $table.reading, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get readingSearchForm => $state.composableBuilder(
-      column: $state.table.readingSearchForm,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get readingSearchForm => $composableBuilder(
+      column: $table.readingSearchForm,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get readingRomaji => $state.composableBuilder(
-      column: $state.table.readingRomaji,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get readingRomaji => $composableBuilder(
+      column: $table.readingRomaji,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get readingRomajiSimplified =>
-      $state.composableBuilder(
-          column: $state.table.readingRomajiSimplified,
-          builder: (column, joinBuilders) =>
-              ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get readingRomajiSimplified => $composableBuilder(
+      column: $table.readingRomajiSimplified,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get type => $state.composableBuilder(
-      column: $state.table.type,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get type => $composableBuilder(
+      column: $table.type, builder: (column) => ColumnOrderings(column));
+}
+
+class $$KanjiReadingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $KanjiReadingsTable> {
+  $$KanjiReadingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get kanjiId =>
+      $composableBuilder(column: $table.kanjiId, builder: (column) => column);
+
+  GeneratedColumn<String> get reading =>
+      $composableBuilder(column: $table.reading, builder: (column) => column);
+
+  GeneratedColumn<String> get readingSearchForm => $composableBuilder(
+      column: $table.readingSearchForm, builder: (column) => column);
+
+  GeneratedColumn<String> get readingRomaji => $composableBuilder(
+      column: $table.readingRomaji, builder: (column) => column);
+
+  GeneratedColumn<String> get readingRomajiSimplified => $composableBuilder(
+      column: $table.readingRomajiSimplified, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<KanjiReadingType, int> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
 }
 
 class $$KanjiReadingsTableTableManager extends RootTableManager<
@@ -7600,6 +7744,7 @@ class $$KanjiReadingsTableTableManager extends RootTableManager<
     KanjiReading,
     $$KanjiReadingsTableFilterComposer,
     $$KanjiReadingsTableOrderingComposer,
+    $$KanjiReadingsTableAnnotationComposer,
     $$KanjiReadingsTableCreateCompanionBuilder,
     $$KanjiReadingsTableUpdateCompanionBuilder,
     (
@@ -7612,10 +7757,12 @@ class $$KanjiReadingsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$KanjiReadingsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$KanjiReadingsTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$KanjiReadingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$KanjiReadingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$KanjiReadingsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> kanjiId = const Value.absent(),
@@ -7665,6 +7812,7 @@ typedef $$KanjiReadingsTableProcessedTableManager = ProcessedTableManager<
     KanjiReading,
     $$KanjiReadingsTableFilterComposer,
     $$KanjiReadingsTableOrderingComposer,
+    $$KanjiReadingsTableAnnotationComposer,
     $$KanjiReadingsTableCreateCompanionBuilder,
     $$KanjiReadingsTableUpdateCompanionBuilder,
     (
@@ -7687,41 +7835,60 @@ typedef $$KanjiMeaningWordsTableUpdateCompanionBuilder
 });
 
 class $$KanjiMeaningWordsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $KanjiMeaningWordsTable> {
-  $$KanjiMeaningWordsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $KanjiMeaningWordsTable> {
+  $$KanjiMeaningWordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get word => $state.composableBuilder(
-      column: $state.table.word,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get word => $composableBuilder(
+      column: $table.word, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get kanjiId => $state.composableBuilder(
-      column: $state.table.kanjiId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get kanjiId => $composableBuilder(
+      column: $table.kanjiId, builder: (column) => ColumnFilters(column));
 }
 
 class $$KanjiMeaningWordsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $KanjiMeaningWordsTable> {
-  $$KanjiMeaningWordsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $KanjiMeaningWordsTable> {
+  $$KanjiMeaningWordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get word => $state.composableBuilder(
-      column: $state.table.word,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get word => $composableBuilder(
+      column: $table.word, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get kanjiId => $state.composableBuilder(
-      column: $state.table.kanjiId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get kanjiId => $composableBuilder(
+      column: $table.kanjiId, builder: (column) => ColumnOrderings(column));
+}
+
+class $$KanjiMeaningWordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $KanjiMeaningWordsTable> {
+  $$KanjiMeaningWordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get word =>
+      $composableBuilder(column: $table.word, builder: (column) => column);
+
+  GeneratedColumn<int> get kanjiId =>
+      $composableBuilder(column: $table.kanjiId, builder: (column) => column);
 }
 
 class $$KanjiMeaningWordsTableTableManager extends RootTableManager<
@@ -7730,6 +7897,7 @@ class $$KanjiMeaningWordsTableTableManager extends RootTableManager<
     KanjiMeaningWord,
     $$KanjiMeaningWordsTableFilterComposer,
     $$KanjiMeaningWordsTableOrderingComposer,
+    $$KanjiMeaningWordsTableAnnotationComposer,
     $$KanjiMeaningWordsTableCreateCompanionBuilder,
     $$KanjiMeaningWordsTableUpdateCompanionBuilder,
     (
@@ -7743,10 +7911,13 @@ class $$KanjiMeaningWordsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$KanjiMeaningWordsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer: $$KanjiMeaningWordsTableOrderingComposer(
-              ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$KanjiMeaningWordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$KanjiMeaningWordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$KanjiMeaningWordsTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> word = const Value.absent(),
@@ -7780,6 +7951,7 @@ typedef $$KanjiMeaningWordsTableProcessedTableManager = ProcessedTableManager<
     KanjiMeaningWord,
     $$KanjiMeaningWordsTableFilterComposer,
     $$KanjiMeaningWordsTableOrderingComposer,
+    $$KanjiMeaningWordsTableAnnotationComposer,
     $$KanjiMeaningWordsTableCreateCompanionBuilder,
     $$KanjiMeaningWordsTableUpdateCompanionBuilder,
     (
@@ -7800,31 +7972,52 @@ typedef $$TextAnalysisHistoryItemsTableUpdateCompanionBuilder
 });
 
 class $$TextAnalysisHistoryItemsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $TextAnalysisHistoryItemsTable> {
-  $$TextAnalysisHistoryItemsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $TextAnalysisHistoryItemsTable> {
+  $$TextAnalysisHistoryItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get analysisText => $state.composableBuilder(
-      column: $state.table.analysisText,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get analysisText => $composableBuilder(
+      column: $table.analysisText, builder: (column) => ColumnFilters(column));
 }
 
 class $$TextAnalysisHistoryItemsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $TextAnalysisHistoryItemsTable> {
-  $$TextAnalysisHistoryItemsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $TextAnalysisHistoryItemsTable> {
+  $$TextAnalysisHistoryItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get analysisText => $state.composableBuilder(
-      column: $state.table.analysisText,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get analysisText => $composableBuilder(
+      column: $table.analysisText,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$TextAnalysisHistoryItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TextAnalysisHistoryItemsTable> {
+  $$TextAnalysisHistoryItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get analysisText => $composableBuilder(
+      column: $table.analysisText, builder: (column) => column);
 }
 
 class $$TextAnalysisHistoryItemsTableTableManager extends RootTableManager<
@@ -7833,6 +8026,7 @@ class $$TextAnalysisHistoryItemsTableTableManager extends RootTableManager<
     TextAnalysisHistoryItem,
     $$TextAnalysisHistoryItemsTableFilterComposer,
     $$TextAnalysisHistoryItemsTableOrderingComposer,
+    $$TextAnalysisHistoryItemsTableAnnotationComposer,
     $$TextAnalysisHistoryItemsTableCreateCompanionBuilder,
     $$TextAnalysisHistoryItemsTableUpdateCompanionBuilder,
     (
@@ -7847,10 +8041,15 @@ class $$TextAnalysisHistoryItemsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $$TextAnalysisHistoryItemsTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$TextAnalysisHistoryItemsTableOrderingComposer(
-              ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$TextAnalysisHistoryItemsTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TextAnalysisHistoryItemsTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TextAnalysisHistoryItemsTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> analysisText = const Value.absent(),
@@ -7881,6 +8080,7 @@ typedef $$TextAnalysisHistoryItemsTableProcessedTableManager
         TextAnalysisHistoryItem,
         $$TextAnalysisHistoryItemsTableFilterComposer,
         $$TextAnalysisHistoryItemsTableOrderingComposer,
+        $$TextAnalysisHistoryItemsTableAnnotationComposer,
         $$TextAnalysisHistoryItemsTableCreateCompanionBuilder,
         $$TextAnalysisHistoryItemsTableUpdateCompanionBuilder,
         (
@@ -7892,8 +8092,8 @@ typedef $$TextAnalysisHistoryItemsTableProcessedTableManager
         PrefetchHooks Function()>;
 typedef $$SpacedRepetitionDatasTableCreateCompanionBuilder
     = SpacedRepetitionDatasCompanion Function({
-  required int vocabId,
-  required int kanjiId,
+  Value<int> vocabId,
+  Value<int> kanjiId,
   required FrontType frontType,
   required int interval,
   required int repetitions,
@@ -7916,103 +8116,119 @@ typedef $$SpacedRepetitionDatasTableUpdateCompanionBuilder
 });
 
 class $$SpacedRepetitionDatasTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $SpacedRepetitionDatasTable> {
-  $$SpacedRepetitionDatasTableFilterComposer(super.$state);
-  ColumnFilters<int> get vocabId => $state.composableBuilder(
-      column: $state.table.vocabId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $SpacedRepetitionDatasTable> {
+  $$SpacedRepetitionDatasTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get vocabId => $composableBuilder(
+      column: $table.vocabId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get kanjiId => $state.composableBuilder(
-      column: $state.table.kanjiId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get kanjiId => $composableBuilder(
+      column: $table.kanjiId, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<FrontType, FrontType, int> get frontType =>
-      $state.composableBuilder(
-          column: $state.table.frontType,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      $composableBuilder(
+          column: $table.frontType,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
-  ColumnFilters<int> get interval => $state.composableBuilder(
-      column: $state.table.interval,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get interval => $composableBuilder(
+      column: $table.interval, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get repetitions => $state.composableBuilder(
-      column: $state.table.repetitions,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get repetitions => $composableBuilder(
+      column: $table.repetitions, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<double> get easeFactor => $state.composableBuilder(
-      column: $state.table.easeFactor,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<double> get easeFactor => $composableBuilder(
+      column: $table.easeFactor, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get dueDate => $state.composableBuilder(
-      column: $state.table.dueDate,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get dueDate => $composableBuilder(
+      column: $table.dueDate, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get totalAnswers => $state.composableBuilder(
-      column: $state.table.totalAnswers,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get totalAnswers => $composableBuilder(
+      column: $table.totalAnswers, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get totalWrongAnswers => $state.composableBuilder(
-      column: $state.table.totalWrongAnswers,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get totalWrongAnswers => $composableBuilder(
+      column: $table.totalWrongAnswers,
+      builder: (column) => ColumnFilters(column));
 }
 
 class $$SpacedRepetitionDatasTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $SpacedRepetitionDatasTable> {
-  $$SpacedRepetitionDatasTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get vocabId => $state.composableBuilder(
-      column: $state.table.vocabId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $SpacedRepetitionDatasTable> {
+  $$SpacedRepetitionDatasTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get vocabId => $composableBuilder(
+      column: $table.vocabId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get kanjiId => $state.composableBuilder(
-      column: $state.table.kanjiId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get kanjiId => $composableBuilder(
+      column: $table.kanjiId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get frontType => $state.composableBuilder(
-      column: $state.table.frontType,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get frontType => $composableBuilder(
+      column: $table.frontType, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get interval => $state.composableBuilder(
-      column: $state.table.interval,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get interval => $composableBuilder(
+      column: $table.interval, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get repetitions => $state.composableBuilder(
-      column: $state.table.repetitions,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get repetitions => $composableBuilder(
+      column: $table.repetitions, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<double> get easeFactor => $state.composableBuilder(
-      column: $state.table.easeFactor,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<double> get easeFactor => $composableBuilder(
+      column: $table.easeFactor, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get dueDate => $state.composableBuilder(
-      column: $state.table.dueDate,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get dueDate => $composableBuilder(
+      column: $table.dueDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get totalAnswers => $state.composableBuilder(
-      column: $state.table.totalAnswers,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get totalAnswers => $composableBuilder(
+      column: $table.totalAnswers,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get totalWrongAnswers => $state.composableBuilder(
-      column: $state.table.totalWrongAnswers,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get totalWrongAnswers => $composableBuilder(
+      column: $table.totalWrongAnswers,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$SpacedRepetitionDatasTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SpacedRepetitionDatasTable> {
+  $$SpacedRepetitionDatasTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get vocabId =>
+      $composableBuilder(column: $table.vocabId, builder: (column) => column);
+
+  GeneratedColumn<int> get kanjiId =>
+      $composableBuilder(column: $table.kanjiId, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<FrontType, int> get frontType =>
+      $composableBuilder(column: $table.frontType, builder: (column) => column);
+
+  GeneratedColumn<int> get interval =>
+      $composableBuilder(column: $table.interval, builder: (column) => column);
+
+  GeneratedColumn<int> get repetitions => $composableBuilder(
+      column: $table.repetitions, builder: (column) => column);
+
+  GeneratedColumn<double> get easeFactor => $composableBuilder(
+      column: $table.easeFactor, builder: (column) => column);
+
+  GeneratedColumn<int> get dueDate =>
+      $composableBuilder(column: $table.dueDate, builder: (column) => column);
+
+  GeneratedColumn<int> get totalAnswers => $composableBuilder(
+      column: $table.totalAnswers, builder: (column) => column);
+
+  GeneratedColumn<int> get totalWrongAnswers => $composableBuilder(
+      column: $table.totalWrongAnswers, builder: (column) => column);
 }
 
 class $$SpacedRepetitionDatasTableTableManager extends RootTableManager<
@@ -8021,6 +8237,7 @@ class $$SpacedRepetitionDatasTableTableManager extends RootTableManager<
     SpacedRepetitionData,
     $$SpacedRepetitionDatasTableFilterComposer,
     $$SpacedRepetitionDatasTableOrderingComposer,
+    $$SpacedRepetitionDatasTableAnnotationComposer,
     $$SpacedRepetitionDatasTableCreateCompanionBuilder,
     $$SpacedRepetitionDatasTableUpdateCompanionBuilder,
     (
@@ -8035,10 +8252,15 @@ class $$SpacedRepetitionDatasTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $$SpacedRepetitionDatasTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$SpacedRepetitionDatasTableOrderingComposer(
-              ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$SpacedRepetitionDatasTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SpacedRepetitionDatasTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SpacedRepetitionDatasTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> vocabId = const Value.absent(),
             Value<int> kanjiId = const Value.absent(),
@@ -8062,8 +8284,8 @@ class $$SpacedRepetitionDatasTableTableManager extends RootTableManager<
             totalWrongAnswers: totalWrongAnswers,
           ),
           createCompanionCallback: ({
-            required int vocabId,
-            required int kanjiId,
+            Value<int> vocabId = const Value.absent(),
+            Value<int> kanjiId = const Value.absent(),
             required FrontType frontType,
             required int interval,
             required int repetitions,
@@ -8097,6 +8319,7 @@ typedef $$SpacedRepetitionDatasTableProcessedTableManager
         SpacedRepetitionData,
         $$SpacedRepetitionDatasTableFilterComposer,
         $$SpacedRepetitionDatasTableOrderingComposer,
+        $$SpacedRepetitionDatasTableAnnotationComposer,
         $$SpacedRepetitionDatasTableCreateCompanionBuilder,
         $$SpacedRepetitionDatasTableUpdateCompanionBuilder,
         (
@@ -8118,31 +8341,51 @@ typedef $$SearchHistoryItemsTableUpdateCompanionBuilder
 });
 
 class $$SearchHistoryItemsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $SearchHistoryItemsTable> {
-  $$SearchHistoryItemsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $SearchHistoryItemsTable> {
+  $$SearchHistoryItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get searchText => $state.composableBuilder(
-      column: $state.table.searchText,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get searchText => $composableBuilder(
+      column: $table.searchText, builder: (column) => ColumnFilters(column));
 }
 
 class $$SearchHistoryItemsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $SearchHistoryItemsTable> {
-  $$SearchHistoryItemsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $SearchHistoryItemsTable> {
+  $$SearchHistoryItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get searchText => $state.composableBuilder(
-      column: $state.table.searchText,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get searchText => $composableBuilder(
+      column: $table.searchText, builder: (column) => ColumnOrderings(column));
+}
+
+class $$SearchHistoryItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SearchHistoryItemsTable> {
+  $$SearchHistoryItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get searchText => $composableBuilder(
+      column: $table.searchText, builder: (column) => column);
 }
 
 class $$SearchHistoryItemsTableTableManager extends RootTableManager<
@@ -8151,6 +8394,7 @@ class $$SearchHistoryItemsTableTableManager extends RootTableManager<
     SearchHistoryItem,
     $$SearchHistoryItemsTableFilterComposer,
     $$SearchHistoryItemsTableOrderingComposer,
+    $$SearchHistoryItemsTableAnnotationComposer,
     $$SearchHistoryItemsTableCreateCompanionBuilder,
     $$SearchHistoryItemsTableUpdateCompanionBuilder,
     (
@@ -8164,10 +8408,13 @@ class $$SearchHistoryItemsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$SearchHistoryItemsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer: $$SearchHistoryItemsTableOrderingComposer(
-              ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$SearchHistoryItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SearchHistoryItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SearchHistoryItemsTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> searchText = const Value.absent(),
@@ -8197,6 +8444,7 @@ typedef $$SearchHistoryItemsTableProcessedTableManager = ProcessedTableManager<
     SearchHistoryItem,
     $$SearchHistoryItemsTableFilterComposer,
     $$SearchHistoryItemsTableOrderingComposer,
+    $$SearchHistoryItemsTableAnnotationComposer,
     $$SearchHistoryItemsTableCreateCompanionBuilder,
     $$SearchHistoryItemsTableUpdateCompanionBuilder,
     (
@@ -8233,129 +8481,141 @@ typedef $$RadicalsTableUpdateCompanionBuilder = RadicalsCompanion Function({
 });
 
 class $$RadicalsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $RadicalsTable> {
-  $$RadicalsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $RadicalsTable> {
+  $$RadicalsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get radical => $state.composableBuilder(
-      column: $state.table.radical,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get radical => $composableBuilder(
+      column: $table.radical, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get kangxiId => $state.composableBuilder(
-      column: $state.table.kangxiId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get kangxiId => $composableBuilder(
+      column: $table.kangxiId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get strokeCount => $state.composableBuilder(
-      column: $state.table.strokeCount,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get strokeCount => $composableBuilder(
+      column: $table.strokeCount, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get meaning => $state.composableBuilder(
-      column: $state.table.meaning,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get meaning => $composableBuilder(
+      column: $table.meaning, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get reading => $state.composableBuilder(
-      column: $state.table.reading,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get reading => $composableBuilder(
+      column: $table.reading, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<RadicalPosition?, RadicalPosition, int>
-      get position => $state.composableBuilder(
-          column: $state.table.position,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get position => $composableBuilder(
+          column: $table.position,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<RadicalImportance?, RadicalImportance, int>
-      get importance => $state.composableBuilder(
-          column: $state.table.importance,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get importance => $composableBuilder(
+          column: $table.importance,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<List<String>?, List<String>, String>
-      get strokes => $state.composableBuilder(
-          column: $state.table.strokes,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get strokes => $composableBuilder(
+          column: $table.strokes,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<List<String>?, List<String>, String>
-      get variants => $state.composableBuilder(
-          column: $state.table.variants,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get variants => $composableBuilder(
+          column: $table.variants,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
-  ColumnFilters<String> get variantOf => $state.composableBuilder(
-      column: $state.table.variantOf,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get variantOf => $composableBuilder(
+      column: $table.variantOf, builder: (column) => ColumnFilters(column));
 }
 
 class $$RadicalsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $RadicalsTable> {
-  $$RadicalsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $RadicalsTable> {
+  $$RadicalsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get radical => $state.composableBuilder(
-      column: $state.table.radical,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get radical => $composableBuilder(
+      column: $table.radical, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get kangxiId => $state.composableBuilder(
-      column: $state.table.kangxiId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get kangxiId => $composableBuilder(
+      column: $table.kangxiId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get strokeCount => $state.composableBuilder(
-      column: $state.table.strokeCount,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get strokeCount => $composableBuilder(
+      column: $table.strokeCount, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get meaning => $state.composableBuilder(
-      column: $state.table.meaning,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get meaning => $composableBuilder(
+      column: $table.meaning, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get reading => $state.composableBuilder(
-      column: $state.table.reading,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get reading => $composableBuilder(
+      column: $table.reading, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get position => $state.composableBuilder(
-      column: $state.table.position,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get position => $composableBuilder(
+      column: $table.position, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get importance => $state.composableBuilder(
-      column: $state.table.importance,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get importance => $composableBuilder(
+      column: $table.importance, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get strokes => $state.composableBuilder(
-      column: $state.table.strokes,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get strokes => $composableBuilder(
+      column: $table.strokes, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get variants => $state.composableBuilder(
-      column: $state.table.variants,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get variants => $composableBuilder(
+      column: $table.variants, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get variantOf => $state.composableBuilder(
-      column: $state.table.variantOf,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get variantOf => $composableBuilder(
+      column: $table.variantOf, builder: (column) => ColumnOrderings(column));
+}
+
+class $$RadicalsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RadicalsTable> {
+  $$RadicalsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get radical =>
+      $composableBuilder(column: $table.radical, builder: (column) => column);
+
+  GeneratedColumn<int> get kangxiId =>
+      $composableBuilder(column: $table.kangxiId, builder: (column) => column);
+
+  GeneratedColumn<int> get strokeCount => $composableBuilder(
+      column: $table.strokeCount, builder: (column) => column);
+
+  GeneratedColumn<String> get meaning =>
+      $composableBuilder(column: $table.meaning, builder: (column) => column);
+
+  GeneratedColumn<String> get reading =>
+      $composableBuilder(column: $table.reading, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<RadicalPosition?, int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<RadicalImportance?, int> get importance =>
+      $composableBuilder(
+          column: $table.importance, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>?, String> get strokes =>
+      $composableBuilder(column: $table.strokes, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>?, String> get variants =>
+      $composableBuilder(column: $table.variants, builder: (column) => column);
+
+  GeneratedColumn<String> get variantOf =>
+      $composableBuilder(column: $table.variantOf, builder: (column) => column);
 }
 
 class $$RadicalsTableTableManager extends RootTableManager<
@@ -8364,6 +8624,7 @@ class $$RadicalsTableTableManager extends RootTableManager<
     Radical,
     $$RadicalsTableFilterComposer,
     $$RadicalsTableOrderingComposer,
+    $$RadicalsTableAnnotationComposer,
     $$RadicalsTableCreateCompanionBuilder,
     $$RadicalsTableUpdateCompanionBuilder,
     (Radical, BaseReferences<_$AppDatabase, $RadicalsTable, Radical>),
@@ -8373,10 +8634,12 @@ class $$RadicalsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$RadicalsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$RadicalsTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$RadicalsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RadicalsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RadicalsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> radical = const Value.absent(),
@@ -8442,6 +8705,7 @@ typedef $$RadicalsTableProcessedTableManager = ProcessedTableManager<
     Radical,
     $$RadicalsTableFilterComposer,
     $$RadicalsTableOrderingComposer,
+    $$RadicalsTableAnnotationComposer,
     $$RadicalsTableCreateCompanionBuilder,
     $$RadicalsTableUpdateCompanionBuilder,
     (Radical, BaseReferences<_$AppDatabase, $RadicalsTable, Radical>),
@@ -8473,105 +8737,124 @@ typedef $$ProperNounsTableUpdateCompanionBuilder = ProperNounsCompanion
 });
 
 class $$ProperNounsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $ProperNounsTable> {
-  $$ProperNounsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $ProperNounsTable> {
+  $$ProperNounsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get writing => $state.composableBuilder(
-      column: $state.table.writing,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get writing => $composableBuilder(
+      column: $table.writing, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get writingSearchForm => $state.composableBuilder(
-      column: $state.table.writingSearchForm,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get writingSearchForm => $composableBuilder(
+      column: $table.writingSearchForm,
+      builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get reading => $state.composableBuilder(
-      column: $state.table.reading,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get reading => $composableBuilder(
+      column: $table.reading, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get readingSearchForm => $state.composableBuilder(
-      column: $state.table.readingSearchForm,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get readingSearchForm => $composableBuilder(
+      column: $table.readingSearchForm,
+      builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get readingRomaji => $state.composableBuilder(
-      column: $state.table.readingRomaji,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get readingRomaji => $composableBuilder(
+      column: $table.readingRomaji, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get readingRomajiSimplified => $state.composableBuilder(
-      column: $state.table.readingRomajiSimplified,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get readingRomajiSimplified => $composableBuilder(
+      column: $table.readingRomajiSimplified,
+      builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get romaji => $state.composableBuilder(
-      column: $state.table.romaji,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get romaji => $composableBuilder(
+      column: $table.romaji, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<List<ProperNounType>, List<ProperNounType>,
           String>
-      get types => $state.composableBuilder(
-          column: $state.table.types,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get types => $composableBuilder(
+          column: $table.types,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$ProperNounsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $ProperNounsTable> {
-  $$ProperNounsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $ProperNounsTable> {
+  $$ProperNounsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get writing => $state.composableBuilder(
-      column: $state.table.writing,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get writing => $composableBuilder(
+      column: $table.writing, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get writingSearchForm => $state.composableBuilder(
-      column: $state.table.writingSearchForm,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get writingSearchForm => $composableBuilder(
+      column: $table.writingSearchForm,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get reading => $state.composableBuilder(
-      column: $state.table.reading,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get reading => $composableBuilder(
+      column: $table.reading, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get readingSearchForm => $state.composableBuilder(
-      column: $state.table.readingSearchForm,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get readingSearchForm => $composableBuilder(
+      column: $table.readingSearchForm,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get readingRomaji => $state.composableBuilder(
-      column: $state.table.readingRomaji,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get readingRomaji => $composableBuilder(
+      column: $table.readingRomaji,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get readingRomajiSimplified =>
-      $state.composableBuilder(
-          column: $state.table.readingRomajiSimplified,
-          builder: (column, joinBuilders) =>
-              ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get readingRomajiSimplified => $composableBuilder(
+      column: $table.readingRomajiSimplified,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get romaji => $state.composableBuilder(
-      column: $state.table.romaji,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get romaji => $composableBuilder(
+      column: $table.romaji, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get types => $state.composableBuilder(
-      column: $state.table.types,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get types => $composableBuilder(
+      column: $table.types, builder: (column) => ColumnOrderings(column));
+}
+
+class $$ProperNounsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProperNounsTable> {
+  $$ProperNounsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get writing =>
+      $composableBuilder(column: $table.writing, builder: (column) => column);
+
+  GeneratedColumn<String> get writingSearchForm => $composableBuilder(
+      column: $table.writingSearchForm, builder: (column) => column);
+
+  GeneratedColumn<String> get reading =>
+      $composableBuilder(column: $table.reading, builder: (column) => column);
+
+  GeneratedColumn<String> get readingSearchForm => $composableBuilder(
+      column: $table.readingSearchForm, builder: (column) => column);
+
+  GeneratedColumn<String> get readingRomaji => $composableBuilder(
+      column: $table.readingRomaji, builder: (column) => column);
+
+  GeneratedColumn<String> get readingRomajiSimplified => $composableBuilder(
+      column: $table.readingRomajiSimplified, builder: (column) => column);
+
+  GeneratedColumn<String> get romaji =>
+      $composableBuilder(column: $table.romaji, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<ProperNounType>, String> get types =>
+      $composableBuilder(column: $table.types, builder: (column) => column);
 }
 
 class $$ProperNounsTableTableManager extends RootTableManager<
@@ -8580,6 +8863,7 @@ class $$ProperNounsTableTableManager extends RootTableManager<
     ProperNoun,
     $$ProperNounsTableFilterComposer,
     $$ProperNounsTableOrderingComposer,
+    $$ProperNounsTableAnnotationComposer,
     $$ProperNounsTableCreateCompanionBuilder,
     $$ProperNounsTableUpdateCompanionBuilder,
     (ProperNoun, BaseReferences<_$AppDatabase, $ProperNounsTable, ProperNoun>),
@@ -8589,10 +8873,12 @@ class $$ProperNounsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$ProperNounsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$ProperNounsTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$ProperNounsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProperNounsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProperNounsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String?> writing = const Value.absent(),
@@ -8650,6 +8936,7 @@ typedef $$ProperNounsTableProcessedTableManager = ProcessedTableManager<
     ProperNoun,
     $$ProperNounsTableFilterComposer,
     $$ProperNounsTableOrderingComposer,
+    $$ProperNounsTableAnnotationComposer,
     $$ProperNounsTableCreateCompanionBuilder,
     $$ProperNounsTableUpdateCompanionBuilder,
     (ProperNoun, BaseReferences<_$AppDatabase, $ProperNounsTable, ProperNoun>),
@@ -8669,41 +8956,61 @@ typedef $$ProperNounRomajiWordsTableUpdateCompanionBuilder
 });
 
 class $$ProperNounRomajiWordsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $ProperNounRomajiWordsTable> {
-  $$ProperNounRomajiWordsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $ProperNounRomajiWordsTable> {
+  $$ProperNounRomajiWordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get word => $state.composableBuilder(
-      column: $state.table.word,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get word => $composableBuilder(
+      column: $table.word, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get properNounId => $state.composableBuilder(
-      column: $state.table.properNounId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get properNounId => $composableBuilder(
+      column: $table.properNounId, builder: (column) => ColumnFilters(column));
 }
 
 class $$ProperNounRomajiWordsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $ProperNounRomajiWordsTable> {
-  $$ProperNounRomajiWordsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $ProperNounRomajiWordsTable> {
+  $$ProperNounRomajiWordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get word => $state.composableBuilder(
-      column: $state.table.word,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get word => $composableBuilder(
+      column: $table.word, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get properNounId => $state.composableBuilder(
-      column: $state.table.properNounId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get properNounId => $composableBuilder(
+      column: $table.properNounId,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$ProperNounRomajiWordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProperNounRomajiWordsTable> {
+  $$ProperNounRomajiWordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get word =>
+      $composableBuilder(column: $table.word, builder: (column) => column);
+
+  GeneratedColumn<int> get properNounId => $composableBuilder(
+      column: $table.properNounId, builder: (column) => column);
 }
 
 class $$ProperNounRomajiWordsTableTableManager extends RootTableManager<
@@ -8712,6 +9019,7 @@ class $$ProperNounRomajiWordsTableTableManager extends RootTableManager<
     ProperNounRomajiWord,
     $$ProperNounRomajiWordsTableFilterComposer,
     $$ProperNounRomajiWordsTableOrderingComposer,
+    $$ProperNounRomajiWordsTableAnnotationComposer,
     $$ProperNounRomajiWordsTableCreateCompanionBuilder,
     $$ProperNounRomajiWordsTableUpdateCompanionBuilder,
     (
@@ -8726,10 +9034,15 @@ class $$ProperNounRomajiWordsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $$ProperNounRomajiWordsTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$ProperNounRomajiWordsTableOrderingComposer(
-              ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$ProperNounRomajiWordsTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProperNounRomajiWordsTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProperNounRomajiWordsTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> word = const Value.absent(),
@@ -8764,6 +9077,7 @@ typedef $$ProperNounRomajiWordsTableProcessedTableManager
         ProperNounRomajiWord,
         $$ProperNounRomajiWordsTableFilterComposer,
         $$ProperNounRomajiWordsTableOrderingComposer,
+        $$ProperNounRomajiWordsTableAnnotationComposer,
         $$ProperNounRomajiWordsTableCreateCompanionBuilder,
         $$ProperNounRomajiWordsTableUpdateCompanionBuilder,
         (
@@ -8789,55 +9103,73 @@ typedef $$PredefinedDictionaryListsTableUpdateCompanionBuilder
 });
 
 class $$PredefinedDictionaryListsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $PredefinedDictionaryListsTable> {
-  $$PredefinedDictionaryListsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $PredefinedDictionaryListsTable> {
+  $$PredefinedDictionaryListsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<List<int>, List<int>, String> get vocab =>
-      $state.composableBuilder(
-          column: $state.table.vocab,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      $composableBuilder(
+          column: $table.vocab,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<List<int>, List<int>, String> get kanji =>
-      $state.composableBuilder(
-          column: $state.table.kanji,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      $composableBuilder(
+          column: $table.kanji,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$PredefinedDictionaryListsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $PredefinedDictionaryListsTable> {
-  $$PredefinedDictionaryListsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $PredefinedDictionaryListsTable> {
+  $$PredefinedDictionaryListsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get vocab => $state.composableBuilder(
-      column: $state.table.vocab,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get vocab => $composableBuilder(
+      column: $table.vocab, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get kanji => $state.composableBuilder(
-      column: $state.table.kanji,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get kanji => $composableBuilder(
+      column: $table.kanji, builder: (column) => ColumnOrderings(column));
+}
+
+class $$PredefinedDictionaryListsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PredefinedDictionaryListsTable> {
+  $$PredefinedDictionaryListsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<int>, String> get vocab =>
+      $composableBuilder(column: $table.vocab, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<int>, String> get kanji =>
+      $composableBuilder(column: $table.kanji, builder: (column) => column);
 }
 
 class $$PredefinedDictionaryListsTableTableManager extends RootTableManager<
@@ -8846,6 +9178,7 @@ class $$PredefinedDictionaryListsTableTableManager extends RootTableManager<
     PredefinedDictionaryList,
     $$PredefinedDictionaryListsTableFilterComposer,
     $$PredefinedDictionaryListsTableOrderingComposer,
+    $$PredefinedDictionaryListsTableAnnotationComposer,
     $$PredefinedDictionaryListsTableCreateCompanionBuilder,
     $$PredefinedDictionaryListsTableUpdateCompanionBuilder,
     (
@@ -8860,10 +9193,15 @@ class $$PredefinedDictionaryListsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $$PredefinedDictionaryListsTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$PredefinedDictionaryListsTableOrderingComposer(
-              ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$PredefinedDictionaryListsTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PredefinedDictionaryListsTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PredefinedDictionaryListsTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
@@ -8902,6 +9240,7 @@ typedef $$PredefinedDictionaryListsTableProcessedTableManager
         PredefinedDictionaryList,
         $$PredefinedDictionaryListsTableFilterComposer,
         $$PredefinedDictionaryListsTableOrderingComposer,
+        $$PredefinedDictionaryListsTableAnnotationComposer,
         $$PredefinedDictionaryListsTableCreateCompanionBuilder,
         $$PredefinedDictionaryListsTableUpdateCompanionBuilder,
         (
@@ -8925,41 +9264,60 @@ typedef $$MyDictionaryListsTableUpdateCompanionBuilder
 });
 
 class $$MyDictionaryListsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $MyDictionaryListsTable> {
-  $$MyDictionaryListsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $MyDictionaryListsTable> {
+  $$MyDictionaryListsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get timestamp => $state.composableBuilder(
-      column: $state.table.timestamp,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<DateTime> get timestamp => $composableBuilder(
+      column: $table.timestamp, builder: (column) => ColumnFilters(column));
 }
 
 class $$MyDictionaryListsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $MyDictionaryListsTable> {
-  $$MyDictionaryListsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $MyDictionaryListsTable> {
+  $$MyDictionaryListsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get timestamp => $state.composableBuilder(
-      column: $state.table.timestamp,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<DateTime> get timestamp => $composableBuilder(
+      column: $table.timestamp, builder: (column) => ColumnOrderings(column));
+}
+
+class $$MyDictionaryListsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MyDictionaryListsTable> {
+  $$MyDictionaryListsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get timestamp =>
+      $composableBuilder(column: $table.timestamp, builder: (column) => column);
 }
 
 class $$MyDictionaryListsTableTableManager extends RootTableManager<
@@ -8968,6 +9326,7 @@ class $$MyDictionaryListsTableTableManager extends RootTableManager<
     MyDictionaryList,
     $$MyDictionaryListsTableFilterComposer,
     $$MyDictionaryListsTableOrderingComposer,
+    $$MyDictionaryListsTableAnnotationComposer,
     $$MyDictionaryListsTableCreateCompanionBuilder,
     $$MyDictionaryListsTableUpdateCompanionBuilder,
     (
@@ -8981,10 +9340,13 @@ class $$MyDictionaryListsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$MyDictionaryListsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer: $$MyDictionaryListsTableOrderingComposer(
-              ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$MyDictionaryListsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MyDictionaryListsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MyDictionaryListsTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
@@ -9018,6 +9380,7 @@ typedef $$MyDictionaryListsTableProcessedTableManager = ProcessedTableManager<
     MyDictionaryList,
     $$MyDictionaryListsTableFilterComposer,
     $$MyDictionaryListsTableOrderingComposer,
+    $$MyDictionaryListsTableAnnotationComposer,
     $$MyDictionaryListsTableCreateCompanionBuilder,
     $$MyDictionaryListsTableUpdateCompanionBuilder,
     (
@@ -9030,8 +9393,8 @@ typedef $$MyDictionaryListItemsTableCreateCompanionBuilder
     = MyDictionaryListItemsCompanion Function({
   Value<int> id,
   required int listId,
-  required int vocabId,
-  required int kanjiId,
+  Value<int> vocabId,
+  Value<int> kanjiId,
 });
 typedef $$MyDictionaryListItemsTableUpdateCompanionBuilder
     = MyDictionaryListItemsCompanion Function({
@@ -9042,51 +9405,69 @@ typedef $$MyDictionaryListItemsTableUpdateCompanionBuilder
 });
 
 class $$MyDictionaryListItemsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $MyDictionaryListItemsTable> {
-  $$MyDictionaryListItemsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $MyDictionaryListItemsTable> {
+  $$MyDictionaryListItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get listId => $state.composableBuilder(
-      column: $state.table.listId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get listId => $composableBuilder(
+      column: $table.listId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get vocabId => $state.composableBuilder(
-      column: $state.table.vocabId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get vocabId => $composableBuilder(
+      column: $table.vocabId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get kanjiId => $state.composableBuilder(
-      column: $state.table.kanjiId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get kanjiId => $composableBuilder(
+      column: $table.kanjiId, builder: (column) => ColumnFilters(column));
 }
 
 class $$MyDictionaryListItemsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $MyDictionaryListItemsTable> {
-  $$MyDictionaryListItemsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $MyDictionaryListItemsTable> {
+  $$MyDictionaryListItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get listId => $state.composableBuilder(
-      column: $state.table.listId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get listId => $composableBuilder(
+      column: $table.listId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get vocabId => $state.composableBuilder(
-      column: $state.table.vocabId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get vocabId => $composableBuilder(
+      column: $table.vocabId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get kanjiId => $state.composableBuilder(
-      column: $state.table.kanjiId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get kanjiId => $composableBuilder(
+      column: $table.kanjiId, builder: (column) => ColumnOrderings(column));
+}
+
+class $$MyDictionaryListItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MyDictionaryListItemsTable> {
+  $$MyDictionaryListItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get listId =>
+      $composableBuilder(column: $table.listId, builder: (column) => column);
+
+  GeneratedColumn<int> get vocabId =>
+      $composableBuilder(column: $table.vocabId, builder: (column) => column);
+
+  GeneratedColumn<int> get kanjiId =>
+      $composableBuilder(column: $table.kanjiId, builder: (column) => column);
 }
 
 class $$MyDictionaryListItemsTableTableManager extends RootTableManager<
@@ -9095,6 +9476,7 @@ class $$MyDictionaryListItemsTableTableManager extends RootTableManager<
     MyDictionaryListItem,
     $$MyDictionaryListItemsTableFilterComposer,
     $$MyDictionaryListItemsTableOrderingComposer,
+    $$MyDictionaryListItemsTableAnnotationComposer,
     $$MyDictionaryListItemsTableCreateCompanionBuilder,
     $$MyDictionaryListItemsTableUpdateCompanionBuilder,
     (
@@ -9109,10 +9491,15 @@ class $$MyDictionaryListItemsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $$MyDictionaryListItemsTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$MyDictionaryListItemsTableOrderingComposer(
-              ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$MyDictionaryListItemsTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MyDictionaryListItemsTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MyDictionaryListItemsTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> listId = const Value.absent(),
@@ -9128,8 +9515,8 @@ class $$MyDictionaryListItemsTableTableManager extends RootTableManager<
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required int listId,
-            required int vocabId,
-            required int kanjiId,
+            Value<int> vocabId = const Value.absent(),
+            Value<int> kanjiId = const Value.absent(),
           }) =>
               MyDictionaryListItemsCompanion.insert(
             id: id,
@@ -9151,6 +9538,7 @@ typedef $$MyDictionaryListItemsTableProcessedTableManager
         MyDictionaryListItem,
         $$MyDictionaryListItemsTableFilterComposer,
         $$MyDictionaryListItemsTableOrderingComposer,
+        $$MyDictionaryListItemsTableAnnotationComposer,
         $$MyDictionaryListItemsTableCreateCompanionBuilder,
         $$MyDictionaryListItemsTableUpdateCompanionBuilder,
         (
@@ -9196,160 +9584,184 @@ typedef $$FlashcardSetsTableUpdateCompanionBuilder = FlashcardSetsCompanion
 });
 
 class $$FlashcardSetsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $FlashcardSetsTable> {
-  $$FlashcardSetsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $FlashcardSetsTable> {
+  $$FlashcardSetsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get usingSpacedRepetition => $state.composableBuilder(
-      column: $state.table.usingSpacedRepetition,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<bool> get usingSpacedRepetition => $composableBuilder(
+      column: $table.usingSpacedRepetition,
+      builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<FrontType, FrontType, int> get frontType =>
-      $state.composableBuilder(
-          column: $state.table.frontType,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      $composableBuilder(
+          column: $table.frontType,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
-  ColumnFilters<bool> get vocabShowReading => $state.composableBuilder(
-      column: $state.table.vocabShowReading,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<bool> get vocabShowReading => $composableBuilder(
+      column: $table.vocabShowReading,
+      builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get vocabShowReadingIfRareKanji =>
-      $state.composableBuilder(
-          column: $state.table.vocabShowReadingIfRareKanji,
-          builder: (column, joinBuilders) =>
-              ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<bool> get vocabShowReadingIfRareKanji => $composableBuilder(
+      column: $table.vocabShowReadingIfRareKanji,
+      builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get vocabShowAlternatives => $state.composableBuilder(
-      column: $state.table.vocabShowAlternatives,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<bool> get vocabShowAlternatives => $composableBuilder(
+      column: $table.vocabShowAlternatives,
+      builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get vocabShowPitchAccent => $state.composableBuilder(
-      column: $state.table.vocabShowPitchAccent,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<bool> get vocabShowPitchAccent => $composableBuilder(
+      column: $table.vocabShowPitchAccent,
+      builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get kanjiShowReading => $state.composableBuilder(
-      column: $state.table.kanjiShowReading,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<bool> get kanjiShowReading => $composableBuilder(
+      column: $table.kanjiShowReading,
+      builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get vocabShowPartsOfSpeech => $state.composableBuilder(
-      column: $state.table.vocabShowPartsOfSpeech,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<bool> get vocabShowPartsOfSpeech => $composableBuilder(
+      column: $table.vocabShowPartsOfSpeech,
+      builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get timestamp => $state.composableBuilder(
-      column: $state.table.timestamp,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<DateTime> get timestamp => $composableBuilder(
+      column: $table.timestamp, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<List<int>, List<int>, String>
-      get predefinedDictionaryLists => $state.composableBuilder(
-          column: $state.table.predefinedDictionaryLists,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get predefinedDictionaryLists => $composableBuilder(
+          column: $table.predefinedDictionaryLists,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<List<int>, List<int>, String>
-      get myDictionaryLists => $state.composableBuilder(
-          column: $state.table.myDictionaryLists,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
+      get myDictionaryLists => $composableBuilder(
+          column: $table.myDictionaryLists,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
-  ColumnFilters<int> get streak => $state.composableBuilder(
-      column: $state.table.streak,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get streak => $composableBuilder(
+      column: $table.streak, builder: (column) => ColumnFilters(column));
 }
 
 class $$FlashcardSetsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $FlashcardSetsTable> {
-  $$FlashcardSetsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $FlashcardSetsTable> {
+  $$FlashcardSetsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get usingSpacedRepetition => $state.composableBuilder(
-      column: $state.table.usingSpacedRepetition,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<bool> get usingSpacedRepetition => $composableBuilder(
+      column: $table.usingSpacedRepetition,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get frontType => $state.composableBuilder(
-      column: $state.table.frontType,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get frontType => $composableBuilder(
+      column: $table.frontType, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get vocabShowReading => $state.composableBuilder(
-      column: $state.table.vocabShowReading,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<bool> get vocabShowReading => $composableBuilder(
+      column: $table.vocabShowReading,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get vocabShowReadingIfRareKanji => $state
-      .composableBuilder(
-          column: $state.table.vocabShowReadingIfRareKanji,
-          builder: (column, joinBuilders) =>
-              ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<bool> get vocabShowReadingIfRareKanji => $composableBuilder(
+      column: $table.vocabShowReadingIfRareKanji,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get vocabShowAlternatives => $state.composableBuilder(
-      column: $state.table.vocabShowAlternatives,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<bool> get vocabShowAlternatives => $composableBuilder(
+      column: $table.vocabShowAlternatives,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get vocabShowPitchAccent => $state.composableBuilder(
-      column: $state.table.vocabShowPitchAccent,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<bool> get vocabShowPitchAccent => $composableBuilder(
+      column: $table.vocabShowPitchAccent,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get kanjiShowReading => $state.composableBuilder(
-      column: $state.table.kanjiShowReading,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<bool> get kanjiShowReading => $composableBuilder(
+      column: $table.kanjiShowReading,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get vocabShowPartsOfSpeech => $state.composableBuilder(
-      column: $state.table.vocabShowPartsOfSpeech,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<bool> get vocabShowPartsOfSpeech => $composableBuilder(
+      column: $table.vocabShowPartsOfSpeech,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get timestamp => $state.composableBuilder(
-      column: $state.table.timestamp,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<DateTime> get timestamp => $composableBuilder(
+      column: $table.timestamp, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get predefinedDictionaryLists => $state
-      .composableBuilder(
-          column: $state.table.predefinedDictionaryLists,
-          builder: (column, joinBuilders) =>
-              ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get predefinedDictionaryLists => $composableBuilder(
+      column: $table.predefinedDictionaryLists,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get myDictionaryLists => $state.composableBuilder(
-      column: $state.table.myDictionaryLists,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get myDictionaryLists => $composableBuilder(
+      column: $table.myDictionaryLists,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get streak => $state.composableBuilder(
-      column: $state.table.streak,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get streak => $composableBuilder(
+      column: $table.streak, builder: (column) => ColumnOrderings(column));
+}
+
+class $$FlashcardSetsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FlashcardSetsTable> {
+  $$FlashcardSetsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<bool> get usingSpacedRepetition => $composableBuilder(
+      column: $table.usingSpacedRepetition, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<FrontType, int> get frontType =>
+      $composableBuilder(column: $table.frontType, builder: (column) => column);
+
+  GeneratedColumn<bool> get vocabShowReading => $composableBuilder(
+      column: $table.vocabShowReading, builder: (column) => column);
+
+  GeneratedColumn<bool> get vocabShowReadingIfRareKanji => $composableBuilder(
+      column: $table.vocabShowReadingIfRareKanji, builder: (column) => column);
+
+  GeneratedColumn<bool> get vocabShowAlternatives => $composableBuilder(
+      column: $table.vocabShowAlternatives, builder: (column) => column);
+
+  GeneratedColumn<bool> get vocabShowPitchAccent => $composableBuilder(
+      column: $table.vocabShowPitchAccent, builder: (column) => column);
+
+  GeneratedColumn<bool> get kanjiShowReading => $composableBuilder(
+      column: $table.kanjiShowReading, builder: (column) => column);
+
+  GeneratedColumn<bool> get vocabShowPartsOfSpeech => $composableBuilder(
+      column: $table.vocabShowPartsOfSpeech, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get timestamp =>
+      $composableBuilder(column: $table.timestamp, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<int>, String>
+      get predefinedDictionaryLists => $composableBuilder(
+          column: $table.predefinedDictionaryLists,
+          builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<int>, String> get myDictionaryLists =>
+      $composableBuilder(
+          column: $table.myDictionaryLists, builder: (column) => column);
+
+  GeneratedColumn<int> get streak =>
+      $composableBuilder(column: $table.streak, builder: (column) => column);
 }
 
 class $$FlashcardSetsTableTableManager extends RootTableManager<
@@ -9358,6 +9770,7 @@ class $$FlashcardSetsTableTableManager extends RootTableManager<
     FlashcardSet,
     $$FlashcardSetsTableFilterComposer,
     $$FlashcardSetsTableOrderingComposer,
+    $$FlashcardSetsTableAnnotationComposer,
     $$FlashcardSetsTableCreateCompanionBuilder,
     $$FlashcardSetsTableUpdateCompanionBuilder,
     (
@@ -9370,10 +9783,12 @@ class $$FlashcardSetsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$FlashcardSetsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$FlashcardSetsTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$FlashcardSetsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FlashcardSetsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FlashcardSetsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
@@ -9451,6 +9866,7 @@ typedef $$FlashcardSetsTableProcessedTableManager = ProcessedTableManager<
     FlashcardSet,
     $$FlashcardSetsTableFilterComposer,
     $$FlashcardSetsTableOrderingComposer,
+    $$FlashcardSetsTableAnnotationComposer,
     $$FlashcardSetsTableCreateCompanionBuilder,
     $$FlashcardSetsTableUpdateCompanionBuilder,
     (
@@ -9479,71 +9895,95 @@ typedef $$FlashcardSetReportsTableUpdateCompanionBuilder
 });
 
 class $$FlashcardSetReportsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $FlashcardSetReportsTable> {
-  $$FlashcardSetReportsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $FlashcardSetReportsTable> {
+  $$FlashcardSetReportsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get flashcardSetId => $state.composableBuilder(
-      column: $state.table.flashcardSetId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get flashcardSetId => $composableBuilder(
+      column: $table.flashcardSetId,
+      builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get date => $state.composableBuilder(
-      column: $state.table.date,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get date => $composableBuilder(
+      column: $table.date, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get dueFlashcardsCompleted => $state.composableBuilder(
-      column: $state.table.dueFlashcardsCompleted,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get dueFlashcardsCompleted => $composableBuilder(
+      column: $table.dueFlashcardsCompleted,
+      builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get dueFlashcardsGotWrong => $state.composableBuilder(
-      column: $state.table.dueFlashcardsGotWrong,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get dueFlashcardsGotWrong => $composableBuilder(
+      column: $table.dueFlashcardsGotWrong,
+      builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get newFlashcardsCompleted => $state.composableBuilder(
-      column: $state.table.newFlashcardsCompleted,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get newFlashcardsCompleted => $composableBuilder(
+      column: $table.newFlashcardsCompleted,
+      builder: (column) => ColumnFilters(column));
 }
 
 class $$FlashcardSetReportsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $FlashcardSetReportsTable> {
-  $$FlashcardSetReportsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $FlashcardSetReportsTable> {
+  $$FlashcardSetReportsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get flashcardSetId => $state.composableBuilder(
-      column: $state.table.flashcardSetId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get flashcardSetId => $composableBuilder(
+      column: $table.flashcardSetId,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get date => $state.composableBuilder(
-      column: $state.table.date,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get date => $composableBuilder(
+      column: $table.date, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get dueFlashcardsCompleted => $state.composableBuilder(
-      column: $state.table.dueFlashcardsCompleted,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get dueFlashcardsCompleted => $composableBuilder(
+      column: $table.dueFlashcardsCompleted,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get dueFlashcardsGotWrong => $state.composableBuilder(
-      column: $state.table.dueFlashcardsGotWrong,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get dueFlashcardsGotWrong => $composableBuilder(
+      column: $table.dueFlashcardsGotWrong,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get newFlashcardsCompleted => $state.composableBuilder(
-      column: $state.table.newFlashcardsCompleted,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get newFlashcardsCompleted => $composableBuilder(
+      column: $table.newFlashcardsCompleted,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$FlashcardSetReportsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FlashcardSetReportsTable> {
+  $$FlashcardSetReportsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get flashcardSetId => $composableBuilder(
+      column: $table.flashcardSetId, builder: (column) => column);
+
+  GeneratedColumn<int> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<int> get dueFlashcardsCompleted => $composableBuilder(
+      column: $table.dueFlashcardsCompleted, builder: (column) => column);
+
+  GeneratedColumn<int> get dueFlashcardsGotWrong => $composableBuilder(
+      column: $table.dueFlashcardsGotWrong, builder: (column) => column);
+
+  GeneratedColumn<int> get newFlashcardsCompleted => $composableBuilder(
+      column: $table.newFlashcardsCompleted, builder: (column) => column);
 }
 
 class $$FlashcardSetReportsTableTableManager extends RootTableManager<
@@ -9552,6 +9992,7 @@ class $$FlashcardSetReportsTableTableManager extends RootTableManager<
     FlashcardSetReport,
     $$FlashcardSetReportsTableFilterComposer,
     $$FlashcardSetReportsTableOrderingComposer,
+    $$FlashcardSetReportsTableAnnotationComposer,
     $$FlashcardSetReportsTableCreateCompanionBuilder,
     $$FlashcardSetReportsTableUpdateCompanionBuilder,
     (
@@ -9566,10 +10007,14 @@ class $$FlashcardSetReportsTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $$FlashcardSetReportsTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$FlashcardSetReportsTableOrderingComposer(
-              ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$FlashcardSetReportsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FlashcardSetReportsTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FlashcardSetReportsTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> flashcardSetId = const Value.absent(),
@@ -9615,6 +10060,7 @@ typedef $$FlashcardSetReportsTableProcessedTableManager = ProcessedTableManager<
     FlashcardSetReport,
     $$FlashcardSetReportsTableFilterComposer,
     $$FlashcardSetReportsTableOrderingComposer,
+    $$FlashcardSetReportsTableAnnotationComposer,
     $$FlashcardSetReportsTableCreateCompanionBuilder,
     $$FlashcardSetReportsTableUpdateCompanionBuilder,
     (
@@ -9638,31 +10084,51 @@ typedef $$DictionaryInfosTableUpdateCompanionBuilder = DictionaryInfosCompanion
 });
 
 class $$DictionaryInfosTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $DictionaryInfosTable> {
-  $$DictionaryInfosTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $DictionaryInfosTable> {
+  $$DictionaryInfosTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get version => $state.composableBuilder(
-      column: $state.table.version,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
 }
 
 class $$DictionaryInfosTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $DictionaryInfosTable> {
-  $$DictionaryInfosTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$AppDatabase, $DictionaryInfosTable> {
+  $$DictionaryInfosTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get version => $state.composableBuilder(
-      column: $state.table.version,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+}
+
+class $$DictionaryInfosTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DictionaryInfosTable> {
+  $$DictionaryInfosTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
 }
 
 class $$DictionaryInfosTableTableManager extends RootTableManager<
@@ -9671,6 +10137,7 @@ class $$DictionaryInfosTableTableManager extends RootTableManager<
     DictionaryInfo,
     $$DictionaryInfosTableFilterComposer,
     $$DictionaryInfosTableOrderingComposer,
+    $$DictionaryInfosTableAnnotationComposer,
     $$DictionaryInfosTableCreateCompanionBuilder,
     $$DictionaryInfosTableUpdateCompanionBuilder,
     (
@@ -9684,10 +10151,12 @@ class $$DictionaryInfosTableTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$DictionaryInfosTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$DictionaryInfosTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$DictionaryInfosTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DictionaryInfosTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DictionaryInfosTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> version = const Value.absent(),
@@ -9721,6 +10190,7 @@ typedef $$DictionaryInfosTableProcessedTableManager = ProcessedTableManager<
     DictionaryInfo,
     $$DictionaryInfosTableFilterComposer,
     $$DictionaryInfosTableOrderingComposer,
+    $$DictionaryInfosTableAnnotationComposer,
     $$DictionaryInfosTableCreateCompanionBuilder,
     $$DictionaryInfosTableUpdateCompanionBuilder,
     (

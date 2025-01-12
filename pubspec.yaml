@@ -7,7 +7,7 @@ environment:
   sdk: '>=3.0.5 <4.0.0'
 
 dependencies:
-  drift: 2.20.3
+  drift: 2.23.1
   path: ^1.9.0
   xml: ^6.4.2
   meta: ^1.10.0
@@ -19,7 +19,7 @@ dev_dependencies:
   lints: ^5.0.0
   test: ^1.24.9
 
-  drift_dev: 2.20.3
+  drift_dev: 2.23.1
   build_runner: any
 
   async: ^2.11.0
