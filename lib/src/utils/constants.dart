@@ -56,6 +56,8 @@ class SagaseDictionaryConstants {
       'kanji_spaced_repetition_data_english';
   static const backupSearchHistory = 'search_history';
   static const backupTextAnalysisHistory = 'text_analysis_history';
+  static const backupVocabNotes = 'vocab_notes';
+  static const backupKanjiNotes = 'kanji_notes';
 
   static const backupFlashcardSetId = 'id';
   static const backupFlashcardSetName = 'name';
@@ -72,6 +74,7 @@ class SagaseDictionaryConstants {
   static const backupFlashcardSetKanjiShowReading = 'kanji_show_reading';
   static const backupFlashcardSetVocabShowPartsOfSpeech =
       'vocab_show_parts_of_speech';
+  static const backupFlashcardSetShowNote = 'show_note';
   static const backupFlashcardSetTimestamp = 'timestamp';
   static const backupFlashcardSetPredefinedDictionaryLists =
       'predefined_dictionary_lists';
@@ -98,6 +101,10 @@ class SagaseDictionaryConstants {
   static const backupSpacedRepetitionDataTotalAnswers = 'total_answers';
   static const backupSpacedRepetitionDataTotalWrongAnswers =
       'total_wrong_answers';
+  static const backupVocabNoteId = 'id';
+  static const backupVocabNoteNote = 'note';
+  static const backupKanjiNoteId = 'id';
+  static const backupKanjiNoteNote = 'note';
 
   static const exportType = 'type';
   static const exportTypeBackup = 'backup';

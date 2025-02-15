@@ -27,6 +27,7 @@ class Vocab extends DictionaryItem {
   List<VocabWriting>? writings;
   late List<VocabReading> readings;
   late List<VocabDefinition> definitions;
+  String? note;
 
   List<Kanji>? includedKanji;
 

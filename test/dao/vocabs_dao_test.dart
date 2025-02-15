@@ -29,6 +29,7 @@ void main() {
 
     group('get', () {
       test('No front type', () async {
+        await database.vocabsDao.setNote(1000220, 'Hello');
         final vocab = await database.vocabsDao.get(1000220);
         expect(vocab.id, 1000220);
         expect(vocab.writings!.length, 1);
@@ -40,6 +41,7 @@ void main() {
           vocab.definitions[0].definition,
           'obvious; clear; plain; evident; apparent; explicit; overt',
         );
+        expect(vocab.note, 'Hello');
       });
 
       group('With front type', () {
@@ -94,6 +96,7 @@ void main() {
 
     group('getAll', () {
       test('No front type', () async {
+        await database.vocabsDao.setNote(1000220, 'Hello');
         final vocabList = await database.vocabsDao.getAll([1000220, 1000160]);
         expect(vocabList.length, 2);
         expect(vocabList[0].id, 1000220);
@@ -106,6 +109,7 @@ void main() {
           vocabList[0].definitions[0].definition,
           'obvious; clear; plain; evident; apparent; explicit; overt',
         );
+        expect(vocabList[0].note, 'Hello');
         expect(vocabList[1].id, 1000160);
         expect(vocabList[1].writings!.length, 1);
         expect(vocabList[1].writings![0].writing, 'Ｔシャツ');
@@ -113,6 +117,7 @@ void main() {
         expect(vocabList[1].readings[0].reading, 'ティーシャツ');
         expect(vocabList[1].definitions.length, 1);
         expect(vocabList[1].definitions[0].definition, 'T-shirt; tee shirt');
+        expect(vocabList[1].note, null);
       });
 
       group('With front type', () {
@@ -396,6 +401,29 @@ void main() {
         final results = await database.vocabsDao.search('.');
         expect(results.length, 0);
       });
+    });
+
+    test('VocabNote', () async {
+      final nullNote = await database.vocabsDao.getNote(1000220);
+      expect(nullNote, null);
+
+      final createdNote = await database.vocabsDao.setNote(
+        1000220,
+        'Important',
+      );
+      expect(createdNote.note, 'Important');
+
+      await database.vocabsDao.setNote(1000220, 'Important again');
+      final note = await database.vocabsDao.getNote(1000220);
+      expect(note!.note, 'Important again');
+
+      await database.vocabsDao.setNote(1000160, 'Other');
+      final vocabNotes = await database.vocabsDao.getAllNotes();
+      expect(vocabNotes.length, 2);
+
+      await database.vocabsDao.deleteNote(1000220);
+      final deletedNote = await database.vocabsDao.getNote(1000220);
+      expect(deletedNote, null);
     });
   });
 }

@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:kana_kit/kana_kit.dart';
 import 'package:sagase_dictionary/src/database.dart';
+import 'package:sagase_dictionary/src/datamodels/vocab/vocab_notes.dart';
 import 'package:sagase_dictionary/src/datamodels/vocabs.dart';
 import 'package:sagase_dictionary/src/utils/enums.dart';
 import 'package:sagase_dictionary/src/utils/string_utils.dart';
@@ -55,10 +56,13 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
           ..orderBy([(definition) => OrderingTerm.asc(definition.id)]))
         .get();
 
+    final note = await getNote(vocab.id);
+
     return vocab
       ..writings = writings.isEmpty ? null : writings
       ..readings = readings
-      ..definitions = definitions;
+      ..definitions = definitions
+      ..note = note?.note;
   }
 
   Future<List<Vocab>> getAll(List<int> idList, {FrontType? frontType}) async {
@@ -142,6 +146,10 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
     }
 
     final definitions = await definitionFuture;
+    // Start loading notes while processing definitions
+    final noteFuture =
+        (db.select(db.vocabNotes)..where((note) => note.id.isIn(idList))).get();
+
     if (definitions.isNotEmpty) {
       int currentVocabId = definitions[0].vocabId;
       List<VocabDefinition> currentDefinitions = [];
@@ -156,6 +164,11 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
       }
       // Add remaining definitions
       vocabMap[currentVocabId]!.definitions = currentDefinitions;
+    }
+
+    final notes = await noteFuture;
+    for (final note in notes) {
+      vocabMap[note.id]!.note = note.note;
     }
 
     // Put the results in the same order as the input
@@ -225,6 +238,11 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
     }
 
     final definitions = await definitionFuture;
+    // Start loading notes while processing definitions
+    final noteFuture = (db.select(db.vocabNotes)
+          ..where((note) => note.id.isIn(vocabMap.keys)))
+        .get();
+
     if (definitions.isNotEmpty) {
       int currentVocabId = definitions[0].vocabId;
       List<VocabDefinition> currentDefinitions = [];
@@ -239,6 +257,11 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
       }
       // Add remaining definitions
       vocabMap[currentVocabId]!.definitions = currentDefinitions;
+    }
+
+    final notes = await noteFuture;
+    for (final note in notes) {
+      vocabMap[note.id]!.note = note.note;
     }
 
     return vocabList;
@@ -673,5 +696,31 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
         nestedSortingList[2] +
         nestedSortingList[3] +
         nestedSortingList[4];
+  }
+
+  Future<VocabNote?> getNote(int vocabId) async {
+    return (db.select(db.vocabNotes)..where((note) => note.id.equals(vocabId)))
+        .getSingleOrNull();
+  }
+
+  Future<List<VocabNote>> getAllNotes() async {
+    return db.select(db.vocabNotes).get();
+  }
+
+  Future<VocabNote> setNote(int vocabId, String note) async {
+    await db.into(db.vocabNotes).insert(
+          VocabNotesCompanion(
+            id: Value(vocabId),
+            note: Value(note),
+          ),
+          mode: InsertMode.insertOrReplace,
+        );
+
+    return (await getNote(vocabId))!;
+  }
+
+  Future<void> deleteNote(int vocabId) async {
+    await (db.delete(db.vocabNotes)..where((note) => note.id.equals(vocabId)))
+        .go();
   }
 }

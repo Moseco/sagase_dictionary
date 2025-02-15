@@ -42,6 +42,8 @@ class Kanji extends DictionaryItem {
   List<KanjiReading>? kunReadings;
   List<KanjiReading>? nanori;
 
+  String? note;
+
   Kanji({
     required super.id,
     required this.kanji,

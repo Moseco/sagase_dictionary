@@ -2812,6 +2812,115 @@ class KanjiMeaningWordsCompanion extends UpdateCompanion<KanjiMeaningWord> {
   }
 }
 
+class $VocabNotesTable extends VocabNotes
+    with TableInfo<$VocabNotesTable, VocabNote> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VocabNotesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+      'note', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, note];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vocab_notes';
+  @override
+  VerificationContext validateIntegrity(Insertable<VocabNote> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+          _noteMeta, note.isAcceptableOrUnknown(data['note']!, _noteMeta));
+    } else if (isInserting) {
+      context.missing(_noteMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VocabNote map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VocabNote(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      note: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}note'])!,
+    );
+  }
+
+  @override
+  $VocabNotesTable createAlias(String alias) {
+    return $VocabNotesTable(attachedDatabase, alias);
+  }
+}
+
+class VocabNotesCompanion extends UpdateCompanion<VocabNote> {
+  final Value<int> id;
+  final Value<String> note;
+  const VocabNotesCompanion({
+    this.id = const Value.absent(),
+    this.note = const Value.absent(),
+  });
+  VocabNotesCompanion.insert({
+    this.id = const Value.absent(),
+    required String note,
+  }) : note = Value(note);
+  static Insertable<VocabNote> custom({
+    Expression<int>? id,
+    Expression<String>? note,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (note != null) 'note': note,
+    });
+  }
+
+  VocabNotesCompanion copyWith({Value<int>? id, Value<String>? note}) {
+    return VocabNotesCompanion(
+      id: id ?? this.id,
+      note: note ?? this.note,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VocabNotesCompanion(')
+          ..write('id: $id, ')
+          ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $TextAnalysisHistoryItemsTable extends TextAnalysisHistoryItems
     with TableInfo<$TextAnalysisHistoryItemsTable, TextAnalysisHistoryItem> {
   @override
@@ -5192,6 +5301,115 @@ class MyDictionaryListItemsCompanion
   }
 }
 
+class $KanjiNotesTable extends KanjiNotes
+    with TableInfo<$KanjiNotesTable, KanjiNote> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $KanjiNotesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+      'note', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, note];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'kanji_notes';
+  @override
+  VerificationContext validateIntegrity(Insertable<KanjiNote> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+          _noteMeta, note.isAcceptableOrUnknown(data['note']!, _noteMeta));
+    } else if (isInserting) {
+      context.missing(_noteMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  KanjiNote map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return KanjiNote(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      note: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}note'])!,
+    );
+  }
+
+  @override
+  $KanjiNotesTable createAlias(String alias) {
+    return $KanjiNotesTable(attachedDatabase, alias);
+  }
+}
+
+class KanjiNotesCompanion extends UpdateCompanion<KanjiNote> {
+  final Value<int> id;
+  final Value<String> note;
+  const KanjiNotesCompanion({
+    this.id = const Value.absent(),
+    this.note = const Value.absent(),
+  });
+  KanjiNotesCompanion.insert({
+    this.id = const Value.absent(),
+    required String note,
+  }) : note = Value(note);
+  static Insertable<KanjiNote> custom({
+    Expression<int>? id,
+    Expression<String>? note,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (note != null) 'note': note,
+    });
+  }
+
+  KanjiNotesCompanion copyWith({Value<int>? id, Value<String>? note}) {
+    return KanjiNotesCompanion(
+      id: id ?? this.id,
+      note: note ?? this.note,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KanjiNotesCompanion(')
+          ..write('id: $id, ')
+          ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $FlashcardSetsTable extends FlashcardSets
     with TableInfo<$FlashcardSetsTable, FlashcardSet> {
   @override
@@ -5292,6 +5510,16 @@ class $FlashcardSetsTable extends FlashcardSets
           defaultConstraints: GeneratedColumn.constraintIsAlways(
               'CHECK ("vocab_show_parts_of_speech" IN (0, 1))'),
           defaultValue: const Constant(false));
+  static const VerificationMeta _showNoteMeta =
+      const VerificationMeta('showNote');
+  @override
+  late final GeneratedColumn<bool> showNote = GeneratedColumn<bool>(
+      'show_note', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("show_note" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _timestampMeta =
       const VerificationMeta('timestamp');
   @override
@@ -5341,6 +5569,7 @@ class $FlashcardSetsTable extends FlashcardSets
         vocabShowPitchAccent,
         kanjiShowReading,
         vocabShowPartsOfSpeech,
+        showNote,
         timestamp,
         predefinedDictionaryLists,
         myDictionaryLists,
@@ -5410,6 +5639,10 @@ class $FlashcardSetsTable extends FlashcardSets
               data['vocab_show_parts_of_speech']!,
               _vocabShowPartsOfSpeechMeta));
     }
+    if (data.containsKey('show_note')) {
+      context.handle(_showNoteMeta,
+          showNote.isAcceptableOrUnknown(data['show_note']!, _showNoteMeta));
+    }
     if (data.containsKey('timestamp')) {
       context.handle(_timestampMeta,
           timestamp.isAcceptableOrUnknown(data['timestamp']!, _timestampMeta));
@@ -5455,6 +5688,8 @@ class $FlashcardSetsTable extends FlashcardSets
       vocabShowPartsOfSpeech: attachedDatabase.typeMapping.read(
           DriftSqlType.bool,
           data['${effectivePrefix}vocab_show_parts_of_speech'])!,
+      showNote: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}show_note'])!,
       timestamp: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}timestamp'])!,
       predefinedDictionaryLists: $FlashcardSetsTable
@@ -5493,6 +5728,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
   final Value<bool> vocabShowPitchAccent;
   final Value<bool> kanjiShowReading;
   final Value<bool> vocabShowPartsOfSpeech;
+  final Value<bool> showNote;
   final Value<DateTime> timestamp;
   final Value<List<int>> predefinedDictionaryLists;
   final Value<List<int>> myDictionaryLists;
@@ -5508,6 +5744,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     this.vocabShowPitchAccent = const Value.absent(),
     this.kanjiShowReading = const Value.absent(),
     this.vocabShowPartsOfSpeech = const Value.absent(),
+    this.showNote = const Value.absent(),
     this.timestamp = const Value.absent(),
     this.predefinedDictionaryLists = const Value.absent(),
     this.myDictionaryLists = const Value.absent(),
@@ -5524,6 +5761,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     this.vocabShowPitchAccent = const Value.absent(),
     this.kanjiShowReading = const Value.absent(),
     this.vocabShowPartsOfSpeech = const Value.absent(),
+    this.showNote = const Value.absent(),
     this.timestamp = const Value.absent(),
     this.predefinedDictionaryLists = const Value.absent(),
     this.myDictionaryLists = const Value.absent(),
@@ -5540,6 +5778,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     Expression<bool>? vocabShowPitchAccent,
     Expression<bool>? kanjiShowReading,
     Expression<bool>? vocabShowPartsOfSpeech,
+    Expression<bool>? showNote,
     Expression<DateTime>? timestamp,
     Expression<String>? predefinedDictionaryLists,
     Expression<String>? myDictionaryLists,
@@ -5561,6 +5800,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
       if (kanjiShowReading != null) 'kanji_show_reading': kanjiShowReading,
       if (vocabShowPartsOfSpeech != null)
         'vocab_show_parts_of_speech': vocabShowPartsOfSpeech,
+      if (showNote != null) 'show_note': showNote,
       if (timestamp != null) 'timestamp': timestamp,
       if (predefinedDictionaryLists != null)
         'predefined_dictionary_lists': predefinedDictionaryLists,
@@ -5580,6 +5820,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
       Value<bool>? vocabShowPitchAccent,
       Value<bool>? kanjiShowReading,
       Value<bool>? vocabShowPartsOfSpeech,
+      Value<bool>? showNote,
       Value<DateTime>? timestamp,
       Value<List<int>>? predefinedDictionaryLists,
       Value<List<int>>? myDictionaryLists,
@@ -5599,6 +5840,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
       kanjiShowReading: kanjiShowReading ?? this.kanjiShowReading,
       vocabShowPartsOfSpeech:
           vocabShowPartsOfSpeech ?? this.vocabShowPartsOfSpeech,
+      showNote: showNote ?? this.showNote,
       timestamp: timestamp ?? this.timestamp,
       predefinedDictionaryLists:
           predefinedDictionaryLists ?? this.predefinedDictionaryLists,
@@ -5646,6 +5888,9 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
       map['vocab_show_parts_of_speech'] =
           Variable<bool>(vocabShowPartsOfSpeech.value);
     }
+    if (showNote.present) {
+      map['show_note'] = Variable<bool>(showNote.value);
+    }
     if (timestamp.present) {
       map['timestamp'] = Variable<DateTime>(timestamp.value);
     }
@@ -5678,6 +5923,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
           ..write('vocabShowPitchAccent: $vocabShowPitchAccent, ')
           ..write('kanjiShowReading: $kanjiShowReading, ')
           ..write('vocabShowPartsOfSpeech: $vocabShowPartsOfSpeech, ')
+          ..write('showNote: $showNote, ')
           ..write('timestamp: $timestamp, ')
           ..write('predefinedDictionaryLists: $predefinedDictionaryLists, ')
           ..write('myDictionaryLists: $myDictionaryLists, ')
@@ -6170,6 +6416,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Index iXKanjiMeaningWordsWord = Index(
       'IX_kanji_meaning_words_word',
       'CREATE INDEX IX_kanji_meaning_words_word ON kanji_meaning_words (word)');
+  late final $VocabNotesTable vocabNotes = $VocabNotesTable(this);
   late final $TextAnalysisHistoryItemsTable textAnalysisHistoryItems =
       $TextAnalysisHistoryItemsTable(this);
   late final $SpacedRepetitionDatasTable spacedRepetitionDatas =
@@ -6199,6 +6446,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Index iXMyDictionaryListItemsListId = Index(
       'IX_my_dictionary_list_items_list_id',
       'CREATE INDEX IX_my_dictionary_list_items_list_id ON my_dictionary_list_items (list_id)');
+  late final $KanjiNotesTable kanjiNotes = $KanjiNotesTable(this);
   late final $FlashcardSetsTable flashcardSets = $FlashcardSetsTable(this);
   late final $FlashcardSetReportsTable flashcardSetReports =
       $FlashcardSetReportsTable(this);
@@ -6285,6 +6533,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         iXKanjiReadingsReading,
         iXKanjiReadingsReadingRomaji,
         iXKanjiMeaningWordsWord,
+        vocabNotes,
         textAnalysisHistoryItems,
         spacedRepetitionDatas,
         searchHistoryItems,
@@ -6299,6 +6548,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         myDictionaryLists,
         myDictionaryListItems,
         iXMyDictionaryListItemsListId,
+        kanjiNotes,
         flashcardSets,
         flashcardSetReports,
         uXFlashcardSetReportsFlashcardSetIdAndDate,
@@ -7960,6 +8210,120 @@ typedef $$KanjiMeaningWordsTableProcessedTableManager = ProcessedTableManager<
     ),
     KanjiMeaningWord,
     PrefetchHooks Function()>;
+typedef $$VocabNotesTableCreateCompanionBuilder = VocabNotesCompanion Function({
+  Value<int> id,
+  required String note,
+});
+typedef $$VocabNotesTableUpdateCompanionBuilder = VocabNotesCompanion Function({
+  Value<int> id,
+  Value<String> note,
+});
+
+class $$VocabNotesTableFilterComposer
+    extends Composer<_$AppDatabase, $VocabNotesTable> {
+  $$VocabNotesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get note => $composableBuilder(
+      column: $table.note, builder: (column) => ColumnFilters(column));
+}
+
+class $$VocabNotesTableOrderingComposer
+    extends Composer<_$AppDatabase, $VocabNotesTable> {
+  $$VocabNotesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get note => $composableBuilder(
+      column: $table.note, builder: (column) => ColumnOrderings(column));
+}
+
+class $$VocabNotesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $VocabNotesTable> {
+  $$VocabNotesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+}
+
+class $$VocabNotesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $VocabNotesTable,
+    VocabNote,
+    $$VocabNotesTableFilterComposer,
+    $$VocabNotesTableOrderingComposer,
+    $$VocabNotesTableAnnotationComposer,
+    $$VocabNotesTableCreateCompanionBuilder,
+    $$VocabNotesTableUpdateCompanionBuilder,
+    (VocabNote, BaseReferences<_$AppDatabase, $VocabNotesTable, VocabNote>),
+    VocabNote,
+    PrefetchHooks Function()> {
+  $$VocabNotesTableTableManager(_$AppDatabase db, $VocabNotesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VocabNotesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VocabNotesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VocabNotesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> note = const Value.absent(),
+          }) =>
+              VocabNotesCompanion(
+            id: id,
+            note: note,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String note,
+          }) =>
+              VocabNotesCompanion.insert(
+            id: id,
+            note: note,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$VocabNotesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $VocabNotesTable,
+    VocabNote,
+    $$VocabNotesTableFilterComposer,
+    $$VocabNotesTableOrderingComposer,
+    $$VocabNotesTableAnnotationComposer,
+    $$VocabNotesTableCreateCompanionBuilder,
+    $$VocabNotesTableUpdateCompanionBuilder,
+    (VocabNote, BaseReferences<_$AppDatabase, $VocabNotesTable, VocabNote>),
+    VocabNote,
+    PrefetchHooks Function()>;
 typedef $$TextAnalysisHistoryItemsTableCreateCompanionBuilder
     = TextAnalysisHistoryItemsCompanion Function({
   Value<int> id,
@@ -9548,6 +9912,120 @@ typedef $$MyDictionaryListItemsTableProcessedTableManager
         ),
         MyDictionaryListItem,
         PrefetchHooks Function()>;
+typedef $$KanjiNotesTableCreateCompanionBuilder = KanjiNotesCompanion Function({
+  Value<int> id,
+  required String note,
+});
+typedef $$KanjiNotesTableUpdateCompanionBuilder = KanjiNotesCompanion Function({
+  Value<int> id,
+  Value<String> note,
+});
+
+class $$KanjiNotesTableFilterComposer
+    extends Composer<_$AppDatabase, $KanjiNotesTable> {
+  $$KanjiNotesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get note => $composableBuilder(
+      column: $table.note, builder: (column) => ColumnFilters(column));
+}
+
+class $$KanjiNotesTableOrderingComposer
+    extends Composer<_$AppDatabase, $KanjiNotesTable> {
+  $$KanjiNotesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get note => $composableBuilder(
+      column: $table.note, builder: (column) => ColumnOrderings(column));
+}
+
+class $$KanjiNotesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $KanjiNotesTable> {
+  $$KanjiNotesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+}
+
+class $$KanjiNotesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $KanjiNotesTable,
+    KanjiNote,
+    $$KanjiNotesTableFilterComposer,
+    $$KanjiNotesTableOrderingComposer,
+    $$KanjiNotesTableAnnotationComposer,
+    $$KanjiNotesTableCreateCompanionBuilder,
+    $$KanjiNotesTableUpdateCompanionBuilder,
+    (KanjiNote, BaseReferences<_$AppDatabase, $KanjiNotesTable, KanjiNote>),
+    KanjiNote,
+    PrefetchHooks Function()> {
+  $$KanjiNotesTableTableManager(_$AppDatabase db, $KanjiNotesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$KanjiNotesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$KanjiNotesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$KanjiNotesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> note = const Value.absent(),
+          }) =>
+              KanjiNotesCompanion(
+            id: id,
+            note: note,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String note,
+          }) =>
+              KanjiNotesCompanion.insert(
+            id: id,
+            note: note,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$KanjiNotesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $KanjiNotesTable,
+    KanjiNote,
+    $$KanjiNotesTableFilterComposer,
+    $$KanjiNotesTableOrderingComposer,
+    $$KanjiNotesTableAnnotationComposer,
+    $$KanjiNotesTableCreateCompanionBuilder,
+    $$KanjiNotesTableUpdateCompanionBuilder,
+    (KanjiNote, BaseReferences<_$AppDatabase, $KanjiNotesTable, KanjiNote>),
+    KanjiNote,
+    PrefetchHooks Function()>;
 typedef $$FlashcardSetsTableCreateCompanionBuilder = FlashcardSetsCompanion
     Function({
   Value<int> id,
@@ -9560,6 +10038,7 @@ typedef $$FlashcardSetsTableCreateCompanionBuilder = FlashcardSetsCompanion
   Value<bool> vocabShowPitchAccent,
   Value<bool> kanjiShowReading,
   Value<bool> vocabShowPartsOfSpeech,
+  Value<bool> showNote,
   Value<DateTime> timestamp,
   Value<List<int>> predefinedDictionaryLists,
   Value<List<int>> myDictionaryLists,
@@ -9577,6 +10056,7 @@ typedef $$FlashcardSetsTableUpdateCompanionBuilder = FlashcardSetsCompanion
   Value<bool> vocabShowPitchAccent,
   Value<bool> kanjiShowReading,
   Value<bool> vocabShowPartsOfSpeech,
+  Value<bool> showNote,
   Value<DateTime> timestamp,
   Value<List<int>> predefinedDictionaryLists,
   Value<List<int>> myDictionaryLists,
@@ -9630,6 +10110,9 @@ class $$FlashcardSetsTableFilterComposer
   ColumnFilters<bool> get vocabShowPartsOfSpeech => $composableBuilder(
       column: $table.vocabShowPartsOfSpeech,
       builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get showNote => $composableBuilder(
+      column: $table.showNote, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get timestamp => $composableBuilder(
       column: $table.timestamp, builder: (column) => ColumnFilters(column));
@@ -9694,6 +10177,9 @@ class $$FlashcardSetsTableOrderingComposer
       column: $table.vocabShowPartsOfSpeech,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get showNote => $composableBuilder(
+      column: $table.showNote, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get timestamp => $composableBuilder(
       column: $table.timestamp, builder: (column) => ColumnOrderings(column));
 
@@ -9748,6 +10234,9 @@ class $$FlashcardSetsTableAnnotationComposer
   GeneratedColumn<bool> get vocabShowPartsOfSpeech => $composableBuilder(
       column: $table.vocabShowPartsOfSpeech, builder: (column) => column);
 
+  GeneratedColumn<bool> get showNote =>
+      $composableBuilder(column: $table.showNote, builder: (column) => column);
+
   GeneratedColumn<DateTime> get timestamp =>
       $composableBuilder(column: $table.timestamp, builder: (column) => column);
 
@@ -9800,6 +10289,7 @@ class $$FlashcardSetsTableTableManager extends RootTableManager<
             Value<bool> vocabShowPitchAccent = const Value.absent(),
             Value<bool> kanjiShowReading = const Value.absent(),
             Value<bool> vocabShowPartsOfSpeech = const Value.absent(),
+            Value<bool> showNote = const Value.absent(),
             Value<DateTime> timestamp = const Value.absent(),
             Value<List<int>> predefinedDictionaryLists = const Value.absent(),
             Value<List<int>> myDictionaryLists = const Value.absent(),
@@ -9816,6 +10306,7 @@ class $$FlashcardSetsTableTableManager extends RootTableManager<
             vocabShowPitchAccent: vocabShowPitchAccent,
             kanjiShowReading: kanjiShowReading,
             vocabShowPartsOfSpeech: vocabShowPartsOfSpeech,
+            showNote: showNote,
             timestamp: timestamp,
             predefinedDictionaryLists: predefinedDictionaryLists,
             myDictionaryLists: myDictionaryLists,
@@ -9832,6 +10323,7 @@ class $$FlashcardSetsTableTableManager extends RootTableManager<
             Value<bool> vocabShowPitchAccent = const Value.absent(),
             Value<bool> kanjiShowReading = const Value.absent(),
             Value<bool> vocabShowPartsOfSpeech = const Value.absent(),
+            Value<bool> showNote = const Value.absent(),
             Value<DateTime> timestamp = const Value.absent(),
             Value<List<int>> predefinedDictionaryLists = const Value.absent(),
             Value<List<int>> myDictionaryLists = const Value.absent(),
@@ -9848,6 +10340,7 @@ class $$FlashcardSetsTableTableManager extends RootTableManager<
             vocabShowPitchAccent: vocabShowPitchAccent,
             kanjiShowReading: kanjiShowReading,
             vocabShowPartsOfSpeech: vocabShowPartsOfSpeech,
+            showNote: showNote,
             timestamp: timestamp,
             predefinedDictionaryLists: predefinedDictionaryLists,
             myDictionaryLists: myDictionaryLists,
@@ -10219,6 +10712,8 @@ class $AppDatabaseManager {
       $$KanjiReadingsTableTableManager(_db, _db.kanjiReadings);
   $$KanjiMeaningWordsTableTableManager get kanjiMeaningWords =>
       $$KanjiMeaningWordsTableTableManager(_db, _db.kanjiMeaningWords);
+  $$VocabNotesTableTableManager get vocabNotes =>
+      $$VocabNotesTableTableManager(_db, _db.vocabNotes);
   $$TextAnalysisHistoryItemsTableTableManager get textAnalysisHistoryItems =>
       $$TextAnalysisHistoryItemsTableTableManager(
           _db, _db.textAnalysisHistoryItems);
@@ -10239,6 +10734,8 @@ class $AppDatabaseManager {
       $$MyDictionaryListsTableTableManager(_db, _db.myDictionaryLists);
   $$MyDictionaryListItemsTableTableManager get myDictionaryListItems =>
       $$MyDictionaryListItemsTableTableManager(_db, _db.myDictionaryListItems);
+  $$KanjiNotesTableTableManager get kanjiNotes =>
+      $$KanjiNotesTableTableManager(_db, _db.kanjiNotes);
   $$FlashcardSetsTableTableManager get flashcardSets =>
       $$FlashcardSetsTableTableManager(_db, _db.flashcardSets);
   $$FlashcardSetReportsTableTableManager get flashcardSetReports =>

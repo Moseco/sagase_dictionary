@@ -27,6 +27,8 @@ class FlashcardSets extends Table {
       boolean().withDefault(const Constant(false))();
   BoolColumn get vocabShowPartsOfSpeech =>
       boolean().withDefault(const Constant(false))();
+  BoolColumn get showNote => boolean().withDefault(const Constant(false))();
+
   DateTimeColumn get timestamp => dateTime().withDefault(currentDateAndTime)();
 
   TextColumn get predefinedDictionaryLists =>
@@ -48,6 +50,7 @@ class FlashcardSet implements Insertable<FlashcardSet> {
   bool vocabShowPitchAccent;
   bool kanjiShowReading;
   bool vocabShowPartsOfSpeech;
+  bool showNote;
   DateTime timestamp;
 
   List<int> predefinedDictionaryLists;
@@ -66,6 +69,7 @@ class FlashcardSet implements Insertable<FlashcardSet> {
     required this.vocabShowPitchAccent,
     required this.kanjiShowReading,
     required this.vocabShowPartsOfSpeech,
+    required this.showNote,
     required this.timestamp,
     required this.predefinedDictionaryLists,
     required this.myDictionaryLists,
@@ -86,6 +90,7 @@ class FlashcardSet implements Insertable<FlashcardSet> {
       vocabShowPitchAccent: Value.absentIfNull(vocabShowPitchAccent),
       kanjiShowReading: Value.absentIfNull(kanjiShowReading),
       vocabShowPartsOfSpeech: Value.absentIfNull(vocabShowPartsOfSpeech),
+      showNote: Value.absentIfNull(showNote),
       timestamp: Value.absentIfNull(timestamp),
       predefinedDictionaryLists: Value.absentIfNull(predefinedDictionaryLists),
       myDictionaryLists: Value.absentIfNull(myDictionaryLists),
@@ -145,6 +150,8 @@ class FlashcardSet implements Insertable<FlashcardSet> {
           map[SagaseDictionaryConstants.backupFlashcardSetKanjiShowReading],
       vocabShowPartsOfSpeech: map[
           SagaseDictionaryConstants.backupFlashcardSetVocabShowPartsOfSpeech],
+      showNote:
+          map[SagaseDictionaryConstants.backupFlashcardSetShowNote] ?? false,
       timestamp: DateTime.fromMillisecondsSinceEpoch(
           map[SagaseDictionaryConstants.backupFlashcardSetTimestamp]),
       predefinedDictionaryLists: map[SagaseDictionaryConstants

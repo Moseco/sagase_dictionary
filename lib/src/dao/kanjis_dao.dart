@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:kana_kit/kana_kit.dart';
 import 'package:sagase_dictionary/src/database.dart';
+import 'package:sagase_dictionary/src/datamodels/kanji/kanji_notes.dart';
 import 'package:sagase_dictionary/src/datamodels/kanjis.dart';
 import 'package:sagase_dictionary/src/datamodels/spaced_repetition_datas.dart';
 import 'package:sagase_dictionary/src/utils/enums.dart';
@@ -65,10 +66,13 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
       }
     }
 
+    final note = await getNote(kanji.id);
+
     return kanji
       ..onReadings = onReadings.isEmpty ? null : onReadings
       ..kunReadings = kunReadings.isEmpty ? null : kunReadings
-      ..nanori = nanori.isEmpty ? null : nanori;
+      ..nanori = nanori.isEmpty ? null : nanori
+      ..note = note?.note;
   }
 
   Future<Kanji?> getKanji(String kanji, {FrontType? frontType}) async {
@@ -143,6 +147,13 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
         ..nanori = nanori.isEmpty ? null : nanori;
     }
 
+    final notes = await (db.select(db.kanjiNotes)
+          ..where((note) => note.id.isIn(idList)))
+        .get();
+    for (final note in notes) {
+      kanjiMap[note.id]!.note = note.note;
+    }
+
     // Put the results in the same order as the input
     List<Kanji> kanjiList = [];
     for (final id in idList) {
@@ -197,6 +208,13 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
         ..onReadings = onReadings.isEmpty ? null : onReadings
         ..kunReadings = kunReadings.isEmpty ? null : kunReadings
         ..nanori = nanori.isEmpty ? null : nanori;
+    }
+
+    final notes = await (db.select(db.kanjiNotes)
+          ..where((note) => note.id.isIn(kanjiMap.keys)))
+        .get();
+    for (final note in notes) {
+      kanjiMap[note.id]!.note = note.note;
     }
 
     return kanjiList;
@@ -454,5 +472,31 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
     }
 
     return _getAllFromBase(kanjiList);
+  }
+
+  Future<KanjiNote?> getNote(int kanjiId) async {
+    return (db.select(db.kanjiNotes)..where((note) => note.id.equals(kanjiId)))
+        .getSingleOrNull();
+  }
+
+  Future<List<KanjiNote>> getAllNotes() async {
+    return db.select(db.kanjiNotes).get();
+  }
+
+  Future<KanjiNote> setNote(int kanjiId, String note) async {
+    await db.into(db.kanjiNotes).insert(
+          KanjiNotesCompanion(
+            id: Value(kanjiId),
+            note: Value(note),
+          ),
+          mode: InsertMode.insertOrReplace,
+        );
+
+    return KanjiNote(id: kanjiId, note: note);
+  }
+
+  Future<void> deleteNote(int kanjiId) async {
+    await (db.delete(db.kanjiNotes)..where((note) => note.id.equals(kanjiId)))
+        .go();
   }
 }

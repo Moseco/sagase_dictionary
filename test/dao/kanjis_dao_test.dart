@@ -43,8 +43,10 @@ void main() {
         });
 
         test('Kanji exists', () async {
+          await database.kanjisDao.setNote('亜'.kanjiCodePoint(), 'Hello');
           final kanji = await database.kanjisDao.get('亜'.kanjiCodePoint());
           expect(kanji!.kanji, '亜');
+          expect(kanji.note, 'Hello');
         });
       });
 
@@ -131,6 +133,7 @@ void main() {
       });
 
       test('No front type', () async {
+        await database.kanjisDao.setNote('亜'.kanjiCodePoint(), 'Hello');
         final kanjiList = await database.kanjisDao.getAll(
           ['亜'.kanjiCodePoint(), '悪'.kanjiCodePoint()],
         );
@@ -142,12 +145,14 @@ void main() {
         expect(kanjiList[0].kunReadings![0].reading, 'つ.ぐ');
         expect(kanjiList[0].nanori!.length, 3);
         expect(kanjiList[0].nanori![0].reading, 'や');
+        expect(kanjiList[0].note, 'Hello');
         expect(kanjiList[1].kanji, '悪');
         expect(kanjiList[1].onReadings!.length, 2);
         expect(kanjiList[1].onReadings![0].reading, 'アク');
         expect(kanjiList[1].kunReadings!.length, 9);
         expect(kanjiList[1].kunReadings![0].reading, 'わる.い');
         expect(kanjiList[1].nanori, null);
+        expect(kanjiList[1].note, null);
       });
 
       group('With front type', () {
@@ -455,6 +460,30 @@ void main() {
         final results = await database.kanjisDao.search('.');
         expect(results.length, 0);
       });
+    });
+
+    test('KanjiNote', () async {
+      final nullNote = await database.kanjisDao.getNote('亜'.kanjiCodePoint());
+      expect(nullNote, null);
+
+      final createdNote = await database.kanjisDao.setNote(
+        '亜'.kanjiCodePoint(),
+        'Important',
+      );
+      expect(createdNote.note, 'Important');
+
+      await database.kanjisDao.setNote('亜'.kanjiCodePoint(), 'Important again');
+      final note = await database.kanjisDao.getNote('亜'.kanjiCodePoint());
+      expect(note!.note, 'Important again');
+
+      await database.kanjisDao.setNote('悪'.kanjiCodePoint(), 'Other');
+      final kanjiNotes = await database.kanjisDao.getAllNotes();
+      expect(kanjiNotes.length, 2);
+
+      await database.kanjisDao.deleteNote('亜'.kanjiCodePoint());
+      final deletedNote =
+          await database.kanjisDao.getNote('亜'.kanjiCodePoint());
+      expect(deletedNote, null);
     });
   });
 }
