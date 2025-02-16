@@ -511,6 +511,41 @@ const shortJMdict = '''
 </example>
 </sense>
 </entry>
+<entry>
+<ent_seq>1448890</ent_seq>
+<k_ele>
+<keb>当て字</keb>
+</k_ele>
+<k_ele>
+<keb>宛字</keb>
+</k_ele>
+<k_ele>
+<keb>あて字</keb>
+<ke_inf>&sK;</ke_inf>
+</k_ele>
+<k_ele>
+<keb>宛て字</keb>
+<ke_inf>&sK;</ke_inf>
+</k_ele>
+<k_ele>
+<keb>当字</keb>
+<ke_inf>&sK;</ke_inf>
+</k_ele>
+<r_ele>
+<reb>あてじ</reb>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<gloss>kanji used as a phonetic symbol, instead of for the meaning</gloss>
+<gloss>phonetic-equivalent character</gloss>
+<gloss>substitute character</gloss>
+<gloss>ateji</gloss>
+</sense>
+<sense>
+<pos>&n;</pos>
+<gloss>kanji used for their meaning, irrespective of reading</gloss>
+</sense>
+</entry>
 </JMdict>
 ''';
 

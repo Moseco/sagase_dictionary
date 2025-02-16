@@ -472,7 +472,16 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
         // - Exact match readings results
         // - All definition results
         // - Remaining reading results
-        return exactMatchVocab + definitionResults + otherVocab;
+        List<Vocab> mergedResults = exactMatchVocab;
+        Set<int> idSet = {for (var vocab in mergedResults) vocab.id};
+        for (final vocab in definitionResults + otherVocab) {
+          if (!idSet.contains(vocab.id)) {
+            idSet.add(vocab.id);
+            mergedResults.add(vocab);
+          }
+        }
+
+        return mergedResults;
       }
     } else {
       // Japanese text

@@ -401,6 +401,12 @@ void main() {
         final results = await database.vocabsDao.search('.');
         expect(results.length, 0);
       });
+
+      test('Searching with query in reading and definition of vocab', () async {
+        final results = await database.vocabsDao.search('ateji');
+        expect(results.length, 1);
+        expect(results[0].id, 1448890);
+      });
     });
 
     test('VocabNote', () async {

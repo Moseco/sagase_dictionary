@@ -329,7 +329,16 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
         // - Exact match readings results
         // - All meaning results
         // - Remaining reading results
-        return exactMatchKanji + meaningResults + otherKanji;
+        List<Kanji> mergedResults = exactMatchKanji;
+        Set<int> idSet = {for (var kanji in mergedResults) kanji.id};
+        for (final kanji in meaningResults + otherKanji) {
+          if (!idSet.contains(kanji.id)) {
+            idSet.add(kanji.id);
+            mergedResults.add(kanji);
+          }
+        }
+
+        return mergedResults;
       }
     } else {
       // Japanese text, search by reading
