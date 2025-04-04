@@ -36,7 +36,6 @@ class $VocabWritingsTable extends VocabWritings
   late final GeneratedColumn<String> writingSearchForm =
       GeneratedColumn<String>('writing_search_form', aliasedName, true,
           type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _infoMeta = const VerificationMeta('info');
   @override
   late final GeneratedColumnWithTypeConverter<List<WritingInfo>?, String> info =
       GeneratedColumn<String>('info', aliasedName, true,
@@ -77,7 +76,6 @@ class $VocabWritingsTable extends VocabWritings
           writingSearchForm.isAcceptableOrUnknown(
               data['writing_search_form']!, _writingSearchFormMeta));
     }
-    context.handle(_infoMeta, const VerificationResult.success());
     return context;
   }
 
@@ -361,8 +359,6 @@ class $VocabReadingsTable extends VocabReadings
   late final GeneratedColumn<String> readingRomajiSimplified =
       GeneratedColumn<String>('reading_romaji_simplified', aliasedName, true,
           type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _associatedWritingsMeta =
-      const VerificationMeta('associatedWritings');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>?, String>
       associatedWritings = GeneratedColumn<String>(
@@ -370,15 +366,12 @@ class $VocabReadingsTable extends VocabReadings
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<String>?>(
               $VocabReadingsTable.$converterassociatedWritingsn);
-  static const VerificationMeta _infoMeta = const VerificationMeta('info');
   @override
   late final GeneratedColumnWithTypeConverter<List<ReadingInfo>?, String> info =
       GeneratedColumn<String>('info', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<ReadingInfo>?>(
               $VocabReadingsTable.$converterinfon);
-  static const VerificationMeta _pitchAccentsMeta =
-      const VerificationMeta('pitchAccents');
   @override
   late final GeneratedColumnWithTypeConverter<List<int>?, String> pitchAccents =
       GeneratedColumn<String>('pitch_accents', aliasedName, true,
@@ -443,9 +436,6 @@ class $VocabReadingsTable extends VocabReadings
               data['reading_romaji_simplified']!,
               _readingRomajiSimplifiedMeta));
     }
-    context.handle(_associatedWritingsMeta, const VerificationResult.success());
-    context.handle(_infoMeta, const VerificationResult.success());
-    context.handle(_pitchAccentsMeta, const VerificationResult.success());
     return context;
   }
 
@@ -854,7 +844,6 @@ class $VocabsTable extends Vocabs with TableInfo<$VocabsTable, Vocab> {
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _posMeta = const VerificationMeta('pos');
   @override
   late final GeneratedColumnWithTypeConverter<List<PartOfSpeech>?, String> pos =
       GeneratedColumn<String>('pos', aliasedName, true,
@@ -892,7 +881,6 @@ class $VocabsTable extends Vocabs with TableInfo<$VocabsTable, Vocab> {
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    context.handle(_posMeta, const VerificationResult.success());
     if (data.containsKey('common')) {
       context.handle(_commonMeta,
           common.isAcceptableOrUnknown(data['common']!, _commonMeta));
@@ -1042,54 +1030,42 @@ class $VocabDefinitionsTable extends VocabDefinitions
   late final GeneratedColumn<String> additionalInfo = GeneratedColumn<String>(
       'additional_info', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _posMeta = const VerificationMeta('pos');
   @override
   late final GeneratedColumnWithTypeConverter<List<PartOfSpeech>?, String> pos =
       GeneratedColumn<String>('pos', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<PartOfSpeech>?>(
               $VocabDefinitionsTable.$converterposn);
-  static const VerificationMeta _appliesToMeta =
-      const VerificationMeta('appliesTo');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>?, String> appliesTo =
       GeneratedColumn<String>('applies_to', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<String>?>(
               $VocabDefinitionsTable.$converterappliesTon);
-  static const VerificationMeta _fieldsMeta = const VerificationMeta('fields');
   @override
   late final GeneratedColumnWithTypeConverter<List<Field>?, String> fields =
       GeneratedColumn<String>('fields', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<Field>?>(
               $VocabDefinitionsTable.$converterfieldsn);
-  static const VerificationMeta _miscInfoMeta =
-      const VerificationMeta('miscInfo');
   @override
   late final GeneratedColumnWithTypeConverter<List<MiscellaneousInfo>?, String>
       miscInfo = GeneratedColumn<String>('misc_info', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<MiscellaneousInfo>?>(
               $VocabDefinitionsTable.$convertermiscInfon);
-  static const VerificationMeta _dialectsMeta =
-      const VerificationMeta('dialects');
   @override
   late final GeneratedColumnWithTypeConverter<List<Dialect>?, String> dialects =
       GeneratedColumn<String>('dialects', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<Dialect>?>(
               $VocabDefinitionsTable.$converterdialectsn);
-  static const VerificationMeta _examplesMeta =
-      const VerificationMeta('examples');
   @override
   late final GeneratedColumnWithTypeConverter<List<VocabExample>?, String>
       examples = GeneratedColumn<String>('examples', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<VocabExample>?>(
               $VocabDefinitionsTable.$converterexamplesn);
-  static const VerificationMeta _languageSourceMeta =
-      const VerificationMeta('languageSource');
   @override
   late final GeneratedColumnWithTypeConverter<List<LanguageSource>?, String>
       languageSource = GeneratedColumn<String>(
@@ -1106,8 +1082,6 @@ class $VocabDefinitionsTable extends VocabDefinitions
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("waseieigo" IN (0, 1))'));
-  static const VerificationMeta _crossReferencesMeta =
-      const VerificationMeta('crossReferences');
   @override
   late final GeneratedColumnWithTypeConverter<List<VocabReference>?, String>
       crossReferences = GeneratedColumn<String>(
@@ -1115,8 +1089,6 @@ class $VocabDefinitionsTable extends VocabDefinitions
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<VocabReference>?>(
               $VocabDefinitionsTable.$convertercrossReferencesn);
-  static const VerificationMeta _antonymsMeta =
-      const VerificationMeta('antonyms');
   @override
   late final GeneratedColumnWithTypeConverter<List<VocabReference>?, String>
       antonyms = GeneratedColumn<String>('antonyms', aliasedName, true,
@@ -1173,21 +1145,12 @@ class $VocabDefinitionsTable extends VocabDefinitions
           additionalInfo.isAcceptableOrUnknown(
               data['additional_info']!, _additionalInfoMeta));
     }
-    context.handle(_posMeta, const VerificationResult.success());
-    context.handle(_appliesToMeta, const VerificationResult.success());
-    context.handle(_fieldsMeta, const VerificationResult.success());
-    context.handle(_miscInfoMeta, const VerificationResult.success());
-    context.handle(_dialectsMeta, const VerificationResult.success());
-    context.handle(_examplesMeta, const VerificationResult.success());
-    context.handle(_languageSourceMeta, const VerificationResult.success());
     if (data.containsKey('waseieigo')) {
       context.handle(_waseieigoMeta,
           waseieigo.isAcceptableOrUnknown(data['waseieigo']!, _waseieigoMeta));
     } else if (isInserting) {
       context.missing(_waseieigoMeta);
     }
-    context.handle(_crossReferencesMeta, const VerificationResult.success());
-    context.handle(_antonymsMeta, const VerificationResult.success());
     return context;
   }
 
@@ -2003,14 +1966,11 @@ class $KanjisTable extends Kanjis with TableInfo<$KanjisTable, Kanji> {
   late final GeneratedColumn<String> radical = GeneratedColumn<String>(
       'radical', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _componentsMeta =
-      const VerificationMeta('components');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>?, String>
       components = GeneratedColumn<String>('components', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<String>?>($KanjisTable.$convertercomponentsn);
-  static const VerificationMeta _gradeMeta = const VerificationMeta('grade');
   @override
   late final GeneratedColumnWithTypeConverter<KanjiGrade?, int> grade =
       GeneratedColumn<int>('grade', aliasedName, true,
@@ -2028,7 +1988,6 @@ class $KanjisTable extends Kanjis with TableInfo<$KanjisTable, Kanji> {
   late final GeneratedColumn<int> frequency = GeneratedColumn<int>(
       'frequency', aliasedName, true,
       type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _jlptMeta = const VerificationMeta('jlpt');
   @override
   late final GeneratedColumnWithTypeConverter<JlptLevel?, int> jlpt =
       GeneratedColumn<int>('jlpt', aliasedName, true,
@@ -2040,15 +1999,11 @@ class $KanjisTable extends Kanjis with TableInfo<$KanjisTable, Kanji> {
   late final GeneratedColumn<String> meaning = GeneratedColumn<String>(
       'meaning', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _strokesMeta =
-      const VerificationMeta('strokes');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>?, String> strokes =
       GeneratedColumn<String>('strokes', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<String>?>($KanjisTable.$converterstrokesn);
-  static const VerificationMeta _compoundsMeta =
-      const VerificationMeta('compounds');
   @override
   late final GeneratedColumnWithTypeConverter<List<int>?, String> compounds =
       GeneratedColumn<String>('compounds', aliasedName, true,
@@ -2093,8 +2048,6 @@ class $KanjisTable extends Kanjis with TableInfo<$KanjisTable, Kanji> {
     } else if (isInserting) {
       context.missing(_radicalMeta);
     }
-    context.handle(_componentsMeta, const VerificationResult.success());
-    context.handle(_gradeMeta, const VerificationResult.success());
     if (data.containsKey('stroke_count')) {
       context.handle(
           _strokeCountMeta,
@@ -2107,13 +2060,10 @@ class $KanjisTable extends Kanjis with TableInfo<$KanjisTable, Kanji> {
       context.handle(_frequencyMeta,
           frequency.isAcceptableOrUnknown(data['frequency']!, _frequencyMeta));
     }
-    context.handle(_jlptMeta, const VerificationResult.success());
     if (data.containsKey('meaning')) {
       context.handle(_meaningMeta,
           meaning.isAcceptableOrUnknown(data['meaning']!, _meaningMeta));
     }
-    context.handle(_strokesMeta, const VerificationResult.success());
-    context.handle(_compoundsMeta, const VerificationResult.success());
     return context;
   }
 
@@ -2381,7 +2331,6 @@ class $KanjiReadingsTable extends KanjiReadings
   late final GeneratedColumn<String> readingRomajiSimplified =
       GeneratedColumn<String>('reading_romaji_simplified', aliasedName, true,
           type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumnWithTypeConverter<KanjiReadingType, int> type =
       GeneratedColumn<int>('type', aliasedName, false,
@@ -2443,7 +2392,6 @@ class $KanjiReadingsTable extends KanjiReadings
               data['reading_romaji_simplified']!,
               _readingRomajiSimplifiedMeta));
     }
-    context.handle(_typeMeta, const VerificationResult.success());
     return context;
   }
 
@@ -2812,6 +2760,326 @@ class KanjiMeaningWordsCompanion extends UpdateCompanion<KanjiMeaningWord> {
   }
 }
 
+class $SpacedRepetitionDatasTable extends SpacedRepetitionDatas
+    with TableInfo<$SpacedRepetitionDatasTable, SpacedRepetitionData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SpacedRepetitionDatasTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _vocabIdMeta =
+      const VerificationMeta('vocabId');
+  @override
+  late final GeneratedColumn<int> vocabId = GeneratedColumn<int>(
+      'vocab_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints:
+          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )',
+      defaultValue: const CustomExpression('0'));
+  static const VerificationMeta _kanjiIdMeta =
+      const VerificationMeta('kanjiId');
+  @override
+  late final GeneratedColumn<int> kanjiId = GeneratedColumn<int>(
+      'kanji_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints:
+          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )',
+      defaultValue: const CustomExpression('0'));
+  @override
+  late final GeneratedColumnWithTypeConverter<FrontType, int> frontType =
+      GeneratedColumn<int>('front_type', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<FrontType>(
+              $SpacedRepetitionDatasTable.$converterfrontType);
+  static const VerificationMeta _intervalMeta =
+      const VerificationMeta('interval');
+  @override
+  late final GeneratedColumn<int> interval = GeneratedColumn<int>(
+      'interval', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _repetitionsMeta =
+      const VerificationMeta('repetitions');
+  @override
+  late final GeneratedColumn<int> repetitions = GeneratedColumn<int>(
+      'repetitions', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _easeFactorMeta =
+      const VerificationMeta('easeFactor');
+  @override
+  late final GeneratedColumn<double> easeFactor = GeneratedColumn<double>(
+      'ease_factor', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  static const VerificationMeta _dueDateMeta =
+      const VerificationMeta('dueDate');
+  @override
+  late final GeneratedColumn<int> dueDate = GeneratedColumn<int>(
+      'due_date', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _totalAnswersMeta =
+      const VerificationMeta('totalAnswers');
+  @override
+  late final GeneratedColumn<int> totalAnswers = GeneratedColumn<int>(
+      'total_answers', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _totalWrongAnswersMeta =
+      const VerificationMeta('totalWrongAnswers');
+  @override
+  late final GeneratedColumn<int> totalWrongAnswers = GeneratedColumn<int>(
+      'total_wrong_answers', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [
+        vocabId,
+        kanjiId,
+        frontType,
+        interval,
+        repetitions,
+        easeFactor,
+        dueDate,
+        totalAnswers,
+        totalWrongAnswers
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'spaced_repetition_datas';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<SpacedRepetitionData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('vocab_id')) {
+      context.handle(_vocabIdMeta,
+          vocabId.isAcceptableOrUnknown(data['vocab_id']!, _vocabIdMeta));
+    }
+    if (data.containsKey('kanji_id')) {
+      context.handle(_kanjiIdMeta,
+          kanjiId.isAcceptableOrUnknown(data['kanji_id']!, _kanjiIdMeta));
+    }
+    if (data.containsKey('interval')) {
+      context.handle(_intervalMeta,
+          interval.isAcceptableOrUnknown(data['interval']!, _intervalMeta));
+    } else if (isInserting) {
+      context.missing(_intervalMeta);
+    }
+    if (data.containsKey('repetitions')) {
+      context.handle(
+          _repetitionsMeta,
+          repetitions.isAcceptableOrUnknown(
+              data['repetitions']!, _repetitionsMeta));
+    } else if (isInserting) {
+      context.missing(_repetitionsMeta);
+    }
+    if (data.containsKey('ease_factor')) {
+      context.handle(
+          _easeFactorMeta,
+          easeFactor.isAcceptableOrUnknown(
+              data['ease_factor']!, _easeFactorMeta));
+    } else if (isInserting) {
+      context.missing(_easeFactorMeta);
+    }
+    if (data.containsKey('due_date')) {
+      context.handle(_dueDateMeta,
+          dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta));
+    }
+    if (data.containsKey('total_answers')) {
+      context.handle(
+          _totalAnswersMeta,
+          totalAnswers.isAcceptableOrUnknown(
+              data['total_answers']!, _totalAnswersMeta));
+    } else if (isInserting) {
+      context.missing(_totalAnswersMeta);
+    }
+    if (data.containsKey('total_wrong_answers')) {
+      context.handle(
+          _totalWrongAnswersMeta,
+          totalWrongAnswers.isAcceptableOrUnknown(
+              data['total_wrong_answers']!, _totalWrongAnswersMeta));
+    } else if (isInserting) {
+      context.missing(_totalWrongAnswersMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {vocabId, kanjiId, frontType};
+  @override
+  SpacedRepetitionData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SpacedRepetitionData(
+      vocabId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}vocab_id'])!,
+      kanjiId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}kanji_id'])!,
+      frontType: $SpacedRepetitionDatasTable.$converterfrontType.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.int, data['${effectivePrefix}front_type'])!),
+      interval: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}interval'])!,
+      repetitions: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}repetitions'])!,
+      easeFactor: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}ease_factor'])!,
+      dueDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}due_date']),
+      totalAnswers: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}total_answers'])!,
+      totalWrongAnswers: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}total_wrong_answers'])!,
+    );
+  }
+
+  @override
+  $SpacedRepetitionDatasTable createAlias(String alias) {
+    return $SpacedRepetitionDatasTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<FrontType, int, int> $converterfrontType =
+      const EnumIndexConverter<FrontType>(FrontType.values);
+  @override
+  bool get withoutRowId => true;
+}
+
+class SpacedRepetitionDatasCompanion
+    extends UpdateCompanion<SpacedRepetitionData> {
+  final Value<int> vocabId;
+  final Value<int> kanjiId;
+  final Value<FrontType> frontType;
+  final Value<int> interval;
+  final Value<int> repetitions;
+  final Value<double> easeFactor;
+  final Value<int?> dueDate;
+  final Value<int> totalAnswers;
+  final Value<int> totalWrongAnswers;
+  const SpacedRepetitionDatasCompanion({
+    this.vocabId = const Value.absent(),
+    this.kanjiId = const Value.absent(),
+    this.frontType = const Value.absent(),
+    this.interval = const Value.absent(),
+    this.repetitions = const Value.absent(),
+    this.easeFactor = const Value.absent(),
+    this.dueDate = const Value.absent(),
+    this.totalAnswers = const Value.absent(),
+    this.totalWrongAnswers = const Value.absent(),
+  });
+  SpacedRepetitionDatasCompanion.insert({
+    this.vocabId = const Value.absent(),
+    this.kanjiId = const Value.absent(),
+    required FrontType frontType,
+    required int interval,
+    required int repetitions,
+    required double easeFactor,
+    this.dueDate = const Value.absent(),
+    required int totalAnswers,
+    required int totalWrongAnswers,
+  })  : frontType = Value(frontType),
+        interval = Value(interval),
+        repetitions = Value(repetitions),
+        easeFactor = Value(easeFactor),
+        totalAnswers = Value(totalAnswers),
+        totalWrongAnswers = Value(totalWrongAnswers);
+  static Insertable<SpacedRepetitionData> custom({
+    Expression<int>? vocabId,
+    Expression<int>? kanjiId,
+    Expression<int>? frontType,
+    Expression<int>? interval,
+    Expression<int>? repetitions,
+    Expression<double>? easeFactor,
+    Expression<int>? dueDate,
+    Expression<int>? totalAnswers,
+    Expression<int>? totalWrongAnswers,
+  }) {
+    return RawValuesInsertable({
+      if (vocabId != null) 'vocab_id': vocabId,
+      if (kanjiId != null) 'kanji_id': kanjiId,
+      if (frontType != null) 'front_type': frontType,
+      if (interval != null) 'interval': interval,
+      if (repetitions != null) 'repetitions': repetitions,
+      if (easeFactor != null) 'ease_factor': easeFactor,
+      if (dueDate != null) 'due_date': dueDate,
+      if (totalAnswers != null) 'total_answers': totalAnswers,
+      if (totalWrongAnswers != null) 'total_wrong_answers': totalWrongAnswers,
+    });
+  }
+
+  SpacedRepetitionDatasCompanion copyWith(
+      {Value<int>? vocabId,
+      Value<int>? kanjiId,
+      Value<FrontType>? frontType,
+      Value<int>? interval,
+      Value<int>? repetitions,
+      Value<double>? easeFactor,
+      Value<int?>? dueDate,
+      Value<int>? totalAnswers,
+      Value<int>? totalWrongAnswers}) {
+    return SpacedRepetitionDatasCompanion(
+      vocabId: vocabId ?? this.vocabId,
+      kanjiId: kanjiId ?? this.kanjiId,
+      frontType: frontType ?? this.frontType,
+      interval: interval ?? this.interval,
+      repetitions: repetitions ?? this.repetitions,
+      easeFactor: easeFactor ?? this.easeFactor,
+      dueDate: dueDate ?? this.dueDate,
+      totalAnswers: totalAnswers ?? this.totalAnswers,
+      totalWrongAnswers: totalWrongAnswers ?? this.totalWrongAnswers,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (vocabId.present) {
+      map['vocab_id'] = Variable<int>(vocabId.value);
+    }
+    if (kanjiId.present) {
+      map['kanji_id'] = Variable<int>(kanjiId.value);
+    }
+    if (frontType.present) {
+      map['front_type'] = Variable<int>($SpacedRepetitionDatasTable
+          .$converterfrontType
+          .toSql(frontType.value));
+    }
+    if (interval.present) {
+      map['interval'] = Variable<int>(interval.value);
+    }
+    if (repetitions.present) {
+      map['repetitions'] = Variable<int>(repetitions.value);
+    }
+    if (easeFactor.present) {
+      map['ease_factor'] = Variable<double>(easeFactor.value);
+    }
+    if (dueDate.present) {
+      map['due_date'] = Variable<int>(dueDate.value);
+    }
+    if (totalAnswers.present) {
+      map['total_answers'] = Variable<int>(totalAnswers.value);
+    }
+    if (totalWrongAnswers.present) {
+      map['total_wrong_answers'] = Variable<int>(totalWrongAnswers.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SpacedRepetitionDatasCompanion(')
+          ..write('vocabId: $vocabId, ')
+          ..write('kanjiId: $kanjiId, ')
+          ..write('frontType: $frontType, ')
+          ..write('interval: $interval, ')
+          ..write('repetitions: $repetitions, ')
+          ..write('easeFactor: $easeFactor, ')
+          ..write('dueDate: $dueDate, ')
+          ..write('totalAnswers: $totalAnswers, ')
+          ..write('totalWrongAnswers: $totalWrongAnswers')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $VocabNotesTable extends VocabNotes
     with TableInfo<$VocabNotesTable, VocabNote> {
   @override
@@ -3112,329 +3380,6 @@ class TextAnalysisHistoryItemsCompanion
   }
 }
 
-class $SpacedRepetitionDatasTable extends SpacedRepetitionDatas
-    with TableInfo<$SpacedRepetitionDatasTable, SpacedRepetitionData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $SpacedRepetitionDatasTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _vocabIdMeta =
-      const VerificationMeta('vocabId');
-  @override
-  late final GeneratedColumn<int> vocabId = GeneratedColumn<int>(
-      'vocab_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      $customConstraints:
-          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )',
-      defaultValue: const CustomExpression('0'));
-  static const VerificationMeta _kanjiIdMeta =
-      const VerificationMeta('kanjiId');
-  @override
-  late final GeneratedColumn<int> kanjiId = GeneratedColumn<int>(
-      'kanji_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      $customConstraints:
-          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )',
-      defaultValue: const CustomExpression('0'));
-  static const VerificationMeta _frontTypeMeta =
-      const VerificationMeta('frontType');
-  @override
-  late final GeneratedColumnWithTypeConverter<FrontType, int> frontType =
-      GeneratedColumn<int>('front_type', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<FrontType>(
-              $SpacedRepetitionDatasTable.$converterfrontType);
-  static const VerificationMeta _intervalMeta =
-      const VerificationMeta('interval');
-  @override
-  late final GeneratedColumn<int> interval = GeneratedColumn<int>(
-      'interval', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _repetitionsMeta =
-      const VerificationMeta('repetitions');
-  @override
-  late final GeneratedColumn<int> repetitions = GeneratedColumn<int>(
-      'repetitions', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _easeFactorMeta =
-      const VerificationMeta('easeFactor');
-  @override
-  late final GeneratedColumn<double> easeFactor = GeneratedColumn<double>(
-      'ease_factor', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _dueDateMeta =
-      const VerificationMeta('dueDate');
-  @override
-  late final GeneratedColumn<int> dueDate = GeneratedColumn<int>(
-      'due_date', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _totalAnswersMeta =
-      const VerificationMeta('totalAnswers');
-  @override
-  late final GeneratedColumn<int> totalAnswers = GeneratedColumn<int>(
-      'total_answers', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _totalWrongAnswersMeta =
-      const VerificationMeta('totalWrongAnswers');
-  @override
-  late final GeneratedColumn<int> totalWrongAnswers = GeneratedColumn<int>(
-      'total_wrong_answers', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [
-        vocabId,
-        kanjiId,
-        frontType,
-        interval,
-        repetitions,
-        easeFactor,
-        dueDate,
-        totalAnswers,
-        totalWrongAnswers
-      ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'spaced_repetition_datas';
-  @override
-  VerificationContext validateIntegrity(
-      Insertable<SpacedRepetitionData> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('vocab_id')) {
-      context.handle(_vocabIdMeta,
-          vocabId.isAcceptableOrUnknown(data['vocab_id']!, _vocabIdMeta));
-    }
-    if (data.containsKey('kanji_id')) {
-      context.handle(_kanjiIdMeta,
-          kanjiId.isAcceptableOrUnknown(data['kanji_id']!, _kanjiIdMeta));
-    }
-    context.handle(_frontTypeMeta, const VerificationResult.success());
-    if (data.containsKey('interval')) {
-      context.handle(_intervalMeta,
-          interval.isAcceptableOrUnknown(data['interval']!, _intervalMeta));
-    } else if (isInserting) {
-      context.missing(_intervalMeta);
-    }
-    if (data.containsKey('repetitions')) {
-      context.handle(
-          _repetitionsMeta,
-          repetitions.isAcceptableOrUnknown(
-              data['repetitions']!, _repetitionsMeta));
-    } else if (isInserting) {
-      context.missing(_repetitionsMeta);
-    }
-    if (data.containsKey('ease_factor')) {
-      context.handle(
-          _easeFactorMeta,
-          easeFactor.isAcceptableOrUnknown(
-              data['ease_factor']!, _easeFactorMeta));
-    } else if (isInserting) {
-      context.missing(_easeFactorMeta);
-    }
-    if (data.containsKey('due_date')) {
-      context.handle(_dueDateMeta,
-          dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta));
-    }
-    if (data.containsKey('total_answers')) {
-      context.handle(
-          _totalAnswersMeta,
-          totalAnswers.isAcceptableOrUnknown(
-              data['total_answers']!, _totalAnswersMeta));
-    } else if (isInserting) {
-      context.missing(_totalAnswersMeta);
-    }
-    if (data.containsKey('total_wrong_answers')) {
-      context.handle(
-          _totalWrongAnswersMeta,
-          totalWrongAnswers.isAcceptableOrUnknown(
-              data['total_wrong_answers']!, _totalWrongAnswersMeta));
-    } else if (isInserting) {
-      context.missing(_totalWrongAnswersMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {vocabId, kanjiId, frontType};
-  @override
-  SpacedRepetitionData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return SpacedRepetitionData(
-      vocabId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}vocab_id'])!,
-      kanjiId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}kanji_id'])!,
-      frontType: $SpacedRepetitionDatasTable.$converterfrontType.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.int, data['${effectivePrefix}front_type'])!),
-      interval: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}interval'])!,
-      repetitions: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}repetitions'])!,
-      easeFactor: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}ease_factor'])!,
-      dueDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}due_date']),
-      totalAnswers: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}total_answers'])!,
-      totalWrongAnswers: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}total_wrong_answers'])!,
-    );
-  }
-
-  @override
-  $SpacedRepetitionDatasTable createAlias(String alias) {
-    return $SpacedRepetitionDatasTable(attachedDatabase, alias);
-  }
-
-  static JsonTypeConverter2<FrontType, int, int> $converterfrontType =
-      const EnumIndexConverter<FrontType>(FrontType.values);
-  @override
-  bool get withoutRowId => true;
-}
-
-class SpacedRepetitionDatasCompanion
-    extends UpdateCompanion<SpacedRepetitionData> {
-  final Value<int> vocabId;
-  final Value<int> kanjiId;
-  final Value<FrontType> frontType;
-  final Value<int> interval;
-  final Value<int> repetitions;
-  final Value<double> easeFactor;
-  final Value<int?> dueDate;
-  final Value<int> totalAnswers;
-  final Value<int> totalWrongAnswers;
-  const SpacedRepetitionDatasCompanion({
-    this.vocabId = const Value.absent(),
-    this.kanjiId = const Value.absent(),
-    this.frontType = const Value.absent(),
-    this.interval = const Value.absent(),
-    this.repetitions = const Value.absent(),
-    this.easeFactor = const Value.absent(),
-    this.dueDate = const Value.absent(),
-    this.totalAnswers = const Value.absent(),
-    this.totalWrongAnswers = const Value.absent(),
-  });
-  SpacedRepetitionDatasCompanion.insert({
-    this.vocabId = const Value.absent(),
-    this.kanjiId = const Value.absent(),
-    required FrontType frontType,
-    required int interval,
-    required int repetitions,
-    required double easeFactor,
-    this.dueDate = const Value.absent(),
-    required int totalAnswers,
-    required int totalWrongAnswers,
-  })  : frontType = Value(frontType),
-        interval = Value(interval),
-        repetitions = Value(repetitions),
-        easeFactor = Value(easeFactor),
-        totalAnswers = Value(totalAnswers),
-        totalWrongAnswers = Value(totalWrongAnswers);
-  static Insertable<SpacedRepetitionData> custom({
-    Expression<int>? vocabId,
-    Expression<int>? kanjiId,
-    Expression<int>? frontType,
-    Expression<int>? interval,
-    Expression<int>? repetitions,
-    Expression<double>? easeFactor,
-    Expression<int>? dueDate,
-    Expression<int>? totalAnswers,
-    Expression<int>? totalWrongAnswers,
-  }) {
-    return RawValuesInsertable({
-      if (vocabId != null) 'vocab_id': vocabId,
-      if (kanjiId != null) 'kanji_id': kanjiId,
-      if (frontType != null) 'front_type': frontType,
-      if (interval != null) 'interval': interval,
-      if (repetitions != null) 'repetitions': repetitions,
-      if (easeFactor != null) 'ease_factor': easeFactor,
-      if (dueDate != null) 'due_date': dueDate,
-      if (totalAnswers != null) 'total_answers': totalAnswers,
-      if (totalWrongAnswers != null) 'total_wrong_answers': totalWrongAnswers,
-    });
-  }
-
-  SpacedRepetitionDatasCompanion copyWith(
-      {Value<int>? vocabId,
-      Value<int>? kanjiId,
-      Value<FrontType>? frontType,
-      Value<int>? interval,
-      Value<int>? repetitions,
-      Value<double>? easeFactor,
-      Value<int?>? dueDate,
-      Value<int>? totalAnswers,
-      Value<int>? totalWrongAnswers}) {
-    return SpacedRepetitionDatasCompanion(
-      vocabId: vocabId ?? this.vocabId,
-      kanjiId: kanjiId ?? this.kanjiId,
-      frontType: frontType ?? this.frontType,
-      interval: interval ?? this.interval,
-      repetitions: repetitions ?? this.repetitions,
-      easeFactor: easeFactor ?? this.easeFactor,
-      dueDate: dueDate ?? this.dueDate,
-      totalAnswers: totalAnswers ?? this.totalAnswers,
-      totalWrongAnswers: totalWrongAnswers ?? this.totalWrongAnswers,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (vocabId.present) {
-      map['vocab_id'] = Variable<int>(vocabId.value);
-    }
-    if (kanjiId.present) {
-      map['kanji_id'] = Variable<int>(kanjiId.value);
-    }
-    if (frontType.present) {
-      map['front_type'] = Variable<int>($SpacedRepetitionDatasTable
-          .$converterfrontType
-          .toSql(frontType.value));
-    }
-    if (interval.present) {
-      map['interval'] = Variable<int>(interval.value);
-    }
-    if (repetitions.present) {
-      map['repetitions'] = Variable<int>(repetitions.value);
-    }
-    if (easeFactor.present) {
-      map['ease_factor'] = Variable<double>(easeFactor.value);
-    }
-    if (dueDate.present) {
-      map['due_date'] = Variable<int>(dueDate.value);
-    }
-    if (totalAnswers.present) {
-      map['total_answers'] = Variable<int>(totalAnswers.value);
-    }
-    if (totalWrongAnswers.present) {
-      map['total_wrong_answers'] = Variable<int>(totalWrongAnswers.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('SpacedRepetitionDatasCompanion(')
-          ..write('vocabId: $vocabId, ')
-          ..write('kanjiId: $kanjiId, ')
-          ..write('frontType: $frontType, ')
-          ..write('interval: $interval, ')
-          ..write('repetitions: $repetitions, ')
-          ..write('easeFactor: $easeFactor, ')
-          ..write('dueDate: $dueDate, ')
-          ..write('totalAnswers: $totalAnswers, ')
-          ..write('totalWrongAnswers: $totalWrongAnswers')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $SearchHistoryItemsTable extends SearchHistoryItems
     with TableInfo<$SearchHistoryItemsTable, SearchHistoryItem> {
   @override
@@ -3665,30 +3610,22 @@ class $RadicalsTable extends Radicals with TableInfo<$RadicalsTable, Radical> {
   late final GeneratedColumn<String> reading = GeneratedColumn<String>(
       'reading', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _positionMeta =
-      const VerificationMeta('position');
   @override
   late final GeneratedColumnWithTypeConverter<RadicalPosition?, int> position =
       GeneratedColumn<int>('position', aliasedName, true,
               type: DriftSqlType.int, requiredDuringInsert: false)
           .withConverter<RadicalPosition?>($RadicalsTable.$converterpositionn);
-  static const VerificationMeta _importanceMeta =
-      const VerificationMeta('importance');
   @override
   late final GeneratedColumnWithTypeConverter<RadicalImportance?, int>
       importance = GeneratedColumn<int>('importance', aliasedName, true,
               type: DriftSqlType.int, requiredDuringInsert: false)
           .withConverter<RadicalImportance?>(
               $RadicalsTable.$converterimportancen);
-  static const VerificationMeta _strokesMeta =
-      const VerificationMeta('strokes');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>?, String> strokes =
       GeneratedColumn<String>('strokes', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<String>?>($RadicalsTable.$converterstrokesn);
-  static const VerificationMeta _variantsMeta =
-      const VerificationMeta('variants');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>?, String> variants =
       GeneratedColumn<String>('variants', aliasedName, true,
@@ -3757,10 +3694,6 @@ class $RadicalsTable extends Radicals with TableInfo<$RadicalsTable, Radical> {
     } else if (isInserting) {
       context.missing(_readingMeta);
     }
-    context.handle(_positionMeta, const VerificationResult.success());
-    context.handle(_importanceMeta, const VerificationResult.success());
-    context.handle(_strokesMeta, const VerificationResult.success());
-    context.handle(_variantsMeta, const VerificationResult.success());
     if (data.containsKey('variant_of')) {
       context.handle(_variantOfMeta,
           variantOf.isAcceptableOrUnknown(data['variant_of']!, _variantOfMeta));
@@ -4246,7 +4179,6 @@ class $ProperNounsTable extends ProperNouns
   late final GeneratedColumn<String> romaji = GeneratedColumn<String>(
       'romaji', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _typesMeta = const VerificationMeta('types');
   @override
   late final GeneratedColumnWithTypeConverter<List<ProperNounType>, String>
       types = GeneratedColumn<String>('types', aliasedName, false,
@@ -4321,7 +4253,6 @@ class $ProperNounsTable extends ProperNouns
     } else if (isInserting) {
       context.missing(_romajiMeta);
     }
-    context.handle(_typesMeta, const VerificationResult.success());
     return context;
   }
 
@@ -4744,14 +4675,12 @@ class $PredefinedDictionaryListsTable extends PredefinedDictionaryLists
       check: () => ComparableExpr(name.length).isBiggerThan(Constant(0)),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
-  static const VerificationMeta _vocabMeta = const VerificationMeta('vocab');
   @override
   late final GeneratedColumnWithTypeConverter<List<int>, String> vocab =
       GeneratedColumn<String>('vocab', aliasedName, false,
               type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<List<int>>(
               $PredefinedDictionaryListsTable.$convertervocab);
-  static const VerificationMeta _kanjiMeta = const VerificationMeta('kanji');
   @override
   late final GeneratedColumnWithTypeConverter<List<int>, String> kanji =
       GeneratedColumn<String>('kanji', aliasedName, false,
@@ -4780,8 +4709,6 @@ class $PredefinedDictionaryListsTable extends PredefinedDictionaryLists
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    context.handle(_vocabMeta, const VerificationResult.success());
-    context.handle(_kanjiMeta, const VerificationResult.success());
     return context;
   }
 
@@ -5440,8 +5367,6 @@ class $FlashcardSetsTable extends FlashcardSets
           defaultConstraints: GeneratedColumn.constraintIsAlways(
               'CHECK ("using_spaced_repetition" IN (0, 1))'),
           defaultValue: const Constant(true));
-  static const VerificationMeta _frontTypeMeta =
-      const VerificationMeta('frontType');
   @override
   late final GeneratedColumnWithTypeConverter<FrontType, int> frontType =
       GeneratedColumn<int>('front_type', aliasedName, false,
@@ -5528,8 +5453,6 @@ class $FlashcardSetsTable extends FlashcardSets
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _predefinedDictionaryListsMeta =
-      const VerificationMeta('predefinedDictionaryLists');
   @override
   late final GeneratedColumnWithTypeConverter<List<int>, String>
       predefinedDictionaryLists = GeneratedColumn<String>(
@@ -5539,8 +5462,6 @@ class $FlashcardSetsTable extends FlashcardSets
               defaultValue: const Constant('[]'))
           .withConverter<List<int>>(
               $FlashcardSetsTable.$converterpredefinedDictionaryLists);
-  static const VerificationMeta _myDictionaryListsMeta =
-      const VerificationMeta('myDictionaryLists');
   @override
   late final GeneratedColumnWithTypeConverter<List<int>, String>
       myDictionaryLists = GeneratedColumn<String>(
@@ -5600,7 +5521,6 @@ class $FlashcardSetsTable extends FlashcardSets
           usingSpacedRepetition.isAcceptableOrUnknown(
               data['using_spaced_repetition']!, _usingSpacedRepetitionMeta));
     }
-    context.handle(_frontTypeMeta, const VerificationResult.success());
     if (data.containsKey('vocab_show_reading')) {
       context.handle(
           _vocabShowReadingMeta,
@@ -5647,9 +5567,6 @@ class $FlashcardSetsTable extends FlashcardSets
       context.handle(_timestampMeta,
           timestamp.isAcceptableOrUnknown(data['timestamp']!, _timestampMeta));
     }
-    context.handle(
-        _predefinedDictionaryListsMeta, const VerificationResult.success());
-    context.handle(_myDictionaryListsMeta, const VerificationResult.success());
     if (data.containsKey('streak')) {
       context.handle(_streakMeta,
           streak.isAcceptableOrUnknown(data['streak']!, _streakMeta));
@@ -6416,11 +6333,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Index iXKanjiMeaningWordsWord = Index(
       'IX_kanji_meaning_words_word',
       'CREATE INDEX IX_kanji_meaning_words_word ON kanji_meaning_words (word)');
+  late final $SpacedRepetitionDatasTable spacedRepetitionDatas =
+      $SpacedRepetitionDatasTable(this);
   late final $VocabNotesTable vocabNotes = $VocabNotesTable(this);
   late final $TextAnalysisHistoryItemsTable textAnalysisHistoryItems =
       $TextAnalysisHistoryItemsTable(this);
-  late final $SpacedRepetitionDatasTable spacedRepetitionDatas =
-      $SpacedRepetitionDatasTable(this);
   late final $SearchHistoryItemsTable searchHistoryItems =
       $SearchHistoryItemsTable(this);
   late final $RadicalsTable radicals = $RadicalsTable(this);
@@ -6533,9 +6450,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         iXKanjiReadingsReading,
         iXKanjiReadingsReadingRomaji,
         iXKanjiMeaningWordsWord,
+        spacedRepetitionDatas,
         vocabNotes,
         textAnalysisHistoryItems,
-        spacedRepetitionDatas,
         searchHistoryItems,
         radicals,
         uKRadicalsRadical,
@@ -8210,6 +8127,245 @@ typedef $$KanjiMeaningWordsTableProcessedTableManager = ProcessedTableManager<
     ),
     KanjiMeaningWord,
     PrefetchHooks Function()>;
+typedef $$SpacedRepetitionDatasTableCreateCompanionBuilder
+    = SpacedRepetitionDatasCompanion Function({
+  Value<int> vocabId,
+  Value<int> kanjiId,
+  required FrontType frontType,
+  required int interval,
+  required int repetitions,
+  required double easeFactor,
+  Value<int?> dueDate,
+  required int totalAnswers,
+  required int totalWrongAnswers,
+});
+typedef $$SpacedRepetitionDatasTableUpdateCompanionBuilder
+    = SpacedRepetitionDatasCompanion Function({
+  Value<int> vocabId,
+  Value<int> kanjiId,
+  Value<FrontType> frontType,
+  Value<int> interval,
+  Value<int> repetitions,
+  Value<double> easeFactor,
+  Value<int?> dueDate,
+  Value<int> totalAnswers,
+  Value<int> totalWrongAnswers,
+});
+
+class $$SpacedRepetitionDatasTableFilterComposer
+    extends Composer<_$AppDatabase, $SpacedRepetitionDatasTable> {
+  $$SpacedRepetitionDatasTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get vocabId => $composableBuilder(
+      column: $table.vocabId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get kanjiId => $composableBuilder(
+      column: $table.kanjiId, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<FrontType, FrontType, int> get frontType =>
+      $composableBuilder(
+          column: $table.frontType,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get interval => $composableBuilder(
+      column: $table.interval, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get repetitions => $composableBuilder(
+      column: $table.repetitions, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get easeFactor => $composableBuilder(
+      column: $table.easeFactor, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get dueDate => $composableBuilder(
+      column: $table.dueDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get totalAnswers => $composableBuilder(
+      column: $table.totalAnswers, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get totalWrongAnswers => $composableBuilder(
+      column: $table.totalWrongAnswers,
+      builder: (column) => ColumnFilters(column));
+}
+
+class $$SpacedRepetitionDatasTableOrderingComposer
+    extends Composer<_$AppDatabase, $SpacedRepetitionDatasTable> {
+  $$SpacedRepetitionDatasTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get vocabId => $composableBuilder(
+      column: $table.vocabId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get kanjiId => $composableBuilder(
+      column: $table.kanjiId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get frontType => $composableBuilder(
+      column: $table.frontType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get interval => $composableBuilder(
+      column: $table.interval, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get repetitions => $composableBuilder(
+      column: $table.repetitions, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get easeFactor => $composableBuilder(
+      column: $table.easeFactor, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get dueDate => $composableBuilder(
+      column: $table.dueDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get totalAnswers => $composableBuilder(
+      column: $table.totalAnswers,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get totalWrongAnswers => $composableBuilder(
+      column: $table.totalWrongAnswers,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$SpacedRepetitionDatasTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SpacedRepetitionDatasTable> {
+  $$SpacedRepetitionDatasTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get vocabId =>
+      $composableBuilder(column: $table.vocabId, builder: (column) => column);
+
+  GeneratedColumn<int> get kanjiId =>
+      $composableBuilder(column: $table.kanjiId, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<FrontType, int> get frontType =>
+      $composableBuilder(column: $table.frontType, builder: (column) => column);
+
+  GeneratedColumn<int> get interval =>
+      $composableBuilder(column: $table.interval, builder: (column) => column);
+
+  GeneratedColumn<int> get repetitions => $composableBuilder(
+      column: $table.repetitions, builder: (column) => column);
+
+  GeneratedColumn<double> get easeFactor => $composableBuilder(
+      column: $table.easeFactor, builder: (column) => column);
+
+  GeneratedColumn<int> get dueDate =>
+      $composableBuilder(column: $table.dueDate, builder: (column) => column);
+
+  GeneratedColumn<int> get totalAnswers => $composableBuilder(
+      column: $table.totalAnswers, builder: (column) => column);
+
+  GeneratedColumn<int> get totalWrongAnswers => $composableBuilder(
+      column: $table.totalWrongAnswers, builder: (column) => column);
+}
+
+class $$SpacedRepetitionDatasTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SpacedRepetitionDatasTable,
+    SpacedRepetitionData,
+    $$SpacedRepetitionDatasTableFilterComposer,
+    $$SpacedRepetitionDatasTableOrderingComposer,
+    $$SpacedRepetitionDatasTableAnnotationComposer,
+    $$SpacedRepetitionDatasTableCreateCompanionBuilder,
+    $$SpacedRepetitionDatasTableUpdateCompanionBuilder,
+    (
+      SpacedRepetitionData,
+      BaseReferences<_$AppDatabase, $SpacedRepetitionDatasTable,
+          SpacedRepetitionData>
+    ),
+    SpacedRepetitionData,
+    PrefetchHooks Function()> {
+  $$SpacedRepetitionDatasTableTableManager(
+      _$AppDatabase db, $SpacedRepetitionDatasTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SpacedRepetitionDatasTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SpacedRepetitionDatasTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SpacedRepetitionDatasTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> vocabId = const Value.absent(),
+            Value<int> kanjiId = const Value.absent(),
+            Value<FrontType> frontType = const Value.absent(),
+            Value<int> interval = const Value.absent(),
+            Value<int> repetitions = const Value.absent(),
+            Value<double> easeFactor = const Value.absent(),
+            Value<int?> dueDate = const Value.absent(),
+            Value<int> totalAnswers = const Value.absent(),
+            Value<int> totalWrongAnswers = const Value.absent(),
+          }) =>
+              SpacedRepetitionDatasCompanion(
+            vocabId: vocabId,
+            kanjiId: kanjiId,
+            frontType: frontType,
+            interval: interval,
+            repetitions: repetitions,
+            easeFactor: easeFactor,
+            dueDate: dueDate,
+            totalAnswers: totalAnswers,
+            totalWrongAnswers: totalWrongAnswers,
+          ),
+          createCompanionCallback: ({
+            Value<int> vocabId = const Value.absent(),
+            Value<int> kanjiId = const Value.absent(),
+            required FrontType frontType,
+            required int interval,
+            required int repetitions,
+            required double easeFactor,
+            Value<int?> dueDate = const Value.absent(),
+            required int totalAnswers,
+            required int totalWrongAnswers,
+          }) =>
+              SpacedRepetitionDatasCompanion.insert(
+            vocabId: vocabId,
+            kanjiId: kanjiId,
+            frontType: frontType,
+            interval: interval,
+            repetitions: repetitions,
+            easeFactor: easeFactor,
+            dueDate: dueDate,
+            totalAnswers: totalAnswers,
+            totalWrongAnswers: totalWrongAnswers,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$SpacedRepetitionDatasTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $SpacedRepetitionDatasTable,
+        SpacedRepetitionData,
+        $$SpacedRepetitionDatasTableFilterComposer,
+        $$SpacedRepetitionDatasTableOrderingComposer,
+        $$SpacedRepetitionDatasTableAnnotationComposer,
+        $$SpacedRepetitionDatasTableCreateCompanionBuilder,
+        $$SpacedRepetitionDatasTableUpdateCompanionBuilder,
+        (
+          SpacedRepetitionData,
+          BaseReferences<_$AppDatabase, $SpacedRepetitionDatasTable,
+              SpacedRepetitionData>
+        ),
+        SpacedRepetitionData,
+        PrefetchHooks Function()>;
 typedef $$VocabNotesTableCreateCompanionBuilder = VocabNotesCompanion Function({
   Value<int> id,
   required String note,
@@ -8453,245 +8609,6 @@ typedef $$TextAnalysisHistoryItemsTableProcessedTableManager
               TextAnalysisHistoryItem>
         ),
         TextAnalysisHistoryItem,
-        PrefetchHooks Function()>;
-typedef $$SpacedRepetitionDatasTableCreateCompanionBuilder
-    = SpacedRepetitionDatasCompanion Function({
-  Value<int> vocabId,
-  Value<int> kanjiId,
-  required FrontType frontType,
-  required int interval,
-  required int repetitions,
-  required double easeFactor,
-  Value<int?> dueDate,
-  required int totalAnswers,
-  required int totalWrongAnswers,
-});
-typedef $$SpacedRepetitionDatasTableUpdateCompanionBuilder
-    = SpacedRepetitionDatasCompanion Function({
-  Value<int> vocabId,
-  Value<int> kanjiId,
-  Value<FrontType> frontType,
-  Value<int> interval,
-  Value<int> repetitions,
-  Value<double> easeFactor,
-  Value<int?> dueDate,
-  Value<int> totalAnswers,
-  Value<int> totalWrongAnswers,
-});
-
-class $$SpacedRepetitionDatasTableFilterComposer
-    extends Composer<_$AppDatabase, $SpacedRepetitionDatasTable> {
-  $$SpacedRepetitionDatasTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get vocabId => $composableBuilder(
-      column: $table.vocabId, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get kanjiId => $composableBuilder(
-      column: $table.kanjiId, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<FrontType, FrontType, int> get frontType =>
-      $composableBuilder(
-          column: $table.frontType,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnFilters<int> get interval => $composableBuilder(
-      column: $table.interval, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get repetitions => $composableBuilder(
-      column: $table.repetitions, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<double> get easeFactor => $composableBuilder(
-      column: $table.easeFactor, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get dueDate => $composableBuilder(
-      column: $table.dueDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get totalAnswers => $composableBuilder(
-      column: $table.totalAnswers, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get totalWrongAnswers => $composableBuilder(
-      column: $table.totalWrongAnswers,
-      builder: (column) => ColumnFilters(column));
-}
-
-class $$SpacedRepetitionDatasTableOrderingComposer
-    extends Composer<_$AppDatabase, $SpacedRepetitionDatasTable> {
-  $$SpacedRepetitionDatasTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get vocabId => $composableBuilder(
-      column: $table.vocabId, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get kanjiId => $composableBuilder(
-      column: $table.kanjiId, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get frontType => $composableBuilder(
-      column: $table.frontType, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get interval => $composableBuilder(
-      column: $table.interval, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get repetitions => $composableBuilder(
-      column: $table.repetitions, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<double> get easeFactor => $composableBuilder(
-      column: $table.easeFactor, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get dueDate => $composableBuilder(
-      column: $table.dueDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get totalAnswers => $composableBuilder(
-      column: $table.totalAnswers,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get totalWrongAnswers => $composableBuilder(
-      column: $table.totalWrongAnswers,
-      builder: (column) => ColumnOrderings(column));
-}
-
-class $$SpacedRepetitionDatasTableAnnotationComposer
-    extends Composer<_$AppDatabase, $SpacedRepetitionDatasTable> {
-  $$SpacedRepetitionDatasTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get vocabId =>
-      $composableBuilder(column: $table.vocabId, builder: (column) => column);
-
-  GeneratedColumn<int> get kanjiId =>
-      $composableBuilder(column: $table.kanjiId, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<FrontType, int> get frontType =>
-      $composableBuilder(column: $table.frontType, builder: (column) => column);
-
-  GeneratedColumn<int> get interval =>
-      $composableBuilder(column: $table.interval, builder: (column) => column);
-
-  GeneratedColumn<int> get repetitions => $composableBuilder(
-      column: $table.repetitions, builder: (column) => column);
-
-  GeneratedColumn<double> get easeFactor => $composableBuilder(
-      column: $table.easeFactor, builder: (column) => column);
-
-  GeneratedColumn<int> get dueDate =>
-      $composableBuilder(column: $table.dueDate, builder: (column) => column);
-
-  GeneratedColumn<int> get totalAnswers => $composableBuilder(
-      column: $table.totalAnswers, builder: (column) => column);
-
-  GeneratedColumn<int> get totalWrongAnswers => $composableBuilder(
-      column: $table.totalWrongAnswers, builder: (column) => column);
-}
-
-class $$SpacedRepetitionDatasTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $SpacedRepetitionDatasTable,
-    SpacedRepetitionData,
-    $$SpacedRepetitionDatasTableFilterComposer,
-    $$SpacedRepetitionDatasTableOrderingComposer,
-    $$SpacedRepetitionDatasTableAnnotationComposer,
-    $$SpacedRepetitionDatasTableCreateCompanionBuilder,
-    $$SpacedRepetitionDatasTableUpdateCompanionBuilder,
-    (
-      SpacedRepetitionData,
-      BaseReferences<_$AppDatabase, $SpacedRepetitionDatasTable,
-          SpacedRepetitionData>
-    ),
-    SpacedRepetitionData,
-    PrefetchHooks Function()> {
-  $$SpacedRepetitionDatasTableTableManager(
-      _$AppDatabase db, $SpacedRepetitionDatasTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$SpacedRepetitionDatasTableFilterComposer(
-                  $db: db, $table: table),
-          createOrderingComposer: () =>
-              $$SpacedRepetitionDatasTableOrderingComposer(
-                  $db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$SpacedRepetitionDatasTableAnnotationComposer(
-                  $db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> vocabId = const Value.absent(),
-            Value<int> kanjiId = const Value.absent(),
-            Value<FrontType> frontType = const Value.absent(),
-            Value<int> interval = const Value.absent(),
-            Value<int> repetitions = const Value.absent(),
-            Value<double> easeFactor = const Value.absent(),
-            Value<int?> dueDate = const Value.absent(),
-            Value<int> totalAnswers = const Value.absent(),
-            Value<int> totalWrongAnswers = const Value.absent(),
-          }) =>
-              SpacedRepetitionDatasCompanion(
-            vocabId: vocabId,
-            kanjiId: kanjiId,
-            frontType: frontType,
-            interval: interval,
-            repetitions: repetitions,
-            easeFactor: easeFactor,
-            dueDate: dueDate,
-            totalAnswers: totalAnswers,
-            totalWrongAnswers: totalWrongAnswers,
-          ),
-          createCompanionCallback: ({
-            Value<int> vocabId = const Value.absent(),
-            Value<int> kanjiId = const Value.absent(),
-            required FrontType frontType,
-            required int interval,
-            required int repetitions,
-            required double easeFactor,
-            Value<int?> dueDate = const Value.absent(),
-            required int totalAnswers,
-            required int totalWrongAnswers,
-          }) =>
-              SpacedRepetitionDatasCompanion.insert(
-            vocabId: vocabId,
-            kanjiId: kanjiId,
-            frontType: frontType,
-            interval: interval,
-            repetitions: repetitions,
-            easeFactor: easeFactor,
-            dueDate: dueDate,
-            totalAnswers: totalAnswers,
-            totalWrongAnswers: totalWrongAnswers,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$SpacedRepetitionDatasTableProcessedTableManager
-    = ProcessedTableManager<
-        _$AppDatabase,
-        $SpacedRepetitionDatasTable,
-        SpacedRepetitionData,
-        $$SpacedRepetitionDatasTableFilterComposer,
-        $$SpacedRepetitionDatasTableOrderingComposer,
-        $$SpacedRepetitionDatasTableAnnotationComposer,
-        $$SpacedRepetitionDatasTableCreateCompanionBuilder,
-        $$SpacedRepetitionDatasTableUpdateCompanionBuilder,
-        (
-          SpacedRepetitionData,
-          BaseReferences<_$AppDatabase, $SpacedRepetitionDatasTable,
-              SpacedRepetitionData>
-        ),
-        SpacedRepetitionData,
         PrefetchHooks Function()>;
 typedef $$SearchHistoryItemsTableCreateCompanionBuilder
     = SearchHistoryItemsCompanion Function({
@@ -10712,13 +10629,13 @@ class $AppDatabaseManager {
       $$KanjiReadingsTableTableManager(_db, _db.kanjiReadings);
   $$KanjiMeaningWordsTableTableManager get kanjiMeaningWords =>
       $$KanjiMeaningWordsTableTableManager(_db, _db.kanjiMeaningWords);
+  $$SpacedRepetitionDatasTableTableManager get spacedRepetitionDatas =>
+      $$SpacedRepetitionDatasTableTableManager(_db, _db.spacedRepetitionDatas);
   $$VocabNotesTableTableManager get vocabNotes =>
       $$VocabNotesTableTableManager(_db, _db.vocabNotes);
   $$TextAnalysisHistoryItemsTableTableManager get textAnalysisHistoryItems =>
       $$TextAnalysisHistoryItemsTableTableManager(
           _db, _db.textAnalysisHistoryItems);
-  $$SpacedRepetitionDatasTableTableManager get spacedRepetitionDatas =>
-      $$SpacedRepetitionDatasTableTableManager(_db, _db.spacedRepetitionDatas);
   $$SearchHistoryItemsTableTableManager get searchHistoryItems =>
       $$SearchHistoryItemsTableTableManager(_db, _db.searchHistoryItems);
   $$RadicalsTableTableManager get radicals =>

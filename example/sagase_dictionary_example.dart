@@ -179,10 +179,6 @@ Future<void> _exportAndCompressDatabase(
   final archive = Archive();
   archive.addFile(archiveFile);
   final encodedArchive =
-      ZipEncoder().encode(archive, level: Deflate.BEST_COMPRESSION);
-  if (encodedArchive == null) {
-    print('Compression did not work');
-    return;
-  }
+      ZipEncoder().encodeBytes(archive, level: DeflateLevel.bestCompression);
   File(archiveFilePath).writeAsBytesSync(encodedArchive);
 }
