@@ -546,6 +546,80 @@ const shortJMdict = '''
 <gloss>kanji used for their meaning, irrespective of reading</gloss>
 </sense>
 </entry>
+<entry>
+<ent_seq>1001090</ent_seq>
+<r_ele>
+<reb>うん</reb>
+<re_pri>spec1</re_pri>
+</r_ele>
+<r_ele>
+<reb>うむ</reb>
+</r_ele>
+<r_ele>
+<reb>ううむ</reb>
+</r_ele>
+<sense>
+<pos>&int;</pos>
+<gloss>yes</gloss>
+<gloss>yeah</gloss>
+<gloss>uh huh</gloss>
+<example>
+<ex_srce exsrc_type="tat">236626</ex_srce>
+<ex_text>うん</ex_text>
+<ex_sent xml:lang="jpn">「コーヒーのお替わりいる？」「うん、ぼくのは少なめ、弟のには多めについでね」</ex_sent>
+<ex_sent xml:lang="eng">"Do you want another cup of coffee?" "Sure, make mine on the small side but be generous with my brother's."</ex_sent>
+</example>
+<example>
+<ex_srce exsrc_type="tat">76997</ex_srce>
+<ex_text>うむ</ex_text>
+<ex_sent xml:lang="jpn">「軽くならいいけど」「うむ、では金的と目潰しは有効にするか？」</ex_sent>
+<ex_sent xml:lang="eng">"If it's a light workout, OK." "Right, so will we allow crotch-kicking and eyeball crushing?"</ex_sent>
+</example>
+</sense>
+<sense>
+<pos>&int;</pos>
+<gloss>hum</gloss>
+<gloss>hmmm</gloss>
+<gloss>well</gloss>
+<gloss>erm</gloss>
+<gloss>huh?</gloss>
+<example>
+<ex_srce exsrc_type="tat">74299</ex_srce>
+<ex_text>う〜む</ex_text>
+<ex_sent xml:lang="jpn">う〜む、相貌から判断するに上海からか。</ex_sent>
+<ex_sent xml:lang="eng">Hrmmm, to judge from their looks they might be from Shanghai.</ex_sent>
+</example>
+</sense>
+<sense>
+<stagr>うん</stagr>
+<pos>&int;</pos>
+<s_inf>moan or groan (of pain)</s_inf>
+<gloss>oof</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>2759530</ent_seq>
+<r_ele>
+<reb>ン</reb>
+</r_ele>
+<r_ele>
+<reb>うん</reb>
+</r_ele>
+<r_ele>
+<reb>ん</reb>
+</r_ele>
+<sense>
+<pos>&n-pref;</pos>
+<s_inf>in place of a digit of a number, e.g. ン十万円 or 50ン歳</s_inf>
+<gloss>some</gloss>
+<example>
+<ex_srce exsrc_type="tat">74887</ex_srce>
+<ex_text>ン</ex_text>
+<ex_sent xml:lang="jpn">えっ、結納品にン十万円？</ex_sent>
+<ex_sent xml:lang="eng">Eh? Hundreds of thousands of Yen plus betrothal gifts?</ex_sent>
+</example>
+</sense>
+</entry>
 </JMdict>
 ''';
 

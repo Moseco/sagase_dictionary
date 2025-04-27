@@ -432,6 +432,7 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
 
         final minReadingRomajiLength =
             searchReading.ref(db.vocabReadings.readingRomaji).length.min();
+        final primaryPair = searchReading.ref(db.vocabReadings.primaryPair);
         final query = db.select(db.vocabs).join([
           innerJoin(
             searchReading,
@@ -439,9 +440,11 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
             useColumns: false,
           ),
         ])
-          ..addColumns([minReadingRomajiLength])
+          ..addColumns([minReadingRomajiLength, primaryPair])
           ..orderBy([
             OrderingTerm.asc(minReadingRomajiLength),
+            OrderingTerm.desc(primaryPair),
+            OrderingTerm.desc(db.vocabs.common),
             OrderingTerm.desc(db.vocabs.frequencyScore),
           ])
           ..groupBy([db.vocabs.id])
@@ -499,6 +502,7 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
 
         final minReadingLength =
             searchReading.ref(db.vocabReadings.reading).length.min();
+        final primaryPair = searchReading.ref(db.vocabReadings.primaryPair);
         final query = db.select(db.vocabs).join([
           innerJoin(
             searchReading,
@@ -506,9 +510,11 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
             useColumns: false,
           ),
         ])
-          ..addColumns([minReadingLength])
+          ..addColumns([minReadingLength, primaryPair])
           ..orderBy([
             OrderingTerm.asc(minReadingLength),
+            OrderingTerm.desc(primaryPair),
+            OrderingTerm.desc(db.vocabs.common),
             OrderingTerm.desc(db.vocabs.frequencyScore),
           ])
           ..groupBy([db.vocabs.id])
@@ -532,6 +538,7 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
 
         final minWritingLength =
             searchWriting.ref(db.vocabWritings.writing).length.min();
+        final primaryPair = searchWriting.ref(db.vocabWritings.primaryPair);
         final query = db.select(db.vocabs).join([
           innerJoin(
             searchWriting,
@@ -539,9 +546,11 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
             useColumns: false,
           ),
         ])
-          ..addColumns([minWritingLength])
+          ..addColumns([minWritingLength, primaryPair])
           ..orderBy([
             OrderingTerm.asc(minWritingLength),
+            OrderingTerm.desc(primaryPair),
+            OrderingTerm.desc(db.vocabs.common),
             OrderingTerm.desc(db.vocabs.frequencyScore),
           ])
           ..groupBy([db.vocabs.id])
@@ -582,8 +591,8 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
             ..addColumns([minWordLength])
             ..orderBy([
               OrderingTerm.asc(minWordLength),
-              OrderingTerm.desc(db.vocabs.frequencyScore),
               OrderingTerm.desc(db.vocabs.common),
+              OrderingTerm.desc(db.vocabs.frequencyScore),
             ])
             ..groupBy([db.vocabs.id])
             ..limit(1000))
@@ -616,8 +625,8 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
                 minStartsWithLastWordLength,
                 nulls: NullsOrder.last,
               ),
-              OrderingTerm.desc(db.vocabs.frequencyScore),
               OrderingTerm.desc(db.vocabs.common),
+              OrderingTerm.desc(db.vocabs.frequencyScore),
             ])
             ..where(Expression.or([
               db.vocabDefinitionWords.word.isIn(wordsExceptLast),

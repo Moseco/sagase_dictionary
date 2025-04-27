@@ -375,6 +375,13 @@ void main() {
           expect(results.length, 1);
           expect(results[0].id, 1003430);
         });
+
+        test('Sorts by primary pair', () async {
+          final results = await database.vocabsDao.search('うん');
+          expect(results.length, 2);
+          expect(results[0].id, 1001090);
+          expect(results[1].id, 2759530);
+        });
       });
 
       group('Reading romaji', () {
@@ -394,6 +401,15 @@ void main() {
           final results = await database.vocabsDao.search('kito');
           expect(results.length, 1);
           expect(results[0].id, 1003430);
+        });
+
+        test('Sorts by primary pair', () async {
+          final results = await database.vocabsDao.search('un');
+          expect(results.length, 4);
+          expect(results[0].id, 1001090);
+          expect(results[1].id, 2759530);
+          expect(results[2].id, 1003430);
+          expect(results[3].id, 2002400);
         });
       });
 

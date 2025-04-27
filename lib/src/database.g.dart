@@ -42,9 +42,19 @@ class $VocabWritingsTable extends VocabWritings
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<WritingInfo>?>(
               $VocabWritingsTable.$converterinfon);
+  static const VerificationMeta _primaryPairMeta =
+      const VerificationMeta('primaryPair');
+  @override
+  late final GeneratedColumn<bool> primaryPair = GeneratedColumn<bool>(
+      'primary_pair', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("primary_pair" IN (0, 1))'),
+      defaultValue: const Constant(false));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, vocabId, writing, writingSearchForm, info];
+      [id, vocabId, writing, writingSearchForm, info, primaryPair];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -76,6 +86,12 @@ class $VocabWritingsTable extends VocabWritings
           writingSearchForm.isAcceptableOrUnknown(
               data['writing_search_form']!, _writingSearchFormMeta));
     }
+    if (data.containsKey('primary_pair')) {
+      context.handle(
+          _primaryPairMeta,
+          primaryPair.isAcceptableOrUnknown(
+              data['primary_pair']!, _primaryPairMeta));
+    }
     return context;
   }
 
@@ -96,6 +112,8 @@ class $VocabWritingsTable extends VocabWritings
       info: $VocabWritingsTable.$converterinfon.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}info'])),
+      primaryPair: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}primary_pair'])!,
     );
   }
 
@@ -116,12 +134,14 @@ class VocabWriting extends DataClass implements Insertable<VocabWriting> {
   final String writing;
   final String? writingSearchForm;
   final List<WritingInfo>? info;
+  final bool primaryPair;
   const VocabWriting(
       {required this.id,
       required this.vocabId,
       required this.writing,
       this.writingSearchForm,
-      this.info});
+      this.info,
+      required this.primaryPair});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -135,6 +155,7 @@ class VocabWriting extends DataClass implements Insertable<VocabWriting> {
       map['info'] =
           Variable<String>($VocabWritingsTable.$converterinfon.toSql(info));
     }
+    map['primary_pair'] = Variable<bool>(primaryPair);
     return map;
   }
 
@@ -147,6 +168,7 @@ class VocabWriting extends DataClass implements Insertable<VocabWriting> {
           ? const Value.absent()
           : Value(writingSearchForm),
       info: info == null && nullToAbsent ? const Value.absent() : Value(info),
+      primaryPair: Value(primaryPair),
     );
   }
 
@@ -160,6 +182,7 @@ class VocabWriting extends DataClass implements Insertable<VocabWriting> {
       writingSearchForm:
           serializer.fromJson<String?>(json['writingSearchForm']),
       info: serializer.fromJson<List<WritingInfo>?>(json['info']),
+      primaryPair: serializer.fromJson<bool>(json['primaryPair']),
     );
   }
   @override
@@ -171,6 +194,7 @@ class VocabWriting extends DataClass implements Insertable<VocabWriting> {
       'writing': serializer.toJson<String>(writing),
       'writingSearchForm': serializer.toJson<String?>(writingSearchForm),
       'info': serializer.toJson<List<WritingInfo>?>(info),
+      'primaryPair': serializer.toJson<bool>(primaryPair),
     };
   }
 
@@ -179,7 +203,8 @@ class VocabWriting extends DataClass implements Insertable<VocabWriting> {
           int? vocabId,
           String? writing,
           Value<String?> writingSearchForm = const Value.absent(),
-          Value<List<WritingInfo>?> info = const Value.absent()}) =>
+          Value<List<WritingInfo>?> info = const Value.absent(),
+          bool? primaryPair}) =>
       VocabWriting(
         id: id ?? this.id,
         vocabId: vocabId ?? this.vocabId,
@@ -188,6 +213,7 @@ class VocabWriting extends DataClass implements Insertable<VocabWriting> {
             ? writingSearchForm.value
             : this.writingSearchForm,
         info: info.present ? info.value : this.info,
+        primaryPair: primaryPair ?? this.primaryPair,
       );
   VocabWriting copyWithCompanion(VocabWritingsCompanion data) {
     return VocabWriting(
@@ -198,6 +224,8 @@ class VocabWriting extends DataClass implements Insertable<VocabWriting> {
           ? data.writingSearchForm.value
           : this.writingSearchForm,
       info: data.info.present ? data.info.value : this.info,
+      primaryPair:
+          data.primaryPair.present ? data.primaryPair.value : this.primaryPair,
     );
   }
 
@@ -208,14 +236,15 @@ class VocabWriting extends DataClass implements Insertable<VocabWriting> {
           ..write('vocabId: $vocabId, ')
           ..write('writing: $writing, ')
           ..write('writingSearchForm: $writingSearchForm, ')
-          ..write('info: $info')
+          ..write('info: $info, ')
+          ..write('primaryPair: $primaryPair')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode =>
-      Object.hash(id, vocabId, writing, writingSearchForm, info);
+      Object.hash(id, vocabId, writing, writingSearchForm, info, primaryPair);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -224,7 +253,8 @@ class VocabWriting extends DataClass implements Insertable<VocabWriting> {
           other.vocabId == this.vocabId &&
           other.writing == this.writing &&
           other.writingSearchForm == this.writingSearchForm &&
-          other.info == this.info);
+          other.info == this.info &&
+          other.primaryPair == this.primaryPair);
 }
 
 class VocabWritingsCompanion extends UpdateCompanion<VocabWriting> {
@@ -233,12 +263,14 @@ class VocabWritingsCompanion extends UpdateCompanion<VocabWriting> {
   final Value<String> writing;
   final Value<String?> writingSearchForm;
   final Value<List<WritingInfo>?> info;
+  final Value<bool> primaryPair;
   const VocabWritingsCompanion({
     this.id = const Value.absent(),
     this.vocabId = const Value.absent(),
     this.writing = const Value.absent(),
     this.writingSearchForm = const Value.absent(),
     this.info = const Value.absent(),
+    this.primaryPair = const Value.absent(),
   });
   VocabWritingsCompanion.insert({
     this.id = const Value.absent(),
@@ -246,6 +278,7 @@ class VocabWritingsCompanion extends UpdateCompanion<VocabWriting> {
     required String writing,
     this.writingSearchForm = const Value.absent(),
     this.info = const Value.absent(),
+    this.primaryPair = const Value.absent(),
   })  : vocabId = Value(vocabId),
         writing = Value(writing);
   static Insertable<VocabWriting> custom({
@@ -254,6 +287,7 @@ class VocabWritingsCompanion extends UpdateCompanion<VocabWriting> {
     Expression<String>? writing,
     Expression<String>? writingSearchForm,
     Expression<String>? info,
+    Expression<bool>? primaryPair,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -261,6 +295,7 @@ class VocabWritingsCompanion extends UpdateCompanion<VocabWriting> {
       if (writing != null) 'writing': writing,
       if (writingSearchForm != null) 'writing_search_form': writingSearchForm,
       if (info != null) 'info': info,
+      if (primaryPair != null) 'primary_pair': primaryPair,
     });
   }
 
@@ -269,13 +304,15 @@ class VocabWritingsCompanion extends UpdateCompanion<VocabWriting> {
       Value<int>? vocabId,
       Value<String>? writing,
       Value<String?>? writingSearchForm,
-      Value<List<WritingInfo>?>? info}) {
+      Value<List<WritingInfo>?>? info,
+      Value<bool>? primaryPair}) {
     return VocabWritingsCompanion(
       id: id ?? this.id,
       vocabId: vocabId ?? this.vocabId,
       writing: writing ?? this.writing,
       writingSearchForm: writingSearchForm ?? this.writingSearchForm,
       info: info ?? this.info,
+      primaryPair: primaryPair ?? this.primaryPair,
     );
   }
 
@@ -298,6 +335,9 @@ class VocabWritingsCompanion extends UpdateCompanion<VocabWriting> {
       map['info'] = Variable<String>(
           $VocabWritingsTable.$converterinfon.toSql(info.value));
     }
+    if (primaryPair.present) {
+      map['primary_pair'] = Variable<bool>(primaryPair.value);
+    }
     return map;
   }
 
@@ -308,7 +348,8 @@ class VocabWritingsCompanion extends UpdateCompanion<VocabWriting> {
           ..write('vocabId: $vocabId, ')
           ..write('writing: $writing, ')
           ..write('writingSearchForm: $writingSearchForm, ')
-          ..write('info: $info')
+          ..write('info: $info, ')
+          ..write('primaryPair: $primaryPair')
           ..write(')'))
         .toString();
   }
@@ -378,6 +419,16 @@ class $VocabReadingsTable extends VocabReadings
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<int>?>(
               $VocabReadingsTable.$converterpitchAccentsn);
+  static const VerificationMeta _primaryPairMeta =
+      const VerificationMeta('primaryPair');
+  @override
+  late final GeneratedColumn<bool> primaryPair = GeneratedColumn<bool>(
+      'primary_pair', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("primary_pair" IN (0, 1))'),
+      defaultValue: const Constant(false));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -388,7 +439,8 @@ class $VocabReadingsTable extends VocabReadings
         readingRomajiSimplified,
         associatedWritings,
         info,
-        pitchAccents
+        pitchAccents,
+        primaryPair
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -436,6 +488,12 @@ class $VocabReadingsTable extends VocabReadings
               data['reading_romaji_simplified']!,
               _readingRomajiSimplifiedMeta));
     }
+    if (data.containsKey('primary_pair')) {
+      context.handle(
+          _primaryPairMeta,
+          primaryPair.isAcceptableOrUnknown(
+              data['primary_pair']!, _primaryPairMeta));
+    }
     return context;
   }
 
@@ -467,6 +525,8 @@ class $VocabReadingsTable extends VocabReadings
       pitchAccents: $VocabReadingsTable.$converterpitchAccentsn.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}pitch_accents'])),
+      primaryPair: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}primary_pair'])!,
     );
   }
 
@@ -499,6 +559,7 @@ class VocabReading extends DataClass implements Insertable<VocabReading> {
   final List<String>? associatedWritings;
   final List<ReadingInfo>? info;
   final List<int>? pitchAccents;
+  final bool primaryPair;
   const VocabReading(
       {required this.id,
       required this.vocabId,
@@ -508,7 +569,8 @@ class VocabReading extends DataClass implements Insertable<VocabReading> {
       this.readingRomajiSimplified,
       this.associatedWritings,
       this.info,
-      this.pitchAccents});
+      this.pitchAccents,
+      required this.primaryPair});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -536,6 +598,7 @@ class VocabReading extends DataClass implements Insertable<VocabReading> {
       map['pitch_accents'] = Variable<String>(
           $VocabReadingsTable.$converterpitchAccentsn.toSql(pitchAccents));
     }
+    map['primary_pair'] = Variable<bool>(primaryPair);
     return map;
   }
 
@@ -558,6 +621,7 @@ class VocabReading extends DataClass implements Insertable<VocabReading> {
       pitchAccents: pitchAccents == null && nullToAbsent
           ? const Value.absent()
           : Value(pitchAccents),
+      primaryPair: Value(primaryPair),
     );
   }
 
@@ -577,6 +641,7 @@ class VocabReading extends DataClass implements Insertable<VocabReading> {
           serializer.fromJson<List<String>?>(json['associatedWritings']),
       info: serializer.fromJson<List<ReadingInfo>?>(json['info']),
       pitchAccents: serializer.fromJson<List<int>?>(json['pitchAccents']),
+      primaryPair: serializer.fromJson<bool>(json['primaryPair']),
     );
   }
   @override
@@ -594,6 +659,7 @@ class VocabReading extends DataClass implements Insertable<VocabReading> {
           serializer.toJson<List<String>?>(associatedWritings),
       'info': serializer.toJson<List<ReadingInfo>?>(info),
       'pitchAccents': serializer.toJson<List<int>?>(pitchAccents),
+      'primaryPair': serializer.toJson<bool>(primaryPair),
     };
   }
 
@@ -606,7 +672,8 @@ class VocabReading extends DataClass implements Insertable<VocabReading> {
           Value<String?> readingRomajiSimplified = const Value.absent(),
           Value<List<String>?> associatedWritings = const Value.absent(),
           Value<List<ReadingInfo>?> info = const Value.absent(),
-          Value<List<int>?> pitchAccents = const Value.absent()}) =>
+          Value<List<int>?> pitchAccents = const Value.absent(),
+          bool? primaryPair}) =>
       VocabReading(
         id: id ?? this.id,
         vocabId: vocabId ?? this.vocabId,
@@ -624,6 +691,7 @@ class VocabReading extends DataClass implements Insertable<VocabReading> {
         info: info.present ? info.value : this.info,
         pitchAccents:
             pitchAccents.present ? pitchAccents.value : this.pitchAccents,
+        primaryPair: primaryPair ?? this.primaryPair,
       );
   VocabReading copyWithCompanion(VocabReadingsCompanion data) {
     return VocabReading(
@@ -646,6 +714,8 @@ class VocabReading extends DataClass implements Insertable<VocabReading> {
       pitchAccents: data.pitchAccents.present
           ? data.pitchAccents.value
           : this.pitchAccents,
+      primaryPair:
+          data.primaryPair.present ? data.primaryPair.value : this.primaryPair,
     );
   }
 
@@ -660,7 +730,8 @@ class VocabReading extends DataClass implements Insertable<VocabReading> {
           ..write('readingRomajiSimplified: $readingRomajiSimplified, ')
           ..write('associatedWritings: $associatedWritings, ')
           ..write('info: $info, ')
-          ..write('pitchAccents: $pitchAccents')
+          ..write('pitchAccents: $pitchAccents, ')
+          ..write('primaryPair: $primaryPair')
           ..write(')'))
         .toString();
   }
@@ -675,7 +746,8 @@ class VocabReading extends DataClass implements Insertable<VocabReading> {
       readingRomajiSimplified,
       associatedWritings,
       info,
-      pitchAccents);
+      pitchAccents,
+      primaryPair);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -688,7 +760,8 @@ class VocabReading extends DataClass implements Insertable<VocabReading> {
           other.readingRomajiSimplified == this.readingRomajiSimplified &&
           other.associatedWritings == this.associatedWritings &&
           other.info == this.info &&
-          other.pitchAccents == this.pitchAccents);
+          other.pitchAccents == this.pitchAccents &&
+          other.primaryPair == this.primaryPair);
 }
 
 class VocabReadingsCompanion extends UpdateCompanion<VocabReading> {
@@ -701,6 +774,7 @@ class VocabReadingsCompanion extends UpdateCompanion<VocabReading> {
   final Value<List<String>?> associatedWritings;
   final Value<List<ReadingInfo>?> info;
   final Value<List<int>?> pitchAccents;
+  final Value<bool> primaryPair;
   const VocabReadingsCompanion({
     this.id = const Value.absent(),
     this.vocabId = const Value.absent(),
@@ -711,6 +785,7 @@ class VocabReadingsCompanion extends UpdateCompanion<VocabReading> {
     this.associatedWritings = const Value.absent(),
     this.info = const Value.absent(),
     this.pitchAccents = const Value.absent(),
+    this.primaryPair = const Value.absent(),
   });
   VocabReadingsCompanion.insert({
     this.id = const Value.absent(),
@@ -722,6 +797,7 @@ class VocabReadingsCompanion extends UpdateCompanion<VocabReading> {
     this.associatedWritings = const Value.absent(),
     this.info = const Value.absent(),
     this.pitchAccents = const Value.absent(),
+    this.primaryPair = const Value.absent(),
   })  : vocabId = Value(vocabId),
         reading = Value(reading),
         readingRomaji = Value(readingRomaji);
@@ -735,6 +811,7 @@ class VocabReadingsCompanion extends UpdateCompanion<VocabReading> {
     Expression<String>? associatedWritings,
     Expression<String>? info,
     Expression<String>? pitchAccents,
+    Expression<bool>? primaryPair,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -747,6 +824,7 @@ class VocabReadingsCompanion extends UpdateCompanion<VocabReading> {
       if (associatedWritings != null) 'associated_writings': associatedWritings,
       if (info != null) 'info': info,
       if (pitchAccents != null) 'pitch_accents': pitchAccents,
+      if (primaryPair != null) 'primary_pair': primaryPair,
     });
   }
 
@@ -759,7 +837,8 @@ class VocabReadingsCompanion extends UpdateCompanion<VocabReading> {
       Value<String?>? readingRomajiSimplified,
       Value<List<String>?>? associatedWritings,
       Value<List<ReadingInfo>?>? info,
-      Value<List<int>?>? pitchAccents}) {
+      Value<List<int>?>? pitchAccents,
+      Value<bool>? primaryPair}) {
     return VocabReadingsCompanion(
       id: id ?? this.id,
       vocabId: vocabId ?? this.vocabId,
@@ -771,6 +850,7 @@ class VocabReadingsCompanion extends UpdateCompanion<VocabReading> {
       associatedWritings: associatedWritings ?? this.associatedWritings,
       info: info ?? this.info,
       pitchAccents: pitchAccents ?? this.pitchAccents,
+      primaryPair: primaryPair ?? this.primaryPair,
     );
   }
 
@@ -810,6 +890,9 @@ class VocabReadingsCompanion extends UpdateCompanion<VocabReading> {
           .$converterpitchAccentsn
           .toSql(pitchAccents.value));
     }
+    if (primaryPair.present) {
+      map['primary_pair'] = Variable<bool>(primaryPair.value);
+    }
     return map;
   }
 
@@ -824,7 +907,8 @@ class VocabReadingsCompanion extends UpdateCompanion<VocabReading> {
           ..write('readingRomajiSimplified: $readingRomajiSimplified, ')
           ..write('associatedWritings: $associatedWritings, ')
           ..write('info: $info, ')
-          ..write('pitchAccents: $pitchAccents')
+          ..write('pitchAccents: $pitchAccents, ')
+          ..write('primaryPair: $primaryPair')
           ..write(')'))
         .toString();
   }
@@ -6491,6 +6575,7 @@ typedef $$VocabWritingsTableCreateCompanionBuilder = VocabWritingsCompanion
   required String writing,
   Value<String?> writingSearchForm,
   Value<List<WritingInfo>?> info,
+  Value<bool> primaryPair,
 });
 typedef $$VocabWritingsTableUpdateCompanionBuilder = VocabWritingsCompanion
     Function({
@@ -6499,6 +6584,7 @@ typedef $$VocabWritingsTableUpdateCompanionBuilder = VocabWritingsCompanion
   Value<String> writing,
   Value<String?> writingSearchForm,
   Value<List<WritingInfo>?> info,
+  Value<bool> primaryPair,
 });
 
 class $$VocabWritingsTableFilterComposer
@@ -6527,6 +6613,9 @@ class $$VocabWritingsTableFilterComposer
       get info => $composableBuilder(
           column: $table.info,
           builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<bool> get primaryPair => $composableBuilder(
+      column: $table.primaryPair, builder: (column) => ColumnFilters(column));
 }
 
 class $$VocabWritingsTableOrderingComposer
@@ -6553,6 +6642,9 @@ class $$VocabWritingsTableOrderingComposer
 
   ColumnOrderings<String> get info => $composableBuilder(
       column: $table.info, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get primaryPair => $composableBuilder(
+      column: $table.primaryPair, builder: (column) => ColumnOrderings(column));
 }
 
 class $$VocabWritingsTableAnnotationComposer
@@ -6578,6 +6670,9 @@ class $$VocabWritingsTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<List<WritingInfo>?, String> get info =>
       $composableBuilder(column: $table.info, builder: (column) => column);
+
+  GeneratedColumn<bool> get primaryPair => $composableBuilder(
+      column: $table.primaryPair, builder: (column) => column);
 }
 
 class $$VocabWritingsTableTableManager extends RootTableManager<
@@ -6611,6 +6706,7 @@ class $$VocabWritingsTableTableManager extends RootTableManager<
             Value<String> writing = const Value.absent(),
             Value<String?> writingSearchForm = const Value.absent(),
             Value<List<WritingInfo>?> info = const Value.absent(),
+            Value<bool> primaryPair = const Value.absent(),
           }) =>
               VocabWritingsCompanion(
             id: id,
@@ -6618,6 +6714,7 @@ class $$VocabWritingsTableTableManager extends RootTableManager<
             writing: writing,
             writingSearchForm: writingSearchForm,
             info: info,
+            primaryPair: primaryPair,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -6625,6 +6722,7 @@ class $$VocabWritingsTableTableManager extends RootTableManager<
             required String writing,
             Value<String?> writingSearchForm = const Value.absent(),
             Value<List<WritingInfo>?> info = const Value.absent(),
+            Value<bool> primaryPair = const Value.absent(),
           }) =>
               VocabWritingsCompanion.insert(
             id: id,
@@ -6632,6 +6730,7 @@ class $$VocabWritingsTableTableManager extends RootTableManager<
             writing: writing,
             writingSearchForm: writingSearchForm,
             info: info,
+            primaryPair: primaryPair,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -6666,6 +6765,7 @@ typedef $$VocabReadingsTableCreateCompanionBuilder = VocabReadingsCompanion
   Value<List<String>?> associatedWritings,
   Value<List<ReadingInfo>?> info,
   Value<List<int>?> pitchAccents,
+  Value<bool> primaryPair,
 });
 typedef $$VocabReadingsTableUpdateCompanionBuilder = VocabReadingsCompanion
     Function({
@@ -6678,6 +6778,7 @@ typedef $$VocabReadingsTableUpdateCompanionBuilder = VocabReadingsCompanion
   Value<List<String>?> associatedWritings,
   Value<List<ReadingInfo>?> info,
   Value<List<int>?> pitchAccents,
+  Value<bool> primaryPair,
 });
 
 class $$VocabReadingsTableFilterComposer
@@ -6723,6 +6824,9 @@ class $$VocabReadingsTableFilterComposer
       get pitchAccents => $composableBuilder(
           column: $table.pitchAccents,
           builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<bool> get primaryPair => $composableBuilder(
+      column: $table.primaryPair, builder: (column) => ColumnFilters(column));
 }
 
 class $$VocabReadingsTableOrderingComposer
@@ -6765,6 +6869,9 @@ class $$VocabReadingsTableOrderingComposer
   ColumnOrderings<String> get pitchAccents => $composableBuilder(
       column: $table.pitchAccents,
       builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get primaryPair => $composableBuilder(
+      column: $table.primaryPair, builder: (column) => ColumnOrderings(column));
 }
 
 class $$VocabReadingsTableAnnotationComposer
@@ -6804,6 +6911,9 @@ class $$VocabReadingsTableAnnotationComposer
   GeneratedColumnWithTypeConverter<List<int>?, String> get pitchAccents =>
       $composableBuilder(
           column: $table.pitchAccents, builder: (column) => column);
+
+  GeneratedColumn<bool> get primaryPair => $composableBuilder(
+      column: $table.primaryPair, builder: (column) => column);
 }
 
 class $$VocabReadingsTableTableManager extends RootTableManager<
@@ -6841,6 +6951,7 @@ class $$VocabReadingsTableTableManager extends RootTableManager<
             Value<List<String>?> associatedWritings = const Value.absent(),
             Value<List<ReadingInfo>?> info = const Value.absent(),
             Value<List<int>?> pitchAccents = const Value.absent(),
+            Value<bool> primaryPair = const Value.absent(),
           }) =>
               VocabReadingsCompanion(
             id: id,
@@ -6852,6 +6963,7 @@ class $$VocabReadingsTableTableManager extends RootTableManager<
             associatedWritings: associatedWritings,
             info: info,
             pitchAccents: pitchAccents,
+            primaryPair: primaryPair,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -6863,6 +6975,7 @@ class $$VocabReadingsTableTableManager extends RootTableManager<
             Value<List<String>?> associatedWritings = const Value.absent(),
             Value<List<ReadingInfo>?> info = const Value.absent(),
             Value<List<int>?> pitchAccents = const Value.absent(),
+            Value<bool> primaryPair = const Value.absent(),
           }) =>
               VocabReadingsCompanion.insert(
             id: id,
@@ -6874,6 +6987,7 @@ class $$VocabReadingsTableTableManager extends RootTableManager<
             associatedWritings: associatedWritings,
             info: info,
             pitchAccents: pitchAccents,
+            primaryPair: primaryPair,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

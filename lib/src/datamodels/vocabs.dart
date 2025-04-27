@@ -56,6 +56,8 @@ class VocabWritings extends Table {
   TextColumn get writing => text()();
   TextColumn get writingSearchForm => text().nullable()();
   TextColumn get info => text().map(const WritingInfoConverter()).nullable()();
+
+  BoolColumn get primaryPair => boolean().withDefault(const Constant(false))();
 }
 
 @TableIndex(name: 'IX_vocab_readings_vocab_id', columns: {#vocabId})
@@ -77,6 +79,8 @@ class VocabReadings extends Table {
   TextColumn get info => text().map(const ReadingInfoConverter()).nullable()();
   TextColumn get pitchAccents =>
       text().map(const IntListConverter()).nullable()();
+
+  BoolColumn get primaryPair => boolean().withDefault(const Constant(false))();
 }
 
 @TableIndex(name: 'IX_vocab_definitions_vocab_id', columns: {#vocabId})

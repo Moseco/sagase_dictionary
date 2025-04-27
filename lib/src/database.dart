@@ -83,16 +83,25 @@ class AppDatabase extends _$AppDatabase {
       : super(queryExecutor ?? NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
-      onUpgrade: stepByStep(from1To2: (m, schema) async {
-        await m.addColumn(schema.flashcardSets, schema.flashcardSets.showNote);
-        await m.createTable(schema.vocabNotes);
-        await m.createTable(schema.kanjiNotes);
-      }),
+      onUpgrade: stepByStep(
+        from1To2: (m, schema) async {
+          await m.addColumn(
+              schema.flashcardSets, schema.flashcardSets.showNote);
+          await m.createTable(schema.vocabNotes);
+          await m.createTable(schema.kanjiNotes);
+        },
+        from2To3: (m, schema) async {
+          await m.addColumn(
+              schema.vocabWritings, schema.vocabWritings.primaryPair);
+          await m.addColumn(
+              schema.vocabReadings, schema.vocabReadings.primaryPair);
+        },
+      ),
     );
   }
 }

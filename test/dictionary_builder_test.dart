@@ -134,10 +134,12 @@ void main() {
       expect(vocab2.writings![0].writingSearchForm, null);
       expect(vocab2.writings![0].info,
           [WritingInfo.ateji, WritingInfo.rareKanjiForm]);
+      expect(vocab2.writings![0].primaryPair, true);
       expect(vocab2.writings![1].writing, '急度');
       expect(vocab2.writings![1].writingSearchForm, null);
       expect(vocab2.writings![1].info,
           [WritingInfo.ateji, WritingInfo.rareKanjiForm]);
+      expect(vocab2.writings![1].primaryPair, false);
       // Readings
       expect(vocab2.readings.length, 2);
       expect(vocab2.readings[0].reading, 'きっと');
@@ -147,6 +149,7 @@ void main() {
       expect(vocab2.readings[0].associatedWritings, null);
       expect(vocab2.readings[0].info, null);
       expect(vocab2.readings[0].pitchAccents, [0, 1]);
+      expect(vocab2.readings[0].primaryPair, true);
       expect(vocab2.readings[1].reading, 'キッと');
       expect(vocab2.readings[1].readingSearchForm, 'きっと');
       expect(vocab2.readings[1].readingRomaji, 'kitto');
@@ -154,6 +157,7 @@ void main() {
       expect(vocab2.readings[1].associatedWritings, null);
       expect(vocab2.readings[1].info, null);
       expect(vocab2.readings[1].pitchAccents, null);
+      expect(vocab2.readings[1].primaryPair, false);
       // Definitions
       expect(vocab2.definitions.length, 4);
       // Definition 1
@@ -336,7 +340,7 @@ void main() {
       expect(vocab4.definitions[0].examples![0].english,
           'Hmm. I have a feeling I\'m going to get lost whichever road I take.');
       expect(vocab4.definitions[0].crossReferences!.length, 1);
-      expect(vocab4.definitions[0].crossReferences![0].ids, null);
+      expect(vocab4.definitions[0].crossReferences![0].ids, [1001090, 2759530]);
       expect(vocab4.definitions[0].crossReferences![0].text, 'うん');
       expect(vocab4.definitions[0].antonyms, null);
       // Definition 2
@@ -356,7 +360,7 @@ void main() {
       expect(vocab4.definitions[2].definition, 'oof');
       expect(vocab4.definitions[2].pos, null);
       expect(vocab4.definitions[2].crossReferences!.length, 1);
-      expect(vocab4.definitions[2].crossReferences![0].ids, null);
+      expect(vocab4.definitions[2].crossReferences![0].ids, [1001090, 2759530]);
       expect(vocab4.definitions[2].crossReferences![0].text, 'うん');
       expect(vocab4.definitions[2].antonyms, null);
 

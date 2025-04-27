@@ -122,13 +122,17 @@ class DictionaryBuilder {
             break;
           case 'k_ele':
             final result = _handleWritingElements(xmlVocabChild.childElements);
-            currentWritings.add(result.$1.copyWith(vocabId: vocab.id));
+            currentWritings.add(result.$1.copyWith(
+                vocabId: vocab.id,
+                primaryPair: Value(currentWritings.isEmpty)));
             vocab =
                 vocab.copyWith(common: Value(vocab.common.value || result.$2));
             break;
           case 'r_ele':
             final result = _handleReadingElements(xmlVocabChild.childElements);
-            currentReadings.add(result.$1.copyWith(vocabId: vocab.id));
+            currentReadings.add(result.$1.copyWith(
+                vocabId: vocab.id,
+                primaryPair: Value(currentReadings.isEmpty)));
             vocab =
                 vocab.copyWith(common: Value(vocab.common.value || result.$2));
             break;
