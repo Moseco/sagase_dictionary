@@ -298,6 +298,7 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
       'matching_writing',
     );
 
+    final primaryPair = matchingWriting.ref(db.vocabWritings.primaryPair);
     final query = db.select(db.vocabs).join([
       innerJoin(
         matchingWriting,
@@ -305,6 +306,12 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
         useColumns: false,
       ),
     ])
+      ..addColumns([primaryPair])
+      ..orderBy([
+        OrderingTerm.desc(primaryPair),
+        OrderingTerm.desc(db.vocabs.common),
+        OrderingTerm.desc(db.vocabs.frequencyScore),
+      ])
       ..groupBy([db.vocabs.id]);
 
     final baseList = await query.map((row) => row.readTable(db.vocabs)).get();
@@ -322,6 +329,7 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
       'matching_reading',
     );
 
+    final primaryPair = matchingReading.ref(db.vocabReadings.primaryPair);
     final query = db.select(db.vocabs).join([
       innerJoin(
         matchingReading,
@@ -329,6 +337,12 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
         useColumns: false,
       ),
     ])
+      ..addColumns([primaryPair])
+      ..orderBy([
+        OrderingTerm.desc(primaryPair),
+        OrderingTerm.desc(db.vocabs.common),
+        OrderingTerm.desc(db.vocabs.frequencyScore),
+      ])
       ..groupBy([db.vocabs.id]);
 
     final baseList = await query.map((row) => row.readTable(db.vocabs)).get();
@@ -360,6 +374,8 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
       'match_reading',
     );
 
+    final primaryPairWriting = matchWriting.ref(db.vocabWritings.primaryPair);
+    final primaryPairReading = matchReading.ref(db.vocabReadings.primaryPair);
     final query = db.select(db.vocabs).join([
       innerJoin(
         matchWriting,
@@ -372,6 +388,12 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
         useColumns: false,
       ),
     ])
+      ..addColumns([primaryPairWriting, primaryPairReading])
+      ..orderBy([
+        OrderingTerm.desc(primaryPairWriting | primaryPairReading),
+        OrderingTerm.desc(db.vocabs.common),
+        OrderingTerm.desc(db.vocabs.frequencyScore),
+      ])
       ..groupBy([db.vocabs.id]);
 
     final baseList = await query.map((row) => row.readTable(db.vocabs)).get();
