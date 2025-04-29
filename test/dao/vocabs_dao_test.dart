@@ -423,6 +423,12 @@ void main() {
         expect(results.length, 1);
         expect(results[0].id, 1448890);
       });
+
+      test('Searching with wildcard', () async {
+        final results = await database.vocabsDao.search('明*');
+        expect(results.length, 1);
+        expect(results[0].id, 1000220);
+      });
     });
 
     test('VocabNote', () async {
