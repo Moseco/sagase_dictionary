@@ -1537,7 +1537,8 @@ const shortVocabListData = '''{
     "jlpt_n4": [],
     "jlpt_n3": [],
     "jlpt_n2": [],
-    "jlpt_n1": []
+    "jlpt_n1": [],
+    "Kaishi1.5k": []
 }
 ''';
 
