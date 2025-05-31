@@ -32,6 +32,9 @@ class SagaseDictionaryConstants {
   static const int dictionaryListIdKenteiLevelPre1 = 28;
   static const int dictionaryListIdKenteiLevel1 = 29;
   static const int dictionaryListIdKaishi = 30;
+  static const int dictionaryListId2k = 31;
+  static const int dictionaryListId6k = 32;
+  static const int dictionaryListId10k = 33;
 
   static const dictionaryDatabaseFile = 'dictionary.sqlite';
   static const properNounDictionaryDatabaseFile =
