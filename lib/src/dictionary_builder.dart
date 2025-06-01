@@ -2059,6 +2059,38 @@ class DictionaryBuilder {
       vocab: vocabMap['jlpt_n1'].cast<int>(),
     );
 
+    // Kaishi 1.5k
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdKaishi,
+      'Kaishi 1.5k',
+      vocab: vocabMap['Kaishi1.5k'].cast<int>(),
+    );
+
+    // 2k
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListId2k,
+      '2k',
+      vocab: vocabMap['2k'].cast<int>(),
+    );
+
+    // 6k
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListId6k,
+      '6k',
+      vocab: vocabMap['6k'].cast<int>(),
+    );
+
+    // 10k
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListId10k,
+      '10k',
+      vocab: vocabMap['10k'].cast<int>(),
+    );
+
     // Parse kanji lists
     final kanjiListsMap = jsonDecode(kanjiLists);
 
