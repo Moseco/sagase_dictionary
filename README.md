@@ -37,8 +37,12 @@ Prepare source files to be placed in ```example/input_files/```
 
 Thanks to [Electronic Dictionary Research and Development Group](http://www.edrdg.org/) for managing the source vocab and kanji dictionary files.
 
+Thanks to [Tatoeba](https://tatoeba.org) for managing the Japanese-English example sentence pairs.
+
 Thanks to the [KanjiVG project](http://kanjivg.tagaini.net/) for the kanji stroke order and kanji component data.
 
 Thanks to [mifunetoshiro on Github](https://github.com/mifunetoshiro/kanjium) for providing the pitch accent data.
 
 Thank to [Wiktionary and Wikipedia](https://en.wiktionary.org/wiki/Wiktionary:Frequency_lists/Japanese) for the frequency data.
+
+Thanks to the [contributors on Github](https://github.com/donkuri/Kaishi) for creating the Kaishi 1.5k vocab list.
