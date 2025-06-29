@@ -267,16 +267,18 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
       final myList = await create(name);
 
       // Validate vocab and add dictionary items
+      // In reverse order to preserve order for user
       final validatedVocab =
           await db.vocabsDao.validateAll(sourceDictionaryList.vocab);
-      for (final vocab in validatedVocab) {
+      for (final vocab in validatedVocab.reversed) {
         await addDictionaryItem(myList, vocab);
       }
 
       // Validate kanji and add dictionary items
+      // In reverse order to preserve order for user
       final validatedKanji =
           await db.kanjisDao.validateAll(sourceDictionaryList.kanji);
-      for (final kanji in validatedKanji) {
+      for (final kanji in validatedKanji.reversed) {
         await addDictionaryItem(myList, kanji);
       }
 
