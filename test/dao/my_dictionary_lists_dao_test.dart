@@ -283,6 +283,8 @@ void main() {
       expect(currentEvent.length, 2);
       expect(currentEvent[0].name, 'new name');
       expect(currentEvent[1].name, 'list2');
+
+      events.cancel();
     });
 
     test('watchDictionaryListItems', () async {
@@ -318,6 +320,8 @@ void main() {
       expect(currentEvent.vocabIds[0], 1003430);
       expect(currentEvent.vocabIds[1], 1000220);
       expect(currentEvent.kanjiIds.length, 0);
+
+      events.cancel();
     });
 
     test('watchContainingDictionaryItem', () async {
@@ -342,6 +346,8 @@ void main() {
 
       currentEvent = await events.next;
       expect(currentEvent.length, 0);
+
+      events.cancel();
     });
 
     test('importBackup', () async {

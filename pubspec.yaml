@@ -7,7 +7,7 @@ environment:
   sdk: '>=3.0.5 <4.0.0'
 
 dependencies:
-  drift: 2.28.2
+  drift: 2.29.0
   path: ^1.9.0
   xml: ^6.6.1
   meta: ^1.16.0
