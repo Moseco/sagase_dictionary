@@ -8,4 +8,17 @@ mixin _$KanjisDaoMixin on DatabaseAccessor<AppDatabase> {
   $KanjiReadingsTable get kanjiReadings => attachedDatabase.kanjiReadings;
   $SpacedRepetitionDatasTable get spacedRepetitionDatas =>
       attachedDatabase.spacedRepetitionDatas;
+  KanjisDaoManager get managers => KanjisDaoManager(this);
+}
+
+class KanjisDaoManager {
+  final _$KanjisDaoMixin _db;
+  KanjisDaoManager(this._db);
+  $$KanjisTableTableManager get kanjis =>
+      $$KanjisTableTableManager(_db.attachedDatabase, _db.kanjis);
+  $$KanjiReadingsTableTableManager get kanjiReadings =>
+      $$KanjiReadingsTableTableManager(_db.attachedDatabase, _db.kanjiReadings);
+  $$SpacedRepetitionDatasTableTableManager get spacedRepetitionDatas =>
+      $$SpacedRepetitionDatasTableTableManager(
+          _db.attachedDatabase, _db.spacedRepetitionDatas);
 }

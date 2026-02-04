@@ -6,4 +6,14 @@ part of 'text_analysis_history_items_dao.dart';
 mixin _$TextAnalysisHistoryItemsDaoMixin on DatabaseAccessor<AppDatabase> {
   $TextAnalysisHistoryItemsTable get textAnalysisHistoryItems =>
       attachedDatabase.textAnalysisHistoryItems;
+  TextAnalysisHistoryItemsDaoManager get managers =>
+      TextAnalysisHistoryItemsDaoManager(this);
+}
+
+class TextAnalysisHistoryItemsDaoManager {
+  final _$TextAnalysisHistoryItemsDaoMixin _db;
+  TextAnalysisHistoryItemsDaoManager(this._db);
+  $$TextAnalysisHistoryItemsTableTableManager get textAnalysisHistoryItems =>
+      $$TextAnalysisHistoryItemsTableTableManager(
+          _db.attachedDatabase, _db.textAnalysisHistoryItems);
 }
