@@ -111,6 +111,33 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
+  Future<void> addDictionaryItems(
+    MyDictionaryList dictionaryList,
+    List<DictionaryItem> dictionaryItems,
+  ) async {
+    final items = dictionaryItems.map((item) {
+      final vocabId = item is Vocab ? item.id : 0;
+      final kanjiId = item is Kanji ? item.id : 0;
+      return MyDictionaryListItemsCompanion(
+        listId: Value(dictionaryList.id),
+        vocabId: Value(vocabId),
+        kanjiId: Value(kanjiId),
+      );
+    }).toList();
+
+    await transaction(() async {
+      for (final item in items) {
+        await db
+            .into(db.myDictionaryListItems)
+            .insert(item, mode: InsertMode.insertOrIgnore);
+      }
+
+      await (db.update(db.myDictionaryLists)
+            ..where((list) => list.id.equals(dictionaryList.id)))
+          .write(MyDictionaryListsCompanion(timestamp: Value(DateTime.now())));
+    });
+  }
+
   Future<void> removeDictionaryItem(
     MyDictionaryList dictionaryList,
     DictionaryItem dictionaryItem,

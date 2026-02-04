@@ -167,7 +167,7 @@ void main() {
       expect(newFlashcardSets[0].myDictionaryLists.length, 0);
     });
 
-    test('Dictionary items', () async {
+    test('Dictionary item operations', () async {
       final dictionaryList1 =
           await database.myDictionaryListsDao.create('list1');
       final dictionaryList2 =
@@ -239,6 +239,52 @@ void main() {
       expect(newList2Items.vocabIds.length, 1);
       expect(newList2Items.vocabIds[0], 1000220);
       expect(list2Items.kanjiIds.length, 0);
+    });
+
+    test('addDictionaryItems', () async {
+      final dictionaryList = await database.myDictionaryListsDao.create('list');
+
+      // Get empty items
+      final emptyList1Items = await database.myDictionaryListsDao
+          .getDictionaryListItems(dictionaryList);
+      expect(emptyList1Items.vocabIds.length, 0);
+      expect(emptyList1Items.kanjiIds.length, 0);
+
+      // Add items to dictionary list
+      await database.myDictionaryListsDao.addDictionaryItem(
+        dictionaryList,
+        await database.vocabsDao.get(1000220),
+      );
+      await database.myDictionaryListsDao.addDictionaryItem(
+        dictionaryList,
+        await database.vocabsDao.get(1003430),
+      );
+
+      // Get newly added to list
+      var listItems = await database.myDictionaryListsDao
+          .getDictionaryListItems(dictionaryList);
+      expect(listItems.vocabIds.length, 2);
+      expect(listItems.vocabIds[0], 1003430);
+      expect(listItems.vocabIds[1], 1000220);
+
+      // Add several items at once
+      await database.myDictionaryListsDao.addDictionaryItems(
+        dictionaryList,
+        [
+          await database.vocabsDao.get(1000160),
+          await database.vocabsDao.get(1003430),
+          await database.vocabsDao.get(1001390),
+        ],
+      );
+
+      // Check new contents
+      listItems = await database.myDictionaryListsDao
+          .getDictionaryListItems(dictionaryList);
+      expect(listItems.vocabIds.length, 4);
+      expect(listItems.vocabIds[0], 1001390);
+      expect(listItems.vocabIds[1], 1000160);
+      expect(listItems.vocabIds[2], 1003430);
+      expect(listItems.vocabIds[3], 1000220);
     });
 
     test('getContainingDictionaryItem', () async {
