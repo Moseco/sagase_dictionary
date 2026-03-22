@@ -61,7 +61,6 @@ part 'database.g.dart';
     'datamodels/kanjis.drift',
     'datamodels/my_dictionary_lists.drift',
     'datamodels/proper_nouns.drift',
-    'datamodels/spaced_repetition_datas.drift',
     'datamodels/vocabs.drift',
   },
   daos: [
@@ -83,7 +82,7 @@ class AppDatabase extends _$AppDatabase {
       : super(queryExecutor ?? NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration {
@@ -100,6 +99,30 @@ class AppDatabase extends _$AppDatabase {
               schema.vocabWritings, schema.vocabWritings.primaryPair);
           await m.addColumn(
               schema.vocabReadings, schema.vocabReadings.primaryPair);
+        },
+        from3To4: (m, schema) async {
+          await m.alterTable(
+            TableMigration(
+              schema.spacedRepetitionDatas,
+              columnTransformer: {
+                schema.spacedRepetitionDatas.itemId:
+                    schema.spacedRepetitionDatas.vocabId +
+                        schema.spacedRepetitionDatas.kanjiId,
+                schema.spacedRepetitionDatas.itemType:
+                    schema.spacedRepetitionDatas.vocabId.caseMatch(
+                  when: {
+                    const Constant(0): Constant(DictionaryItemType.kanji.index),
+                  },
+                  orElse: Constant(DictionaryItemType.vocab.index),
+                )
+              },
+            ),
+          );
+        },
+        from4To5: (m, schema) async {
+          await m.drop(Index('IX_spaced_repetition_datas_vocab_id', ''));
+          await m.drop(Index('IX_spaced_repetition_datas_kanji_id', ''));
+          await m.alterTable(TableMigration(schema.spacedRepetitionDatas));
         },
       ),
     );

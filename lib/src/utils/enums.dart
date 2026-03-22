@@ -68,6 +68,13 @@ enum ProperNounType {
   unknown,
 }
 
+enum DictionaryItemType {
+  vocab,
+  kanji,
+  grammar,
+  properNoun,
+}
+
 enum FrontType {
   japanese,
   english,

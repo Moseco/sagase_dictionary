@@ -38,6 +38,9 @@ class Vocab extends DictionaryItem {
     required this.frequencyScore,
   });
 
+  @override
+  DictionaryItemType get type => DictionaryItemType.vocab;
+
   bool isUsuallyKanaAlone() {
     if (definitions[0].miscInfo == null) return false;
     return definitions[0]

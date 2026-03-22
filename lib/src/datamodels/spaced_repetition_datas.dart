@@ -3,17 +3,13 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:sagase_dictionary/src/database.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_item.dart';
-import 'package:sagase_dictionary/src/datamodels/kanjis.dart';
-import 'package:sagase_dictionary/src/datamodels/vocabs.dart';
 import 'package:sagase_dictionary/src/utils/constants.dart';
 import 'package:sagase_dictionary/src/utils/enums.dart';
 
 @UseRowClass(SpacedRepetitionData)
 class SpacedRepetitionDatas extends Table {
-  IntColumn get vocabId => integer().customConstraint(
-      'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )')();
-  IntColumn get kanjiId => integer().customConstraint(
-      'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )')();
+  IntColumn get itemId => integer()();
+  IntColumn get itemType => intEnum<DictionaryItemType>()();
   IntColumn get frontType => intEnum<FrontType>()();
 
   IntColumn get interval => integer()();
@@ -25,15 +21,15 @@ class SpacedRepetitionDatas extends Table {
   IntColumn get totalWrongAnswers => integer()();
 
   @override
-  Set<Column> get primaryKey => {vocabId, kanjiId, frontType};
+  Set<Column> get primaryKey => {itemId, itemType, frontType};
 
   @override
   bool get withoutRowId => true;
 }
 
 class SpacedRepetitionData implements Insertable<SpacedRepetitionData> {
-  final int vocabId;
-  final int kanjiId;
+  final int itemId;
+  final DictionaryItemType itemType;
   final FrontType frontType;
 
   final int interval;
@@ -48,8 +44,8 @@ class SpacedRepetitionData implements Insertable<SpacedRepetitionData> {
   final int initialCorrectCount;
 
   SpacedRepetitionData({
-    required this.vocabId,
-    required this.kanjiId,
+    required this.itemId,
+    required this.itemType,
     required this.frontType,
     required this.interval,
     required this.repetitions,
@@ -63,8 +59,8 @@ class SpacedRepetitionData implements Insertable<SpacedRepetitionData> {
   SpacedRepetitionData.initial({
     required DictionaryItem dictionaryItem,
     required this.frontType,
-  })  : vocabId = dictionaryItem is Vocab ? dictionaryItem.id : 0,
-        kanjiId = dictionaryItem is Kanji ? dictionaryItem.id : 0,
+  })  : itemId = dictionaryItem.id,
+        itemType = dictionaryItem.type,
         interval = 0,
         repetitions = 0,
         easeFactor = 2.5,
@@ -74,8 +70,8 @@ class SpacedRepetitionData implements Insertable<SpacedRepetitionData> {
         initialCorrectCount = 0;
 
   SpacedRepetitionData copyWith({
-    int? vocabId,
-    int? kanjiId,
+    int? itemId,
+    DictionaryItemType? itemType,
     FrontType? frontType,
     int? interval,
     int? repetitions,
@@ -86,8 +82,8 @@ class SpacedRepetitionData implements Insertable<SpacedRepetitionData> {
     int? initialCorrectCount,
   }) {
     return SpacedRepetitionData(
-      vocabId: vocabId ?? this.vocabId,
-      kanjiId: kanjiId ?? this.kanjiId,
+      itemId: itemId ?? this.itemId,
+      itemType: itemType ?? this.itemType,
       frontType: frontType ?? this.frontType,
       interval: interval ?? this.interval,
       repetitions: repetitions ?? this.repetitions,
@@ -117,6 +113,30 @@ class SpacedRepetitionData implements Insertable<SpacedRepetitionData> {
   }
 
   static SpacedRepetitionData fromBackupJson(
+    Map<String, dynamic> map,
+    int itemId,
+    DictionaryItemType itemType,
+    FrontType frontType,
+  ) {
+    return SpacedRepetitionData(
+      itemId: itemId,
+      itemType: itemType,
+      frontType: frontType,
+      interval:
+          map[SagaseDictionaryConstants.backupSpacedRepetitionDataInterval],
+      repetitions:
+          map[SagaseDictionaryConstants.backupSpacedRepetitionDataRepetitions],
+      easeFactor:
+          map[SagaseDictionaryConstants.backupSpacedRepetitionDataEaseFactor],
+      dueDate: map[SagaseDictionaryConstants.backupSpacedRepetitionDataDueDate],
+      totalAnswers:
+          map[SagaseDictionaryConstants.backupSpacedRepetitionDataTotalAnswers],
+      totalWrongAnswers: map[SagaseDictionaryConstants
+          .backupSpacedRepetitionDataTotalWrongAnswers],
+    );
+  }
+
+  static SpacedRepetitionData fromBackupJsonOld(
     Map<String, dynamic> map, {
     int vocabId = 0,
     int kanjiId = 0,
@@ -124,8 +144,9 @@ class SpacedRepetitionData implements Insertable<SpacedRepetitionData> {
   }) {
     assert((vocabId == 0) ^ (kanjiId == 0));
     return SpacedRepetitionData(
-      vocabId: vocabId,
-      kanjiId: kanjiId,
+      itemId: vocabId + kanjiId,
+      itemType:
+          vocabId != 0 ? DictionaryItemType.vocab : DictionaryItemType.kanji,
       frontType: frontType,
       interval:
           map[SagaseDictionaryConstants.backupSpacedRepetitionDataInterval],
@@ -144,8 +165,8 @@ class SpacedRepetitionData implements Insertable<SpacedRepetitionData> {
   @override
   Map<String, Expression<Object>> toColumns(bool nullToAbsent) {
     return SpacedRepetitionDatasCompanion(
-      vocabId: Value(vocabId),
-      kanjiId: Value(kanjiId),
+      itemId: Value(itemId),
+      itemType: Value(itemType),
       frontType: Value(frontType),
       interval: Value(interval),
       repetitions: Value(repetitions),

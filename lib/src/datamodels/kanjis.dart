@@ -57,6 +57,9 @@ class Kanji extends DictionaryItem {
     required this.strokes,
     required this.compounds,
   });
+
+  @override
+  DictionaryItemType get type => DictionaryItemType.kanji;
 }
 
 @UseRowClass(KanjiReading)

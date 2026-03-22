@@ -1,4 +1,5 @@
 import 'package:sagase_dictionary/src/datamodels/spaced_repetition_datas.dart';
+import 'package:sagase_dictionary/src/utils/enums.dart';
 
 abstract class DictionaryItem {
   final int id;
@@ -8,4 +9,6 @@ abstract class DictionaryItem {
   SpacedRepetitionData? spacedRepetitionData;
 
   DictionaryItem({required this.id});
+
+  DictionaryItemType get type;
 }
