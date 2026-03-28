@@ -28,12 +28,8 @@ void main() {
       );
 
       // Backup and import
-      final newData = SpacedRepetitionData.fromBackupJson(
-        jsonDecode(data.toBackupJson()),
-        data.itemId,
-        data.itemType,
-        data.frontType,
-      );
+      final newData =
+          SpacedRepetitionData.fromBackupJson(jsonDecode(data.toBackupJson()));
 
       expect(newData.itemId, 1);
       expect(newData.itemType, DictionaryItemType.vocab);
@@ -57,9 +53,9 @@ void main() {
           SagaseDictionaryConstants.backupSpacedRepetitionDataTotalWrongAnswers:
               4,
         },
-        vocabId: 1,
-        kanjiId: 0,
-        frontType: FrontType.japanese,
+        1,
+        DictionaryItemType.vocab,
+        FrontType.japanese,
       );
 
       expect(newData.itemId, 1);
@@ -84,9 +80,9 @@ void main() {
           SagaseDictionaryConstants.backupSpacedRepetitionDataTotalWrongAnswers:
               4,
         },
-        vocabId: 0,
-        kanjiId: 1,
-        frontType: FrontType.japanese,
+        1,
+        DictionaryItemType.kanji,
+        FrontType.japanese,
       );
 
       expect(newData.itemId, 1);
