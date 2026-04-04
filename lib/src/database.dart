@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:sagase_dictionary/src/dao/dictionary_infos_dao.dart';
 import 'package:sagase_dictionary/src/dao/flashcard_sets_dao.dart';
+import 'package:sagase_dictionary/src/dao/grammar_lessons_dao.dart';
 import 'package:sagase_dictionary/src/dao/kanjis_dao.dart';
 import 'package:sagase_dictionary/src/dao/my_dictionary_lists_dao.dart';
 import 'package:sagase_dictionary/src/dao/predefined_dictionary_lists_dao.dart';
@@ -13,6 +14,7 @@ import 'package:sagase_dictionary/src/dao/vocabs_dao.dart';
 import 'package:sagase_dictionary/src/database.steps.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_infos.dart';
 import 'package:sagase_dictionary/src/datamodels/flashcard_sets.dart';
+import 'package:sagase_dictionary/src/datamodels/grammar_lessons.dart';
 import 'package:sagase_dictionary/src/datamodels/kanji/kanji_notes.dart';
 import 'package:sagase_dictionary/src/datamodels/kanjis.dart';
 import 'package:sagase_dictionary/src/datamodels/my_dictionary_lists.dart';
@@ -37,6 +39,7 @@ part 'database.g.dart';
     DictionaryInfos,
     FlashcardSets,
     FlashcardSetReports,
+    GrammarLessons,
     Kanjis,
     KanjiReadings,
     KanjiMeaningWords,
@@ -66,6 +69,7 @@ part 'database.g.dart';
   daos: [
     DictionaryInfosDao,
     FlashcardSetsDao,
+    GrammarLessonsDao,
     KanjisDao,
     MyDictionaryListsDao,
     PredefinedDictionaryListsDao,
@@ -123,6 +127,7 @@ class AppDatabase extends _$AppDatabase {
           await m.drop(Index('IX_spaced_repetition_datas_vocab_id', ''));
           await m.drop(Index('IX_spaced_repetition_datas_kanji_id', ''));
           await m.alterTable(TableMigration(schema.spacedRepetitionDatas));
+          await m.createTable(schema.grammarLessons);
         },
       ),
     );

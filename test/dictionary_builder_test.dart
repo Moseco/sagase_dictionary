@@ -25,6 +25,7 @@ void main() {
         shortKanjiListData,
         shortPitchAccentData,
         shortFrequencyListData,
+        shortGrammarLessons,
       );
 
       await DictionaryBuilder.createProperNounDictionary(
@@ -900,6 +901,28 @@ void main() {
       expect(properNounRomajiWords[7].word, '2006-2007');
       expect(properNounRomajiWords[8].word, 'and');
       expect(properNounRomajiWords[9].word, '2012-2020');
+    });
+
+    test('Grammar lessons', () async {
+      final grammarLessons =
+          await database.select(database.grammarLessons).get();
+
+      expect(grammarLessons[0].id, 1);
+      expect(grammarLessons[0].form, 'です');
+      expect(grammarLessons[0].meaning, 'to be');
+      expect(grammarLessons[0].construction, null);
+      expect(grammarLessons[0].jlptLevel, 5);
+      expect(grammarLessons[0].content, null);
+      expect(grammarLessons[0].practice, null);
+
+      expect(grammarLessons[1].id, 2);
+      expect(grammarLessons[1].form, 'ほうがいい');
+      expect(grammarLessons[1].meaning, 'It would be better to...');
+      expect(grammarLessons[1].construction,
+          'Verb (past tense or negative present) + ほうがいい');
+      expect(grammarLessons[1].jlptLevel, 5);
+      expect(grammarLessons[1].content, isNotNull);
+      expect(grammarLessons[1].practice, isNotNull);
     });
   });
 }

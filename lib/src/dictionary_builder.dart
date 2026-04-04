@@ -30,7 +30,8 @@ class DictionaryBuilder {
     String vocabLists,
     String kanjiLists,
     String pitchAccents,
-    String frequencyList, {
+    String frequencyList,
+    String grammarLessons, {
     bool showProgress = false,
   }) async {
     // Set up
@@ -74,6 +75,12 @@ class DictionaryBuilder {
 
     // Set kanji JLPT level
     await _setKanjiJlptLevel(db);
+
+    // Grammar lessons
+    await DictionaryBuilder.createGrammarLessons(
+      db,
+      grammarLessons,
+    );
   }
 
   // Creates the vocab database from the raw dictionary file
@@ -2418,6 +2425,35 @@ class DictionaryBuilder {
       await (db.update(db.kanjis)..where((kanji) => kanji.id.equals(kanjiId)))
           .write(KanjisCompanion(jlpt: Value(JlptLevel.n1)));
     }
+  }
+
+  @visibleForTesting
+  static Future<void> createGrammarLessons(
+      AppDatabase db, String grammarLessonsJson) async {
+    final grammarLessons = jsonDecode(grammarLessonsJson);
+
+    await db.transaction(() async {
+      for (var grammarLesson in grammarLessons) {
+        final content = grammarLesson['content'] != null
+            ? jsonEncode(grammarLesson['content'])
+            : null;
+        final practice = grammarLesson['practice'] != null
+            ? jsonEncode(grammarLesson['practice'])
+            : null;
+
+        await db.into(db.grammarLessons).insert(
+              GrammarLessonsCompanion(
+                id: Value(grammarLesson['id']),
+                form: Value(grammarLesson['form']),
+                meaning: Value(grammarLesson['meaning']),
+                construction: Value.absentIfNull(grammarLesson['construction']),
+                jlptLevel: Value(grammarLesson['jlpt_level']),
+                content: Value.absentIfNull(content),
+                practice: Value.absentIfNull(practice),
+              ),
+            );
+      }
+    });
   }
 
   // Creates the proper noun database from the raw dictionary file

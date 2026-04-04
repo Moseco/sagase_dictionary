@@ -2832,6 +2832,7 @@ final class Schema5 extends i0.VersionedSchema {
     myDictionaryListItems,
     iXMyDictionaryListItemsListId,
     kanjiNotes,
+    grammarLessons,
     flashcardSets,
     flashcardSetReports,
     uXFlashcardSetReportsFlashcardSetIdAndDate,
@@ -3223,6 +3224,24 @@ final class Schema5 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
+  late final Shape31 grammarLessons = Shape31(
+      source: i0.VersionedTable(
+        entityName: 'grammar_lessons',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_174,
+          _column_141,
+          _column_175,
+          _column_176,
+          _column_177,
+          _column_178,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
   late final Shape29 flashcardSets = Shape29(
       source: i0.VersionedTable(
         entityName: 'flashcard_sets',
@@ -3331,6 +3350,39 @@ class Shape30 extends i0.VersionedTable {
       columnsByName['total_wrong_answers']! as i1.GeneratedColumn<int>;
 }
 
+class Shape31 extends i0.VersionedTable {
+  Shape31({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get form =>
+      columnsByName['form']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get meaning =>
+      columnsByName['meaning']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get construction =>
+      columnsByName['construction']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get jlptLevel =>
+      columnsByName['jlpt_level']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get content =>
+      columnsByName['content']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get practice =>
+      columnsByName['practice']! as i1.GeneratedColumn<String>;
+}
+
+i1.GeneratedColumn<String> _column_174(String aliasedName) =>
+    i1.GeneratedColumn<String>('form', aliasedName, false,
+        type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
+i1.GeneratedColumn<String> _column_175(String aliasedName) =>
+    i1.GeneratedColumn<String>('construction', aliasedName, true,
+        type: i1.DriftSqlType.string, $customConstraints: 'NULL');
+i1.GeneratedColumn<int> _column_176(String aliasedName) =>
+    i1.GeneratedColumn<int>('jlpt_level', aliasedName, false,
+        type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
+i1.GeneratedColumn<String> _column_177(String aliasedName) =>
+    i1.GeneratedColumn<String>('content', aliasedName, true,
+        type: i1.DriftSqlType.string, $customConstraints: 'NULL');
+i1.GeneratedColumn<String> _column_178(String aliasedName) =>
+    i1.GeneratedColumn<String>('practice', aliasedName, true,
+        type: i1.DriftSqlType.string, $customConstraints: 'NULL');
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
