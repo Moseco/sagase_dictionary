@@ -52,6 +52,7 @@ class SagaseDictionaryConstants {
   static const backupMyDictionaryLists = 'my_dictionary_lists';
   static const backupFlashcardSets = 'flashcard_sets';
   static const backupFlashcardSetReports = 'flashcard_set_reports';
+  static const backupSpacedRepetitionData = 'spaced_repetition_data';
   static const backupVocabSpacedRepetitionData = 'vocab_spaced_repetition_data';
   static const backupVocabSpacedRepetitionDataEnglish =
       'vocab_spaced_repetition_data_english';
@@ -98,6 +99,9 @@ class SagaseDictionaryConstants {
   static const backupMyDictionaryListTimestamp = 'timestamp';
   static const backupMyDictionaryListVocab = 'vocab';
   static const backupMyDictionaryListKanji = 'kanji';
+  static const backupSpacedRepetitionDataItemId = 'item_id';
+  static const backupSpacedRepetitionDataItemType = 'item_type';
+  static const backupSpacedRepetitionDataFrontType = 'front_type';
   static const backupSpacedRepetitionDataInterval = 'interval';
   static const backupSpacedRepetitionDataRepetitions = 'repetitions';
   static const backupSpacedRepetitionDataEaseFactor = 'ease_factor';

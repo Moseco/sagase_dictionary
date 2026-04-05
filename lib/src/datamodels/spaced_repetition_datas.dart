@@ -98,6 +98,11 @@ class SpacedRepetitionData implements Insertable<SpacedRepetitionData> {
   String toBackupJson() {
     return jsonEncode(
       {
+        SagaseDictionaryConstants.backupSpacedRepetitionDataItemId: itemId,
+        SagaseDictionaryConstants.backupSpacedRepetitionDataItemType:
+            itemType.index,
+        SagaseDictionaryConstants.backupSpacedRepetitionDataFrontType:
+            frontType.index,
         SagaseDictionaryConstants.backupSpacedRepetitionDataInterval: interval,
         SagaseDictionaryConstants.backupSpacedRepetitionDataRepetitions:
             repetitions,
@@ -112,16 +117,13 @@ class SpacedRepetitionData implements Insertable<SpacedRepetitionData> {
     );
   }
 
-  static SpacedRepetitionData fromBackupJson(
-    Map<String, dynamic> map,
-    int itemId,
-    DictionaryItemType itemType,
-    FrontType frontType,
-  ) {
+  static SpacedRepetitionData fromBackupJson(Map<String, dynamic> map) {
     return SpacedRepetitionData(
-      itemId: itemId,
-      itemType: itemType,
-      frontType: frontType,
+      itemId: map[SagaseDictionaryConstants.backupSpacedRepetitionDataItemId],
+      itemType: DictionaryItemType.values[
+          map[SagaseDictionaryConstants.backupSpacedRepetitionDataItemType]],
+      frontType: FrontType.values[
+          map[SagaseDictionaryConstants.backupSpacedRepetitionDataFrontType]],
       interval:
           map[SagaseDictionaryConstants.backupSpacedRepetitionDataInterval],
       repetitions:
@@ -137,16 +139,14 @@ class SpacedRepetitionData implements Insertable<SpacedRepetitionData> {
   }
 
   static SpacedRepetitionData fromBackupJsonOld(
-    Map<String, dynamic> map, {
-    int vocabId = 0,
-    int kanjiId = 0,
-    required FrontType frontType,
-  }) {
-    assert((vocabId == 0) ^ (kanjiId == 0));
+    Map<String, dynamic> map,
+    int itemId,
+    DictionaryItemType itemType,
+    FrontType frontType,
+  ) {
     return SpacedRepetitionData(
-      itemId: vocabId + kanjiId,
-      itemType:
-          vocabId != 0 ? DictionaryItemType.vocab : DictionaryItemType.kanji,
+      itemId: itemId,
+      itemType: itemType,
       frontType: frontType,
       interval:
           map[SagaseDictionaryConstants.backupSpacedRepetitionDataInterval],
