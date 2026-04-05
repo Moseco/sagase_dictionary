@@ -83,7 +83,7 @@ class AppDatabase extends _$AppDatabase {
       : super(queryExecutor ?? NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration {
@@ -100,6 +100,43 @@ class AppDatabase extends _$AppDatabase {
               schema.vocabWritings, schema.vocabWritings.primaryPair);
           await m.addColumn(
               schema.vocabReadings, schema.vocabReadings.primaryPair);
+        },
+        from3To4: (m, schema) async {
+          await m.alterTable(
+            TableMigration(
+              schema.spacedRepetitionDatas,
+              columnTransformer: {
+                schema.spacedRepetitionDatas.itemId:
+                    schema.spacedRepetitionDatas.vocabId +
+                        schema.spacedRepetitionDatas.kanjiId,
+                schema.spacedRepetitionDatas.itemType:
+                    schema.spacedRepetitionDatas.vocabId.caseMatch(
+                  when: {
+                    const Constant(0): Constant(DictionaryItemType.kanji.index),
+                  },
+                  orElse: Constant(DictionaryItemType.vocab.index),
+                )
+              },
+            ),
+          );
+
+          await m.alterTable(
+            TableMigration(
+              schema.myDictionaryListItems,
+              columnTransformer: {
+                schema.myDictionaryListItems.itemId:
+                    schema.myDictionaryListItems.vocabId +
+                        schema.myDictionaryListItems.kanjiId,
+                schema.myDictionaryListItems.itemType:
+                    schema.myDictionaryListItems.vocabId.caseMatch(
+                  when: {
+                    const Constant(0): Constant(DictionaryItemType.kanji.index),
+                  },
+                  orElse: Constant(DictionaryItemType.vocab.index),
+                )
+              },
+            ),
+          );
         },
       ),
     );

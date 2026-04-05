@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_list.dart';
 import 'package:sagase_dictionary/src/utils/constants.dart';
+import 'package:sagase_dictionary/src/utils/enums.dart';
 
 @UseRowClass(MyDictionaryList)
 class MyDictionaryLists extends Table {
@@ -111,6 +112,8 @@ class MyDictionaryListItems extends Table {
       'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )')();
   IntColumn get kanjiId => integer().customConstraint(
       'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )')();
+  IntColumn get itemId => integer()();
+  IntColumn get itemType => intEnum<DictionaryItemType>()();
 
   @override
   List<Set<Column>> get uniqueKeys => [

@@ -14,6 +14,8 @@ class SpacedRepetitionDatas extends Table {
       'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )')();
   IntColumn get kanjiId => integer().customConstraint(
       'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )')();
+  IntColumn get itemId => integer()();
+  IntColumn get itemType => intEnum<DictionaryItemType>()();
   IntColumn get frontType => intEnum<FrontType>()();
 
   IntColumn get interval => integer()();
