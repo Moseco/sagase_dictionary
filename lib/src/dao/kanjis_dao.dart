@@ -29,7 +29,9 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
             leftOuterJoin(
                 db.spacedRepetitionDatas,
                 Expression.and([
-                  db.spacedRepetitionDatas.kanjiId.equals(id),
+                  db.spacedRepetitionDatas.itemId.equals(id),
+                  db.spacedRepetitionDatas.itemType
+                      .equals(DictionaryItemType.kanji.index),
                   db.spacedRepetitionDatas.frontType.equals(frontType.index),
                 ]))
           ])
@@ -94,7 +96,9 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
         leftOuterJoin(
             db.spacedRepetitionDatas,
             Expression.and([
-              db.spacedRepetitionDatas.kanjiId.equalsExp(db.kanjis.id),
+              db.spacedRepetitionDatas.itemId.equalsExp(db.kanjis.id),
+              db.spacedRepetitionDatas.itemType
+                  .equals(DictionaryItemType.kanji.index),
               db.spacedRepetitionDatas.frontType.equals(frontType.index),
             ]))
       ]).map(

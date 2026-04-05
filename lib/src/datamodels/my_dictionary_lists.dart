@@ -105,18 +105,18 @@ class MyDictionaryList extends DictionaryList {
 }
 
 @TableIndex(name: 'IX_my_dictionary_list_items_list_id', columns: {#listId})
+@TableIndex(
+  name: 'IX_my_dictionary_list_items_item_id_type',
+  columns: {#itemId, #itemType},
+)
 class MyDictionaryListItems extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get listId => integer()();
-  IntColumn get vocabId => integer().customConstraint(
-      'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )')();
-  IntColumn get kanjiId => integer().customConstraint(
-      'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )')();
   IntColumn get itemId => integer()();
   IntColumn get itemType => intEnum<DictionaryItemType>()();
 
   @override
   List<Set<Column>> get uniqueKeys => [
-        {listId, vocabId, kanjiId},
+        {listId, itemId, itemType},
       ];
 }

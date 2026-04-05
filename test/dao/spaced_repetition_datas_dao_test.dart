@@ -1,4 +1,3 @@
-import 'package:drift/drift.dart' as drift;
 import 'package:sagase_dictionary/src/database.dart';
 import 'package:sagase_dictionary/src/datamodels/spaced_repetition_datas.dart';
 import 'package:sagase_dictionary/src/dictionary_builder.dart';
@@ -26,42 +25,6 @@ void main() {
 
     tearDown(() async {
       await database.close();
-    });
-
-    test('vocabId and kanjiId constraints', () async {
-      expect(
-        () async => await database
-            .into(database.spacedRepetitionDatas)
-            .insert(SpacedRepetitionDatasCompanion(
-              vocabId: drift.Value(0),
-              kanjiId: drift.Value(0),
-              frontType: drift.Value(FrontType.japanese),
-              interval: drift.Value(0),
-              repetitions: drift.Value(0),
-              easeFactor: drift.Value(0),
-              dueDate: drift.Value(0),
-              totalAnswers: drift.Value(0),
-              totalWrongAnswers: drift.Value(0),
-            )),
-        throwsException,
-      );
-
-      expect(
-        () async => await database
-            .into(database.spacedRepetitionDatas)
-            .insert(SpacedRepetitionDatasCompanion(
-              vocabId: drift.Value(1),
-              kanjiId: drift.Value(1),
-              frontType: drift.Value(FrontType.japanese),
-              interval: drift.Value(0),
-              repetitions: drift.Value(0),
-              easeFactor: drift.Value(0),
-              dueDate: drift.Value(0),
-              totalAnswers: drift.Value(0),
-              totalWrongAnswers: drift.Value(0),
-            )),
-        throwsException,
-      );
     });
 
     test('set', () async {

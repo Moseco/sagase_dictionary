@@ -2850,26 +2850,6 @@ class $SpacedRepetitionDatasTable extends SpacedRepetitionDatas
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $SpacedRepetitionDatasTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _vocabIdMeta =
-      const VerificationMeta('vocabId');
-  @override
-  late final GeneratedColumn<int> vocabId = GeneratedColumn<int>(
-      'vocab_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      $customConstraints:
-          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )',
-      defaultValue: const CustomExpression('0'));
-  static const VerificationMeta _kanjiIdMeta =
-      const VerificationMeta('kanjiId');
-  @override
-  late final GeneratedColumn<int> kanjiId = GeneratedColumn<int>(
-      'kanji_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      $customConstraints:
-          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )',
-      defaultValue: const CustomExpression('0'));
   static const VerificationMeta _itemIdMeta = const VerificationMeta('itemId');
   @override
   late final GeneratedColumn<int> itemId = GeneratedColumn<int>(
@@ -2925,8 +2905,6 @@ class $SpacedRepetitionDatasTable extends SpacedRepetitionDatas
       type: DriftSqlType.int, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [
-        vocabId,
-        kanjiId,
         itemId,
         itemType,
         frontType,
@@ -2948,14 +2926,6 @@ class $SpacedRepetitionDatasTable extends SpacedRepetitionDatas
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('vocab_id')) {
-      context.handle(_vocabIdMeta,
-          vocabId.isAcceptableOrUnknown(data['vocab_id']!, _vocabIdMeta));
-    }
-    if (data.containsKey('kanji_id')) {
-      context.handle(_kanjiIdMeta,
-          kanjiId.isAcceptableOrUnknown(data['kanji_id']!, _kanjiIdMeta));
-    }
     if (data.containsKey('item_id')) {
       context.handle(_itemIdMeta,
           itemId.isAcceptableOrUnknown(data['item_id']!, _itemIdMeta));
@@ -3008,15 +2978,16 @@ class $SpacedRepetitionDatasTable extends SpacedRepetitionDatas
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {vocabId, kanjiId, frontType};
+  Set<GeneratedColumn> get $primaryKey => {itemId, itemType, frontType};
   @override
   SpacedRepetitionData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return SpacedRepetitionData(
-      vocabId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}vocab_id'])!,
-      kanjiId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}kanji_id'])!,
+      itemId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}item_id'])!,
+      itemType: $SpacedRepetitionDatasTable.$converteritemType.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.int, data['${effectivePrefix}item_type'])!),
       frontType: $SpacedRepetitionDatasTable.$converterfrontType.fromSql(
           attachedDatabase.typeMapping
               .read(DriftSqlType.int, data['${effectivePrefix}front_type'])!),
@@ -3050,8 +3021,6 @@ class $SpacedRepetitionDatasTable extends SpacedRepetitionDatas
 
 class SpacedRepetitionDatasCompanion
     extends UpdateCompanion<SpacedRepetitionData> {
-  final Value<int> vocabId;
-  final Value<int> kanjiId;
   final Value<int> itemId;
   final Value<DictionaryItemType> itemType;
   final Value<FrontType> frontType;
@@ -3062,8 +3031,6 @@ class SpacedRepetitionDatasCompanion
   final Value<int> totalAnswers;
   final Value<int> totalWrongAnswers;
   const SpacedRepetitionDatasCompanion({
-    this.vocabId = const Value.absent(),
-    this.kanjiId = const Value.absent(),
     this.itemId = const Value.absent(),
     this.itemType = const Value.absent(),
     this.frontType = const Value.absent(),
@@ -3075,8 +3042,6 @@ class SpacedRepetitionDatasCompanion
     this.totalWrongAnswers = const Value.absent(),
   });
   SpacedRepetitionDatasCompanion.insert({
-    this.vocabId = const Value.absent(),
-    this.kanjiId = const Value.absent(),
     required int itemId,
     required DictionaryItemType itemType,
     required FrontType frontType,
@@ -3095,8 +3060,6 @@ class SpacedRepetitionDatasCompanion
         totalAnswers = Value(totalAnswers),
         totalWrongAnswers = Value(totalWrongAnswers);
   static Insertable<SpacedRepetitionData> custom({
-    Expression<int>? vocabId,
-    Expression<int>? kanjiId,
     Expression<int>? itemId,
     Expression<int>? itemType,
     Expression<int>? frontType,
@@ -3108,8 +3071,6 @@ class SpacedRepetitionDatasCompanion
     Expression<int>? totalWrongAnswers,
   }) {
     return RawValuesInsertable({
-      if (vocabId != null) 'vocab_id': vocabId,
-      if (kanjiId != null) 'kanji_id': kanjiId,
       if (itemId != null) 'item_id': itemId,
       if (itemType != null) 'item_type': itemType,
       if (frontType != null) 'front_type': frontType,
@@ -3123,9 +3084,7 @@ class SpacedRepetitionDatasCompanion
   }
 
   SpacedRepetitionDatasCompanion copyWith(
-      {Value<int>? vocabId,
-      Value<int>? kanjiId,
-      Value<int>? itemId,
+      {Value<int>? itemId,
       Value<DictionaryItemType>? itemType,
       Value<FrontType>? frontType,
       Value<int>? interval,
@@ -3135,8 +3094,6 @@ class SpacedRepetitionDatasCompanion
       Value<int>? totalAnswers,
       Value<int>? totalWrongAnswers}) {
     return SpacedRepetitionDatasCompanion(
-      vocabId: vocabId ?? this.vocabId,
-      kanjiId: kanjiId ?? this.kanjiId,
       itemId: itemId ?? this.itemId,
       itemType: itemType ?? this.itemType,
       frontType: frontType ?? this.frontType,
@@ -3152,12 +3109,6 @@ class SpacedRepetitionDatasCompanion
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (vocabId.present) {
-      map['vocab_id'] = Variable<int>(vocabId.value);
-    }
-    if (kanjiId.present) {
-      map['kanji_id'] = Variable<int>(kanjiId.value);
-    }
     if (itemId.present) {
       map['item_id'] = Variable<int>(itemId.value);
     }
@@ -3194,8 +3145,6 @@ class SpacedRepetitionDatasCompanion
   @override
   String toString() {
     return (StringBuffer('SpacedRepetitionDatasCompanion(')
-          ..write('vocabId: $vocabId, ')
-          ..write('kanjiId: $kanjiId, ')
           ..write('itemId: $itemId, ')
           ..write('itemType: $itemType, ')
           ..write('frontType: $frontType, ')
@@ -5112,26 +5061,6 @@ class $MyDictionaryListItemsTable extends MyDictionaryListItems
   late final GeneratedColumn<int> listId = GeneratedColumn<int>(
       'list_id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _vocabIdMeta =
-      const VerificationMeta('vocabId');
-  @override
-  late final GeneratedColumn<int> vocabId = GeneratedColumn<int>(
-      'vocab_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      $customConstraints:
-          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )',
-      defaultValue: const CustomExpression('0'));
-  static const VerificationMeta _kanjiIdMeta =
-      const VerificationMeta('kanjiId');
-  @override
-  late final GeneratedColumn<int> kanjiId = GeneratedColumn<int>(
-      'kanji_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      $customConstraints:
-          'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )',
-      defaultValue: const CustomExpression('0'));
   static const VerificationMeta _itemIdMeta = const VerificationMeta('itemId');
   @override
   late final GeneratedColumn<int> itemId = GeneratedColumn<int>(
@@ -5144,8 +5073,7 @@ class $MyDictionaryListItemsTable extends MyDictionaryListItems
           .withConverter<DictionaryItemType>(
               $MyDictionaryListItemsTable.$converteritemType);
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, listId, vocabId, kanjiId, itemId, itemType];
+  List<GeneratedColumn> get $columns => [id, listId, itemId, itemType];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -5166,14 +5094,6 @@ class $MyDictionaryListItemsTable extends MyDictionaryListItems
     } else if (isInserting) {
       context.missing(_listIdMeta);
     }
-    if (data.containsKey('vocab_id')) {
-      context.handle(_vocabIdMeta,
-          vocabId.isAcceptableOrUnknown(data['vocab_id']!, _vocabIdMeta));
-    }
-    if (data.containsKey('kanji_id')) {
-      context.handle(_kanjiIdMeta,
-          kanjiId.isAcceptableOrUnknown(data['kanji_id']!, _kanjiIdMeta));
-    }
     if (data.containsKey('item_id')) {
       context.handle(_itemIdMeta,
           itemId.isAcceptableOrUnknown(data['item_id']!, _itemIdMeta));
@@ -5187,7 +5107,7 @@ class $MyDictionaryListItemsTable extends MyDictionaryListItems
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   List<Set<GeneratedColumn>> get uniqueKeys => [
-        {listId, vocabId, kanjiId},
+        {listId, itemId, itemType},
       ];
   @override
   MyDictionaryListItem map(Map<String, dynamic> data, {String? tablePrefix}) {
@@ -5197,10 +5117,6 @@ class $MyDictionaryListItemsTable extends MyDictionaryListItems
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       listId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}list_id'])!,
-      vocabId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}vocab_id'])!,
-      kanjiId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}kanji_id'])!,
       itemId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}item_id'])!,
       itemType: $MyDictionaryListItemsTable.$converteritemType.fromSql(
@@ -5222,15 +5138,11 @@ class MyDictionaryListItem extends DataClass
     implements Insertable<MyDictionaryListItem> {
   final int id;
   final int listId;
-  final int vocabId;
-  final int kanjiId;
   final int itemId;
   final DictionaryItemType itemType;
   const MyDictionaryListItem(
       {required this.id,
       required this.listId,
-      required this.vocabId,
-      required this.kanjiId,
       required this.itemId,
       required this.itemType});
   @override
@@ -5238,8 +5150,6 @@ class MyDictionaryListItem extends DataClass
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['list_id'] = Variable<int>(listId);
-    map['vocab_id'] = Variable<int>(vocabId);
-    map['kanji_id'] = Variable<int>(kanjiId);
     map['item_id'] = Variable<int>(itemId);
     {
       map['item_type'] = Variable<int>(
@@ -5252,8 +5162,6 @@ class MyDictionaryListItem extends DataClass
     return MyDictionaryListItemsCompanion(
       id: Value(id),
       listId: Value(listId),
-      vocabId: Value(vocabId),
-      kanjiId: Value(kanjiId),
       itemId: Value(itemId),
       itemType: Value(itemType),
     );
@@ -5265,8 +5173,6 @@ class MyDictionaryListItem extends DataClass
     return MyDictionaryListItem(
       id: serializer.fromJson<int>(json['id']),
       listId: serializer.fromJson<int>(json['listId']),
-      vocabId: serializer.fromJson<int>(json['vocabId']),
-      kanjiId: serializer.fromJson<int>(json['kanjiId']),
       itemId: serializer.fromJson<int>(json['itemId']),
       itemType: $MyDictionaryListItemsTable.$converteritemType
           .fromJson(serializer.fromJson<int>(json['itemType'])),
@@ -5278,8 +5184,6 @@ class MyDictionaryListItem extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'listId': serializer.toJson<int>(listId),
-      'vocabId': serializer.toJson<int>(vocabId),
-      'kanjiId': serializer.toJson<int>(kanjiId),
       'itemId': serializer.toJson<int>(itemId),
       'itemType': serializer.toJson<int>(
           $MyDictionaryListItemsTable.$converteritemType.toJson(itemType)),
@@ -5287,17 +5191,10 @@ class MyDictionaryListItem extends DataClass
   }
 
   MyDictionaryListItem copyWith(
-          {int? id,
-          int? listId,
-          int? vocabId,
-          int? kanjiId,
-          int? itemId,
-          DictionaryItemType? itemType}) =>
+          {int? id, int? listId, int? itemId, DictionaryItemType? itemType}) =>
       MyDictionaryListItem(
         id: id ?? this.id,
         listId: listId ?? this.listId,
-        vocabId: vocabId ?? this.vocabId,
-        kanjiId: kanjiId ?? this.kanjiId,
         itemId: itemId ?? this.itemId,
         itemType: itemType ?? this.itemType,
       );
@@ -5305,8 +5202,6 @@ class MyDictionaryListItem extends DataClass
     return MyDictionaryListItem(
       id: data.id.present ? data.id.value : this.id,
       listId: data.listId.present ? data.listId.value : this.listId,
-      vocabId: data.vocabId.present ? data.vocabId.value : this.vocabId,
-      kanjiId: data.kanjiId.present ? data.kanjiId.value : this.kanjiId,
       itemId: data.itemId.present ? data.itemId.value : this.itemId,
       itemType: data.itemType.present ? data.itemType.value : this.itemType,
     );
@@ -5317,8 +5212,6 @@ class MyDictionaryListItem extends DataClass
     return (StringBuffer('MyDictionaryListItem(')
           ..write('id: $id, ')
           ..write('listId: $listId, ')
-          ..write('vocabId: $vocabId, ')
-          ..write('kanjiId: $kanjiId, ')
           ..write('itemId: $itemId, ')
           ..write('itemType: $itemType')
           ..write(')'))
@@ -5326,16 +5219,13 @@ class MyDictionaryListItem extends DataClass
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, listId, vocabId, kanjiId, itemId, itemType);
+  int get hashCode => Object.hash(id, listId, itemId, itemType);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is MyDictionaryListItem &&
           other.id == this.id &&
           other.listId == this.listId &&
-          other.vocabId == this.vocabId &&
-          other.kanjiId == this.kanjiId &&
           other.itemId == this.itemId &&
           other.itemType == this.itemType);
 }
@@ -5344,23 +5234,17 @@ class MyDictionaryListItemsCompanion
     extends UpdateCompanion<MyDictionaryListItem> {
   final Value<int> id;
   final Value<int> listId;
-  final Value<int> vocabId;
-  final Value<int> kanjiId;
   final Value<int> itemId;
   final Value<DictionaryItemType> itemType;
   const MyDictionaryListItemsCompanion({
     this.id = const Value.absent(),
     this.listId = const Value.absent(),
-    this.vocabId = const Value.absent(),
-    this.kanjiId = const Value.absent(),
     this.itemId = const Value.absent(),
     this.itemType = const Value.absent(),
   });
   MyDictionaryListItemsCompanion.insert({
     this.id = const Value.absent(),
     required int listId,
-    this.vocabId = const Value.absent(),
-    this.kanjiId = const Value.absent(),
     required int itemId,
     required DictionaryItemType itemType,
   })  : listId = Value(listId),
@@ -5369,16 +5253,12 @@ class MyDictionaryListItemsCompanion
   static Insertable<MyDictionaryListItem> custom({
     Expression<int>? id,
     Expression<int>? listId,
-    Expression<int>? vocabId,
-    Expression<int>? kanjiId,
     Expression<int>? itemId,
     Expression<int>? itemType,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (listId != null) 'list_id': listId,
-      if (vocabId != null) 'vocab_id': vocabId,
-      if (kanjiId != null) 'kanji_id': kanjiId,
       if (itemId != null) 'item_id': itemId,
       if (itemType != null) 'item_type': itemType,
     });
@@ -5387,15 +5267,11 @@ class MyDictionaryListItemsCompanion
   MyDictionaryListItemsCompanion copyWith(
       {Value<int>? id,
       Value<int>? listId,
-      Value<int>? vocabId,
-      Value<int>? kanjiId,
       Value<int>? itemId,
       Value<DictionaryItemType>? itemType}) {
     return MyDictionaryListItemsCompanion(
       id: id ?? this.id,
       listId: listId ?? this.listId,
-      vocabId: vocabId ?? this.vocabId,
-      kanjiId: kanjiId ?? this.kanjiId,
       itemId: itemId ?? this.itemId,
       itemType: itemType ?? this.itemType,
     );
@@ -5409,12 +5285,6 @@ class MyDictionaryListItemsCompanion
     }
     if (listId.present) {
       map['list_id'] = Variable<int>(listId.value);
-    }
-    if (vocabId.present) {
-      map['vocab_id'] = Variable<int>(vocabId.value);
-    }
-    if (kanjiId.present) {
-      map['kanji_id'] = Variable<int>(kanjiId.value);
     }
     if (itemId.present) {
       map['item_id'] = Variable<int>(itemId.value);
@@ -5431,8 +5301,6 @@ class MyDictionaryListItemsCompanion
     return (StringBuffer('MyDictionaryListItemsCompanion(')
           ..write('id: $id, ')
           ..write('listId: $listId, ')
-          ..write('vocabId: $vocabId, ')
-          ..write('kanjiId: $kanjiId, ')
           ..write('itemId: $itemId, ')
           ..write('itemType: $itemType')
           ..write(')'))
@@ -6575,6 +6443,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Index iXMyDictionaryListItemsListId = Index(
       'IX_my_dictionary_list_items_list_id',
       'CREATE INDEX IX_my_dictionary_list_items_list_id ON my_dictionary_list_items (list_id)');
+  late final Index iXMyDictionaryListItemsItemIdType = Index(
+      'IX_my_dictionary_list_items_item_id_type',
+      'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)');
   late final $KanjiNotesTable kanjiNotes = $KanjiNotesTable(this);
   late final $FlashcardSetsTable flashcardSets = $FlashcardSetsTable(this);
   late final $FlashcardSetReportsTable flashcardSetReports =
@@ -6584,12 +6455,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       'CREATE UNIQUE INDEX UX_flashcard_set_reports_flashcard_set_id_and_date ON flashcard_set_reports (flashcard_set_id, date)');
   late final $DictionaryInfosTable dictionaryInfos =
       $DictionaryInfosTable(this);
-  late final Index iXSpacedRepetitionDatasVocabId = Index(
-      'IX_spaced_repetition_datas_vocab_id',
-      'CREATE INDEX IX_spaced_repetition_datas_vocab_id ON spaced_repetition_datas (vocab_id) WHERE vocab_id != 0');
-  late final Index iXSpacedRepetitionDatasKanjiId = Index(
-      'IX_spaced_repetition_datas_kanji_id',
-      'CREATE INDEX IX_spaced_repetition_datas_kanji_id ON spaced_repetition_datas (kanji_id) WHERE kanji_id != 0');
   late final Index iXProperNounsWriting = Index('IX_proper_nouns_writing',
       'CREATE INDEX IX_proper_nouns_writing ON proper_nouns (writing) WHERE writing IS NOT NULL');
   late final Index iXProperNounsWritingSearchForm = Index(
@@ -6603,12 +6468,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       'CREATE INDEX IX_proper_nouns_reading_romaji_simplified ON proper_nouns (reading_romaji_simplified) WHERE reading_romaji_simplified IS NOT NULL');
   late final Index iXProperNounsRomaji = Index('IX_proper_nouns_romaji',
       'CREATE INDEX IX_proper_nouns_romaji ON proper_nouns (romaji COLLATE NOCASE) WHERE romaji');
-  late final Index iXMyDictionaryListItemsVocabId = Index(
-      'IX_my_dictionary_list_items_vocab_id',
-      'CREATE INDEX IX_my_dictionary_list_items_vocab_id ON my_dictionary_list_items (vocab_id) WHERE vocab_id != 0');
-  late final Index iXMyDictionaryListItemsKanjiId = Index(
-      'IX_my_dictionary_list_items_kanji_id',
-      'CREATE INDEX IX_my_dictionary_list_items_kanji_id ON my_dictionary_list_items (kanji_id) WHERE kanji_id != 0');
   late final Index iXKanjiReadingsReadingSearchForm = Index(
       'IX_kanji_readings_reading_search_form',
       'CREATE INDEX IX_kanji_readings_reading_search_form ON kanji_readings (reading_search_form) WHERE reading_search_form IS NOT NULL');
@@ -6677,20 +6536,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         myDictionaryLists,
         myDictionaryListItems,
         iXMyDictionaryListItemsListId,
+        iXMyDictionaryListItemsItemIdType,
         kanjiNotes,
         flashcardSets,
         flashcardSetReports,
         uXFlashcardSetReportsFlashcardSetIdAndDate,
         dictionaryInfos,
-        iXSpacedRepetitionDatasVocabId,
-        iXSpacedRepetitionDatasKanjiId,
         iXProperNounsWriting,
         iXProperNounsWritingSearchForm,
         iXProperNounsReadingSearchForm,
         iXProperNounsReadingRomajiSimplified,
         iXProperNounsRomaji,
-        iXMyDictionaryListItemsVocabId,
-        iXMyDictionaryListItemsKanjiId,
         iXKanjiReadingsReadingSearchForm,
         iXKanjiReadingsReadingRomajiSimplified
       ];
@@ -8371,8 +8227,6 @@ typedef $$KanjiMeaningWordsTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function()>;
 typedef $$SpacedRepetitionDatasTableCreateCompanionBuilder
     = SpacedRepetitionDatasCompanion Function({
-  Value<int> vocabId,
-  Value<int> kanjiId,
   required int itemId,
   required DictionaryItemType itemType,
   required FrontType frontType,
@@ -8385,8 +8239,6 @@ typedef $$SpacedRepetitionDatasTableCreateCompanionBuilder
 });
 typedef $$SpacedRepetitionDatasTableUpdateCompanionBuilder
     = SpacedRepetitionDatasCompanion Function({
-  Value<int> vocabId,
-  Value<int> kanjiId,
   Value<int> itemId,
   Value<DictionaryItemType> itemType,
   Value<FrontType> frontType,
@@ -8407,12 +8259,6 @@ class $$SpacedRepetitionDatasTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get vocabId => $composableBuilder(
-      column: $table.vocabId, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get kanjiId => $composableBuilder(
-      column: $table.kanjiId, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<int> get itemId => $composableBuilder(
       column: $table.itemId, builder: (column) => ColumnFilters(column));
 
@@ -8455,12 +8301,6 @@ class $$SpacedRepetitionDatasTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get vocabId => $composableBuilder(
-      column: $table.vocabId, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get kanjiId => $composableBuilder(
-      column: $table.kanjiId, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<int> get itemId => $composableBuilder(
       column: $table.itemId, builder: (column) => ColumnOrderings(column));
 
@@ -8500,12 +8340,6 @@ class $$SpacedRepetitionDatasTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get vocabId =>
-      $composableBuilder(column: $table.vocabId, builder: (column) => column);
-
-  GeneratedColumn<int> get kanjiId =>
-      $composableBuilder(column: $table.kanjiId, builder: (column) => column);
-
   GeneratedColumn<int> get itemId =>
       $composableBuilder(column: $table.itemId, builder: (column) => column);
 
@@ -8565,8 +8399,6 @@ class $$SpacedRepetitionDatasTableTableManager extends RootTableManager<
               $$SpacedRepetitionDatasTableAnnotationComposer(
                   $db: db, $table: table),
           updateCompanionCallback: ({
-            Value<int> vocabId = const Value.absent(),
-            Value<int> kanjiId = const Value.absent(),
             Value<int> itemId = const Value.absent(),
             Value<DictionaryItemType> itemType = const Value.absent(),
             Value<FrontType> frontType = const Value.absent(),
@@ -8578,8 +8410,6 @@ class $$SpacedRepetitionDatasTableTableManager extends RootTableManager<
             Value<int> totalWrongAnswers = const Value.absent(),
           }) =>
               SpacedRepetitionDatasCompanion(
-            vocabId: vocabId,
-            kanjiId: kanjiId,
             itemId: itemId,
             itemType: itemType,
             frontType: frontType,
@@ -8591,8 +8421,6 @@ class $$SpacedRepetitionDatasTableTableManager extends RootTableManager<
             totalWrongAnswers: totalWrongAnswers,
           ),
           createCompanionCallback: ({
-            Value<int> vocabId = const Value.absent(),
-            Value<int> kanjiId = const Value.absent(),
             required int itemId,
             required DictionaryItemType itemType,
             required FrontType frontType,
@@ -8604,8 +8432,6 @@ class $$SpacedRepetitionDatasTableTableManager extends RootTableManager<
             required int totalWrongAnswers,
           }) =>
               SpacedRepetitionDatasCompanion.insert(
-            vocabId: vocabId,
-            kanjiId: kanjiId,
             itemId: itemId,
             itemType: itemType,
             frontType: frontType,
@@ -9948,8 +9774,6 @@ typedef $$MyDictionaryListItemsTableCreateCompanionBuilder
     = MyDictionaryListItemsCompanion Function({
   Value<int> id,
   required int listId,
-  Value<int> vocabId,
-  Value<int> kanjiId,
   required int itemId,
   required DictionaryItemType itemType,
 });
@@ -9957,8 +9781,6 @@ typedef $$MyDictionaryListItemsTableUpdateCompanionBuilder
     = MyDictionaryListItemsCompanion Function({
   Value<int> id,
   Value<int> listId,
-  Value<int> vocabId,
-  Value<int> kanjiId,
   Value<int> itemId,
   Value<DictionaryItemType> itemType,
 });
@@ -9977,12 +9799,6 @@ class $$MyDictionaryListItemsTableFilterComposer
 
   ColumnFilters<int> get listId => $composableBuilder(
       column: $table.listId, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get vocabId => $composableBuilder(
-      column: $table.vocabId, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get kanjiId => $composableBuilder(
-      column: $table.kanjiId, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<int> get itemId => $composableBuilder(
       column: $table.itemId, builder: (column) => ColumnFilters(column));
@@ -10008,12 +9824,6 @@ class $$MyDictionaryListItemsTableOrderingComposer
   ColumnOrderings<int> get listId => $composableBuilder(
       column: $table.listId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get vocabId => $composableBuilder(
-      column: $table.vocabId, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get kanjiId => $composableBuilder(
-      column: $table.kanjiId, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<int> get itemId => $composableBuilder(
       column: $table.itemId, builder: (column) => ColumnOrderings(column));
 
@@ -10035,12 +9845,6 @@ class $$MyDictionaryListItemsTableAnnotationComposer
 
   GeneratedColumn<int> get listId =>
       $composableBuilder(column: $table.listId, builder: (column) => column);
-
-  GeneratedColumn<int> get vocabId =>
-      $composableBuilder(column: $table.vocabId, builder: (column) => column);
-
-  GeneratedColumn<int> get kanjiId =>
-      $composableBuilder(column: $table.kanjiId, builder: (column) => column);
 
   GeneratedColumn<int> get itemId =>
       $composableBuilder(column: $table.itemId, builder: (column) => column);
@@ -10082,32 +9886,24 @@ class $$MyDictionaryListItemsTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> listId = const Value.absent(),
-            Value<int> vocabId = const Value.absent(),
-            Value<int> kanjiId = const Value.absent(),
             Value<int> itemId = const Value.absent(),
             Value<DictionaryItemType> itemType = const Value.absent(),
           }) =>
               MyDictionaryListItemsCompanion(
             id: id,
             listId: listId,
-            vocabId: vocabId,
-            kanjiId: kanjiId,
             itemId: itemId,
             itemType: itemType,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required int listId,
-            Value<int> vocabId = const Value.absent(),
-            Value<int> kanjiId = const Value.absent(),
             required int itemId,
             required DictionaryItemType itemType,
           }) =>
               MyDictionaryListItemsCompanion.insert(
             id: id,
             listId: listId,
-            vocabId: vocabId,
-            kanjiId: kanjiId,
             itemId: itemId,
             itemType: itemType,
           ),

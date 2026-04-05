@@ -2,9 +2,8 @@ import 'package:drift/drift.dart';
 import 'package:sagase_dictionary/src/database.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_item.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_item_ids_result.dart';
-import 'package:sagase_dictionary/src/datamodels/kanjis.dart';
 import 'package:sagase_dictionary/src/datamodels/my_dictionary_lists.dart';
-import 'package:sagase_dictionary/src/datamodels/vocabs.dart';
+import 'package:sagase_dictionary/src/utils/enums.dart';
 import 'package:sagase_dictionary/src/utils/string_utils.dart';
 
 part 'my_dictionary_lists_dao.g.dart';
@@ -91,16 +90,13 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
     MyDictionaryList dictionaryList,
     DictionaryItem dictionaryItem,
   ) async {
-    final vocabId = dictionaryItem is Vocab ? dictionaryItem.id : 0;
-    final kanjiId = dictionaryItem is Kanji ? dictionaryItem.id : 0;
-
     await transaction(() async {
       // Add the dictionary list item
       await db.into(db.myDictionaryListItems).insert(
             MyDictionaryListItemsCompanion(
               listId: Value(dictionaryList.id),
-              vocabId: Value(vocabId),
-              kanjiId: Value(kanjiId),
+              itemId: Value(dictionaryItem.id),
+              itemType: Value(dictionaryItem.type),
             ),
           );
 
@@ -116,12 +112,10 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
     List<DictionaryItem> dictionaryItems,
   ) async {
     final items = dictionaryItems.map((item) {
-      final vocabId = item is Vocab ? item.id : 0;
-      final kanjiId = item is Kanji ? item.id : 0;
       return MyDictionaryListItemsCompanion(
         listId: Value(dictionaryList.id),
-        vocabId: Value(vocabId),
-        kanjiId: Value(kanjiId),
+        itemId: Value(item.id),
+        itemType: Value(item.type),
       );
     }).toList();
 
@@ -147,9 +141,8 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
       await (db.delete(db.myDictionaryListItems)
             ..where((item) => Expression.and([
                   item.listId.equals(dictionaryList.id),
-                  dictionaryItem is Vocab
-                      ? item.vocabId.equalsNullable(dictionaryItem.id)
-                      : item.kanjiId.equalsNullable(dictionaryItem.id),
+                  item.itemId.equals(dictionaryItem.id),
+                  item.itemType.equals(dictionaryItem.type.index),
                 ])))
           .go();
 
@@ -171,10 +164,10 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
     List<int> vocabIds = [];
     List<int> kanjiIds = [];
     for (final item in items) {
-      if (item.vocabId != 0) {
-        vocabIds.add(item.vocabId);
+      if (item.itemType == DictionaryItemType.vocab) {
+        vocabIds.add(item.itemId);
       } else {
-        kanjiIds.add(item.kanjiId);
+        kanjiIds.add(item.itemId);
       }
     }
 
@@ -188,9 +181,10 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
     DictionaryItem dictionaryItem,
   ) async {
     return (db.select(db.myDictionaryListItems)
-          ..where((item) => dictionaryItem is Vocab
-              ? item.vocabId.equalsNullable(dictionaryItem.id)
-              : item.kanjiId.equalsNullable(dictionaryItem.id)))
+          ..where((item) => Expression.and([
+                item.itemId.equals(dictionaryItem.id),
+                item.itemType.equals(dictionaryItem.type.index),
+              ])))
         .map((row) => row.listId)
         .get();
   }
@@ -212,10 +206,10 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
       List<int> vocabIds = [];
       List<int> kanjiIds = [];
       for (final item in dictionaryItems) {
-        if (item.vocabId != 0) {
-          vocabIds.add(item.vocabId);
+        if (item.itemType == DictionaryItemType.vocab) {
+          vocabIds.add(item.itemId);
         } else {
-          kanjiIds.add(item.kanjiId);
+          kanjiIds.add(item.itemId);
         }
       }
 
@@ -230,9 +224,10 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
     DictionaryItem dictionaryItem,
   ) {
     return (db.select(db.myDictionaryListItems)
-          ..where((item) => dictionaryItem is Vocab
-              ? item.vocabId.equalsNullable(dictionaryItem.id)
-              : item.kanjiId.equalsNullable(dictionaryItem.id)))
+          ..where((item) => Expression.and([
+                item.itemId.equals(dictionaryItem.id),
+                item.itemType.equals(dictionaryItem.type.index),
+              ])))
         .map((e) => e.listId)
         .watch();
   }

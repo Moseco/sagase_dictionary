@@ -2807,10 +2807,562 @@ i1.GeneratedColumn<int> _column_172(String aliasedName) =>
 i1.GeneratedColumn<int> _column_173(String aliasedName) =>
     i1.GeneratedColumn<int>('version', aliasedName, false,
         type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
+
+final class Schema5 extends i0.VersionedSchema {
+  Schema5({required super.database}) : super(version: 5);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    vocabWritings,
+    iXVocabWritingsWritingSearchForm,
+    vocabReadings,
+    iXVocabReadingsReadingSearchForm,
+    iXVocabReadingsReadingRomajiSimplified,
+    vocabs,
+    vocabDefinitions,
+    vocabDefinitionWords,
+    iXVocabWritingsVocabId,
+    iXVocabWritingsWriting,
+    iXVocabReadingsVocabId,
+    iXVocabReadingsReading,
+    iXVocabReadingsReadingRomaji,
+    iXVocabDefinitionsVocabId,
+    iXVocabDefinitionWordsWord,
+    kanjis,
+    kanjiReadings,
+    kanjiMeaningWords,
+    iXKanjisRadical,
+    iXKanjiReadingsKanjiId,
+    iXKanjiReadingsReading,
+    iXKanjiReadingsReadingRomaji,
+    iXKanjiMeaningWordsWord,
+    spacedRepetitionDatas,
+    vocabNotes,
+    textAnalysisHistoryItems,
+    searchHistoryItems,
+    radicals,
+    uKRadicalsRadical,
+    properNouns,
+    properNounRomajiWords,
+    iXProperNounsReading,
+    iXProperNounsReadingRomaji,
+    iXProperNounRomajiWordsWord,
+    predefinedDictionaryLists,
+    myDictionaryLists,
+    myDictionaryListItems,
+    iXMyDictionaryListItemsListId,
+    iXMyDictionaryListItemsItemIdType,
+    kanjiNotes,
+    flashcardSets,
+    flashcardSetReports,
+    uXFlashcardSetReportsFlashcardSetIdAndDate,
+    dictionaryInfos,
+    iXProperNounsWriting,
+    iXProperNounsWritingSearchForm,
+    iXProperNounsReadingSearchForm,
+    iXProperNounsReadingRomajiSimplified,
+    iXProperNounsRomaji,
+    iXKanjiReadingsReadingSearchForm,
+    iXKanjiReadingsReadingRomajiSimplified,
+  ];
+  late final Shape23 vocabWritings = Shape23(
+      source: i0.VersionedTable(
+        entityName: 'vocab_writings',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_87,
+          _column_88,
+          _column_89,
+          _column_90,
+          _column_91,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Index iXVocabWritingsWritingSearchForm = i1.Index(
+      'IX_vocab_writings_writing_search_form',
+      'CREATE INDEX IX_vocab_writings_writing_search_form ON vocab_writings (writing_search_form) WHERE writing_search_form IS NOT NULL');
+  late final Shape24 vocabReadings = Shape24(
+      source: i0.VersionedTable(
+        entityName: 'vocab_readings',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_87,
+          _column_92,
+          _column_93,
+          _column_94,
+          _column_95,
+          _column_96,
+          _column_90,
+          _column_97,
+          _column_91,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Index iXVocabReadingsReadingSearchForm = i1.Index(
+      'IX_vocab_readings_reading_search_form',
+      'CREATE INDEX IX_vocab_readings_reading_search_form ON vocab_readings (reading_search_form) WHERE reading_search_form IS NOT NULL');
+  final i1.Index iXVocabReadingsReadingRomajiSimplified = i1.Index(
+      'IX_vocab_readings_reading_romaji_simplified',
+      'CREATE INDEX IX_vocab_readings_reading_romaji_simplified ON vocab_readings (reading_romaji_simplified) WHERE reading_romaji_simplified IS NOT NULL');
+  late final Shape25 vocabs = Shape25(
+      source: i0.VersionedTable(
+        entityName: 'vocabs',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_98,
+          _column_99,
+          _column_100,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape26 vocabDefinitions = Shape26(
+      source: i0.VersionedTable(
+        entityName: 'vocab_definitions',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_87,
+          _column_101,
+          _column_102,
+          _column_98,
+          _column_103,
+          _column_104,
+          _column_105,
+          _column_106,
+          _column_107,
+          _column_108,
+          _column_109,
+          _column_110,
+          _column_111,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape4 vocabDefinitionWords = Shape4(
+      source: i0.VersionedTable(
+        entityName: 'vocab_definition_words',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_112,
+          _column_87,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Index iXVocabWritingsVocabId = i1.Index('IX_vocab_writings_vocab_id',
+      'CREATE INDEX IX_vocab_writings_vocab_id ON vocab_writings (vocab_id)');
+  final i1.Index iXVocabWritingsWriting = i1.Index('IX_vocab_writings_writing',
+      'CREATE INDEX IX_vocab_writings_writing ON vocab_writings (writing)');
+  final i1.Index iXVocabReadingsVocabId = i1.Index('IX_vocab_readings_vocab_id',
+      'CREATE INDEX IX_vocab_readings_vocab_id ON vocab_readings (vocab_id)');
+  final i1.Index iXVocabReadingsReading = i1.Index('IX_vocab_readings_reading',
+      'CREATE INDEX IX_vocab_readings_reading ON vocab_readings (reading)');
+  final i1.Index iXVocabReadingsReadingRomaji = i1.Index(
+      'IX_vocab_readings_reading_romaji',
+      'CREATE INDEX IX_vocab_readings_reading_romaji ON vocab_readings (reading_romaji)');
+  final i1.Index iXVocabDefinitionsVocabId = i1.Index(
+      'IX_vocab_definitions_vocab_id',
+      'CREATE INDEX IX_vocab_definitions_vocab_id ON vocab_definitions (vocab_id)');
+  final i1.Index iXVocabDefinitionWordsWord = i1.Index(
+      'IX_vocab_definition_words_word',
+      'CREATE INDEX IX_vocab_definition_words_word ON vocab_definition_words (word)');
+  late final Shape5 kanjis = Shape5(
+      source: i0.VersionedTable(
+        entityName: 'kanjis',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_113,
+          _column_114,
+          _column_115,
+          _column_116,
+          _column_117,
+          _column_118,
+          _column_119,
+          _column_120,
+          _column_121,
+          _column_122,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape6 kanjiReadings = Shape6(
+      source: i0.VersionedTable(
+        entityName: 'kanji_readings',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_123,
+          _column_92,
+          _column_93,
+          _column_94,
+          _column_95,
+          _column_124,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape7 kanjiMeaningWords = Shape7(
+      source: i0.VersionedTable(
+        entityName: 'kanji_meaning_words',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_112,
+          _column_123,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Index iXKanjisRadical = i1.Index('IX_kanjis_radical',
+      'CREATE INDEX IX_kanjis_radical ON kanjis (radical)');
+  final i1.Index iXKanjiReadingsKanjiId = i1.Index('IX_kanji_readings_kanji_id',
+      'CREATE INDEX IX_kanji_readings_kanji_id ON kanji_readings (kanji_id)');
+  final i1.Index iXKanjiReadingsReading = i1.Index('IX_kanji_readings_reading',
+      'CREATE INDEX IX_kanji_readings_reading ON kanji_readings (reading)');
+  final i1.Index iXKanjiReadingsReadingRomaji = i1.Index(
+      'IX_kanji_readings_reading_romaji',
+      'CREATE INDEX IX_kanji_readings_reading_romaji ON kanji_readings (reading_romaji)');
+  final i1.Index iXKanjiMeaningWordsWord = i1.Index(
+      'IX_kanji_meaning_words_word',
+      'CREATE INDEX IX_kanji_meaning_words_word ON kanji_meaning_words (word)');
+  late final Shape31 spacedRepetitionDatas = Shape31(
+      source: i0.VersionedTable(
+        entityName: 'spaced_repetition_datas',
+        withoutRowId: true,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(item_id, item_type, front_type)',
+        ],
+        columns: [
+          _column_127,
+          _column_128,
+          _column_129,
+          _column_130,
+          _column_131,
+          _column_132,
+          _column_133,
+          _column_134,
+          _column_135,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape8 vocabNotes = Shape8(
+      source: i0.VersionedTable(
+        entityName: 'vocab_notes',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_136,
+          _column_137,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape9 textAnalysisHistoryItems = Shape9(
+      source: i0.VersionedTable(
+        entityName: 'text_analysis_history_items',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_138,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape11 searchHistoryItems = Shape11(
+      source: i0.VersionedTable(
+        entityName: 'search_history_items',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_139,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape12 radicals = Shape12(
+      source: i0.VersionedTable(
+        entityName: 'radicals',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_114,
+          _column_140,
+          _column_117,
+          _column_141,
+          _column_92,
+          _column_142,
+          _column_143,
+          _column_121,
+          _column_144,
+          _column_145,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Index uKRadicalsRadical = i1.Index('UK_radicals_radical',
+      'CREATE UNIQUE INDEX UK_radicals_radical ON radicals (radical)');
+  late final Shape13 properNouns = Shape13(
+      source: i0.VersionedTable(
+        entityName: 'proper_nouns',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_146,
+          _column_89,
+          _column_92,
+          _column_93,
+          _column_94,
+          _column_95,
+          _column_147,
+          _column_148,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape14 properNounRomajiWords = Shape14(
+      source: i0.VersionedTable(
+        entityName: 'proper_noun_romaji_words',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_112,
+          _column_149,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Index iXProperNounsReading = i1.Index('IX_proper_nouns_reading',
+      'CREATE INDEX IX_proper_nouns_reading ON proper_nouns (reading)');
+  final i1.Index iXProperNounsReadingRomaji = i1.Index(
+      'IX_proper_nouns_reading_romaji',
+      'CREATE INDEX IX_proper_nouns_reading_romaji ON proper_nouns (reading_romaji)');
+  final i1.Index iXProperNounRomajiWordsWord = i1.Index(
+      'IX_proper_noun_romaji_words_word',
+      'CREATE INDEX IX_proper_noun_romaji_words_word ON proper_noun_romaji_words (word)');
+  late final Shape15 predefinedDictionaryLists = Shape15(
+      source: i0.VersionedTable(
+        entityName: 'predefined_dictionary_lists',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_150,
+          _column_151,
+          _column_113,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape28 myDictionaryLists = Shape28(
+      source: i0.VersionedTable(
+        entityName: 'my_dictionary_lists',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_150,
+          _column_152,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape32 myDictionaryListItems = Shape32(
+      source: i0.VersionedTable(
+        entityName: 'my_dictionary_list_items',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'UNIQUE(list_id, item_id, item_type)',
+        ],
+        columns: [
+          _column_86,
+          _column_153,
+          _column_127,
+          _column_128,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Index iXMyDictionaryListItemsListId = i1.Index(
+      'IX_my_dictionary_list_items_list_id',
+      'CREATE INDEX IX_my_dictionary_list_items_list_id ON my_dictionary_list_items (list_id)');
+  final i1.Index iXMyDictionaryListItemsItemIdType = i1.Index(
+      'IX_my_dictionary_list_items_item_id_type',
+      'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)');
+  late final Shape8 kanjiNotes = Shape8(
+      source: i0.VersionedTable(
+        entityName: 'kanji_notes',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_136,
+          _column_137,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape30 flashcardSets = Shape30(
+      source: i0.VersionedTable(
+        entityName: 'flashcard_sets',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_154,
+          _column_155,
+          _column_156,
+          _column_157,
+          _column_158,
+          _column_159,
+          _column_160,
+          _column_161,
+          _column_162,
+          _column_163,
+          _column_152,
+          _column_164,
+          _column_165,
+          _column_166,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape19 flashcardSetReports = Shape19(
+      source: i0.VersionedTable(
+        entityName: 'flashcard_set_reports',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_86,
+          _column_167,
+          _column_168,
+          _column_169,
+          _column_170,
+          _column_171,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Index uXFlashcardSetReportsFlashcardSetIdAndDate = i1.Index(
+      'UX_flashcard_set_reports_flashcard_set_id_and_date',
+      'CREATE UNIQUE INDEX UX_flashcard_set_reports_flashcard_set_id_and_date ON flashcard_set_reports (flashcard_set_id, date)');
+  late final Shape20 dictionaryInfos = Shape20(
+      source: i0.VersionedTable(
+        entityName: 'dictionary_infos',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_172,
+          _column_173,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Index iXProperNounsWriting = i1.Index('IX_proper_nouns_writing',
+      'CREATE INDEX IX_proper_nouns_writing ON proper_nouns (writing) WHERE writing IS NOT NULL');
+  final i1.Index iXProperNounsWritingSearchForm = i1.Index(
+      'IX_proper_nouns_writing_search_form',
+      'CREATE INDEX IX_proper_nouns_writing_search_form ON proper_nouns (writing_search_form) WHERE writing_search_form IS NOT NULL');
+  final i1.Index iXProperNounsReadingSearchForm = i1.Index(
+      'IX_proper_nouns_reading_search_form',
+      'CREATE INDEX IX_proper_nouns_reading_search_form ON proper_nouns (reading_search_form) WHERE reading_search_form IS NOT NULL');
+  final i1.Index iXProperNounsReadingRomajiSimplified = i1.Index(
+      'IX_proper_nouns_reading_romaji_simplified',
+      'CREATE INDEX IX_proper_nouns_reading_romaji_simplified ON proper_nouns (reading_romaji_simplified) WHERE reading_romaji_simplified IS NOT NULL');
+  final i1.Index iXProperNounsRomaji = i1.Index('IX_proper_nouns_romaji',
+      'CREATE INDEX IX_proper_nouns_romaji ON proper_nouns (romaji COLLATE NOCASE) WHERE romaji');
+  final i1.Index iXKanjiReadingsReadingSearchForm = i1.Index(
+      'IX_kanji_readings_reading_search_form',
+      'CREATE INDEX IX_kanji_readings_reading_search_form ON kanji_readings (reading_search_form) WHERE reading_search_form IS NOT NULL');
+  final i1.Index iXKanjiReadingsReadingRomajiSimplified = i1.Index(
+      'IX_kanji_readings_reading_romaji_simplified',
+      'CREATE INDEX IX_kanji_readings_reading_romaji_simplified ON kanji_readings (reading_romaji_simplified) WHERE reading_romaji_simplified IS NOT NULL');
+}
+
+class Shape31 extends i0.VersionedTable {
+  Shape31({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get itemId =>
+      columnsByName['item_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get itemType =>
+      columnsByName['item_type']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get frontType =>
+      columnsByName['front_type']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get interval =>
+      columnsByName['interval']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get repetitions =>
+      columnsByName['repetitions']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<double> get easeFactor =>
+      columnsByName['ease_factor']! as i1.GeneratedColumn<double>;
+  i1.GeneratedColumn<int> get dueDate =>
+      columnsByName['due_date']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get totalAnswers =>
+      columnsByName['total_answers']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get totalWrongAnswers =>
+      columnsByName['total_wrong_answers']! as i1.GeneratedColumn<int>;
+}
+
+class Shape32 extends i0.VersionedTable {
+  Shape32({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get listId =>
+      columnsByName['list_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get itemId =>
+      columnsByName['item_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get itemType =>
+      columnsByName['item_type']! as i1.GeneratedColumn<int>;
+}
+
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
   required Future<void> Function(i1.Migrator m, Schema4 schema) from3To4,
+  required Future<void> Function(i1.Migrator m, Schema5 schema) from4To5,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -2829,6 +3381,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from3To4(migrator, schema);
         return 4;
+      case 4:
+        final schema = Schema5(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from4To5(migrator, schema);
+        return 5;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -2839,10 +3396,12 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
   required Future<void> Function(i1.Migrator m, Schema4 schema) from3To4,
+  required Future<void> Function(i1.Migrator m, Schema5 schema) from4To5,
 }) =>
     i0.VersionedSchema.stepByStepHelper(
         step: migrationSteps(
       from1To2: from1To2,
       from2To3: from2To3,
       from3To4: from3To4,
+      from4To5: from4To5,
     ));

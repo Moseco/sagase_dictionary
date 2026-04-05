@@ -43,6 +43,9 @@ class ProperNoun extends DictionaryItem {
     required this.romaji,
     required this.types,
   });
+
+  @override
+  DictionaryItemType get type => DictionaryItemType.properNoun;
 }
 
 class ProperNounTypeConverter

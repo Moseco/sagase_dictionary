@@ -2,7 +2,6 @@ import 'package:drift/drift.dart';
 import 'package:sagase_dictionary/src/database.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_item.dart';
 import 'package:sagase_dictionary/src/datamodels/spaced_repetition_datas.dart';
-import 'package:sagase_dictionary/src/datamodels/vocabs.dart';
 import 'package:sagase_dictionary/src/utils/enums.dart';
 
 part 'spaced_repetition_datas_dao.g.dart';
@@ -24,9 +23,8 @@ class SpacedRepetitionDatasDao extends DatabaseAccessor<AppDatabase>
   ) async {
     await (db.delete(db.spacedRepetitionDatas)
           ..where((data) => Expression.and([
-                dictionaryItem is Vocab
-                    ? data.vocabId.equalsNullable(dictionaryItem.id)
-                    : data.kanjiId.equalsNullable(dictionaryItem.id),
+                data.itemId.equals(dictionaryItem.id),
+                data.itemType.equals(dictionaryItem.type.index),
                 data.frontType.equals(frontType.index),
               ])))
         .go();

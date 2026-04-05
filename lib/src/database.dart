@@ -59,9 +59,7 @@ part 'database.g.dart';
   ],
   include: {
     'datamodels/kanjis.drift',
-    'datamodels/my_dictionary_lists.drift',
     'datamodels/proper_nouns.drift',
-    'datamodels/spaced_repetition_datas.drift',
     'datamodels/vocabs.drift',
   },
   daos: [
@@ -83,7 +81,7 @@ class AppDatabase extends _$AppDatabase {
       : super(queryExecutor ?? NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration {
@@ -137,6 +135,17 @@ class AppDatabase extends _$AppDatabase {
               },
             ),
           );
+        },
+        from4To5: (m, schema) async {
+          await m.drop(Index('IX_spaced_repetition_datas_vocab_id', ''));
+          await m.drop(Index('IX_spaced_repetition_datas_kanji_id', ''));
+          await m.alterTable(TableMigration(schema.spacedRepetitionDatas));
+
+          await m.drop(Index('IX_my_dictionary_list_items_vocab_id', ''));
+          await m.drop(Index('IX_my_dictionary_list_items_kanji_id', ''));
+          await m.alterTable(TableMigration(schema.myDictionaryListItems));
+          await m.createIndex(Index('IX_my_dictionary_list_items_item_id_type',
+              'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)'));
         },
       ),
     );
