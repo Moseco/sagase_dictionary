@@ -1582,3 +1582,38 @@ const shortEnamdict = '''さくら /(f) Sakura/
 ヴィナス /(u) Venus/
 宇宙機構 [うちゅうきかん] /(o) Japanese Aerospace Exploration Agency (JAXA) (formerly NASDA)/
 安倍晋三 [あべしんぞう] /(h) Shinzō Abe (1954.9.21-2022.7.8; Prime Minister of Japan 2006-2007 and 2012-2020)/''';
+
+const shortGrammarInput = '''[
+    {
+        "id": 1,
+        "form": "です",
+        "meaning": "to be",
+        "jlpt_level": 5
+    },
+    {
+        "id": 2,
+        "form": "ほうがいい",
+        "meaning": "It would be better to...",
+        "construction": "Verb (past tense or negative present) + ほうがいい",
+        "jlpt_level": 5,
+        "content": [
+            {
+                "type": "paragraph",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "In Japanese, the grammar point ほうがいい is the go-to expression for giving advice or suggestions. In English, it translates most closely to \\"it's better to...\\" or \\"you should.\\""
+                    }
+                ]
+            }
+        ],
+        "practice": [
+            {
+                "text": "喉が痛いなら、飴を{}ほうがいいですよ。",
+                "answer": "食べた",
+                "answer_romaji": "tabeta"
+            }
+        ]
+    }
+]
+''';
