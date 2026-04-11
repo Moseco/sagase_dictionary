@@ -163,17 +163,27 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
 
     List<int> vocabIds = [];
     List<int> kanjiIds = [];
+    List<int> grammarIds = [];
     for (final item in items) {
-      if (item.itemType == DictionaryItemType.vocab) {
-        vocabIds.add(item.itemId);
-      } else {
-        kanjiIds.add(item.itemId);
+      switch (item.itemType) {
+        case DictionaryItemType.vocab:
+          vocabIds.add(item.itemId);
+          break;
+        case DictionaryItemType.kanji:
+          kanjiIds.add(item.itemId);
+          break;
+        case DictionaryItemType.grammar:
+          grammarIds.add(item.itemId);
+          break;
+        case DictionaryItemType.properNoun:
+          break;
       }
     }
 
     return DictionaryItemIdsResult(
       vocabIds: vocabIds,
       kanjiIds: kanjiIds,
+      grammarIds: grammarIds,
     );
   }
 
@@ -202,20 +212,30 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
           ..where((item) => item.listId.equals(dictionaryList.id))
           ..orderBy([(item) => OrderingTerm.desc(item.id)]))
         .watch()
-        .map((dictionaryItems) {
+        .map((items) {
       List<int> vocabIds = [];
       List<int> kanjiIds = [];
-      for (final item in dictionaryItems) {
-        if (item.itemType == DictionaryItemType.vocab) {
-          vocabIds.add(item.itemId);
-        } else {
-          kanjiIds.add(item.itemId);
+      List<int> grammarIds = [];
+      for (final item in items) {
+        switch (item.itemType) {
+          case DictionaryItemType.vocab:
+            vocabIds.add(item.itemId);
+            break;
+          case DictionaryItemType.kanji:
+            kanjiIds.add(item.itemId);
+            break;
+          case DictionaryItemType.grammar:
+            grammarIds.add(item.itemId);
+            break;
+          case DictionaryItemType.properNoun:
+            break;
         }
       }
 
       return DictionaryItemIdsResult(
         vocabIds: vocabIds,
         kanjiIds: kanjiIds,
+        grammarIds: grammarIds,
       );
     });
   }

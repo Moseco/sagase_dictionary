@@ -1818,6 +1818,20 @@
               "dart_expr": "const IntListConverter()",
               "dart_type_name": "List<int>"
             }
+          },
+          {
+            "name": "grammar",
+            "getter_name": "grammar",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const IntListConverter()",
+              "dart_type_name": "List<int>"
+            }
           }
         ],
         "is_virtual": false,
@@ -2901,7 +2915,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"predefined_dictionary_lists\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" TEXT NOT NULL CHECK(LENGTH(\"name\") > 0), \"vocab\" TEXT NOT NULL, \"kanji\" TEXT NOT NULL);"
+          "sql": "CREATE TABLE IF NOT EXISTS \"predefined_dictionary_lists\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" TEXT NOT NULL CHECK(LENGTH(\"name\") > 0), \"vocab\" TEXT NOT NULL, \"kanji\" TEXT NOT NULL, \"grammar\" TEXT NOT NULL);"
         }
       ]
     },

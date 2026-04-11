@@ -4767,7 +4767,13 @@ class $PredefinedDictionaryListsTable extends PredefinedDictionaryLists
           .withConverter<List<int>>(
               $PredefinedDictionaryListsTable.$converterkanji);
   @override
-  List<GeneratedColumn> get $columns => [id, name, vocab, kanji];
+  late final GeneratedColumnWithTypeConverter<List<int>, String> grammar =
+      GeneratedColumn<String>('grammar', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<List<int>>(
+              $PredefinedDictionaryListsTable.$convertergrammar);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, vocab, kanji, grammar];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4808,6 +4814,9 @@ class $PredefinedDictionaryListsTable extends PredefinedDictionaryLists
       kanji: $PredefinedDictionaryListsTable.$converterkanji.fromSql(
           attachedDatabase.typeMapping
               .read(DriftSqlType.string, data['${effectivePrefix}kanji'])!),
+      grammar: $PredefinedDictionaryListsTable.$convertergrammar.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.string, data['${effectivePrefix}grammar'])!),
     );
   }
 
@@ -4820,6 +4829,8 @@ class $PredefinedDictionaryListsTable extends PredefinedDictionaryLists
       const IntListConverter();
   static TypeConverter<List<int>, String> $converterkanji =
       const IntListConverter();
+  static TypeConverter<List<int>, String> $convertergrammar =
+      const IntListConverter();
 }
 
 class PredefinedDictionaryListsCompanion
@@ -4828,31 +4839,37 @@ class PredefinedDictionaryListsCompanion
   final Value<String> name;
   final Value<List<int>> vocab;
   final Value<List<int>> kanji;
+  final Value<List<int>> grammar;
   const PredefinedDictionaryListsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.vocab = const Value.absent(),
     this.kanji = const Value.absent(),
+    this.grammar = const Value.absent(),
   });
   PredefinedDictionaryListsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required List<int> vocab,
     required List<int> kanji,
+    required List<int> grammar,
   })  : name = Value(name),
         vocab = Value(vocab),
-        kanji = Value(kanji);
+        kanji = Value(kanji),
+        grammar = Value(grammar);
   static Insertable<PredefinedDictionaryList> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? vocab,
     Expression<String>? kanji,
+    Expression<String>? grammar,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (vocab != null) 'vocab': vocab,
       if (kanji != null) 'kanji': kanji,
+      if (grammar != null) 'grammar': grammar,
     });
   }
 
@@ -4860,12 +4877,14 @@ class PredefinedDictionaryListsCompanion
       {Value<int>? id,
       Value<String>? name,
       Value<List<int>>? vocab,
-      Value<List<int>>? kanji}) {
+      Value<List<int>>? kanji,
+      Value<List<int>>? grammar}) {
     return PredefinedDictionaryListsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       vocab: vocab ?? this.vocab,
       kanji: kanji ?? this.kanji,
+      grammar: grammar ?? this.grammar,
     );
   }
 
@@ -4886,6 +4905,11 @@ class PredefinedDictionaryListsCompanion
       map['kanji'] = Variable<String>(
           $PredefinedDictionaryListsTable.$converterkanji.toSql(kanji.value));
     }
+    if (grammar.present) {
+      map['grammar'] = Variable<String>($PredefinedDictionaryListsTable
+          .$convertergrammar
+          .toSql(grammar.value));
+    }
     return map;
   }
 
@@ -4895,7 +4919,8 @@ class PredefinedDictionaryListsCompanion
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('vocab: $vocab, ')
-          ..write('kanji: $kanji')
+          ..write('kanji: $kanji, ')
+          ..write('grammar: $grammar')
           ..write(')'))
         .toString();
   }
@@ -9715,6 +9740,7 @@ typedef $$PredefinedDictionaryListsTableCreateCompanionBuilder
   required String name,
   required List<int> vocab,
   required List<int> kanji,
+  required List<int> grammar,
 });
 typedef $$PredefinedDictionaryListsTableUpdateCompanionBuilder
     = PredefinedDictionaryListsCompanion Function({
@@ -9722,6 +9748,7 @@ typedef $$PredefinedDictionaryListsTableUpdateCompanionBuilder
   Value<String> name,
   Value<List<int>> vocab,
   Value<List<int>> kanji,
+  Value<List<int>> grammar,
 });
 
 class $$PredefinedDictionaryListsTableFilterComposer
@@ -9748,6 +9775,11 @@ class $$PredefinedDictionaryListsTableFilterComposer
       $composableBuilder(
           column: $table.kanji,
           builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<List<int>, List<int>, String> get grammar =>
+      $composableBuilder(
+          column: $table.grammar,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$PredefinedDictionaryListsTableOrderingComposer
@@ -9770,6 +9802,9 @@ class $$PredefinedDictionaryListsTableOrderingComposer
 
   ColumnOrderings<String> get kanji => $composableBuilder(
       column: $table.kanji, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get grammar => $composableBuilder(
+      column: $table.grammar, builder: (column) => ColumnOrderings(column));
 }
 
 class $$PredefinedDictionaryListsTableAnnotationComposer
@@ -9792,6 +9827,9 @@ class $$PredefinedDictionaryListsTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<List<int>, String> get kanji =>
       $composableBuilder(column: $table.kanji, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<int>, String> get grammar =>
+      $composableBuilder(column: $table.grammar, builder: (column) => column);
 }
 
 class $$PredefinedDictionaryListsTableTableManager extends RootTableManager<
@@ -9829,24 +9867,28 @@ class $$PredefinedDictionaryListsTableTableManager extends RootTableManager<
             Value<String> name = const Value.absent(),
             Value<List<int>> vocab = const Value.absent(),
             Value<List<int>> kanji = const Value.absent(),
+            Value<List<int>> grammar = const Value.absent(),
           }) =>
               PredefinedDictionaryListsCompanion(
             id: id,
             name: name,
             vocab: vocab,
             kanji: kanji,
+            grammar: grammar,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String name,
             required List<int> vocab,
             required List<int> kanji,
+            required List<int> grammar,
           }) =>
               PredefinedDictionaryListsCompanion.insert(
             id: id,
             name: name,
             vocab: vocab,
             kanji: kanji,
+            grammar: grammar,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

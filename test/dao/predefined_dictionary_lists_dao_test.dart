@@ -37,6 +37,12 @@ void main() {
         shortKanjiStrokeData,
       );
 
+      // Grammar
+      await DictionaryBuilder.createGrammarDictionary(
+        database,
+        shortGrammarInput,
+      );
+
       // Predefined dictionary list
       await database.batch((batch) async {
         batch.insertAll(
@@ -47,12 +53,21 @@ void main() {
               name: drift.Value('Vocab'),
               vocab: drift.Value([1000160, 1000220]),
               kanji: drift.Value([]),
+              grammar: drift.Value([]),
             ),
             PredefinedDictionaryListsCompanion(
               id: drift.Value(1),
               name: drift.Value('Kanji'),
               vocab: drift.Value([]),
               kanji: drift.Value(['亜'.kanjiCodePoint(), '悪'.kanjiCodePoint()]),
+              grammar: drift.Value([]),
+            ),
+            PredefinedDictionaryListsCompanion(
+              id: drift.Value(2),
+              name: drift.Value('Grammar'),
+              vocab: drift.Value([]),
+              kanji: drift.Value([]),
+              grammar: drift.Value([1, 2]),
             ),
           ],
         );
@@ -68,6 +83,7 @@ void main() {
       expect(dictionaryList.name, 'Vocab');
       expect(dictionaryList.vocab, [1000160, 1000220]);
       expect(dictionaryList.kanji, []);
+      expect(dictionaryList.grammar, []);
 
       final dictionaryList2 =
           await database.predefinedDictionaryListsDao.get(1);
@@ -77,17 +93,26 @@ void main() {
         dictionaryList2.kanji,
         ['亜'.kanjiCodePoint(), '悪'.kanjiCodePoint()],
       );
+      expect(dictionaryList2.grammar, []);
+
+      final dictionaryList3 =
+          await database.predefinedDictionaryListsDao.get(2);
+      expect(dictionaryList3.name, 'Grammar');
+      expect(dictionaryList3.vocab, []);
+      expect(dictionaryList3.kanji, []);
+      expect(dictionaryList3.grammar, [1, 2]);
     });
 
     test('getAll', () async {
       final dictionaryLists =
-          await database.predefinedDictionaryListsDao.getAll([0, 1]);
+          await database.predefinedDictionaryListsDao.getAll([0, 1, 2]);
 
-      expect(dictionaryLists.length, 2);
+      expect(dictionaryLists.length, 3);
 
       expect(dictionaryLists[0].name, 'Vocab');
       expect(dictionaryLists[0].vocab, [1000160, 1000220]);
       expect(dictionaryLists[0].kanji, []);
+      expect(dictionaryLists[0].grammar, []);
 
       expect(dictionaryLists[1].name, 'Kanji');
       expect(dictionaryLists[1].vocab, []);
@@ -95,22 +120,30 @@ void main() {
         dictionaryLists[1].kanji,
         ['亜'.kanjiCodePoint(), '悪'.kanjiCodePoint()],
       );
+      expect(dictionaryLists[1].grammar, []);
+
+      expect(dictionaryLists[2].name, 'Grammar');
+      expect(dictionaryLists[2].vocab, []);
+      expect(dictionaryLists[2].kanji, []);
+      expect(dictionaryLists[2].grammar, [1, 2]);
     });
 
     test('getAllWithoutItems', () async {
       final dictionaryLists = await database.predefinedDictionaryListsDao
-          .getAllWithoutItems([0, 1]);
+          .getAllWithoutItems([0, 1, 2]);
 
-      expect(dictionaryLists.length, 2);
+      expect(dictionaryLists.length, 3);
       expect(dictionaryLists[0].id, 0);
       expect(dictionaryLists[0].name, 'Vocab');
       expect(dictionaryLists[1].id, 1);
       expect(dictionaryLists[1].name, 'Kanji');
+      expect(dictionaryLists[2].id, 2);
+      expect(dictionaryLists[2].name, 'Grammar');
     });
 
     test('exists', () async {
       final doesNotExist =
-          await database.predefinedDictionaryListsDao.exists(2);
+          await database.predefinedDictionaryListsDao.exists(3);
       expect(doesNotExist, false);
 
       final doesExist = await database.predefinedDictionaryListsDao.exists(0);

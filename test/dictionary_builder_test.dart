@@ -775,15 +775,21 @@ void main() {
 
     test('Predefined dictionary lists', () async {
       // Predefined dictionary lists
-      final n5List = await database.predefinedDictionaryListsDao
+      final n5VocabList = await database.predefinedDictionaryListsDao
           .get(SagaseDictionaryConstants.dictionaryListIdJlptVocabN5);
-      expect(n5List.vocab.length, 1);
-      expect(n5List.vocab[0], 1578850);
+      expect(n5VocabList.vocab.length, 1);
+      expect(n5VocabList.vocab[0], 1578850);
 
       final jouyouList = await database.predefinedDictionaryListsDao
           .get(SagaseDictionaryConstants.dictionaryListIdJouyou);
       expect(jouyouList.kanji.length, 1);
       expect(jouyouList.kanji[0], '亜'.kanjiCodePoint());
+
+      final n5GrammarList = await database.predefinedDictionaryListsDao
+          .get(SagaseDictionaryConstants.dictionaryListIdJlptGrammarN5);
+      expect(n5GrammarList.grammar.length, 2);
+      expect(n5GrammarList.grammar[0], 1);
+      expect(n5GrammarList.grammar[1], 2);
     });
 
     test('Proper nouns', () async {

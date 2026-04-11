@@ -152,6 +152,9 @@ class AppDatabase extends _$AppDatabase {
               'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)'));
 
           await m.createTable(schema.grammars);
+
+          await m.addColumn(schema.predefinedDictionaryLists,
+              schema.predefinedDictionaryLists.grammar);
         },
       ),
     );

@@ -4849,8 +4849,13 @@ class PredefinedDictionaryLists extends Table
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
+  late final GeneratedColumn<String> grammar = GeneratedColumn<String>(
+      'grammar', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   @override
-  List<GeneratedColumn> get $columns => [id, name, vocab, kanji];
+  List<GeneratedColumn> get $columns => [id, name, vocab, kanji, grammar];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4871,6 +4876,8 @@ class PredefinedDictionaryLists extends Table
           .read(DriftSqlType.string, data['${effectivePrefix}vocab'])!,
       kanji: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}kanji'])!,
+      grammar: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}grammar'])!,
     );
   }
 
@@ -4889,11 +4896,13 @@ class PredefinedDictionaryListsData extends DataClass
   final String name;
   final String vocab;
   final String kanji;
+  final String grammar;
   const PredefinedDictionaryListsData(
       {required this.id,
       required this.name,
       required this.vocab,
-      required this.kanji});
+      required this.kanji,
+      required this.grammar});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4901,6 +4910,7 @@ class PredefinedDictionaryListsData extends DataClass
     map['name'] = Variable<String>(name);
     map['vocab'] = Variable<String>(vocab);
     map['kanji'] = Variable<String>(kanji);
+    map['grammar'] = Variable<String>(grammar);
     return map;
   }
 
@@ -4910,6 +4920,7 @@ class PredefinedDictionaryListsData extends DataClass
       name: Value(name),
       vocab: Value(vocab),
       kanji: Value(kanji),
+      grammar: Value(grammar),
     );
   }
 
@@ -4921,6 +4932,7 @@ class PredefinedDictionaryListsData extends DataClass
       name: serializer.fromJson<String>(json['name']),
       vocab: serializer.fromJson<String>(json['vocab']),
       kanji: serializer.fromJson<String>(json['kanji']),
+      grammar: serializer.fromJson<String>(json['grammar']),
     );
   }
   @override
@@ -4931,16 +4943,22 @@ class PredefinedDictionaryListsData extends DataClass
       'name': serializer.toJson<String>(name),
       'vocab': serializer.toJson<String>(vocab),
       'kanji': serializer.toJson<String>(kanji),
+      'grammar': serializer.toJson<String>(grammar),
     };
   }
 
   PredefinedDictionaryListsData copyWith(
-          {int? id, String? name, String? vocab, String? kanji}) =>
+          {int? id,
+          String? name,
+          String? vocab,
+          String? kanji,
+          String? grammar}) =>
       PredefinedDictionaryListsData(
         id: id ?? this.id,
         name: name ?? this.name,
         vocab: vocab ?? this.vocab,
         kanji: kanji ?? this.kanji,
+        grammar: grammar ?? this.grammar,
       );
   PredefinedDictionaryListsData copyWithCompanion(
       PredefinedDictionaryListsCompanion data) {
@@ -4949,6 +4967,7 @@ class PredefinedDictionaryListsData extends DataClass
       name: data.name.present ? data.name.value : this.name,
       vocab: data.vocab.present ? data.vocab.value : this.vocab,
       kanji: data.kanji.present ? data.kanji.value : this.kanji,
+      grammar: data.grammar.present ? data.grammar.value : this.grammar,
     );
   }
 
@@ -4958,13 +4977,14 @@ class PredefinedDictionaryListsData extends DataClass
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('vocab: $vocab, ')
-          ..write('kanji: $kanji')
+          ..write('kanji: $kanji, ')
+          ..write('grammar: $grammar')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, vocab, kanji);
+  int get hashCode => Object.hash(id, name, vocab, kanji, grammar);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4972,7 +4992,8 @@ class PredefinedDictionaryListsData extends DataClass
           other.id == this.id &&
           other.name == this.name &&
           other.vocab == this.vocab &&
-          other.kanji == this.kanji);
+          other.kanji == this.kanji &&
+          other.grammar == this.grammar);
 }
 
 class PredefinedDictionaryListsCompanion
@@ -4981,31 +5002,37 @@ class PredefinedDictionaryListsCompanion
   final Value<String> name;
   final Value<String> vocab;
   final Value<String> kanji;
+  final Value<String> grammar;
   const PredefinedDictionaryListsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.vocab = const Value.absent(),
     this.kanji = const Value.absent(),
+    this.grammar = const Value.absent(),
   });
   PredefinedDictionaryListsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String vocab,
     required String kanji,
+    required String grammar,
   })  : name = Value(name),
         vocab = Value(vocab),
-        kanji = Value(kanji);
+        kanji = Value(kanji),
+        grammar = Value(grammar);
   static Insertable<PredefinedDictionaryListsData> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? vocab,
     Expression<String>? kanji,
+    Expression<String>? grammar,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (vocab != null) 'vocab': vocab,
       if (kanji != null) 'kanji': kanji,
+      if (grammar != null) 'grammar': grammar,
     });
   }
 
@@ -5013,12 +5040,14 @@ class PredefinedDictionaryListsCompanion
       {Value<int>? id,
       Value<String>? name,
       Value<String>? vocab,
-      Value<String>? kanji}) {
+      Value<String>? kanji,
+      Value<String>? grammar}) {
     return PredefinedDictionaryListsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       vocab: vocab ?? this.vocab,
       kanji: kanji ?? this.kanji,
+      grammar: grammar ?? this.grammar,
     );
   }
 
@@ -5037,6 +5066,9 @@ class PredefinedDictionaryListsCompanion
     if (kanji.present) {
       map['kanji'] = Variable<String>(kanji.value);
     }
+    if (grammar.present) {
+      map['grammar'] = Variable<String>(grammar.value);
+    }
     return map;
   }
 
@@ -5046,7 +5078,8 @@ class PredefinedDictionaryListsCompanion
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('vocab: $vocab, ')
-          ..write('kanji: $kanji')
+          ..write('kanji: $kanji, ')
+          ..write('grammar: $grammar')
           ..write(')'))
         .toString();
   }

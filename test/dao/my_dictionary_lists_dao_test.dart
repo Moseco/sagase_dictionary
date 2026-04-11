@@ -37,6 +37,12 @@ void main() {
         shortKanjiComponentData,
         shortKanjiStrokeData,
       );
+
+      // Grammar
+      await DictionaryBuilder.createGrammarDictionary(
+        database,
+        shortGrammarInput,
+      );
     });
 
     tearDown(() async {
@@ -160,6 +166,7 @@ void main() {
           .getDictionaryListItems(dictionaryList2);
       expect(myDictionaryListItems.vocabIds.length, 0);
       expect(myDictionaryListItems.kanjiIds.length, 0);
+      expect(myDictionaryListItems.grammarIds.length, 0);
 
       // Check updated flashcard set
       final newFlashcardSets = await database.flashcardSetsDao.getAll();
@@ -180,6 +187,7 @@ void main() {
           .getDictionaryListItems(dictionaryList1);
       expect(emptyList1Items.vocabIds.length, 0);
       expect(emptyList1Items.kanjiIds.length, 0);
+      expect(emptyList1Items.grammarIds.length, 0);
 
       // Add items to dictionary list 1
       await database.myDictionaryListsDao.addDictionaryItem(
@@ -194,11 +202,23 @@ void main() {
         dictionaryList1,
         (await database.kanjisDao.get('亞'.kanjiCodePoint()))!,
       );
+      await database.myDictionaryListsDao.addDictionaryItem(
+        dictionaryList1,
+        await database.grammarsDao.get(1),
+      );
+      await database.myDictionaryListsDao.addDictionaryItem(
+        dictionaryList1,
+        await database.grammarsDao.get(2),
+      );
 
       // Add one of the same items to dictionary list 2
       await database.myDictionaryListsDao.addDictionaryItem(
         dictionaryList2,
         await database.vocabsDao.get(1000220),
+      );
+      await database.myDictionaryListsDao.addDictionaryItem(
+        dictionaryList2,
+        await database.grammarsDao.get(1),
       );
 
       // Get newly added to list
@@ -209,23 +229,32 @@ void main() {
       expect(list1Items.vocabIds[1], 1000220);
       expect(list1Items.kanjiIds.length, 1);
       expect(list1Items.kanjiIds[0], '亞'.kanjiCodePoint());
+      expect(list1Items.grammarIds.length, 2);
+      expect(list1Items.grammarIds[0], 2);
+      expect(list1Items.grammarIds[1], 1);
 
       final list2Items = await database.myDictionaryListsDao
           .getDictionaryListItems(dictionaryList2);
       expect(list2Items.vocabIds.length, 1);
       expect(list2Items.vocabIds[0], 1000220);
       expect(list2Items.kanjiIds.length, 0);
+      expect(list2Items.grammarIds, [1]);
 
       // Confirm list 3 is still empty
       final emptyList3Items = await database.myDictionaryListsDao
           .getDictionaryListItems(dictionaryList3);
       expect(emptyList3Items.vocabIds.length, 0);
       expect(emptyList3Items.kanjiIds.length, 0);
+      expect(emptyList3Items.grammarIds.length, 0);
 
-      // Remove vocab from dictionary list 1 and confirm contents
+      // Remove vocab and grammar from dictionary list 1 and confirm contents
       await database.myDictionaryListsDao.removeDictionaryItem(
         dictionaryList1,
         await database.vocabsDao.get(1003430),
+      );
+      await database.myDictionaryListsDao.removeDictionaryItem(
+        dictionaryList1,
+        await database.grammarsDao.get(2),
       );
       final newList1Items = await database.myDictionaryListsDao
           .getDictionaryListItems(dictionaryList1);
@@ -233,12 +262,14 @@ void main() {
       expect(newList1Items.vocabIds[0], 1000220);
       expect(newList1Items.kanjiIds.length, 1);
       expect(newList1Items.kanjiIds[0], '亞'.kanjiCodePoint());
+      expect(newList1Items.grammarIds, [1]);
 
       final newList2Items = await database.myDictionaryListsDao
           .getDictionaryListItems(dictionaryList2);
       expect(newList2Items.vocabIds.length, 1);
       expect(newList2Items.vocabIds[0], 1000220);
       expect(list2Items.kanjiIds.length, 0);
+      expect(newList2Items.grammarIds, [1]);
     });
 
     test('addDictionaryItems', () async {
@@ -296,6 +327,10 @@ void main() {
         dictionaryList1,
         await database.vocabsDao.get(1000220),
       );
+      await database.myDictionaryListsDao.addDictionaryItem(
+        dictionaryList1,
+        await database.grammarsDao.get(1),
+      );
 
       expect(
         await database.myDictionaryListsDao
@@ -305,6 +340,16 @@ void main() {
       expect(
         await database.myDictionaryListsDao
             .getContainingDictionaryItem(await database.vocabsDao.get(1003430)),
+        [],
+      );
+      expect(
+        await database.myDictionaryListsDao
+            .getContainingDictionaryItem(await database.grammarsDao.get(1)),
+        [dictionaryList1.id],
+      );
+      expect(
+        await database.myDictionaryListsDao
+            .getContainingDictionaryItem(await database.grammarsDao.get(2)),
         [],
       );
     });
@@ -345,6 +390,7 @@ void main() {
       var currentEvent = await events.next;
       expect(currentEvent.vocabIds.length, 0);
       expect(currentEvent.kanjiIds.length, 0);
+      expect(currentEvent.grammarIds.length, 0);
 
       await database.myDictionaryListsDao.addDictionaryItem(
         dictionaryList1,
@@ -355,6 +401,7 @@ void main() {
       expect(currentEvent.vocabIds.length, 1);
       expect(currentEvent.vocabIds[0], 1000220);
       expect(currentEvent.kanjiIds.length, 0);
+      expect(currentEvent.grammarIds.length, 0);
 
       await database.myDictionaryListsDao.addDictionaryItem(
         dictionaryList1,
@@ -366,6 +413,17 @@ void main() {
       expect(currentEvent.vocabIds[0], 1003430);
       expect(currentEvent.vocabIds[1], 1000220);
       expect(currentEvent.kanjiIds.length, 0);
+      expect(currentEvent.grammarIds.length, 0);
+
+      await database.myDictionaryListsDao.addDictionaryItem(
+        dictionaryList1,
+        await database.grammarsDao.get(1),
+      );
+
+      currentEvent = await events.next;
+      expect(currentEvent.vocabIds.length, 2);
+      expect(currentEvent.kanjiIds.length, 0);
+      expect(currentEvent.grammarIds, [1]);
 
       events.cancel();
     });

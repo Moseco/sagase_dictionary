@@ -23,6 +23,7 @@ class MyDictionaryList extends DictionaryList {
     // Lists included for convenience while importing/exporting
     super.vocab = const [],
     super.kanji = const [],
+    super.grammar = const [],
   });
 
   MyDictionaryList copyWith({
@@ -31,6 +32,7 @@ class MyDictionaryList extends DictionaryList {
     DateTime? timestamp,
     List<int>? vocab,
     List<int>? kanji,
+    List<int>? grammar,
   }) {
     return MyDictionaryList(
       id: id ?? this.id,
@@ -38,6 +40,7 @@ class MyDictionaryList extends DictionaryList {
       timestamp: timestamp ?? this.timestamp,
       vocab: vocab ?? this.vocab,
       kanji: kanji ?? this.kanji,
+      grammar: grammar ?? this.grammar,
     );
   }
 
@@ -50,6 +53,7 @@ class MyDictionaryList extends DictionaryList {
             timestamp.millisecondsSinceEpoch,
         SagaseDictionaryConstants.backupMyDictionaryListVocab: vocab,
         SagaseDictionaryConstants.backupMyDictionaryListKanji: kanji,
+        SagaseDictionaryConstants.backupMyDictionaryListGrammar: grammar,
       },
     );
   }
@@ -66,6 +70,9 @@ class MyDictionaryList extends DictionaryList {
           .cast<int>(),
       kanji: map[SagaseDictionaryConstants.backupMyDictionaryListKanji]
           .cast<int>(),
+      grammar:
+          (map[SagaseDictionaryConstants.backupMyDictionaryListGrammar] ?? [])
+              .cast<int>(),
     );
   }
 
@@ -77,6 +84,7 @@ class MyDictionaryList extends DictionaryList {
         SagaseDictionaryConstants.exportMyListName: name,
         SagaseDictionaryConstants.exportMyListVocab: vocab,
         SagaseDictionaryConstants.exportMyListKanji: kanji,
+        SagaseDictionaryConstants.exportMyListGrammar: grammar,
       },
     );
   }
@@ -100,6 +108,8 @@ class MyDictionaryList extends DictionaryList {
       timestamp: DateTime.now(),
       vocab: map[SagaseDictionaryConstants.exportMyListVocab].cast<int>(),
       kanji: map[SagaseDictionaryConstants.exportMyListKanji].cast<int>(),
+      grammar: (map[SagaseDictionaryConstants.exportMyListGrammar] ?? [])
+          .cast<int>(),
     );
   }
 }

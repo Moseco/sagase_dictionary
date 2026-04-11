@@ -3178,7 +3178,7 @@ final class Schema5 extends i0.VersionedSchema {
   final i1.Index iXProperNounRomajiWordsWord = i1.Index(
       'IX_proper_noun_romaji_words_word',
       'CREATE INDEX IX_proper_noun_romaji_words_word ON proper_noun_romaji_words (word)');
-  late final Shape15 predefinedDictionaryLists = Shape15(
+  late final Shape32 predefinedDictionaryLists = Shape32(
       source: i0.VersionedTable(
         entityName: 'predefined_dictionary_lists',
         withoutRowId: false,
@@ -3189,6 +3189,7 @@ final class Schema5 extends i0.VersionedSchema {
           _column_150,
           _column_151,
           _column_113,
+          _column_174,
         ],
         attachedDatabase: database,
       ),
@@ -3207,7 +3208,7 @@ final class Schema5 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape32 myDictionaryListItems = Shape32(
+  late final Shape33 myDictionaryListItems = Shape33(
       source: i0.VersionedTable(
         entityName: 'my_dictionary_list_items',
         withoutRowId: false,
@@ -3245,7 +3246,7 @@ final class Schema5 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape33 grammars = Shape33(
+  late final Shape34 grammars = Shape34(
       source: i0.VersionedTable(
         entityName: 'grammars',
         withoutRowId: false,
@@ -3253,12 +3254,12 @@ final class Schema5 extends i0.VersionedSchema {
         tableConstraints: [],
         columns: [
           _column_86,
-          _column_174,
-          _column_141,
           _column_175,
+          _column_141,
           _column_176,
           _column_177,
           _column_178,
+          _column_179,
         ],
         attachedDatabase: database,
       ),
@@ -3369,6 +3370,24 @@ class Shape32 extends i0.VersionedTable {
   Shape32({required super.source, required super.alias}) : super.aliased();
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get vocab =>
+      columnsByName['vocab']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get kanji =>
+      columnsByName['kanji']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get grammar =>
+      columnsByName['grammar']! as i1.GeneratedColumn<String>;
+}
+
+i1.GeneratedColumn<String> _column_174(String aliasedName) =>
+    i1.GeneratedColumn<String>('grammar', aliasedName, false,
+        type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
+
+class Shape33 extends i0.VersionedTable {
+  Shape33({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<int> get listId =>
       columnsByName['list_id']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<int> get itemId =>
@@ -3377,8 +3396,8 @@ class Shape32 extends i0.VersionedTable {
       columnsByName['item_type']! as i1.GeneratedColumn<int>;
 }
 
-class Shape33 extends i0.VersionedTable {
-  Shape33({required super.source, required super.alias}) : super.aliased();
+class Shape34 extends i0.VersionedTable {
+  Shape34({required super.source, required super.alias}) : super.aliased();
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<String> get form =>
@@ -3395,19 +3414,19 @@ class Shape33 extends i0.VersionedTable {
       columnsByName['practice']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_174(String aliasedName) =>
+i1.GeneratedColumn<String> _column_175(String aliasedName) =>
     i1.GeneratedColumn<String>('form', aliasedName, false,
         type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_175(String aliasedName) =>
+i1.GeneratedColumn<String> _column_176(String aliasedName) =>
     i1.GeneratedColumn<String>('construction', aliasedName, true,
         type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<int> _column_176(String aliasedName) =>
+i1.GeneratedColumn<int> _column_177(String aliasedName) =>
     i1.GeneratedColumn<int>('jlpt_level', aliasedName, false,
         type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_177(String aliasedName) =>
+i1.GeneratedColumn<String> _column_178(String aliasedName) =>
     i1.GeneratedColumn<String>('content', aliasedName, true,
         type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<String> _column_178(String aliasedName) =>
+i1.GeneratedColumn<String> _column_179(String aliasedName) =>
     i1.GeneratedColumn<String>('practice', aliasedName, true,
         type: i1.DriftSqlType.string, $customConstraints: 'NULL');
 i0.MigrationStepWithVersion migrationSteps({

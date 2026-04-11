@@ -20,6 +20,7 @@ void main() {
         timestamp: now,
         vocab: [0, 1],
         kanji: ['a'.kanjiCodePoint(), 'b'.kanjiCodePoint()],
+        grammar: [10, 20],
       );
 
       // Backup and import
@@ -35,6 +36,18 @@ void main() {
       expect(newMyList.kanji.length, 2);
       expect(newMyList.kanji.contains('a'.kanjiCodePoint()), true);
       expect(newMyList.kanji.contains('b'.kanjiCodePoint()), true);
+      expect(newMyList.grammar, [10, 20]);
+    });
+
+    test('fromBackupJson without grammar field', () {
+      final json =
+          '{"id":1,"name":"list1","timestamp":0,"vocab":[0,1],"kanji":[97,98]}';
+
+      final myList = MyDictionaryList.fromBackupJson(json);
+
+      expect(myList.vocab, [0, 1]);
+      expect(myList.kanji, [97, 98]);
+      expect(myList.grammar, []);
     });
 
     test('toShareJson and fromShareJson', () {
@@ -44,6 +57,7 @@ void main() {
         timestamp: DateTime.now(),
         vocab: [0, 1],
         kanji: ['a'.kanjiCodePoint(), 'b'.kanjiCodePoint()],
+        grammar: [10, 20],
       );
 
       // Export and import
@@ -52,6 +66,18 @@ void main() {
       expect(newMyList!.name, 'list1');
       expect(newMyList.vocab, [0, 1]);
       expect(newMyList.kanji, ['a'.kanjiCodePoint(), 'b'.kanjiCodePoint()]);
+      expect(newMyList.grammar, [10, 20]);
+    });
+
+    test('fromShareJson without grammar field', () {
+      String json =
+          '{"type":"my_dictionary_list","name":"list1","vocab":[0,1],"kanji":[97,98]}';
+
+      final myList = MyDictionaryList.fromShareJson(json);
+
+      expect(myList!.vocab, [0, 1]);
+      expect(myList.kanji, [97, 98]);
+      expect(myList.grammar, []);
     });
 
     test('fromShareJson with invalid input', () {
