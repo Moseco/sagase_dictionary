@@ -285,6 +285,13 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
       await addDictionaryItem(dictionaryList, kanji);
     }
 
+    // Add dictionary list item for all valid grammar
+    // In reverse order to preserve order for user
+    final grammarList = await db.grammarsDao.validateAll(dictionaryList.grammar);
+    for (final grammar in grammarList.reversed) {
+      await addDictionaryItem(dictionaryList, grammar);
+    }
+
     // Set original timestamp
     await (db.update(db.myDictionaryLists)
           ..where((list) => list.id.equals(dictionaryList.id)))
@@ -322,6 +329,14 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
           await db.kanjisDao.validateAll(sourceDictionaryList.kanji);
       for (final kanji in validatedKanji.reversed) {
         await addDictionaryItem(myList, kanji);
+      }
+
+      // Validate grammar and add dictionary items
+      // In reverse order to preserve order for user
+      final validatedGrammar =
+          await db.grammarsDao.validateAll(sourceDictionaryList.grammar);
+      for (final grammar in validatedGrammar.reversed) {
+        await addDictionaryItem(myList, grammar);
       }
 
       return myList;

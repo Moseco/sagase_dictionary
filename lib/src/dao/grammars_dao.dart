@@ -39,4 +39,23 @@ class GrammarsDao extends DatabaseAccessor<AppDatabase>
 
     return query.get();
   }
+
+  Future<List<Grammar>> validateAll(List<int> idList) async {
+    if (idList.isEmpty) return [];
+
+    final grammarMap = {
+      for (var grammar in (await (db.select(db.grammars)
+            ..where((row) => row.id.isIn(idList)))
+          .get()))
+        grammar.id: grammar
+    };
+
+    // Put the results in the same order as the input
+    List<Grammar> grammarList = [];
+    for (final id in idList) {
+      final grammar = grammarMap[id];
+      if (grammar != null) grammarList.add(grammar);
+    }
+    return grammarList;
+  }
 }

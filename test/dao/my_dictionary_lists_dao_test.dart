@@ -461,6 +461,7 @@ void main() {
         timestamp: DateTime.now(),
         vocab: [1003430, 1],
         kanji: [1, '亞'.kanjiCodePoint()],
+        grammar: [2, 99],
       ).toBackupJson();
 
       await database.myDictionaryListsDao.importBackup(export);
@@ -474,6 +475,8 @@ void main() {
       expect(result.vocabIds[0], 1003430);
       expect(result.kanjiIds.length, 1);
       expect(result.kanjiIds[0], '亞'.kanjiCodePoint());
+      expect(result.grammarIds.length, 1);
+      expect(result.grammarIds[0], 2);
     });
 
     test('importBackup - conflicting exists', () async {
@@ -496,6 +499,7 @@ void main() {
         timestamp: DateTime.now(),
         vocab: [1003430, 1],
         kanji: [1, '亞'.kanjiCodePoint()],
+        grammar: [2, 99],
       ).toBackupJson();
 
       await database.myDictionaryListsDao.importBackup(export);
@@ -509,6 +513,8 @@ void main() {
       expect(result.vocabIds[0], 1003430);
       expect(result.kanjiIds.length, 1);
       expect(result.kanjiIds[0], '亞'.kanjiCodePoint());
+      expect(result.grammarIds.length, 1);
+      expect(result.grammarIds[0], 2);
     });
 
     test('importShare', () async {
@@ -518,6 +524,7 @@ void main() {
         timestamp: DateTime.now(),
         vocab: [1003430, 1],
         kanji: [1, '亞'.kanjiCodePoint()],
+        grammar: [2, 99],
       ).toShareJson();
 
       final myList = await database.myDictionaryListsDao.importShare(export);
@@ -530,6 +537,8 @@ void main() {
       expect(result.vocabIds[0], 1003430);
       expect(result.kanjiIds.length, 1);
       expect(result.kanjiIds[0], '亞'.kanjiCodePoint());
+      expect(result.grammarIds.length, 1);
+      expect(result.grammarIds[0], 2);
     });
 
     test('deleteAll', () async {
