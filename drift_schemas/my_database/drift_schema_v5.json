@@ -1818,6 +1818,20 @@
               "dart_expr": "const IntListConverter()",
               "dart_type_name": "List<int>"
             }
+          },
+          {
+            "name": "grammar",
+            "getter_name": "grammar",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const IntListConverter()",
+              "dart_type_name": "List<int>"
+            }
           }
         ],
         "is_virtual": false,
@@ -2054,6 +2068,96 @@
       "references": [],
       "type": "table",
       "data": {
+        "name": "grammars",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "PRIMARY KEY AUTOINCREMENT",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "PRIMARY KEY AUTOINCREMENT"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "auto-increment"
+            ]
+          },
+          {
+            "name": "form",
+            "getter_name": "form",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "meaning",
+            "getter_name": "meaning",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "construction",
+            "getter_name": "construction",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "jlpt_level",
+            "getter_name": "jlptLevel",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "content",
+            "getter_name": "content",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "practice",
+            "getter_name": "practice",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": []
+      }
+    },
+    {
+      "id": 41,
+      "references": [],
+      "type": "table",
+      "data": {
         "name": "flashcard_sets",
         "was_declared_in_moor": false,
         "columns": [
@@ -2264,7 +2368,7 @@
       }
     },
     {
-      "id": 41,
+      "id": 42,
       "references": [],
       "type": "table",
       "data": {
@@ -2344,13 +2448,13 @@
       }
     },
     {
-      "id": 42,
+      "id": 43,
       "references": [
-        41
+        42
       ],
       "type": "index",
       "data": {
-        "on": 41,
+        "on": 42,
         "name": "UX_flashcard_set_reports_flashcard_set_id_and_date",
         "sql": null,
         "unique": true,
@@ -2367,7 +2471,7 @@
       }
     },
     {
-      "id": 43,
+      "id": 44,
       "references": [],
       "type": "table",
       "data": {
@@ -2401,7 +2505,7 @@
       }
     },
     {
-      "id": 44,
+      "id": 45,
       "references": [
         29
       ],
@@ -2415,7 +2519,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 46,
       "references": [
         29
       ],
@@ -2429,7 +2533,7 @@
       }
     },
     {
-      "id": 46,
+      "id": 47,
       "references": [
         29
       ],
@@ -2443,7 +2547,7 @@
       }
     },
     {
-      "id": 47,
+      "id": 48,
       "references": [
         29
       ],
@@ -2457,7 +2561,7 @@
       }
     },
     {
-      "id": 48,
+      "id": 49,
       "references": [
         29
       ],
@@ -2471,7 +2575,7 @@
       }
     },
     {
-      "id": 49,
+      "id": 50,
       "references": [
         16
       ],
@@ -2485,7 +2589,7 @@
       }
     },
     {
-      "id": 50,
+      "id": 51,
       "references": [
         16
       ],
@@ -2811,7 +2915,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"predefined_dictionary_lists\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" TEXT NOT NULL CHECK(LENGTH(\"name\") > 0), \"vocab\" TEXT NOT NULL, \"kanji\" TEXT NOT NULL);"
+          "sql": "CREATE TABLE IF NOT EXISTS \"predefined_dictionary_lists\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" TEXT NOT NULL CHECK(LENGTH(\"name\") > 0), \"vocab\" TEXT NOT NULL, \"kanji\" TEXT NOT NULL, \"grammar\" TEXT NOT NULL);"
         }
       ]
     },
@@ -2857,6 +2961,15 @@
         {
           "dialect": "sqlite",
           "sql": "CREATE TABLE IF NOT EXISTS \"kanji_notes\" (\"id\" INTEGER NOT NULL, \"note\" TEXT NOT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "grammars",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"grammars\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"form\" TEXT NOT NULL, \"meaning\" TEXT NOT NULL, \"construction\" TEXT NULL, \"jlpt_level\" INTEGER NOT NULL, \"content\" TEXT NULL, \"practice\" TEXT NULL);"
         }
       ]
     },

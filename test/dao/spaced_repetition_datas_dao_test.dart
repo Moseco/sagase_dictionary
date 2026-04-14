@@ -2,12 +2,13 @@ import 'package:sagase_dictionary/src/database.dart';
 import 'package:sagase_dictionary/src/datamodels/spaced_repetition_datas.dart';
 import 'package:sagase_dictionary/src/dictionary_builder.dart';
 import 'package:sagase_dictionary/src/utils/enums.dart';
+import 'package:sagase_dictionary/src/utils/string_utils.dart';
 import 'package:test/test.dart';
 
 import '../common.dart';
 
 void main() {
-  group('DictionaryInfosDaoTest', () {
+  group('SpacedRepetitionDatasDaoTest', () {
     late AppDatabase database;
 
     setUp(() async {
@@ -20,6 +21,27 @@ void main() {
         shortJMdict,
         shortPitchAccentData,
         shortFrequencyListData,
+      );
+
+      // Radicals
+      await DictionaryBuilder.createRadicalDictionary(
+        database,
+        shortRadicalData,
+        shortKanjiStrokeData,
+      );
+
+      // Kanji
+      await DictionaryBuilder.createKanjiDictionary(
+        database,
+        shortKanjidic2,
+        shortKanjiComponentData,
+        shortKanjiStrokeData,
+      );
+
+      // Grammar
+      await DictionaryBuilder.createGrammarDictionary(
+        database,
+        shortGrammarInput,
       );
     });
 
@@ -61,6 +83,78 @@ void main() {
       );
     });
 
+    test('set kanji', () async {
+      final kanji = (await database.kanjisDao.get('亜'.kanjiCodePoint()))!;
+
+      await database.spacedRepetitionDatasDao.set(
+        SpacedRepetitionData.initial(
+          dictionaryItem: kanji,
+          frontType: FrontType.japanese,
+        ),
+      );
+
+      final kanjiList = await database.kanjisDao.getAll(
+        [kanji.id],
+        frontType: FrontType.japanese,
+      );
+      expect(kanjiList[0].spacedRepetitionData!.itemId, kanji.id);
+      expect(
+        kanjiList[0].spacedRepetitionData!.itemType,
+        DictionaryItemType.kanji,
+      );
+      expect(kanjiList[0].spacedRepetitionData!.repetitions, 0);
+
+      // Overwrite
+      await database.spacedRepetitionDatasDao.set(
+        SpacedRepetitionData.initial(
+          dictionaryItem: kanji,
+          frontType: FrontType.japanese,
+        ).copyWith(repetitions: 2),
+      );
+
+      final updatedList = await database.kanjisDao.getAll(
+        [kanji.id],
+        frontType: FrontType.japanese,
+      );
+      expect(updatedList[0].spacedRepetitionData!.repetitions, 2);
+    });
+
+    test('set grammar', () async {
+      final grammar = await database.grammarsDao.get(1);
+
+      await database.spacedRepetitionDatasDao.set(
+        SpacedRepetitionData.initial(
+          dictionaryItem: grammar,
+          frontType: FrontType.japanese,
+        ),
+      );
+
+      final grammarList = await database.grammarsDao.getAll(
+        [1],
+        frontType: FrontType.japanese,
+      );
+      expect(grammarList[0].spacedRepetitionData!.itemId, 1);
+      expect(
+        grammarList[0].spacedRepetitionData!.itemType,
+        DictionaryItemType.grammar,
+      );
+      expect(grammarList[0].spacedRepetitionData!.repetitions, 0);
+
+      // Overwrite
+      await database.spacedRepetitionDatasDao.set(
+        SpacedRepetitionData.initial(
+          dictionaryItem: grammar,
+          frontType: FrontType.japanese,
+        ).copyWith(repetitions: 3),
+      );
+
+      final updatedList = await database.grammarsDao.getAll(
+        [1],
+        frontType: FrontType.japanese,
+      );
+      expect(updatedList[0].spacedRepetitionData!.repetitions, 3);
+    });
+
     test('deleteSpacedRepetitionData', () async {
       final vocab = await database.vocabsDao.get(1000160);
 
@@ -79,6 +173,46 @@ void main() {
             .spacedRepetitionData,
         null,
       );
+    });
+
+    test('deleteSpacedRepetitionData kanji', () async {
+      final kanji = (await database.kanjisDao.get('亜'.kanjiCodePoint()))!;
+
+      await database.spacedRepetitionDatasDao.set(
+        SpacedRepetitionData.initial(
+          dictionaryItem: kanji,
+          frontType: FrontType.japanese,
+        ),
+      );
+
+      await database.spacedRepetitionDatasDao
+          .deleteSpacedRepetitionData(kanji, FrontType.japanese);
+
+      final kanjiList = await database.kanjisDao.getAll(
+        [kanji.id],
+        frontType: FrontType.japanese,
+      );
+      expect(kanjiList[0].spacedRepetitionData, null);
+    });
+
+    test('deleteSpacedRepetitionData grammar', () async {
+      final grammar = await database.grammarsDao.get(1);
+
+      await database.spacedRepetitionDatasDao.set(
+        SpacedRepetitionData.initial(
+          dictionaryItem: grammar,
+          frontType: FrontType.japanese,
+        ),
+      );
+
+      await database.spacedRepetitionDatasDao
+          .deleteSpacedRepetitionData(grammar, FrontType.japanese);
+
+      final grammarList = await database.grammarsDao.getAll(
+        [1],
+        frontType: FrontType.japanese,
+      );
+      expect(grammarList[0].spacedRepetitionData, null);
     });
 
     test('getAll', () async {
@@ -100,6 +234,46 @@ void main() {
 
       final results = await database.spacedRepetitionDatasDao.getAll();
       expect(results.length, 2);
+    });
+
+    test('getAll with mixed item types', () async {
+      final vocab = await database.vocabsDao.get(1000160);
+      final kanji = (await database.kanjisDao.get('亜'.kanjiCodePoint()))!;
+      final grammar = await database.grammarsDao.get(1);
+
+      await database.spacedRepetitionDatasDao.set(
+        SpacedRepetitionData.initial(
+          dictionaryItem: vocab,
+          frontType: FrontType.japanese,
+        ),
+      );
+      await database.spacedRepetitionDatasDao.set(
+        SpacedRepetitionData.initial(
+          dictionaryItem: kanji,
+          frontType: FrontType.japanese,
+        ),
+      );
+      await database.spacedRepetitionDatasDao.set(
+        SpacedRepetitionData.initial(
+          dictionaryItem: grammar,
+          frontType: FrontType.japanese,
+        ),
+      );
+
+      final results = await database.spacedRepetitionDatasDao.getAll();
+      expect(results.length, 3);
+
+      final vocabData =
+          results.firstWhere((r) => r.itemType == DictionaryItemType.vocab);
+      expect(vocabData.itemId, 1000160);
+
+      final kanjiData =
+          results.firstWhere((r) => r.itemType == DictionaryItemType.kanji);
+      expect(kanjiData.itemId, kanji.id);
+
+      final grammarData =
+          results.firstWhere((r) => r.itemType == DictionaryItemType.grammar);
+      expect(grammarData.itemId, 1);
     });
 
     test('deleteAll', () async {

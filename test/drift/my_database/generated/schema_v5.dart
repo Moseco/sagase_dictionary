@@ -4849,8 +4849,13 @@ class PredefinedDictionaryLists extends Table
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
+  late final GeneratedColumn<String> grammar = GeneratedColumn<String>(
+      'grammar', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   @override
-  List<GeneratedColumn> get $columns => [id, name, vocab, kanji];
+  List<GeneratedColumn> get $columns => [id, name, vocab, kanji, grammar];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4871,6 +4876,8 @@ class PredefinedDictionaryLists extends Table
           .read(DriftSqlType.string, data['${effectivePrefix}vocab'])!,
       kanji: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}kanji'])!,
+      grammar: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}grammar'])!,
     );
   }
 
@@ -4889,11 +4896,13 @@ class PredefinedDictionaryListsData extends DataClass
   final String name;
   final String vocab;
   final String kanji;
+  final String grammar;
   const PredefinedDictionaryListsData(
       {required this.id,
       required this.name,
       required this.vocab,
-      required this.kanji});
+      required this.kanji,
+      required this.grammar});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4901,6 +4910,7 @@ class PredefinedDictionaryListsData extends DataClass
     map['name'] = Variable<String>(name);
     map['vocab'] = Variable<String>(vocab);
     map['kanji'] = Variable<String>(kanji);
+    map['grammar'] = Variable<String>(grammar);
     return map;
   }
 
@@ -4910,6 +4920,7 @@ class PredefinedDictionaryListsData extends DataClass
       name: Value(name),
       vocab: Value(vocab),
       kanji: Value(kanji),
+      grammar: Value(grammar),
     );
   }
 
@@ -4921,6 +4932,7 @@ class PredefinedDictionaryListsData extends DataClass
       name: serializer.fromJson<String>(json['name']),
       vocab: serializer.fromJson<String>(json['vocab']),
       kanji: serializer.fromJson<String>(json['kanji']),
+      grammar: serializer.fromJson<String>(json['grammar']),
     );
   }
   @override
@@ -4931,16 +4943,22 @@ class PredefinedDictionaryListsData extends DataClass
       'name': serializer.toJson<String>(name),
       'vocab': serializer.toJson<String>(vocab),
       'kanji': serializer.toJson<String>(kanji),
+      'grammar': serializer.toJson<String>(grammar),
     };
   }
 
   PredefinedDictionaryListsData copyWith(
-          {int? id, String? name, String? vocab, String? kanji}) =>
+          {int? id,
+          String? name,
+          String? vocab,
+          String? kanji,
+          String? grammar}) =>
       PredefinedDictionaryListsData(
         id: id ?? this.id,
         name: name ?? this.name,
         vocab: vocab ?? this.vocab,
         kanji: kanji ?? this.kanji,
+        grammar: grammar ?? this.grammar,
       );
   PredefinedDictionaryListsData copyWithCompanion(
       PredefinedDictionaryListsCompanion data) {
@@ -4949,6 +4967,7 @@ class PredefinedDictionaryListsData extends DataClass
       name: data.name.present ? data.name.value : this.name,
       vocab: data.vocab.present ? data.vocab.value : this.vocab,
       kanji: data.kanji.present ? data.kanji.value : this.kanji,
+      grammar: data.grammar.present ? data.grammar.value : this.grammar,
     );
   }
 
@@ -4958,13 +4977,14 @@ class PredefinedDictionaryListsData extends DataClass
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('vocab: $vocab, ')
-          ..write('kanji: $kanji')
+          ..write('kanji: $kanji, ')
+          ..write('grammar: $grammar')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, vocab, kanji);
+  int get hashCode => Object.hash(id, name, vocab, kanji, grammar);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4972,7 +4992,8 @@ class PredefinedDictionaryListsData extends DataClass
           other.id == this.id &&
           other.name == this.name &&
           other.vocab == this.vocab &&
-          other.kanji == this.kanji);
+          other.kanji == this.kanji &&
+          other.grammar == this.grammar);
 }
 
 class PredefinedDictionaryListsCompanion
@@ -4981,31 +5002,37 @@ class PredefinedDictionaryListsCompanion
   final Value<String> name;
   final Value<String> vocab;
   final Value<String> kanji;
+  final Value<String> grammar;
   const PredefinedDictionaryListsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.vocab = const Value.absent(),
     this.kanji = const Value.absent(),
+    this.grammar = const Value.absent(),
   });
   PredefinedDictionaryListsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String vocab,
     required String kanji,
+    required String grammar,
   })  : name = Value(name),
         vocab = Value(vocab),
-        kanji = Value(kanji);
+        kanji = Value(kanji),
+        grammar = Value(grammar);
   static Insertable<PredefinedDictionaryListsData> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? vocab,
     Expression<String>? kanji,
+    Expression<String>? grammar,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (vocab != null) 'vocab': vocab,
       if (kanji != null) 'kanji': kanji,
+      if (grammar != null) 'grammar': grammar,
     });
   }
 
@@ -5013,12 +5040,14 @@ class PredefinedDictionaryListsCompanion
       {Value<int>? id,
       Value<String>? name,
       Value<String>? vocab,
-      Value<String>? kanji}) {
+      Value<String>? kanji,
+      Value<String>? grammar}) {
     return PredefinedDictionaryListsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       vocab: vocab ?? this.vocab,
       kanji: kanji ?? this.kanji,
+      grammar: grammar ?? this.grammar,
     );
   }
 
@@ -5037,6 +5066,9 @@ class PredefinedDictionaryListsCompanion
     if (kanji.present) {
       map['kanji'] = Variable<String>(kanji.value);
     }
+    if (grammar.present) {
+      map['grammar'] = Variable<String>(grammar.value);
+    }
     return map;
   }
 
@@ -5046,7 +5078,8 @@ class PredefinedDictionaryListsCompanion
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('vocab: $vocab, ')
-          ..write('kanji: $kanji')
+          ..write('kanji: $kanji, ')
+          ..write('grammar: $grammar')
           ..write(')'))
         .toString();
   }
@@ -5642,6 +5675,338 @@ class KanjiNotesCompanion extends UpdateCompanion<KanjiNotesData> {
     return (StringBuffer('KanjiNotesCompanion(')
           ..write('id: $id, ')
           ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class Grammars extends Table with TableInfo<Grammars, GrammarsData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  Grammars(this.attachedDatabase, [this._alias]);
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
+  late final GeneratedColumn<String> form = GeneratedColumn<String>(
+      'form', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  late final GeneratedColumn<String> meaning = GeneratedColumn<String>(
+      'meaning', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  late final GeneratedColumn<String> construction = GeneratedColumn<String>(
+      'construction', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
+  late final GeneratedColumn<int> jlptLevel = GeneratedColumn<int>(
+      'jlpt_level', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+      'content', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
+  late final GeneratedColumn<String> practice = GeneratedColumn<String>(
+      'practice', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, form, meaning, construction, jlptLevel, content, practice];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'grammars';
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  GrammarsData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GrammarsData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      form: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}form'])!,
+      meaning: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}meaning'])!,
+      construction: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}construction']),
+      jlptLevel: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}jlpt_level'])!,
+      content: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}content']),
+      practice: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}practice']),
+    );
+  }
+
+  @override
+  Grammars createAlias(String alias) {
+    return Grammars(attachedDatabase, alias);
+  }
+
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class GrammarsData extends DataClass implements Insertable<GrammarsData> {
+  final int id;
+  final String form;
+  final String meaning;
+  final String? construction;
+  final int jlptLevel;
+  final String? content;
+  final String? practice;
+  const GrammarsData(
+      {required this.id,
+      required this.form,
+      required this.meaning,
+      this.construction,
+      required this.jlptLevel,
+      this.content,
+      this.practice});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['form'] = Variable<String>(form);
+    map['meaning'] = Variable<String>(meaning);
+    if (!nullToAbsent || construction != null) {
+      map['construction'] = Variable<String>(construction);
+    }
+    map['jlpt_level'] = Variable<int>(jlptLevel);
+    if (!nullToAbsent || content != null) {
+      map['content'] = Variable<String>(content);
+    }
+    if (!nullToAbsent || practice != null) {
+      map['practice'] = Variable<String>(practice);
+    }
+    return map;
+  }
+
+  GrammarsCompanion toCompanion(bool nullToAbsent) {
+    return GrammarsCompanion(
+      id: Value(id),
+      form: Value(form),
+      meaning: Value(meaning),
+      construction: construction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(construction),
+      jlptLevel: Value(jlptLevel),
+      content: content == null && nullToAbsent
+          ? const Value.absent()
+          : Value(content),
+      practice: practice == null && nullToAbsent
+          ? const Value.absent()
+          : Value(practice),
+    );
+  }
+
+  factory GrammarsData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return GrammarsData(
+      id: serializer.fromJson<int>(json['id']),
+      form: serializer.fromJson<String>(json['form']),
+      meaning: serializer.fromJson<String>(json['meaning']),
+      construction: serializer.fromJson<String?>(json['construction']),
+      jlptLevel: serializer.fromJson<int>(json['jlptLevel']),
+      content: serializer.fromJson<String?>(json['content']),
+      practice: serializer.fromJson<String?>(json['practice']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'form': serializer.toJson<String>(form),
+      'meaning': serializer.toJson<String>(meaning),
+      'construction': serializer.toJson<String?>(construction),
+      'jlptLevel': serializer.toJson<int>(jlptLevel),
+      'content': serializer.toJson<String?>(content),
+      'practice': serializer.toJson<String?>(practice),
+    };
+  }
+
+  GrammarsData copyWith(
+          {int? id,
+          String? form,
+          String? meaning,
+          Value<String?> construction = const Value.absent(),
+          int? jlptLevel,
+          Value<String?> content = const Value.absent(),
+          Value<String?> practice = const Value.absent()}) =>
+      GrammarsData(
+        id: id ?? this.id,
+        form: form ?? this.form,
+        meaning: meaning ?? this.meaning,
+        construction:
+            construction.present ? construction.value : this.construction,
+        jlptLevel: jlptLevel ?? this.jlptLevel,
+        content: content.present ? content.value : this.content,
+        practice: practice.present ? practice.value : this.practice,
+      );
+  GrammarsData copyWithCompanion(GrammarsCompanion data) {
+    return GrammarsData(
+      id: data.id.present ? data.id.value : this.id,
+      form: data.form.present ? data.form.value : this.form,
+      meaning: data.meaning.present ? data.meaning.value : this.meaning,
+      construction: data.construction.present
+          ? data.construction.value
+          : this.construction,
+      jlptLevel: data.jlptLevel.present ? data.jlptLevel.value : this.jlptLevel,
+      content: data.content.present ? data.content.value : this.content,
+      practice: data.practice.present ? data.practice.value : this.practice,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GrammarsData(')
+          ..write('id: $id, ')
+          ..write('form: $form, ')
+          ..write('meaning: $meaning, ')
+          ..write('construction: $construction, ')
+          ..write('jlptLevel: $jlptLevel, ')
+          ..write('content: $content, ')
+          ..write('practice: $practice')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, form, meaning, construction, jlptLevel, content, practice);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GrammarsData &&
+          other.id == this.id &&
+          other.form == this.form &&
+          other.meaning == this.meaning &&
+          other.construction == this.construction &&
+          other.jlptLevel == this.jlptLevel &&
+          other.content == this.content &&
+          other.practice == this.practice);
+}
+
+class GrammarsCompanion extends UpdateCompanion<GrammarsData> {
+  final Value<int> id;
+  final Value<String> form;
+  final Value<String> meaning;
+  final Value<String?> construction;
+  final Value<int> jlptLevel;
+  final Value<String?> content;
+  final Value<String?> practice;
+  const GrammarsCompanion({
+    this.id = const Value.absent(),
+    this.form = const Value.absent(),
+    this.meaning = const Value.absent(),
+    this.construction = const Value.absent(),
+    this.jlptLevel = const Value.absent(),
+    this.content = const Value.absent(),
+    this.practice = const Value.absent(),
+  });
+  GrammarsCompanion.insert({
+    this.id = const Value.absent(),
+    required String form,
+    required String meaning,
+    this.construction = const Value.absent(),
+    required int jlptLevel,
+    this.content = const Value.absent(),
+    this.practice = const Value.absent(),
+  })  : form = Value(form),
+        meaning = Value(meaning),
+        jlptLevel = Value(jlptLevel);
+  static Insertable<GrammarsData> custom({
+    Expression<int>? id,
+    Expression<String>? form,
+    Expression<String>? meaning,
+    Expression<String>? construction,
+    Expression<int>? jlptLevel,
+    Expression<String>? content,
+    Expression<String>? practice,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (form != null) 'form': form,
+      if (meaning != null) 'meaning': meaning,
+      if (construction != null) 'construction': construction,
+      if (jlptLevel != null) 'jlpt_level': jlptLevel,
+      if (content != null) 'content': content,
+      if (practice != null) 'practice': practice,
+    });
+  }
+
+  GrammarsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? form,
+      Value<String>? meaning,
+      Value<String?>? construction,
+      Value<int>? jlptLevel,
+      Value<String?>? content,
+      Value<String?>? practice}) {
+    return GrammarsCompanion(
+      id: id ?? this.id,
+      form: form ?? this.form,
+      meaning: meaning ?? this.meaning,
+      construction: construction ?? this.construction,
+      jlptLevel: jlptLevel ?? this.jlptLevel,
+      content: content ?? this.content,
+      practice: practice ?? this.practice,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (form.present) {
+      map['form'] = Variable<String>(form.value);
+    }
+    if (meaning.present) {
+      map['meaning'] = Variable<String>(meaning.value);
+    }
+    if (construction.present) {
+      map['construction'] = Variable<String>(construction.value);
+    }
+    if (jlptLevel.present) {
+      map['jlpt_level'] = Variable<int>(jlptLevel.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (practice.present) {
+      map['practice'] = Variable<String>(practice.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GrammarsCompanion(')
+          ..write('id: $id, ')
+          ..write('form: $form, ')
+          ..write('meaning: $meaning, ')
+          ..write('construction: $construction, ')
+          ..write('jlptLevel: $jlptLevel, ')
+          ..write('content: $content, ')
+          ..write('practice: $practice')
           ..write(')'))
         .toString();
   }
@@ -6881,6 +7246,7 @@ class DatabaseAtV5 extends GeneratedDatabase {
       'IX_my_dictionary_list_items_item_id_type',
       'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)');
   late final KanjiNotes kanjiNotes = KanjiNotes(this);
+  late final Grammars grammars = Grammars(this);
   late final FlashcardSets flashcardSets = FlashcardSets(this);
   late final FlashcardSetReports flashcardSetReports =
       FlashcardSetReports(this);
@@ -6952,6 +7318,7 @@ class DatabaseAtV5 extends GeneratedDatabase {
         iXMyDictionaryListItemsListId,
         iXMyDictionaryListItemsItemIdType,
         kanjiNotes,
+        grammars,
         flashcardSets,
         flashcardSetReports,
         uXFlashcardSetReportsFlashcardSetIdAndDate,

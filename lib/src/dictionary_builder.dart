@@ -30,7 +30,8 @@ class DictionaryBuilder {
     String vocabLists,
     String kanjiLists,
     String pitchAccents,
-    String frequencyList, {
+    String frequencyList,
+    String grammarList, {
     bool showProgress = false,
   }) async {
     // Set up
@@ -74,6 +75,12 @@ class DictionaryBuilder {
 
     // Set kanji JLPT level
     await _setKanjiJlptLevel(db);
+
+    // Grammar
+    await DictionaryBuilder.createGrammarDictionary(
+      db,
+      grammarList,
+    );
   }
 
   // Creates the vocab database from the raw dictionary file
@@ -2355,6 +2362,7 @@ class DictionaryBuilder {
     String name, {
     List<int> vocab = const [],
     List<int> kanji = const [],
+    List<int> grammar = const [],
   }) async {
     // Confirm all vocab exist in database
     if (vocab.isNotEmpty) {
@@ -2378,6 +2386,7 @@ class DictionaryBuilder {
             name: Value(name),
             vocab: Value(vocab),
             kanji: Value(kanji),
+            grammar: Value(grammar),
           ),
         );
   }
@@ -2418,6 +2427,91 @@ class DictionaryBuilder {
       await (db.update(db.kanjis)..where((kanji) => kanji.id.equals(kanjiId)))
           .write(KanjisCompanion(jlpt: Value(JlptLevel.n1)));
     }
+  }
+
+  @visibleForTesting
+  static Future<void> createGrammarDictionary(
+    AppDatabase db,
+    String grammarJson,
+  ) async {
+    final grammarList = jsonDecode(grammarJson);
+
+    List<int> n5GrammarList = [];
+    List<int> n4GrammarList = [];
+    List<int> n3GrammarList = [];
+    List<int> n2GrammarList = [];
+    List<int> n1GrammarList = [];
+
+    await db.transaction(() async {
+      for (var grammar in grammarList) {
+        final content =
+            grammar['content'] != null ? jsonEncode(grammar['content']) : null;
+        final practice = grammar['practice'] != null
+            ? jsonEncode(grammar['practice'])
+            : null;
+
+        await db.into(db.grammars).insert(
+              GrammarsCompanion(
+                id: Value(grammar['id']),
+                form: Value(grammar['form']),
+                meaning: Value(grammar['meaning']),
+                construction: Value.absentIfNull(grammar['construction']),
+                jlptLevel: Value(grammar['jlpt_level']),
+                content: Value.absentIfNull(content),
+                practice: Value.absentIfNull(practice),
+              ),
+            );
+
+        switch (grammar['jlpt_level']) {
+          case 5:
+            n5GrammarList.add(grammar['id']);
+            break;
+          case 4:
+            n4GrammarList.add(grammar['id']);
+            break;
+          case 3:
+            n3GrammarList.add(grammar['id']);
+            break;
+          case 2:
+            n2GrammarList.add(grammar['id']);
+            break;
+          case 1:
+            n1GrammarList.add(grammar['id']);
+            break;
+        }
+      }
+    });
+
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptGrammarN5,
+      'N5 Grammar',
+      grammar: n5GrammarList,
+    );
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptGrammarN4,
+      'N4 Grammar',
+      grammar: n4GrammarList,
+    );
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptGrammarN3,
+      'N3 Grammar',
+      grammar: n3GrammarList,
+    );
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptGrammarN2,
+      'N2 Grammar',
+      grammar: n2GrammarList,
+    );
+    await _createPredefinedDictionaryList(
+      db,
+      SagaseDictionaryConstants.dictionaryListIdJlptGrammarN1,
+      'N1 Grammar',
+      grammar: n1GrammarList,
+    );
   }
 
   // Creates the proper noun database from the raw dictionary file

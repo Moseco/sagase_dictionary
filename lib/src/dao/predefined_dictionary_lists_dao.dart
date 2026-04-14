@@ -39,6 +39,7 @@ class PredefinedDictionaryListsDao extends DatabaseAccessor<AppDatabase>
               name: row.read(db.predefinedDictionaryLists.name)!,
               vocab: [],
               kanji: [],
+              grammar: [],
             ))
         .get();
   }

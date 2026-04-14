@@ -25,6 +25,7 @@ example/input_files/pitch_accents.txt
 example/input_files/frequency_list.txt
 example/input_files/enamdict_utf-8
 example/input_files/mecab.zip
+example/input_files/grammar_list.json
 
 # Temporary and output files
 example/temp_files/

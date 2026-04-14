@@ -38,6 +38,7 @@ void main() async {
       File(path.join(inputFilesPath, 'kanji_lists.json')).readAsStringSync(),
       File(path.join(inputFilesPath, 'pitch_accents.txt')).readAsStringSync(),
       File(path.join(inputFilesPath, 'frequency_list.txt')).readAsStringSync(),
+      File(path.join(inputFilesPath, 'grammar_list.json')).readAsStringSync(),
       showProgress: true,
     );
     print('');

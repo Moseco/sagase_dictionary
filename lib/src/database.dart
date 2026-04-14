@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:sagase_dictionary/src/dao/dictionary_infos_dao.dart';
 import 'package:sagase_dictionary/src/dao/flashcard_sets_dao.dart';
+import 'package:sagase_dictionary/src/dao/grammars_dao.dart';
 import 'package:sagase_dictionary/src/dao/kanjis_dao.dart';
 import 'package:sagase_dictionary/src/dao/my_dictionary_lists_dao.dart';
 import 'package:sagase_dictionary/src/dao/predefined_dictionary_lists_dao.dart';
@@ -13,6 +14,7 @@ import 'package:sagase_dictionary/src/dao/vocabs_dao.dart';
 import 'package:sagase_dictionary/src/database.steps.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_infos.dart';
 import 'package:sagase_dictionary/src/datamodels/flashcard_sets.dart';
+import 'package:sagase_dictionary/src/datamodels/grammars.dart';
 import 'package:sagase_dictionary/src/datamodels/kanji/kanji_notes.dart';
 import 'package:sagase_dictionary/src/datamodels/kanjis.dart';
 import 'package:sagase_dictionary/src/datamodels/my_dictionary_lists.dart';
@@ -37,6 +39,7 @@ part 'database.g.dart';
     DictionaryInfos,
     FlashcardSets,
     FlashcardSetReports,
+    Grammars,
     Kanjis,
     KanjiReadings,
     KanjiMeaningWords,
@@ -65,6 +68,7 @@ part 'database.g.dart';
   daos: [
     DictionaryInfosDao,
     FlashcardSetsDao,
+    GrammarsDao,
     KanjisDao,
     MyDictionaryListsDao,
     PredefinedDictionaryListsDao,
@@ -146,6 +150,11 @@ class AppDatabase extends _$AppDatabase {
           await m.alterTable(TableMigration(schema.myDictionaryListItems));
           await m.createIndex(Index('IX_my_dictionary_list_items_item_id_type',
               'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)'));
+
+          await m.createTable(schema.grammars);
+
+          await m.addColumn(schema.predefinedDictionaryLists,
+              schema.predefinedDictionaryLists.grammar);
         },
       ),
     );
