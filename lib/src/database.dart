@@ -153,8 +153,15 @@ class AppDatabase extends _$AppDatabase {
 
           await m.createTable(schema.grammars);
 
-          await m.addColumn(schema.predefinedDictionaryLists,
-              schema.predefinedDictionaryLists.grammar);
+          await m.alterTable(
+            TableMigration(
+              schema.predefinedDictionaryLists,
+              columnTransformer: {
+                schema.predefinedDictionaryLists.grammar: const Constant('[]'),
+              },
+              newColumns: [schema.predefinedDictionaryLists.grammar],
+            ),
+          );
         },
       ),
     );
