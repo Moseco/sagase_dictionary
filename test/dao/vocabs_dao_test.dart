@@ -145,7 +145,9 @@ void main() {
             frontType: FrontType.japanese,
           );
           expect(vocabList[0].id, 1000220);
-          expect(vocabList[0].spacedRepetitionData!.vocabId, 1000220);
+          expect(vocabList[0].spacedRepetitionData!.itemId, 1000220);
+          expect(vocabList[0].spacedRepetitionData!.itemType,
+              DictionaryItemType.vocab);
           expect(
             vocabList[0].spacedRepetitionData!.frontType,
             FrontType.japanese,
@@ -173,13 +175,17 @@ void main() {
             frontType: FrontType.japanese,
           );
           expect(vocabList[0].id, 1000220);
-          expect(vocabList[0].spacedRepetitionData!.vocabId, 1000220);
+          expect(vocabList[0].spacedRepetitionData!.itemId, 1000220);
+          expect(vocabList[0].spacedRepetitionData!.itemType,
+              DictionaryItemType.vocab);
           expect(
             vocabList[0].spacedRepetitionData!.frontType,
             FrontType.japanese,
           );
           expect(vocabList[1].id, 1000160);
-          expect(vocabList[1].spacedRepetitionData!.vocabId, 1000160);
+          expect(vocabList[1].spacedRepetitionData!.itemId, 1000160);
+          expect(vocabList[1].spacedRepetitionData!.itemType,
+              DictionaryItemType.vocab);
           expect(
             vocabList[1].spacedRepetitionData!.frontType,
             FrontType.japanese,
@@ -217,13 +223,17 @@ void main() {
             frontType: FrontType.english,
           );
           expect(vocabList[0].id, 1000220);
-          expect(vocabList[0].spacedRepetitionData!.vocabId, 1000220);
+          expect(vocabList[0].spacedRepetitionData!.itemId, 1000220);
+          expect(vocabList[0].spacedRepetitionData!.itemType,
+              DictionaryItemType.vocab);
           expect(
             vocabList[0].spacedRepetitionData!.frontType,
             FrontType.english,
           );
           expect(vocabList[1].id, 1000160);
-          expect(vocabList[1].spacedRepetitionData!.vocabId, 1000160);
+          expect(vocabList[1].spacedRepetitionData!.itemId, 1000160);
+          expect(vocabList[1].spacedRepetitionData!.itemType,
+              DictionaryItemType.vocab);
           expect(
             vocabList[1].spacedRepetitionData!.frontType,
             FrontType.english,

@@ -10,6 +10,7 @@ class PredefinedDictionaryLists extends Table {
 
   TextColumn get vocab => text().map(const IntListConverter())();
   TextColumn get kanji => text().map(const IntListConverter())();
+  TextColumn get grammar => text().map(const IntListConverter())();
 }
 
 class PredefinedDictionaryList extends DictionaryList {
@@ -18,5 +19,6 @@ class PredefinedDictionaryList extends DictionaryList {
     required super.name,
     required super.vocab,
     required super.kanji,
+    required super.grammar,
   });
 }

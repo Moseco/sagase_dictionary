@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:sagase_dictionary/src/dao/dictionary_infos_dao.dart';
 import 'package:sagase_dictionary/src/dao/flashcard_sets_dao.dart';
+import 'package:sagase_dictionary/src/dao/grammars_dao.dart';
 import 'package:sagase_dictionary/src/dao/kanjis_dao.dart';
 import 'package:sagase_dictionary/src/dao/my_dictionary_lists_dao.dart';
 import 'package:sagase_dictionary/src/dao/predefined_dictionary_lists_dao.dart';
@@ -13,6 +14,7 @@ import 'package:sagase_dictionary/src/dao/vocabs_dao.dart';
 import 'package:sagase_dictionary/src/database.steps.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_infos.dart';
 import 'package:sagase_dictionary/src/datamodels/flashcard_sets.dart';
+import 'package:sagase_dictionary/src/datamodels/grammars.dart';
 import 'package:sagase_dictionary/src/datamodels/kanji/kanji_notes.dart';
 import 'package:sagase_dictionary/src/datamodels/kanjis.dart';
 import 'package:sagase_dictionary/src/datamodels/my_dictionary_lists.dart';
@@ -37,6 +39,7 @@ part 'database.g.dart';
     DictionaryInfos,
     FlashcardSets,
     FlashcardSetReports,
+    Grammars,
     Kanjis,
     KanjiReadings,
     KanjiMeaningWords,
@@ -59,14 +62,13 @@ part 'database.g.dart';
   ],
   include: {
     'datamodels/kanjis.drift',
-    'datamodels/my_dictionary_lists.drift',
     'datamodels/proper_nouns.drift',
-    'datamodels/spaced_repetition_datas.drift',
     'datamodels/vocabs.drift',
   },
   daos: [
     DictionaryInfosDao,
     FlashcardSetsDao,
+    GrammarsDao,
     KanjisDao,
     MyDictionaryListsDao,
     PredefinedDictionaryListsDao,
@@ -83,7 +85,7 @@ class AppDatabase extends _$AppDatabase {
       : super(queryExecutor ?? NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration {
@@ -100,6 +102,66 @@ class AppDatabase extends _$AppDatabase {
               schema.vocabWritings, schema.vocabWritings.primaryPair);
           await m.addColumn(
               schema.vocabReadings, schema.vocabReadings.primaryPair);
+        },
+        from3To4: (m, schema) async {
+          await m.alterTable(
+            TableMigration(
+              schema.spacedRepetitionDatas,
+              columnTransformer: {
+                schema.spacedRepetitionDatas.itemId:
+                    schema.spacedRepetitionDatas.vocabId +
+                        schema.spacedRepetitionDatas.kanjiId,
+                schema.spacedRepetitionDatas.itemType:
+                    schema.spacedRepetitionDatas.vocabId.caseMatch(
+                  when: {
+                    const Constant(0): Constant(DictionaryItemType.kanji.index),
+                  },
+                  orElse: Constant(DictionaryItemType.vocab.index),
+                )
+              },
+            ),
+          );
+
+          await m.alterTable(
+            TableMigration(
+              schema.myDictionaryListItems,
+              columnTransformer: {
+                schema.myDictionaryListItems.itemId:
+                    schema.myDictionaryListItems.vocabId +
+                        schema.myDictionaryListItems.kanjiId,
+                schema.myDictionaryListItems.itemType:
+                    schema.myDictionaryListItems.vocabId.caseMatch(
+                  when: {
+                    const Constant(0): Constant(DictionaryItemType.kanji.index),
+                  },
+                  orElse: Constant(DictionaryItemType.vocab.index),
+                )
+              },
+            ),
+          );
+        },
+        from4To5: (m, schema) async {
+          await m.drop(Index('IX_spaced_repetition_datas_vocab_id', ''));
+          await m.drop(Index('IX_spaced_repetition_datas_kanji_id', ''));
+          await m.alterTable(TableMigration(schema.spacedRepetitionDatas));
+
+          await m.drop(Index('IX_my_dictionary_list_items_vocab_id', ''));
+          await m.drop(Index('IX_my_dictionary_list_items_kanji_id', ''));
+          await m.alterTable(TableMigration(schema.myDictionaryListItems));
+          await m.createIndex(Index('IX_my_dictionary_list_items_item_id_type',
+              'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)'));
+
+          await m.createTable(schema.grammars);
+
+          await m.alterTable(
+            TableMigration(
+              schema.predefinedDictionaryLists,
+              columnTransformer: {
+                schema.predefinedDictionaryLists.grammar: const Constant('[]'),
+              },
+              newColumns: [schema.predefinedDictionaryLists.grammar],
+            ),
+          );
         },
       ),
     );

@@ -35,6 +35,11 @@ class SagaseDictionaryConstants {
   static const int dictionaryListId2k = 31;
   static const int dictionaryListId6k = 32;
   static const int dictionaryListId10k = 33;
+  static const int dictionaryListIdJlptGrammarN1 = 34;
+  static const int dictionaryListIdJlptGrammarN2 = 35;
+  static const int dictionaryListIdJlptGrammarN3 = 36;
+  static const int dictionaryListIdJlptGrammarN4 = 37;
+  static const int dictionaryListIdJlptGrammarN5 = 38;
 
   static const dictionaryDatabaseFile = 'dictionary.sqlite';
   static const properNounDictionaryDatabaseFile =
@@ -52,6 +57,7 @@ class SagaseDictionaryConstants {
   static const backupMyDictionaryLists = 'my_dictionary_lists';
   static const backupFlashcardSets = 'flashcard_sets';
   static const backupFlashcardSetReports = 'flashcard_set_reports';
+  static const backupSpacedRepetitionData = 'spaced_repetition_data';
   static const backupVocabSpacedRepetitionData = 'vocab_spaced_repetition_data';
   static const backupVocabSpacedRepetitionDataEnglish =
       'vocab_spaced_repetition_data_english';
@@ -98,6 +104,10 @@ class SagaseDictionaryConstants {
   static const backupMyDictionaryListTimestamp = 'timestamp';
   static const backupMyDictionaryListVocab = 'vocab';
   static const backupMyDictionaryListKanji = 'kanji';
+  static const backupMyDictionaryListGrammar = 'grammar';
+  static const backupSpacedRepetitionDataItemId = 'item_id';
+  static const backupSpacedRepetitionDataItemType = 'item_type';
+  static const backupSpacedRepetitionDataFrontType = 'front_type';
   static const backupSpacedRepetitionDataInterval = 'interval';
   static const backupSpacedRepetitionDataRepetitions = 'repetitions';
   static const backupSpacedRepetitionDataEaseFactor = 'ease_factor';
@@ -116,4 +126,5 @@ class SagaseDictionaryConstants {
   static const exportMyListName = 'name';
   static const exportMyListVocab = 'vocab';
   static const exportMyListKanji = 'kanji';
+  static const exportMyListGrammar = 'grammar';
 }

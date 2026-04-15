@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_list.dart';
 import 'package:sagase_dictionary/src/utils/constants.dart';
+import 'package:sagase_dictionary/src/utils/enums.dart';
 
 @UseRowClass(MyDictionaryList)
 class MyDictionaryLists extends Table {
@@ -22,6 +23,7 @@ class MyDictionaryList extends DictionaryList {
     // Lists included for convenience while importing/exporting
     super.vocab = const [],
     super.kanji = const [],
+    super.grammar = const [],
   });
 
   MyDictionaryList copyWith({
@@ -30,6 +32,7 @@ class MyDictionaryList extends DictionaryList {
     DateTime? timestamp,
     List<int>? vocab,
     List<int>? kanji,
+    List<int>? grammar,
   }) {
     return MyDictionaryList(
       id: id ?? this.id,
@@ -37,6 +40,7 @@ class MyDictionaryList extends DictionaryList {
       timestamp: timestamp ?? this.timestamp,
       vocab: vocab ?? this.vocab,
       kanji: kanji ?? this.kanji,
+      grammar: grammar ?? this.grammar,
     );
   }
 
@@ -49,6 +53,7 @@ class MyDictionaryList extends DictionaryList {
             timestamp.millisecondsSinceEpoch,
         SagaseDictionaryConstants.backupMyDictionaryListVocab: vocab,
         SagaseDictionaryConstants.backupMyDictionaryListKanji: kanji,
+        SagaseDictionaryConstants.backupMyDictionaryListGrammar: grammar,
       },
     );
   }
@@ -65,6 +70,9 @@ class MyDictionaryList extends DictionaryList {
           .cast<int>(),
       kanji: map[SagaseDictionaryConstants.backupMyDictionaryListKanji]
           .cast<int>(),
+      grammar:
+          (map[SagaseDictionaryConstants.backupMyDictionaryListGrammar] ?? [])
+              .cast<int>(),
     );
   }
 
@@ -76,6 +84,7 @@ class MyDictionaryList extends DictionaryList {
         SagaseDictionaryConstants.exportMyListName: name,
         SagaseDictionaryConstants.exportMyListVocab: vocab,
         SagaseDictionaryConstants.exportMyListKanji: kanji,
+        SagaseDictionaryConstants.exportMyListGrammar: grammar,
       },
     );
   }
@@ -99,21 +108,25 @@ class MyDictionaryList extends DictionaryList {
       timestamp: DateTime.now(),
       vocab: map[SagaseDictionaryConstants.exportMyListVocab].cast<int>(),
       kanji: map[SagaseDictionaryConstants.exportMyListKanji].cast<int>(),
+      grammar: (map[SagaseDictionaryConstants.exportMyListGrammar] ?? [])
+          .cast<int>(),
     );
   }
 }
 
 @TableIndex(name: 'IX_my_dictionary_list_items_list_id', columns: {#listId})
+@TableIndex(
+  name: 'IX_my_dictionary_list_items_item_id_type',
+  columns: {#itemId, #itemType},
+)
 class MyDictionaryListItems extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get listId => integer()();
-  IntColumn get vocabId => integer().customConstraint(
-      'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )')();
-  IntColumn get kanjiId => integer().customConstraint(
-      'NOT NULL DEFAULT 0 CHECK( IIF(vocab_id = 0, 1, 0) + IIF(kanji_id = 0, 1, 0) = 1 )')();
+  IntColumn get itemId => integer()();
+  IntColumn get itemType => intEnum<DictionaryItemType>()();
 
   @override
   List<Set<Column>> get uniqueKeys => [
-        {listId, vocabId, kanjiId},
+        {listId, itemId, itemType},
       ];
 }

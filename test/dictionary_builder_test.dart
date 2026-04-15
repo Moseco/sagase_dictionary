@@ -25,6 +25,7 @@ void main() {
         shortKanjiListData,
         shortPitchAccentData,
         shortFrequencyListData,
+        shortGrammarInput,
       );
 
       await DictionaryBuilder.createProperNounDictionary(
@@ -774,15 +775,21 @@ void main() {
 
     test('Predefined dictionary lists', () async {
       // Predefined dictionary lists
-      final n5List = await database.predefinedDictionaryListsDao
+      final n5VocabList = await database.predefinedDictionaryListsDao
           .get(SagaseDictionaryConstants.dictionaryListIdJlptVocabN5);
-      expect(n5List.vocab.length, 1);
-      expect(n5List.vocab[0], 1578850);
+      expect(n5VocabList.vocab.length, 1);
+      expect(n5VocabList.vocab[0], 1578850);
 
       final jouyouList = await database.predefinedDictionaryListsDao
           .get(SagaseDictionaryConstants.dictionaryListIdJouyou);
       expect(jouyouList.kanji.length, 1);
       expect(jouyouList.kanji[0], '亜'.kanjiCodePoint());
+
+      final n5GrammarList = await database.predefinedDictionaryListsDao
+          .get(SagaseDictionaryConstants.dictionaryListIdJlptGrammarN5);
+      expect(n5GrammarList.grammar.length, 2);
+      expect(n5GrammarList.grammar[0], 1);
+      expect(n5GrammarList.grammar[1], 2);
     });
 
     test('Proper nouns', () async {
@@ -900,6 +907,27 @@ void main() {
       expect(properNounRomajiWords[7].word, '2006-2007');
       expect(properNounRomajiWords[8].word, 'and');
       expect(properNounRomajiWords[9].word, '2012-2020');
+    });
+
+    test('Grammar', () async {
+      final grammarList = await database.select(database.grammars).get();
+
+      expect(grammarList[0].id, 1);
+      expect(grammarList[0].form, 'です');
+      expect(grammarList[0].meaning, 'to be');
+      expect(grammarList[0].construction, null);
+      expect(grammarList[0].jlptLevel, 5);
+      expect(grammarList[0].content, null);
+      expect(grammarList[0].practice, null);
+
+      expect(grammarList[1].id, 2);
+      expect(grammarList[1].form, 'ほうがいい');
+      expect(grammarList[1].meaning, 'It would be better to...');
+      expect(grammarList[1].construction,
+          'Verb (past tense or negative present) + ほうがいい');
+      expect(grammarList[1].jlptLevel, 5);
+      expect(grammarList[1].content, isNotNull);
+      expect(grammarList[1].practice, isNotNull);
     });
   });
 }

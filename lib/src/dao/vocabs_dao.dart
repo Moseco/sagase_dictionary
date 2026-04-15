@@ -29,7 +29,9 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
             leftOuterJoin(
                 db.spacedRepetitionDatas,
                 Expression.and([
-                  db.spacedRepetitionDatas.vocabId.equals(id),
+                  db.spacedRepetitionDatas.itemId.equals(id),
+                  db.spacedRepetitionDatas.itemType
+                      .equals(DictionaryItemType.vocab.index),
                   db.spacedRepetitionDatas.frontType.equals(frontType.index),
                 ]))
           ])
@@ -81,7 +83,9 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
         leftOuterJoin(
             db.spacedRepetitionDatas,
             Expression.and([
-              db.spacedRepetitionDatas.vocabId.equalsExp(db.vocabs.id),
+              db.spacedRepetitionDatas.itemId.equalsExp(db.vocabs.id),
+              db.spacedRepetitionDatas.itemType
+                  .equals(DictionaryItemType.vocab.index),
               db.spacedRepetitionDatas.frontType.equals(frontType.index),
             ]))
       ]).map(

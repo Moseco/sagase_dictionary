@@ -182,8 +182,12 @@ void main() {
           );
           expect(kanjiList[0].kanji, '亜');
           expect(
-            kanjiList[0].spacedRepetitionData!.kanjiId,
+            kanjiList[0].spacedRepetitionData!.itemId,
             '亜'.kanjiCodePoint(),
+          );
+          expect(
+            kanjiList[0].spacedRepetitionData!.itemType,
+            DictionaryItemType.kanji,
           );
           expect(
             kanjiList[0].spacedRepetitionData!.frontType,
@@ -215,8 +219,12 @@ void main() {
           );
           expect(kanjiList[0].kanji, '亜');
           expect(
-            kanjiList[0].spacedRepetitionData!.kanjiId,
+            kanjiList[0].spacedRepetitionData!.itemId,
             '亜'.kanjiCodePoint(),
+          );
+          expect(
+            kanjiList[0].spacedRepetitionData!.itemType,
+            DictionaryItemType.kanji,
           );
           expect(
             kanjiList[0].spacedRepetitionData!.frontType,
@@ -224,8 +232,12 @@ void main() {
           );
           expect(kanjiList[1].kanji, '悪');
           expect(
-            kanjiList[1].spacedRepetitionData!.kanjiId,
+            kanjiList[1].spacedRepetitionData!.itemId,
             '悪'.kanjiCodePoint(),
+          );
+          expect(
+            kanjiList[0].spacedRepetitionData!.itemType,
+            DictionaryItemType.kanji,
           );
           expect(
             kanjiList[1].spacedRepetitionData!.frontType,
@@ -268,10 +280,14 @@ void main() {
             frontType: FrontType.english,
           );
           expect(kanji[0].kanji, '亜');
-          expect(kanji[0].spacedRepetitionData!.kanjiId, '亜'.kanjiCodePoint());
+          expect(kanji[0].spacedRepetitionData!.itemId, '亜'.kanjiCodePoint());
+          expect(kanji[0].spacedRepetitionData!.itemType,
+              DictionaryItemType.kanji);
           expect(kanji[0].spacedRepetitionData!.frontType, FrontType.english);
           expect(kanji[1].kanji, '悪');
-          expect(kanji[1].spacedRepetitionData!.kanjiId, '悪'.kanjiCodePoint());
+          expect(kanji[1].spacedRepetitionData!.itemId, '悪'.kanjiCodePoint());
+          expect(kanji[1].spacedRepetitionData!.itemType,
+              DictionaryItemType.kanji);
           expect(kanji[1].spacedRepetitionData!.frontType, FrontType.english);
         });
       });
