@@ -5518,6 +5518,194 @@ class MyDictionaryListItemsCompanion
   }
 }
 
+class KanjiComponentConnections extends Table
+    with TableInfo<KanjiComponentConnections, KanjiComponentConnectionsData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  KanjiComponentConnections(this.attachedDatabase, [this._alias]);
+  late final GeneratedColumn<int> kanjiId = GeneratedColumn<int>(
+      'kanji_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  late final GeneratedColumn<int> componentCodePoint = GeneratedColumn<int>(
+      'component_code_point', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  @override
+  List<GeneratedColumn> get $columns => [kanjiId, componentCodePoint];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'kanji_component_connections';
+  @override
+  Set<GeneratedColumn> get $primaryKey => {componentCodePoint, kanjiId};
+  @override
+  KanjiComponentConnectionsData map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return KanjiComponentConnectionsData(
+      kanjiId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}kanji_id'])!,
+      componentCodePoint: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}component_code_point'])!,
+    );
+  }
+
+  @override
+  KanjiComponentConnections createAlias(String alias) {
+    return KanjiComponentConnections(attachedDatabase, alias);
+  }
+
+  @override
+  List<String> get customConstraints =>
+      const ['PRIMARY KEY(component_code_point, kanji_id)'];
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class KanjiComponentConnectionsData extends DataClass
+    implements Insertable<KanjiComponentConnectionsData> {
+  final int kanjiId;
+  final int componentCodePoint;
+  const KanjiComponentConnectionsData(
+      {required this.kanjiId, required this.componentCodePoint});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['kanji_id'] = Variable<int>(kanjiId);
+    map['component_code_point'] = Variable<int>(componentCodePoint);
+    return map;
+  }
+
+  KanjiComponentConnectionsCompanion toCompanion(bool nullToAbsent) {
+    return KanjiComponentConnectionsCompanion(
+      kanjiId: Value(kanjiId),
+      componentCodePoint: Value(componentCodePoint),
+    );
+  }
+
+  factory KanjiComponentConnectionsData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return KanjiComponentConnectionsData(
+      kanjiId: serializer.fromJson<int>(json['kanjiId']),
+      componentCodePoint: serializer.fromJson<int>(json['componentCodePoint']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'kanjiId': serializer.toJson<int>(kanjiId),
+      'componentCodePoint': serializer.toJson<int>(componentCodePoint),
+    };
+  }
+
+  KanjiComponentConnectionsData copyWith(
+          {int? kanjiId, int? componentCodePoint}) =>
+      KanjiComponentConnectionsData(
+        kanjiId: kanjiId ?? this.kanjiId,
+        componentCodePoint: componentCodePoint ?? this.componentCodePoint,
+      );
+  KanjiComponentConnectionsData copyWithCompanion(
+      KanjiComponentConnectionsCompanion data) {
+    return KanjiComponentConnectionsData(
+      kanjiId: data.kanjiId.present ? data.kanjiId.value : this.kanjiId,
+      componentCodePoint: data.componentCodePoint.present
+          ? data.componentCodePoint.value
+          : this.componentCodePoint,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KanjiComponentConnectionsData(')
+          ..write('kanjiId: $kanjiId, ')
+          ..write('componentCodePoint: $componentCodePoint')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(kanjiId, componentCodePoint);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is KanjiComponentConnectionsData &&
+          other.kanjiId == this.kanjiId &&
+          other.componentCodePoint == this.componentCodePoint);
+}
+
+class KanjiComponentConnectionsCompanion
+    extends UpdateCompanion<KanjiComponentConnectionsData> {
+  final Value<int> kanjiId;
+  final Value<int> componentCodePoint;
+  final Value<int> rowid;
+  const KanjiComponentConnectionsCompanion({
+    this.kanjiId = const Value.absent(),
+    this.componentCodePoint = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  KanjiComponentConnectionsCompanion.insert({
+    required int kanjiId,
+    required int componentCodePoint,
+    this.rowid = const Value.absent(),
+  })  : kanjiId = Value(kanjiId),
+        componentCodePoint = Value(componentCodePoint);
+  static Insertable<KanjiComponentConnectionsData> custom({
+    Expression<int>? kanjiId,
+    Expression<int>? componentCodePoint,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (kanjiId != null) 'kanji_id': kanjiId,
+      if (componentCodePoint != null)
+        'component_code_point': componentCodePoint,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  KanjiComponentConnectionsCompanion copyWith(
+      {Value<int>? kanjiId,
+      Value<int>? componentCodePoint,
+      Value<int>? rowid}) {
+    return KanjiComponentConnectionsCompanion(
+      kanjiId: kanjiId ?? this.kanjiId,
+      componentCodePoint: componentCodePoint ?? this.componentCodePoint,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (kanjiId.present) {
+      map['kanji_id'] = Variable<int>(kanjiId.value);
+    }
+    if (componentCodePoint.present) {
+      map['component_code_point'] = Variable<int>(componentCodePoint.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KanjiComponentConnectionsCompanion(')
+          ..write('kanjiId: $kanjiId, ')
+          ..write('componentCodePoint: $componentCodePoint, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class KanjiNotes extends Table with TableInfo<KanjiNotes, KanjiNotesData> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -7245,6 +7433,8 @@ class DatabaseAtV5 extends GeneratedDatabase {
   late final Index iXMyDictionaryListItemsItemIdType = Index(
       'IX_my_dictionary_list_items_item_id_type',
       'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)');
+  late final KanjiComponentConnections kanjiComponentConnections =
+      KanjiComponentConnections(this);
   late final KanjiNotes kanjiNotes = KanjiNotes(this);
   late final Grammars grammars = Grammars(this);
   late final FlashcardSets flashcardSets = FlashcardSets(this);
@@ -7317,6 +7507,7 @@ class DatabaseAtV5 extends GeneratedDatabase {
         myDictionaryListItems,
         iXMyDictionaryListItemsListId,
         iXMyDictionaryListItemsItemIdType,
+        kanjiComponentConnections,
         kanjiNotes,
         grammars,
         flashcardSets,

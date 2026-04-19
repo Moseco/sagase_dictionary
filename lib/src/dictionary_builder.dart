@@ -1881,6 +1881,51 @@ class DictionaryBuilder {
       }
     });
 
+    // Add kanji component connections
+    await db.transaction(() async {
+      Map<String, dynamic> kanjiComponentMap = jsonDecode(kanjiComponentData);
+
+      final allRadicals = await db.select(db.radicals).get();
+      final radicalsByChar = {for (var r in allRadicals) r.radical: r};
+
+      final connections = <KanjiComponentConnectionsCompanion>[];
+
+      for (var entry in kanjiComponentMap.entries) {
+        final kanjiCodePoint = entry.key.kanjiCodePoint();
+
+        final componentCodePoints = <int>{};
+
+        for (String componentString in entry.value) {
+          var radical = radicalsByChar[componentString];
+          if (radical == null) continue;
+
+          if (radical.variantOf != null) {
+            final main = radicalsByChar[radical.variantOf!];
+            if (main == null) continue;
+            radical = main;
+          }
+
+          // Only index classical 214 Kangxi radicals
+          if (radical.kangxiId == null) continue;
+
+          componentCodePoints.add(radical.radical.kanjiCodePoint());
+        }
+
+        for (final codePoint in componentCodePoints) {
+          connections.add(
+            KanjiComponentConnectionsCompanion.insert(
+              kanjiId: kanjiCodePoint,
+              componentCodePoint: codePoint,
+            ),
+          );
+        }
+      }
+
+      await db.batch((batch) {
+        batch.insertAll(db.kanjiComponentConnections, connections);
+      });
+    });
+
     // Add stroke data
     return db.transaction(() async {
       Map<String, dynamic> strokeMap = jsonDecode(strokeData);

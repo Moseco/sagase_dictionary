@@ -309,6 +309,75 @@ void main() {
       expect(kanjiList[2].kanji, '亞');
     });
 
+    group('getAllWithComponents', () {
+      test('Empty list returns empty', () async {
+        final results = await database.kanjisDao.getAllWithComponents([]);
+        expect(results, isEmpty);
+      });
+
+      test('Component not present in any kanji returns empty', () async {
+        final results = await database.kanjisDao.getAllWithComponents(['行']);
+        expect(results, isEmpty);
+      });
+
+      test('Single component matching one kanji', () async {
+        final results = await database.kanjisDao.getAllWithComponents(['心']);
+        expect(results.length, 1);
+        expect(results[0].kanji, '悪');
+      });
+
+      test('Single component matching multiple kanji ordered by stroke count',
+          () async {
+        final results = await database.kanjisDao.getAllWithComponents(['一']);
+        expect(results.length, 3);
+        expect(results[0].kanji, '亜');
+        expect(results[1].kanji, '亞');
+        expect(results[2].kanji, '悪');
+      });
+
+      test('Multiple components returns multiple kanji containing all of them',
+          () async {
+        final results =
+            await database.kanjisDao.getAllWithComponents(['一', '口']);
+        expect(results.length, 2);
+        expect(results[0].kanji, '亜');
+        expect(results[1].kanji, '悪');
+      });
+
+      test('Multiple components returns single kanji containing all of them',
+          () async {
+        final results =
+            await database.kanjisDao.getAllWithComponents(['一', '口', '心']);
+        expect(results.length, 1);
+        expect(results[0].kanji, '悪');
+      });
+
+      test('Components with no common kanji returns empty', () async {
+        final results =
+            await database.kanjisDao.getAllWithComponents(['心', '二']);
+        expect(results, isEmpty);
+      });
+
+      test('Duplicate components in input treated as single', () async {
+        final results =
+            await database.kanjisDao.getAllWithComponents(['一', '一']);
+        expect(results.length, 3);
+        expect(results[0].kanji, '亜');
+        expect(results[1].kanji, '亞');
+        expect(results[2].kanji, '悪');
+      });
+
+      test('Results include populated readings', () async {
+        final results = await database.kanjisDao.getAllWithComponents(['心']);
+        expect(results.length, 1);
+        expect(results[0].kanji, '悪');
+        expect(results[0].onReadings!.length, 2);
+        expect(results[0].onReadings![0].reading, 'アク');
+        expect(results[0].kunReadings!.length, 9);
+        expect(results[0].kunReadings![0].reading, 'わる.い');
+      });
+    });
+
     group('search', () {
       test('Single kanji', () async {
         final results = await database.kanjisDao.search('悪');

@@ -2851,6 +2851,7 @@ final class Schema5 extends i0.VersionedSchema {
     myDictionaryListItems,
     iXMyDictionaryListItemsListId,
     iXMyDictionaryListItemsItemIdType,
+    kanjiComponentConnections,
     kanjiNotes,
     grammars,
     flashcardSets,
@@ -3231,6 +3232,21 @@ final class Schema5 extends i0.VersionedSchema {
   final i1.Index iXMyDictionaryListItemsItemIdType = i1.Index(
       'IX_my_dictionary_list_items_item_id_type',
       'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)');
+  late final Shape34 kanjiComponentConnections = Shape34(
+      source: i0.VersionedTable(
+        entityName: 'kanji_component_connections',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(component_code_point, kanji_id)',
+        ],
+        columns: [
+          _column_123,
+          _column_175,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
   late final Shape8 kanjiNotes = Shape8(
       source: i0.VersionedTable(
         entityName: 'kanji_notes',
@@ -3246,7 +3262,7 @@ final class Schema5 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape34 grammars = Shape34(
+  late final Shape35 grammars = Shape35(
       source: i0.VersionedTable(
         entityName: 'grammars',
         withoutRowId: false,
@@ -3254,12 +3270,12 @@ final class Schema5 extends i0.VersionedSchema {
         tableConstraints: [],
         columns: [
           _column_86,
-          _column_175,
-          _column_141,
           _column_176,
+          _column_141,
           _column_177,
           _column_178,
           _column_179,
+          _column_180,
         ],
         attachedDatabase: database,
       ),
@@ -3398,6 +3414,18 @@ class Shape33 extends i0.VersionedTable {
 
 class Shape34 extends i0.VersionedTable {
   Shape34({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get kanjiId =>
+      columnsByName['kanji_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get componentCodePoint =>
+      columnsByName['component_code_point']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<int> _column_175(String aliasedName) =>
+    i1.GeneratedColumn<int>('component_code_point', aliasedName, false,
+        type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
+
+class Shape35 extends i0.VersionedTable {
+  Shape35({required super.source, required super.alias}) : super.aliased();
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<String> get form =>
@@ -3414,19 +3442,19 @@ class Shape34 extends i0.VersionedTable {
       columnsByName['practice']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_175(String aliasedName) =>
+i1.GeneratedColumn<String> _column_176(String aliasedName) =>
     i1.GeneratedColumn<String>('form', aliasedName, false,
         type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_176(String aliasedName) =>
+i1.GeneratedColumn<String> _column_177(String aliasedName) =>
     i1.GeneratedColumn<String>('construction', aliasedName, true,
         type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<int> _column_177(String aliasedName) =>
+i1.GeneratedColumn<int> _column_178(String aliasedName) =>
     i1.GeneratedColumn<int>('jlpt_level', aliasedName, false,
         type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_178(String aliasedName) =>
+i1.GeneratedColumn<String> _column_179(String aliasedName) =>
     i1.GeneratedColumn<String>('content', aliasedName, true,
         type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<String> _column_179(String aliasedName) =>
+i1.GeneratedColumn<String> _column_180(String aliasedName) =>
     i1.GeneratedColumn<String>('practice', aliasedName, true,
         type: i1.DriftSqlType.string, $customConstraints: 'NULL');
 i0.MigrationStepWithVersion migrationSteps({

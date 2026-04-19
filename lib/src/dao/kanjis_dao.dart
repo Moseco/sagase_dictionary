@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:kana_kit/kana_kit.dart';
 import 'package:sagase_dictionary/src/database.dart';
 import 'package:sagase_dictionary/src/datamodels/kanji/kanji_notes.dart';
+import 'package:sagase_dictionary/src/datamodels/kanji_component_connections.dart';
 import 'package:sagase_dictionary/src/datamodels/kanjis.dart';
 import 'package:sagase_dictionary/src/datamodels/spaced_repetition_datas.dart';
 import 'package:sagase_dictionary/src/utils/enums.dart';
@@ -9,7 +10,12 @@ import 'package:sagase_dictionary/src/utils/string_utils.dart';
 
 part 'kanjis_dao.g.dart';
 
-@DriftAccessor(tables: [Kanjis, KanjiReadings, SpacedRepetitionDatas])
+@DriftAccessor(tables: [
+  Kanjis,
+  KanjiReadings,
+  SpacedRepetitionDatas,
+  KanjiComponentConnections,
+])
 class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
   final _kanaKit = const KanaKit().copyWithConfig(passRomaji: true);
 
@@ -250,6 +256,38 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
             (kanji) => OrderingTerm.asc(kanji.strokeCount),
             (kanji) => OrderingTerm.asc(kanji.frequency),
           ]))
+        .get();
+
+    return _getAllFromBase(kanjiList);
+  }
+
+  Future<List<Kanji>> getAllWithComponents(List<String> components) async {
+    if (components.isEmpty) return [];
+
+    final codePoints =
+        components.map((c) => c.kanjiCodePoint()).toSet().toList();
+
+    final kanjiList = await (db.select(db.kanjis).join([
+      innerJoin(
+        db.kanjiComponentConnections,
+        db.kanjiComponentConnections.kanjiId.equalsExp(db.kanjis.id),
+        useColumns: false,
+      ),
+    ])
+          ..where(
+              db.kanjiComponentConnections.componentCodePoint.isIn(codePoints))
+          ..groupBy(
+            [db.kanjis.id],
+            having: db.kanjiComponentConnections.componentCodePoint
+                .count(distinct: true)
+                .equals(codePoints.length),
+          )
+          ..orderBy([
+            OrderingTerm.asc(db.kanjis.strokeCount),
+            OrderingTerm.asc(db.kanjis.frequency, nulls: NullsOrder.last),
+          ])
+          ..limit(100))
+        .map((row) => row.readTable(db.kanjis))
         .get();
 
     return _getAllFromBase(kanjiList);
