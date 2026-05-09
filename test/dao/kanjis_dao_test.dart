@@ -27,6 +27,7 @@ void main() {
         database,
         shortKanjidic2,
         shortKanjiComponentData,
+        shortKradfile,
         shortKanjiStrokeData,
       );
     });

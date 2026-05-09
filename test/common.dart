@@ -1576,6 +1576,14 @@ const shortKanjiListData = '''{
 }
 ''';
 
+const shortKradfile = '''
+# KRADFILE excerpt for testing
+亜 : ｜ 一 口
+悪 : ｜ 一 口 心
+亞 : 一 二
+行 : ｜ 彳 亍
+''';
+
 const shortEnamdict = '''さくら /(f) Sakura/
 たなかさくら /(h) Tanaka Sakura/
 東京 [とうきょう] /(p,s) Tokyo/

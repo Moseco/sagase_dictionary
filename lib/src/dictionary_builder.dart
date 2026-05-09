@@ -27,6 +27,7 @@ class DictionaryBuilder {
     String radicals,
     String strokeData,
     String kanjiComponentData,
+    String kradfile,
     String vocabLists,
     String kanjiLists,
     String pitchAccents,
@@ -62,6 +63,7 @@ class DictionaryBuilder {
       db,
       kanjiDict,
       kanjiComponentData,
+      kradfile,
       strokeData,
       showProgress: showProgress,
     );
@@ -1643,6 +1645,7 @@ class DictionaryBuilder {
     AppDatabase db,
     String kanjiDict,
     String kanjiComponentData,
+    String kradfile,
     String strokeData, {
     bool showProgress = false,
   }) async {
@@ -1883,39 +1886,25 @@ class DictionaryBuilder {
 
     // Add kanji component connections
     await db.transaction(() async {
-      Map<String, dynamic> kanjiComponentMap = jsonDecode(kanjiComponentData);
-
-      final allRadicals = await db.select(db.radicals).get();
-      final radicalsByChar = {for (var r in allRadicals) r.radical: r};
-
       final connections = <KanjiComponentConnectionsCompanion>[];
 
-      for (var entry in kanjiComponentMap.entries) {
-        final kanjiCodePoint = entry.key.kanjiCodePoint();
+      for (final line in kradfile.split('\n')) {
+        if (line.startsWith('#') || line.trim().isEmpty) continue;
 
-        final componentCodePoints = <int>{};
+        final parts = line.split(' : ');
+        if (parts.length != 2) continue;
 
-        for (String componentString in entry.value) {
-          var radical = radicalsByChar[componentString];
-          if (radical == null) continue;
+        final kanji = parts[0].trim();
+        final components = parts[1].trim().split(' ');
 
-          if (radical.variantOf != null) {
-            final main = radicalsByChar[radical.variantOf!];
-            if (main == null) continue;
-            radical = main;
-          }
+        final kanjiCodePoint = kanji.kanjiCodePoint();
 
-          // Only index classical 214 Kangxi radicals
-          if (radical.kangxiId == null) continue;
-
-          componentCodePoints.add(radical.radical.kanjiCodePoint());
-        }
-
-        for (final codePoint in componentCodePoints) {
+        for (final component in components) {
+          if (component.isEmpty) continue;
           connections.add(
             KanjiComponentConnectionsCompanion.insert(
               kanjiId: kanjiCodePoint,
-              componentCodePoint: codePoint,
+              componentCodePoint: component.kanjiCodePoint(),
             ),
           );
         }
