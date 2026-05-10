@@ -7437,6 +7437,9 @@ class DatabaseAtV5 extends GeneratedDatabase {
       'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)');
   late final KanjiComponentConnections kanjiComponentConnections =
       KanjiComponentConnections(this);
+  late final Index iXKanjiComponentConnectionsKanji = Index(
+      'IX_kanji_component_connections_kanji',
+      'CREATE INDEX IX_kanji_component_connections_kanji ON kanji_component_connections (kanji_code_point)');
   late final KanjiNotes kanjiNotes = KanjiNotes(this);
   late final Grammars grammars = Grammars(this);
   late final FlashcardSets flashcardSets = FlashcardSets(this);
@@ -7510,6 +7513,7 @@ class DatabaseAtV5 extends GeneratedDatabase {
         iXMyDictionaryListItemsListId,
         iXMyDictionaryListItemsItemIdType,
         kanjiComponentConnections,
+        iXKanjiComponentConnectionsKanji,
         kanjiNotes,
         grammars,
         flashcardSets,

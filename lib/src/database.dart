@@ -150,11 +150,11 @@ class AppDatabase extends _$AppDatabase {
           await m.drop(Index('IX_my_dictionary_list_items_vocab_id', ''));
           await m.drop(Index('IX_my_dictionary_list_items_kanji_id', ''));
           await m.alterTable(TableMigration(schema.myDictionaryListItems));
-          await m.createIndex(Index('IX_my_dictionary_list_items_item_id_type',
-              'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)'));
+          await m.createIndex(schema.iXMyDictionaryListItemsItemIdType);
 
           await m.createTable(schema.grammars);
           await m.createTable(schema.kanjiComponentConnections);
+          await m.createIndex(schema.iXKanjiComponentConnectionsKanji);
 
           await m.alterTable(
             TableMigration(

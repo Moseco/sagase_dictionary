@@ -2852,6 +2852,7 @@ final class Schema5 extends i0.VersionedSchema {
     iXMyDictionaryListItemsListId,
     iXMyDictionaryListItemsItemIdType,
     kanjiComponentConnections,
+    iXKanjiComponentConnectionsKanji,
     kanjiNotes,
     grammars,
     flashcardSets,
@@ -3247,6 +3248,9 @@ final class Schema5 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
+  final i1.Index iXKanjiComponentConnectionsKanji = i1.Index(
+      'IX_kanji_component_connections_kanji',
+      'CREATE INDEX IX_kanji_component_connections_kanji ON kanji_component_connections (kanji_code_point)');
   late final Shape8 kanjiNotes = Shape8(
       source: i0.VersionedTable(
         entityName: 'kanji_notes',
