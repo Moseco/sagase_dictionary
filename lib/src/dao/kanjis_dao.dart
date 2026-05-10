@@ -273,7 +273,7 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
     final kanji = await (db.select(db.kanjis).join([
       innerJoin(
         db.kanjiComponentConnections,
-        db.kanjiComponentConnections.kanjiId.equalsExp(db.kanjis.id),
+        db.kanjiComponentConnections.kanjiCodePoint.equalsExp(db.kanjis.id),
         useColumns: false,
       ),
     ])
@@ -297,11 +297,11 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
     }
 
     final matchingIds = db.selectOnly(db.kanjiComponentConnections)
-      ..addColumns([db.kanjiComponentConnections.kanjiId])
+      ..addColumns([db.kanjiComponentConnections.kanjiCodePoint])
       ..where(db.kanjiComponentConnections.componentCodePoint
           .isIn(selectedCodePoints))
       ..groupBy(
-        [db.kanjiComponentConnections.kanjiId],
+        [db.kanjiComponentConnections.kanjiCodePoint],
         having: db.kanjiComponentConnections.componentCodePoint
             .count(distinct: true)
             .equals(selectedCodePoints.length),
@@ -310,7 +310,8 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
     final validComponents = await (db.selectOnly(db.kanjiComponentConnections,
             distinct: true)
           ..addColumns([db.kanjiComponentConnections.componentCodePoint])
-          ..where(db.kanjiComponentConnections.kanjiId.isInQuery(matchingIds))
+          ..where(db.kanjiComponentConnections.kanjiCodePoint
+              .isInQuery(matchingIds))
           ..orderBy([
             OrderingTerm.asc(db.kanjiComponentConnections.componentCodePoint)
           ]))

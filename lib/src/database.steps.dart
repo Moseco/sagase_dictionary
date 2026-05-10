@@ -3238,11 +3238,11 @@ final class Schema5 extends i0.VersionedSchema {
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
-          'PRIMARY KEY(component_code_point, kanji_id)',
+          'PRIMARY KEY(component_code_point, kanji_code_point)',
         ],
         columns: [
-          _column_123,
           _column_175,
+          _column_176,
         ],
         attachedDatabase: database,
       ),
@@ -3270,12 +3270,12 @@ final class Schema5 extends i0.VersionedSchema {
         tableConstraints: [],
         columns: [
           _column_86,
-          _column_176,
-          _column_141,
           _column_177,
+          _column_141,
           _column_178,
           _column_179,
           _column_180,
+          _column_181,
         ],
         attachedDatabase: database,
       ),
@@ -3414,13 +3414,16 @@ class Shape33 extends i0.VersionedTable {
 
 class Shape34 extends i0.VersionedTable {
   Shape34({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get kanjiId =>
-      columnsByName['kanji_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get kanjiCodePoint =>
+      columnsByName['kanji_code_point']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<int> get componentCodePoint =>
       columnsByName['component_code_point']! as i1.GeneratedColumn<int>;
 }
 
 i1.GeneratedColumn<int> _column_175(String aliasedName) =>
+    i1.GeneratedColumn<int>('kanji_code_point', aliasedName, false,
+        type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
+i1.GeneratedColumn<int> _column_176(String aliasedName) =>
     i1.GeneratedColumn<int>('component_code_point', aliasedName, false,
         type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
 
@@ -3442,19 +3445,19 @@ class Shape35 extends i0.VersionedTable {
       columnsByName['practice']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_176(String aliasedName) =>
+i1.GeneratedColumn<String> _column_177(String aliasedName) =>
     i1.GeneratedColumn<String>('form', aliasedName, false,
         type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_177(String aliasedName) =>
+i1.GeneratedColumn<String> _column_178(String aliasedName) =>
     i1.GeneratedColumn<String>('construction', aliasedName, true,
         type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<int> _column_178(String aliasedName) =>
+i1.GeneratedColumn<int> _column_179(String aliasedName) =>
     i1.GeneratedColumn<int>('jlpt_level', aliasedName, false,
         type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_179(String aliasedName) =>
+i1.GeneratedColumn<String> _column_180(String aliasedName) =>
     i1.GeneratedColumn<String>('content', aliasedName, true,
         type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<String> _column_180(String aliasedName) =>
+i1.GeneratedColumn<String> _column_181(String aliasedName) =>
     i1.GeneratedColumn<String>('practice', aliasedName, true,
         type: i1.DriftSqlType.string, $customConstraints: 'NULL');
 i0.MigrationStepWithVersion migrationSteps({

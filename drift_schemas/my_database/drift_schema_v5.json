@@ -2035,8 +2035,8 @@
         "was_declared_in_moor": false,
         "columns": [
           {
-            "name": "kanji_id",
-            "getter_name": "kanjiId",
+            "name": "kanji_code_point",
+            "getter_name": "kanjiCodePoint",
             "moor_type": "int",
             "nullable": false,
             "customConstraints": null,
@@ -2060,7 +2060,7 @@
         "constraints": [],
         "explicit_pk": [
           "component_code_point",
-          "kanji_id"
+          "kanji_code_point"
         ]
       }
     },
@@ -2998,7 +2998,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"kanji_component_connections\" (\"kanji_id\" INTEGER NOT NULL, \"component_code_point\" INTEGER NOT NULL, PRIMARY KEY (\"component_code_point\", \"kanji_id\"));"
+          "sql": "CREATE TABLE IF NOT EXISTS \"kanji_component_connections\" (\"kanji_code_point\" INTEGER NOT NULL, \"component_code_point\" INTEGER NOT NULL, PRIMARY KEY (\"component_code_point\", \"kanji_code_point\"));"
         }
       ]
     },

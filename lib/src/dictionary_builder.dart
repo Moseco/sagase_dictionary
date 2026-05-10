@@ -1903,7 +1903,7 @@ class DictionaryBuilder {
           if (component.isEmpty) continue;
           connections.add(
             KanjiComponentConnectionsCompanion.insert(
-              kanjiId: kanjiCodePoint,
+              kanjiCodePoint: kanjiCodePoint,
               componentCodePoint: component.kanjiCodePoint(),
             ),
           );
