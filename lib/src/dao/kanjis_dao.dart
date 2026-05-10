@@ -261,36 +261,65 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
     return _getAllFromBase(kanjiList);
   }
 
-  Future<List<Kanji>> getAllWithComponents(List<String> components) async {
-    if (components.isEmpty) return [];
+  Future<({List<String> kanji, List<String> validComponents})>
+      getAllWithComponents(List<String> components) async {
+    if (components.isEmpty) {
+      return (kanji: const <String>[], validComponents: const <String>[]);
+    }
 
-    final codePoints =
-        components.map((c) => c.kanjiCodePoint()).toSet().toList();
+    final selectedCodePoints =
+        components.map((c) => c.kanjiCodePoint()).toSet();
 
-    final kanjiList = await (db.select(db.kanjis).join([
+    final kanji = await (db.select(db.kanjis).join([
       innerJoin(
         db.kanjiComponentConnections,
         db.kanjiComponentConnections.kanjiId.equalsExp(db.kanjis.id),
         useColumns: false,
       ),
     ])
-          ..where(
-              db.kanjiComponentConnections.componentCodePoint.isIn(codePoints))
+          ..where(db.kanjiComponentConnections.componentCodePoint
+              .isIn(selectedCodePoints))
           ..groupBy(
             [db.kanjis.id],
             having: db.kanjiComponentConnections.componentCodePoint
                 .count(distinct: true)
-                .equals(codePoints.length),
+                .equals(selectedCodePoints.length),
           )
           ..orderBy([
             OrderingTerm.asc(db.kanjis.strokeCount),
             OrderingTerm.asc(db.kanjis.frequency, nulls: NullsOrder.last),
-          ])
-          ..limit(100))
-        .map((row) => row.readTable(db.kanjis))
+          ]))
+        .map((row) => row.readTable(db.kanjis).kanji)
         .get();
 
-    return _getAllFromBase(kanjiList);
+    if (kanji.isEmpty) {
+      return (kanji: const <String>[], validComponents: const <String>[]);
+    }
+
+    final matchingIds = db.selectOnly(db.kanjiComponentConnections)
+      ..addColumns([db.kanjiComponentConnections.kanjiId])
+      ..where(db.kanjiComponentConnections.componentCodePoint
+          .isIn(selectedCodePoints))
+      ..groupBy(
+        [db.kanjiComponentConnections.kanjiId],
+        having: db.kanjiComponentConnections.componentCodePoint
+            .count(distinct: true)
+            .equals(selectedCodePoints.length),
+      );
+
+    final validComponents = await (db.selectOnly(db.kanjiComponentConnections,
+            distinct: true)
+          ..addColumns([db.kanjiComponentConnections.componentCodePoint])
+          ..where(db.kanjiComponentConnections.kanjiId.isInQuery(matchingIds))
+          ..orderBy([
+            OrderingTerm.asc(db.kanjiComponentConnections.componentCodePoint)
+          ]))
+        .map((row) => row
+            .read(db.kanjiComponentConnections.componentCodePoint)!
+            .toKanjiString())
+        .get();
+
+    return (kanji: kanji, validComponents: validComponents);
   }
 
   Future<List<Kanji>> search(String text) async {

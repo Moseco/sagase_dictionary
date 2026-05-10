@@ -913,27 +913,21 @@ void main() {
     test('Kanji component connections', () async {
       // 口 appears in both 亜 and 悪
       final byMouth = await database.kanjisDao.getAllWithComponents(['口']);
-      expect(byMouth.length, 2);
-      expect(byMouth.any((k) => k.kanji == '亜'), true);
-      expect(byMouth.any((k) => k.kanji == '悪'), true);
+      expect(byMouth.kanji, containsAll(['亜', '悪']));
+      expect(byMouth.kanji.length, 2);
 
       // 心 appears only in 悪
       final byHeart = await database.kanjisDao.getAllWithComponents(['心']);
-      expect(byHeart.length, 1);
-      expect(byHeart[0].kanji, '悪');
+      expect(byHeart.kanji, ['悪']);
 
       // Requiring both 口 and 心 returns only 悪
       final byMouthAndHeart =
           await database.kanjisDao.getAllWithComponents(['口', '心']);
-      expect(byMouthAndHeart.length, 1);
-      expect(byMouthAndHeart[0].kanji, '悪');
+      expect(byMouthAndHeart.kanji, ['悪']);
 
       // ｜ appears in 亜, 悪, and 行 (ordered by stroke count ascending)
       final byStroke = await database.kanjisDao.getAllWithComponents(['｜']);
-      expect(byStroke.length, 3);
-      expect(byStroke[0].kanji, '行');
-      expect(byStroke[1].kanji, '亜');
-      expect(byStroke[2].kanji, '悪');
+      expect(byStroke.kanji, ['行', '亜', '悪']);
     });
 
     test('Grammar', () async {
