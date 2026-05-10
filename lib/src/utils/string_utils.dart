@@ -47,13 +47,3 @@ extension JapaneseTextHelpers on String {
     return diacritic.removeDiacritics(this);
   }
 }
-
-extension KanjiCodePointHelpers on int {
-  // Inverse of String.kanjiCodePoint() — reconstructs a kanji string from
-  // its packed UTF-16 code unit representation (high << 16 | low for surrogate
-  // pairs, or the single code unit otherwise).
-  String toKanjiString() {
-    if (this <= 0xFFFF) return String.fromCharCode(this);
-    return String.fromCharCodes([(this >> 16) & 0xFFFF, this & 0xFFFF]);
-  }
-}
