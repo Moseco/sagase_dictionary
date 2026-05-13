@@ -2031,6 +2031,63 @@
       "references": [],
       "type": "table",
       "data": {
+        "name": "kanji_component_connections",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "kanji_code_point",
+            "getter_name": "kanjiCodePoint",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "component_code_point",
+            "getter_name": "componentCodePoint",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "component_code_point",
+          "kanji_code_point"
+        ]
+      }
+    },
+    {
+      "id": 40,
+      "references": [
+        39
+      ],
+      "type": "index",
+      "data": {
+        "on": 39,
+        "name": "IX_kanji_component_connections_kanji",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "kanji_code_point",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 41,
+      "references": [],
+      "type": "table",
+      "data": {
         "name": "kanji_notes",
         "was_declared_in_moor": false,
         "columns": [
@@ -2064,7 +2121,7 @@
       }
     },
     {
-      "id": 40,
+      "id": 42,
       "references": [],
       "type": "table",
       "data": {
@@ -2154,7 +2211,7 @@
       }
     },
     {
-      "id": 41,
+      "id": 43,
       "references": [],
       "type": "table",
       "data": {
@@ -2368,7 +2425,7 @@
       }
     },
     {
-      "id": 42,
+      "id": 44,
       "references": [],
       "type": "table",
       "data": {
@@ -2448,13 +2505,13 @@
       }
     },
     {
-      "id": 43,
+      "id": 45,
       "references": [
-        42
+        44
       ],
       "type": "index",
       "data": {
-        "on": 42,
+        "on": 44,
         "name": "UX_flashcard_set_reports_flashcard_set_id_and_date",
         "sql": null,
         "unique": true,
@@ -2471,7 +2528,7 @@
       }
     },
     {
-      "id": 44,
+      "id": 46,
       "references": [],
       "type": "table",
       "data": {
@@ -2505,7 +2562,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 47,
       "references": [
         29
       ],
@@ -2519,7 +2576,7 @@
       }
     },
     {
-      "id": 46,
+      "id": 48,
       "references": [
         29
       ],
@@ -2533,7 +2590,7 @@
       }
     },
     {
-      "id": 47,
+      "id": 49,
       "references": [
         29
       ],
@@ -2547,7 +2604,7 @@
       }
     },
     {
-      "id": 48,
+      "id": 50,
       "references": [
         29
       ],
@@ -2561,7 +2618,7 @@
       }
     },
     {
-      "id": 49,
+      "id": 51,
       "references": [
         29
       ],
@@ -2575,7 +2632,7 @@
       }
     },
     {
-      "id": 50,
+      "id": 52,
       "references": [
         16
       ],
@@ -2589,7 +2646,7 @@
       }
     },
     {
-      "id": 51,
+      "id": 53,
       "references": [
         16
       ],
@@ -2952,6 +3009,24 @@
         {
           "dialect": "sqlite",
           "sql": "CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)"
+        }
+      ]
+    },
+    {
+      "name": "kanji_component_connections",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"kanji_component_connections\" (\"kanji_code_point\" INTEGER NOT NULL, \"component_code_point\" INTEGER NOT NULL, PRIMARY KEY (\"component_code_point\", \"kanji_code_point\"));"
+        }
+      ]
+    },
+    {
+      "name": "IX_kanji_component_connections_kanji",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX IX_kanji_component_connections_kanji ON kanji_component_connections (kanji_code_point)"
         }
       ]
     },

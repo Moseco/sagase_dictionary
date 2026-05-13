@@ -27,6 +27,7 @@ class DictionaryBuilder {
     String radicals,
     String strokeData,
     String kanjiComponentData,
+    String kradfile,
     String vocabLists,
     String kanjiLists,
     String pitchAccents,
@@ -62,6 +63,7 @@ class DictionaryBuilder {
       db,
       kanjiDict,
       kanjiComponentData,
+      kradfile,
       strokeData,
       showProgress: showProgress,
     );
@@ -1643,6 +1645,7 @@ class DictionaryBuilder {
     AppDatabase db,
     String kanjiDict,
     String kanjiComponentData,
+    String kradfile,
     String strokeData, {
     bool showProgress = false,
   }) async {
@@ -1879,6 +1882,37 @@ class DictionaryBuilder {
           ),
         );
       }
+    });
+
+    // Add kanji component connections
+    await db.transaction(() async {
+      final connections = <KanjiComponentConnectionsCompanion>[];
+
+      for (final line in kradfile.split('\n')) {
+        if (line.startsWith('#') || line.trim().isEmpty) continue;
+
+        final parts = line.split(' : ');
+        if (parts.length != 2) continue;
+
+        final kanji = parts[0].trim();
+        final components = parts[1].trim().split(' ');
+
+        final kanjiCodePoint = kanji.kanjiCodePoint();
+
+        for (final component in components) {
+          if (component.isEmpty) continue;
+          connections.add(
+            KanjiComponentConnectionsCompanion.insert(
+              kanjiCodePoint: kanjiCodePoint,
+              componentCodePoint: component.kanjiCodePoint(),
+            ),
+          );
+        }
+      }
+
+      await db.batch((batch) {
+        batch.insertAll(db.kanjiComponentConnections, connections);
+      });
     });
 
     // Add stroke data

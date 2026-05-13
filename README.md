@@ -20,6 +20,8 @@ Prepare source files to be placed in ```example/input_files/```
     - Frequency list file in the format frequency score (higher is more frequent), tab, and then the lemma (e.g., "22100273	月")
 - [enamdict_utf-8](http://www.edrdg.org/enamdict/enamdict_doc.html)
     - Proper nouns
+- [kradfile](https://www.edrdg.org/krad/kradinf.html)
+    - Kanji composition file (UTF-8 encoding)
 
 ### Included files
 

@@ -21,6 +21,7 @@ void main() {
         shortRadicalData,
         shortKanjiStrokeData,
         shortKanjiComponentData,
+        shortKradfile,
         shortVocabListData,
         shortKanjiListData,
         shortPitchAccentData,
@@ -907,6 +908,26 @@ void main() {
       expect(properNounRomajiWords[7].word, '2006-2007');
       expect(properNounRomajiWords[8].word, 'and');
       expect(properNounRomajiWords[9].word, '2012-2020');
+    });
+
+    test('Kanji component connections', () async {
+      // 口 appears in both 亜 and 悪
+      final byMouth = await database.kanjisDao.getAllWithComponents(['口']);
+      expect(byMouth.kanji, containsAll(['亜', '悪']));
+      expect(byMouth.kanji.length, 2);
+
+      // 心 appears only in 悪
+      final byHeart = await database.kanjisDao.getAllWithComponents(['心']);
+      expect(byHeart.kanji, ['悪']);
+
+      // Requiring both 口 and 心 returns only 悪
+      final byMouthAndHeart =
+          await database.kanjisDao.getAllWithComponents(['口', '心']);
+      expect(byMouthAndHeart.kanji, ['悪']);
+
+      // ｜ appears in 亜, 悪, and 行 (ordered by stroke count ascending)
+      final byStroke = await database.kanjisDao.getAllWithComponents(['｜']);
+      expect(byStroke.kanji, ['行', '亜', '悪']);
     });
 
     test('Grammar', () async {

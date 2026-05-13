@@ -16,6 +16,7 @@ import 'package:sagase_dictionary/src/datamodels/dictionary_infos.dart';
 import 'package:sagase_dictionary/src/datamodels/flashcard_sets.dart';
 import 'package:sagase_dictionary/src/datamodels/grammars.dart';
 import 'package:sagase_dictionary/src/datamodels/kanji/kanji_notes.dart';
+import 'package:sagase_dictionary/src/datamodels/kanji_component_connections.dart';
 import 'package:sagase_dictionary/src/datamodels/kanjis.dart';
 import 'package:sagase_dictionary/src/datamodels/my_dictionary_lists.dart';
 import 'package:sagase_dictionary/src/datamodels/predefined_dictionary_lists.dart';
@@ -44,6 +45,7 @@ part 'database.g.dart';
     KanjiReadings,
     KanjiMeaningWords,
     KanjiNotes,
+    KanjiComponentConnections,
     MyDictionaryLists,
     MyDictionaryListItems,
     PredefinedDictionaryLists,
@@ -148,10 +150,11 @@ class AppDatabase extends _$AppDatabase {
           await m.drop(Index('IX_my_dictionary_list_items_vocab_id', ''));
           await m.drop(Index('IX_my_dictionary_list_items_kanji_id', ''));
           await m.alterTable(TableMigration(schema.myDictionaryListItems));
-          await m.createIndex(Index('IX_my_dictionary_list_items_item_id_type',
-              'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)'));
+          await m.createIndex(schema.iXMyDictionaryListItemsItemIdType);
 
           await m.createTable(schema.grammars);
+          await m.createTable(schema.kanjiComponentConnections);
+          await m.createIndex(schema.iXKanjiComponentConnectionsKanji);
 
           await m.alterTable(
             TableMigration(

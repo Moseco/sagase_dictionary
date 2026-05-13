@@ -34,6 +34,7 @@ void main() async {
       File(path.join(inputFilesPath, 'kanji_strokes.json')).readAsStringSync(),
       File(path.join(inputFilesPath, 'kanji_components.json'))
           .readAsStringSync(),
+      File(path.join(inputFilesPath, 'kradfile')).readAsStringSync(),
       File(path.join(inputFilesPath, 'vocab_lists.json')).readAsStringSync(),
       File(path.join(inputFilesPath, 'kanji_lists.json')).readAsStringSync(),
       File(path.join(inputFilesPath, 'pitch_accents.txt')).readAsStringSync(),

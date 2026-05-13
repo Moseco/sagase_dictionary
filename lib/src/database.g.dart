@@ -5333,6 +5333,217 @@ class MyDictionaryListItemsCompanion
   }
 }
 
+class $KanjiComponentConnectionsTable extends KanjiComponentConnections
+    with TableInfo<$KanjiComponentConnectionsTable, KanjiComponentConnection> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $KanjiComponentConnectionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _kanjiCodePointMeta =
+      const VerificationMeta('kanjiCodePoint');
+  @override
+  late final GeneratedColumn<int> kanjiCodePoint = GeneratedColumn<int>(
+      'kanji_code_point', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _componentCodePointMeta =
+      const VerificationMeta('componentCodePoint');
+  @override
+  late final GeneratedColumn<int> componentCodePoint = GeneratedColumn<int>(
+      'component_code_point', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [kanjiCodePoint, componentCodePoint];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'kanji_component_connections';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<KanjiComponentConnection> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('kanji_code_point')) {
+      context.handle(
+          _kanjiCodePointMeta,
+          kanjiCodePoint.isAcceptableOrUnknown(
+              data['kanji_code_point']!, _kanjiCodePointMeta));
+    } else if (isInserting) {
+      context.missing(_kanjiCodePointMeta);
+    }
+    if (data.containsKey('component_code_point')) {
+      context.handle(
+          _componentCodePointMeta,
+          componentCodePoint.isAcceptableOrUnknown(
+              data['component_code_point']!, _componentCodePointMeta));
+    } else if (isInserting) {
+      context.missing(_componentCodePointMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {componentCodePoint, kanjiCodePoint};
+  @override
+  KanjiComponentConnection map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return KanjiComponentConnection(
+      kanjiCodePoint: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}kanji_code_point'])!,
+      componentCodePoint: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}component_code_point'])!,
+    );
+  }
+
+  @override
+  $KanjiComponentConnectionsTable createAlias(String alias) {
+    return $KanjiComponentConnectionsTable(attachedDatabase, alias);
+  }
+}
+
+class KanjiComponentConnection extends DataClass
+    implements Insertable<KanjiComponentConnection> {
+  final int kanjiCodePoint;
+  final int componentCodePoint;
+  const KanjiComponentConnection(
+      {required this.kanjiCodePoint, required this.componentCodePoint});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['kanji_code_point'] = Variable<int>(kanjiCodePoint);
+    map['component_code_point'] = Variable<int>(componentCodePoint);
+    return map;
+  }
+
+  KanjiComponentConnectionsCompanion toCompanion(bool nullToAbsent) {
+    return KanjiComponentConnectionsCompanion(
+      kanjiCodePoint: Value(kanjiCodePoint),
+      componentCodePoint: Value(componentCodePoint),
+    );
+  }
+
+  factory KanjiComponentConnection.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return KanjiComponentConnection(
+      kanjiCodePoint: serializer.fromJson<int>(json['kanjiCodePoint']),
+      componentCodePoint: serializer.fromJson<int>(json['componentCodePoint']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'kanjiCodePoint': serializer.toJson<int>(kanjiCodePoint),
+      'componentCodePoint': serializer.toJson<int>(componentCodePoint),
+    };
+  }
+
+  KanjiComponentConnection copyWith(
+          {int? kanjiCodePoint, int? componentCodePoint}) =>
+      KanjiComponentConnection(
+        kanjiCodePoint: kanjiCodePoint ?? this.kanjiCodePoint,
+        componentCodePoint: componentCodePoint ?? this.componentCodePoint,
+      );
+  KanjiComponentConnection copyWithCompanion(
+      KanjiComponentConnectionsCompanion data) {
+    return KanjiComponentConnection(
+      kanjiCodePoint: data.kanjiCodePoint.present
+          ? data.kanjiCodePoint.value
+          : this.kanjiCodePoint,
+      componentCodePoint: data.componentCodePoint.present
+          ? data.componentCodePoint.value
+          : this.componentCodePoint,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KanjiComponentConnection(')
+          ..write('kanjiCodePoint: $kanjiCodePoint, ')
+          ..write('componentCodePoint: $componentCodePoint')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(kanjiCodePoint, componentCodePoint);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is KanjiComponentConnection &&
+          other.kanjiCodePoint == this.kanjiCodePoint &&
+          other.componentCodePoint == this.componentCodePoint);
+}
+
+class KanjiComponentConnectionsCompanion
+    extends UpdateCompanion<KanjiComponentConnection> {
+  final Value<int> kanjiCodePoint;
+  final Value<int> componentCodePoint;
+  final Value<int> rowid;
+  const KanjiComponentConnectionsCompanion({
+    this.kanjiCodePoint = const Value.absent(),
+    this.componentCodePoint = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  KanjiComponentConnectionsCompanion.insert({
+    required int kanjiCodePoint,
+    required int componentCodePoint,
+    this.rowid = const Value.absent(),
+  })  : kanjiCodePoint = Value(kanjiCodePoint),
+        componentCodePoint = Value(componentCodePoint);
+  static Insertable<KanjiComponentConnection> custom({
+    Expression<int>? kanjiCodePoint,
+    Expression<int>? componentCodePoint,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (kanjiCodePoint != null) 'kanji_code_point': kanjiCodePoint,
+      if (componentCodePoint != null)
+        'component_code_point': componentCodePoint,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  KanjiComponentConnectionsCompanion copyWith(
+      {Value<int>? kanjiCodePoint,
+      Value<int>? componentCodePoint,
+      Value<int>? rowid}) {
+    return KanjiComponentConnectionsCompanion(
+      kanjiCodePoint: kanjiCodePoint ?? this.kanjiCodePoint,
+      componentCodePoint: componentCodePoint ?? this.componentCodePoint,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (kanjiCodePoint.present) {
+      map['kanji_code_point'] = Variable<int>(kanjiCodePoint.value);
+    }
+    if (componentCodePoint.present) {
+      map['component_code_point'] = Variable<int>(componentCodePoint.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KanjiComponentConnectionsCompanion(')
+          ..write('kanjiCodePoint: $kanjiCodePoint, ')
+          ..write('componentCodePoint: $componentCodePoint, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $KanjiNotesTable extends KanjiNotes
     with TableInfo<$KanjiNotesTable, KanjiNote> {
   @override
@@ -6709,6 +6920,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Index iXMyDictionaryListItemsItemIdType = Index(
       'IX_my_dictionary_list_items_item_id_type',
       'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)');
+  late final $KanjiComponentConnectionsTable kanjiComponentConnections =
+      $KanjiComponentConnectionsTable(this);
+  late final Index iXKanjiComponentConnectionsKanji = Index(
+      'IX_kanji_component_connections_kanji',
+      'CREATE INDEX IX_kanji_component_connections_kanji ON kanji_component_connections (kanji_code_point)');
   late final $KanjiNotesTable kanjiNotes = $KanjiNotesTable(this);
   late final $GrammarsTable grammars = $GrammarsTable(this);
   late final $FlashcardSetsTable flashcardSets = $FlashcardSetsTable(this);
@@ -6802,6 +7018,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         myDictionaryListItems,
         iXMyDictionaryListItemsListId,
         iXMyDictionaryListItemsItemIdType,
+        kanjiComponentConnections,
+        iXKanjiComponentConnectionsKanji,
         kanjiNotes,
         grammars,
         flashcardSets,
@@ -10214,6 +10432,145 @@ typedef $$MyDictionaryListItemsTableProcessedTableManager
         ),
         MyDictionaryListItem,
         PrefetchHooks Function()>;
+typedef $$KanjiComponentConnectionsTableCreateCompanionBuilder
+    = KanjiComponentConnectionsCompanion Function({
+  required int kanjiCodePoint,
+  required int componentCodePoint,
+  Value<int> rowid,
+});
+typedef $$KanjiComponentConnectionsTableUpdateCompanionBuilder
+    = KanjiComponentConnectionsCompanion Function({
+  Value<int> kanjiCodePoint,
+  Value<int> componentCodePoint,
+  Value<int> rowid,
+});
+
+class $$KanjiComponentConnectionsTableFilterComposer
+    extends Composer<_$AppDatabase, $KanjiComponentConnectionsTable> {
+  $$KanjiComponentConnectionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get kanjiCodePoint => $composableBuilder(
+      column: $table.kanjiCodePoint,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get componentCodePoint => $composableBuilder(
+      column: $table.componentCodePoint,
+      builder: (column) => ColumnFilters(column));
+}
+
+class $$KanjiComponentConnectionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $KanjiComponentConnectionsTable> {
+  $$KanjiComponentConnectionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get kanjiCodePoint => $composableBuilder(
+      column: $table.kanjiCodePoint,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get componentCodePoint => $composableBuilder(
+      column: $table.componentCodePoint,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$KanjiComponentConnectionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $KanjiComponentConnectionsTable> {
+  $$KanjiComponentConnectionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get kanjiCodePoint => $composableBuilder(
+      column: $table.kanjiCodePoint, builder: (column) => column);
+
+  GeneratedColumn<int> get componentCodePoint => $composableBuilder(
+      column: $table.componentCodePoint, builder: (column) => column);
+}
+
+class $$KanjiComponentConnectionsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $KanjiComponentConnectionsTable,
+    KanjiComponentConnection,
+    $$KanjiComponentConnectionsTableFilterComposer,
+    $$KanjiComponentConnectionsTableOrderingComposer,
+    $$KanjiComponentConnectionsTableAnnotationComposer,
+    $$KanjiComponentConnectionsTableCreateCompanionBuilder,
+    $$KanjiComponentConnectionsTableUpdateCompanionBuilder,
+    (
+      KanjiComponentConnection,
+      BaseReferences<_$AppDatabase, $KanjiComponentConnectionsTable,
+          KanjiComponentConnection>
+    ),
+    KanjiComponentConnection,
+    PrefetchHooks Function()> {
+  $$KanjiComponentConnectionsTableTableManager(
+      _$AppDatabase db, $KanjiComponentConnectionsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$KanjiComponentConnectionsTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$KanjiComponentConnectionsTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$KanjiComponentConnectionsTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> kanjiCodePoint = const Value.absent(),
+            Value<int> componentCodePoint = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              KanjiComponentConnectionsCompanion(
+            kanjiCodePoint: kanjiCodePoint,
+            componentCodePoint: componentCodePoint,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required int kanjiCodePoint,
+            required int componentCodePoint,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              KanjiComponentConnectionsCompanion.insert(
+            kanjiCodePoint: kanjiCodePoint,
+            componentCodePoint: componentCodePoint,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$KanjiComponentConnectionsTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $KanjiComponentConnectionsTable,
+        KanjiComponentConnection,
+        $$KanjiComponentConnectionsTableFilterComposer,
+        $$KanjiComponentConnectionsTableOrderingComposer,
+        $$KanjiComponentConnectionsTableAnnotationComposer,
+        $$KanjiComponentConnectionsTableCreateCompanionBuilder,
+        $$KanjiComponentConnectionsTableUpdateCompanionBuilder,
+        (
+          KanjiComponentConnection,
+          BaseReferences<_$AppDatabase, $KanjiComponentConnectionsTable,
+              KanjiComponentConnection>
+        ),
+        KanjiComponentConnection,
+        PrefetchHooks Function()>;
 typedef $$KanjiNotesTableCreateCompanionBuilder = KanjiNotesCompanion Function({
   Value<int> id,
   required String note,
@@ -11226,6 +11583,9 @@ class $AppDatabaseManager {
       $$MyDictionaryListsTableTableManager(_db, _db.myDictionaryLists);
   $$MyDictionaryListItemsTableTableManager get myDictionaryListItems =>
       $$MyDictionaryListItemsTableTableManager(_db, _db.myDictionaryListItems);
+  $$KanjiComponentConnectionsTableTableManager get kanjiComponentConnections =>
+      $$KanjiComponentConnectionsTableTableManager(
+          _db, _db.kanjiComponentConnections);
   $$KanjiNotesTableTableManager get kanjiNotes =>
       $$KanjiNotesTableTableManager(_db, _db.kanjiNotes);
   $$GrammarsTableTableManager get grammars =>

@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:kana_kit/kana_kit.dart';
 import 'package:sagase_dictionary/src/database.dart';
 import 'package:sagase_dictionary/src/datamodels/kanji/kanji_notes.dart';
+import 'package:sagase_dictionary/src/datamodels/kanji_component_connections.dart';
 import 'package:sagase_dictionary/src/datamodels/kanjis.dart';
 import 'package:sagase_dictionary/src/datamodels/spaced_repetition_datas.dart';
 import 'package:sagase_dictionary/src/utils/enums.dart';
@@ -9,7 +10,12 @@ import 'package:sagase_dictionary/src/utils/string_utils.dart';
 
 part 'kanjis_dao.g.dart';
 
-@DriftAccessor(tables: [Kanjis, KanjiReadings, SpacedRepetitionDatas])
+@DriftAccessor(tables: [
+  Kanjis,
+  KanjiReadings,
+  SpacedRepetitionDatas,
+  KanjiComponentConnections,
+])
 class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
   final _kanaKit = const KanaKit().copyWithConfig(passRomaji: true);
 
@@ -253,6 +259,67 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
         .get();
 
     return _getAllFromBase(kanjiList);
+  }
+
+  Future<({List<String> kanji, List<String> validComponents})>
+      getAllWithComponents(List<String> components) async {
+    if (components.isEmpty) {
+      return (kanji: const <String>[], validComponents: const <String>[]);
+    }
+
+    final selectedCodePoints =
+        components.map((c) => c.kanjiCodePoint()).toSet();
+
+    final kanji = await (db.select(db.kanjis).join([
+      innerJoin(
+        db.kanjiComponentConnections,
+        db.kanjiComponentConnections.kanjiCodePoint.equalsExp(db.kanjis.id),
+        useColumns: false,
+      ),
+    ])
+          ..where(db.kanjiComponentConnections.componentCodePoint
+              .isIn(selectedCodePoints))
+          ..groupBy(
+            [db.kanjis.id],
+            having: db.kanjiComponentConnections.componentCodePoint
+                .count(distinct: true)
+                .equals(selectedCodePoints.length),
+          )
+          ..orderBy([
+            OrderingTerm.asc(db.kanjis.strokeCount),
+            OrderingTerm.asc(db.kanjis.frequency, nulls: NullsOrder.last),
+          ]))
+        .map((row) => row.readTable(db.kanjis).kanji)
+        .get();
+
+    if (kanji.isEmpty) {
+      return (kanji: const <String>[], validComponents: const <String>[]);
+    }
+
+    final matchingIds = db.selectOnly(db.kanjiComponentConnections)
+      ..addColumns([db.kanjiComponentConnections.kanjiCodePoint])
+      ..where(db.kanjiComponentConnections.componentCodePoint
+          .isIn(selectedCodePoints))
+      ..groupBy(
+        [db.kanjiComponentConnections.kanjiCodePoint],
+        having: db.kanjiComponentConnections.componentCodePoint
+            .count(distinct: true)
+            .equals(selectedCodePoints.length),
+      );
+
+    final validComponents = await (db.selectOnly(db.kanjiComponentConnections,
+            distinct: true)
+          ..addColumns([db.kanjiComponentConnections.componentCodePoint])
+          ..where(db.kanjiComponentConnections.kanjiCodePoint
+              .isInQuery(matchingIds))
+          ..orderBy([
+            OrderingTerm.asc(db.kanjiComponentConnections.componentCodePoint)
+          ]))
+        .map((row) => _kanjiFromCodePoint(
+            row.read(db.kanjiComponentConnections.componentCodePoint)!))
+        .get();
+
+    return (kanji: kanji, validComponents: validComponents);
   }
 
   Future<List<Kanji>> search(String text) async {
@@ -511,5 +578,12 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
   Future<void> deleteNote(int kanjiId) async {
     await (db.delete(db.kanjiNotes)..where((note) => note.id.equals(kanjiId)))
         .go();
+  }
+
+  // Inverse of String.kanjiCodePoint()
+  String _kanjiFromCodePoint(int codePoint) {
+    if (codePoint <= 0xFFFF) return String.fromCharCode(codePoint);
+    return String.fromCharCodes(
+        [(codePoint >> 16) & 0xFFFF, codePoint & 0xFFFF]);
   }
 }
