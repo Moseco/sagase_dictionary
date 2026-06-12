@@ -120,6 +120,17 @@ void main() {
         expect(vocabList[1].note, null);
       });
 
+      test('Skips ids missing from the database', () async {
+        // Note referencing a vocab that does not exist
+        await database.vocabsDao.setNote(999999, 'Orphan note');
+
+        final vocabList =
+            await database.vocabsDao.getAll([1000220, 999999, 1000160]);
+        expect(vocabList.length, 2);
+        expect(vocabList[0].id, 1000220);
+        expect(vocabList[1].id, 1000160);
+      });
+
       group('With front type', () {
         test('Spaced repetition does not exist', () async {
           final vocabList = await database.vocabsDao.getAll(

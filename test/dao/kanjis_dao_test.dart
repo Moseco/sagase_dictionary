@@ -126,6 +126,9 @@ void main() {
 
     group('getAll', () {
       test('One kanji does not exist', () async {
+        // Note referencing a kanji that does not exist
+        await database.kanjisDao.setNote('s'.kanjiCodePoint(), 'Orphan note');
+
         final kanjiList = await database.kanjisDao.getAll(
           ['亜'.kanjiCodePoint(), 's'.kanjiCodePoint()],
         );

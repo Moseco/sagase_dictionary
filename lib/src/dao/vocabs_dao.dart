@@ -172,13 +172,14 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
 
     final notes = await noteFuture;
     for (final note in notes) {
-      vocabMap[note.id]!.note = note.note;
+      vocabMap[note.id]?.note = note.note;
     }
 
     // Put the results in the same order as the input
     List<Vocab> vocabList = [];
     for (final id in idList) {
-      vocabList.add(vocabMap[id]!);
+      final vocab = vocabMap[id];
+      if (vocab != null) vocabList.add(vocab);
     }
 
     return vocabList;

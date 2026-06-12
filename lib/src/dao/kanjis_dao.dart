@@ -161,7 +161,7 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
           ..where((note) => note.id.isIn(idList)))
         .get();
     for (final note in notes) {
-      kanjiMap[note.id]!.note = note.note;
+      kanjiMap[note.id]?.note = note.note;
     }
 
     // Put the results in the same order as the input
