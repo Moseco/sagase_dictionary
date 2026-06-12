@@ -431,7 +431,7 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
   Future<List<Vocab>> search(String text) async {
     String cleanedText = RegExp.escape(text)
         .replaceAll('_', '')
-        .replaceAll('%', r'\%')
+        .replaceAll('%', '')
         .toLowerCase()
         .removeDiacritics();
 
@@ -520,9 +520,11 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
       }
     } else {
       // Japanese text
+      final searchByReading =
+          _kanaKit.isKana(cleanedText.replaceAll(r'\*', ''));
       cleanedText = cleanedText.replaceAll(r'\*', '_');
 
-      if (_kanaKit.isKana(cleanedText)) {
+      if (searchByReading) {
         // Search by reading
         final searchReading = Subquery(
           db.select(db.vocabReadings)

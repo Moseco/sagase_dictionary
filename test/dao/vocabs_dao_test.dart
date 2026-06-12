@@ -450,6 +450,21 @@ void main() {
         expect(results.length, 1);
         expect(results[0].id, 1000220);
       });
+
+      test('Searching with wildcard in kana', () async {
+        final results = await database.vocabsDao.search('めい*く');
+        expect(results.length, 1);
+        expect(results[0].id, 1000220);
+      });
+
+      test('Searching with LIKE wildcard characters', () async {
+        expect(await database.vocabsDao.search('%'), isEmpty);
+
+        // Wildcards are removed from the search text
+        final results = await database.vocabsDao.search('明%白');
+        expect(results.length, 1);
+        expect(results[0].id, 1000220);
+      });
     });
 
     test('VocabNote', () async {
