@@ -118,6 +118,7 @@ class FlashcardSet implements Insertable<FlashcardSet> {
             kanjiShowReading,
         SagaseDictionaryConstants.backupFlashcardSetVocabShowPartsOfSpeech:
             vocabShowPartsOfSpeech,
+        SagaseDictionaryConstants.backupFlashcardSetShowNote: showNote,
         SagaseDictionaryConstants.backupFlashcardSetTimestamp:
             timestamp.millisecondsSinceEpoch,
         SagaseDictionaryConstants.backupFlashcardSetPredefinedDictionaryLists:
