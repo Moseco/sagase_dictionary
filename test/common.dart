@@ -1400,6 +1400,38 @@ const shortKanjidic2 = '''
 <nanori>ゆく</nanori>
 </reading_meaning>
 </character>
+<!-- Entry for Kanji: 𠮟 -->
+<character>
+<literal>𠮟</literal>
+<codepoint>
+<cp_value cp_type="ucs">20B9F</cp_value>
+<cp_value cp_type="jis213">1-47-52</cp_value>
+</codepoint>
+<radical>
+<rad_value rad_type="classical">30</rad_value>
+</radical>
+<misc>
+<grade>8</grade>
+<stroke_count>5</stroke_count>
+<variant var_type="ucs">53F1</variant>
+</misc>
+<dic_number>
+<dic_ref dr_type="halpern_kkd">210</dic_ref>
+</dic_number>
+<query_code>
+<q_code qc_type="skip">1-3-2</q_code>
+</query_code>
+<reading_meaning>
+<rmgroup>
+<reading r_type="ja_on">シツ</reading>
+<reading r_type="ja_on">シチ</reading>
+<reading r_type="ja_on">カ</reading>
+<reading r_type="ja_kun">しか.る</reading>
+<meaning>scold</meaning>
+<meaning>reprove</meaning>
+</rmgroup>
+</reading_meaning>
+</character>
 </kanjidic2>
 ''';
 

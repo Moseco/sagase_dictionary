@@ -384,6 +384,12 @@ void main() {
         expect(results[0].kanji, '悪');
       });
 
+      test('Single kanji outside the basic CJK block', () async {
+        final results = await database.kanjisDao.search('𠮟');
+        expect(results.length, 1);
+        expect(results[0].kanji, '𠮟');
+      });
+
       test('Meaning single word', () async {
         final results = await database.kanjisDao.search('asia');
         expect(results.length, 1);
@@ -457,13 +463,15 @@ void main() {
       test('Reading partial', () async {
         // On reading
         var results = await database.kanjisDao.search('し');
-        expect(results.length, 1);
+        expect(results.length, 2);
         expect(results[0].kanji, '心');
+        expect(results[1].kanji, '𠮟');
 
         // On reading katakana
         results = await database.kanjisDao.search('シ');
-        expect(results.length, 1);
+        expect(results.length, 2);
         expect(results[0].kanji, '心');
+        expect(results[1].kanji, '𠮟');
 
         // Kun reading
         results = await database.kanjisDao.search('ここ');
@@ -520,8 +528,9 @@ void main() {
       test('Reading romaji partial', () async {
         // On reading
         var results = await database.kanjisDao.search('sh');
-        expect(results.length, 1);
+        expect(results.length, 2);
         expect(results[0].kanji, '心');
+        expect(results[1].kanji, '𠮟');
 
         // Kun reading
         results = await database.kanjisDao.search('koko');

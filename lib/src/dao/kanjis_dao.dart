@@ -327,7 +327,7 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
     if (cleanedText.isEmpty) return [];
 
     // If given a single kanji character return only that
-    if (cleanedText.length == 1 && _kanaKit.isKanji(cleanedText)) {
+    if (cleanedText.runes.length == 1 && cleanedText.isKanji()) {
       final kanji = await getKanji(cleanedText);
       if (kanji != null) return [kanji];
     }

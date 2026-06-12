@@ -29,6 +29,18 @@ extension JapaneseTextHelpers on String {
     }
   }
 
+  // Checks that the string is non-empty and contains only kanji
+  bool isKanji() => isNotEmpty && runes.every(_isCodePointKanji);
+
+  static bool _isCodePointKanji(int codePoint) =>
+      (codePoint >= 0x4E00 && codePoint <= 0x9FFF) || // CJK Unified Ideographs
+      (codePoint >= 0x3400 && codePoint <= 0x4DBF) || // CJK Extension A
+      (codePoint >= 0xF900 && codePoint <= 0xFAFF) || // CJK Compatibility
+      (codePoint >= 0x20000 && codePoint <= 0x2EBEF) || // CJK Extensions B-F
+      (codePoint >= 0x2F800 && codePoint <= 0x2FA1F) || // CJK Compat. Suppl.
+      (codePoint >= 0x30000 && codePoint <= 0x323AF) || // CJK Extensions G-H
+      codePoint == 0x3005; // 々 kanji repetition mark
+
   // To be used with names for my dictionary lists and flashcard sets
   String sanitizeName() {
     // Remove new line characters
