@@ -257,49 +257,46 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
     String sanitizedName = dictionaryList.name.sanitizeName();
     if (sanitizedName.isEmpty) sanitizedName = 'My list';
 
-    // Delete existing my dictionary list if it exists
-    final conflicting = await (db.select(db.myDictionaryLists)
-          ..where((list) => list.id.equals(dictionaryList.id)))
-        .getSingleOrNull();
-    if (conflicting != null) await deleteMyDictionaryList(conflicting);
+    await db.transaction(() async {
+      // Delete existing my dictionary list if it exists
+      final conflicting = await (db.select(db.myDictionaryLists)
+            ..where((list) => list.id.equals(dictionaryList.id)))
+          .getSingleOrNull();
+      if (conflicting != null) await deleteMyDictionaryList(conflicting);
 
-    // Add my dictionary list itself
-    await db.into(db.myDictionaryLists).insert(
-          MyDictionaryListsCompanion(
-            id: Value(dictionaryList.id),
-            name: Value(sanitizedName),
-          ),
-        );
+      // Add my dictionary list itself
+      await db.into(db.myDictionaryLists).insert(
+            MyDictionaryListsCompanion(
+              id: Value(dictionaryList.id),
+              name: Value(sanitizedName),
+            ),
+          );
 
-    // Add dictionary list item for all valid vocab
-    // In reverse order to preserve order for user
-    final vocabList = await db.vocabsDao.validateAll(dictionaryList.vocab);
-    for (final vocab in vocabList.reversed) {
-      await addDictionaryItem(dictionaryList, vocab);
-    }
+      // Add dictionary list items for all valid vocab
+      // In reverse order to preserve order for user
+      final vocabList = await db.vocabsDao.validateAll(dictionaryList.vocab);
+      await addDictionaryItems(dictionaryList, vocabList.reversed.toList());
 
-    // Add dictionary list item for all valid kanji
-    // In reverse order to preserve order for user
-    final kanjiList = await db.kanjisDao.validateAll(dictionaryList.kanji);
-    for (final kanji in kanjiList.reversed) {
-      await addDictionaryItem(dictionaryList, kanji);
-    }
+      // Add dictionary list items for all valid kanji
+      // In reverse order to preserve order for user
+      final kanjiList = await db.kanjisDao.validateAll(dictionaryList.kanji);
+      await addDictionaryItems(dictionaryList, kanjiList.reversed.toList());
 
-    // Add dictionary list item for all valid grammar
-    // In reverse order to preserve order for user
-    final grammarList = await db.grammarsDao.validateAll(dictionaryList.grammar);
-    for (final grammar in grammarList.reversed) {
-      await addDictionaryItem(dictionaryList, grammar);
-    }
+      // Add dictionary list items for all valid grammar
+      // In reverse order to preserve order for user
+      final grammarList =
+          await db.grammarsDao.validateAll(dictionaryList.grammar);
+      await addDictionaryItems(dictionaryList, grammarList.reversed.toList());
 
-    // Set original timestamp
-    await (db.update(db.myDictionaryLists)
-          ..where((list) => list.id.equals(dictionaryList.id)))
-        .write(
-      MyDictionaryListsCompanion(
-        timestamp: Value(dictionaryList.timestamp),
-      ),
-    );
+      // Set original timestamp
+      await (db.update(db.myDictionaryLists)
+            ..where((list) => list.id.equals(dictionaryList.id)))
+          .write(
+        MyDictionaryListsCompanion(
+          timestamp: Value(dictionaryList.timestamp),
+        ),
+      );
+    });
   }
 
   Future<MyDictionaryList?> importShare(String source) async {
@@ -319,25 +316,19 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
       // In reverse order to preserve order for user
       final validatedVocab =
           await db.vocabsDao.validateAll(sourceDictionaryList.vocab);
-      for (final vocab in validatedVocab.reversed) {
-        await addDictionaryItem(myList, vocab);
-      }
+      await addDictionaryItems(myList, validatedVocab.reversed.toList());
 
       // Validate kanji and add dictionary items
       // In reverse order to preserve order for user
       final validatedKanji =
           await db.kanjisDao.validateAll(sourceDictionaryList.kanji);
-      for (final kanji in validatedKanji.reversed) {
-        await addDictionaryItem(myList, kanji);
-      }
+      await addDictionaryItems(myList, validatedKanji.reversed.toList());
 
       // Validate grammar and add dictionary items
       // In reverse order to preserve order for user
       final validatedGrammar =
           await db.grammarsDao.validateAll(sourceDictionaryList.grammar);
-      for (final grammar in validatedGrammar.reversed) {
-        await addDictionaryItem(myList, grammar);
-      }
+      await addDictionaryItems(myList, validatedGrammar.reversed.toList());
 
       return myList;
     });

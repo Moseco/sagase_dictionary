@@ -518,6 +518,25 @@ void main() {
       expect(result.grammarIds[0], 2);
     });
 
+    test('importBackup - duplicate items', () async {
+      String export = MyDictionaryList(
+        id: 0,
+        name: 'list1',
+        timestamp: DateTime.now(),
+        vocab: [1003430, 1003430],
+        kanji: ['亞'.kanjiCodePoint(), '亞'.kanjiCodePoint()],
+        grammar: [],
+      ).toBackupJson();
+
+      await database.myDictionaryListsDao.importBackup(export);
+      final myList = await database.myDictionaryListsDao.get(0);
+
+      final result =
+          await database.myDictionaryListsDao.getDictionaryListItems(myList);
+      expect(result.vocabIds, [1003430]);
+      expect(result.kanjiIds, ['亞'.kanjiCodePoint()]);
+    });
+
     test('importShare', () async {
       String export = MyDictionaryList(
         id: 0,
