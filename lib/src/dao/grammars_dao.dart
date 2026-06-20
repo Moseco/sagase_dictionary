@@ -21,23 +21,37 @@ class GrammarsDao extends DatabaseAccessor<AppDatabase>
     final baseQuery = db.select(db.grammars)
       ..where((grammars) => grammars.id.isIn(idList));
 
-    if (frontType == null) return baseQuery.get();
+    final List<Grammar> grammars;
+    if (frontType == null) {
+      grammars = await baseQuery.get();
+    } else {
+      final query = baseQuery.join([
+        leftOuterJoin(
+            db.spacedRepetitionDatas,
+            Expression.and([
+              db.spacedRepetitionDatas.itemId.equalsExp(db.grammars.id),
+              db.spacedRepetitionDatas.itemType
+                  .equals(DictionaryItemType.grammar.index),
+              db.spacedRepetitionDatas.frontType.equals(frontType.index),
+            ]))
+      ]).map(
+        (row) => row.readTable(db.grammars)
+          ..spacedRepetitionData =
+              row.readTableOrNull(db.spacedRepetitionDatas),
+      );
 
-    final query = baseQuery.join([
-      leftOuterJoin(
-          db.spacedRepetitionDatas,
-          Expression.and([
-            db.spacedRepetitionDatas.itemId.equalsExp(db.grammars.id),
-            db.spacedRepetitionDatas.itemType
-                .equals(DictionaryItemType.grammar.index),
-            db.spacedRepetitionDatas.frontType.equals(frontType.index),
-          ]))
-    ]).map(
-      (row) => row.readTable(db.grammars)
-        ..spacedRepetitionData = row.readTableOrNull(db.spacedRepetitionDatas),
-    );
+      grammars = await query.get();
+    }
 
-    return query.get();
+    // Put the results in the same order as the input
+    final grammarMap = {for (var grammar in grammars) grammar.id: grammar};
+    List<Grammar> grammarList = [];
+    for (final id in idList) {
+      final grammar = grammarMap[id];
+      if (grammar != null) grammarList.add(grammar);
+    }
+
+    return grammarList;
   }
 
   Future<List<Grammar>> validateAll(List<int> idList) async {
