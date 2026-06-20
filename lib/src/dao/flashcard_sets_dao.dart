@@ -35,11 +35,13 @@ class FlashcardSetsDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<void> deleteFlashcardSet(FlashcardSet flashcardSet) async {
-    await deleteFlashcardSetReports(flashcardSet);
+    await db.transaction(() async {
+      await deleteFlashcardSetReports(flashcardSet);
 
-    await (db.delete(db.flashcardSets)
-          ..where((set) => set.id.equals(flashcardSet.id)))
-        .go();
+      await (db.delete(db.flashcardSets)
+            ..where((set) => set.id.equals(flashcardSet.id)))
+          .go();
+    });
   }
 
   Future<List<FlashcardSet>> getAll() async {
@@ -152,7 +154,9 @@ class FlashcardSetsDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<void> deleteAll() async {
-    await db.delete(db.flashcardSets).go();
-    await db.delete(db.flashcardSetReports).go();
+    await db.transaction(() async {
+      await db.delete(db.flashcardSets).go();
+      await db.delete(db.flashcardSetReports).go();
+    });
   }
 }

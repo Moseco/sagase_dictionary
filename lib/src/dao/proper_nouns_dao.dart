@@ -15,6 +15,7 @@ class ProperNounsDao extends DatabaseAccessor<AppDatabase>
 
   Future<void> importProperNouns(String path) async {
     await db.customStatement('ATTACH DATABASE ? AS proper_noun_db', [path]);
+    try {
     await db.transaction(() async {
       await db.customStatement(
         'INSERT INTO ${db.properNouns.actualTableName} SELECT * FROM proper_noun_db.${db.properNouns.actualTableName}',
@@ -23,12 +24,16 @@ class ProperNounsDao extends DatabaseAccessor<AppDatabase>
         'INSERT INTO ${db.properNounRomajiWords.actualTableName} SELECT * FROM proper_noun_db.${db.properNounRomajiWords.actualTableName}',
       );
     });
+    } finally {
     await db.customStatement('DETACH DATABASE proper_noun_db');
+    }
   }
 
   Future<void> deleteProperNouns() async {
+    await db.transaction(() async {
     await db.delete(db.properNouns).go();
     await db.delete(db.properNounRomajiWords).go();
+    });
   }
 
   Future<List<ProperNoun>> getByWriting(String text) async {

@@ -335,7 +335,9 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<void> deleteAll() async {
+    await db.transaction(() async {
     await db.delete(db.myDictionaryLists).go();
     await db.delete(db.myDictionaryListItems).go();
+    });
   }
 }
