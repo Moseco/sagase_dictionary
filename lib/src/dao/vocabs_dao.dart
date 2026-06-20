@@ -429,7 +429,7 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
   }
 
   Future<List<Vocab>> search(String text) async {
-    String cleanedText = RegExp.escape(text)
+    String cleanedText = text
         .replaceAll('_', '')
         .replaceAll('%', '')
         .toLowerCase()
@@ -520,9 +520,8 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
       }
     } else {
       // Japanese text
-      final searchByReading =
-          _kanaKit.isKana(cleanedText.replaceAll(r'\*', ''));
-      cleanedText = cleanedText.replaceAll(r'\*', '_');
+      final searchByReading = _kanaKit.isKana(cleanedText.replaceAll('*', ''));
+      cleanedText = cleanedText.replaceAll('*', '_');
 
       if (searchByReading) {
         // Search by reading
@@ -704,14 +703,15 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
     //    Nested list 4: no match found
     List<List<Vocab>> nestedSortingList = [[], [], [], [], []];
 
+    final escapedText = RegExp.escape(cleanedText);
     // Match word starting with search text
     final searchTextRegExp = RegExp(
-      r'\b' + cleanedText,
+      r'\b' + escapedText,
       caseSensitive: false,
     );
     // Match search text at the start of string or after ';' and ignore leading/trailing parenthesis
     final startingRegExp = RegExp(
-      r'(^|(; ))(\([^)]*\) )?\b' + cleanedText + r'( \([^)]*\))?',
+      r'(^|(; ))(\([^)]*\) )?\b' + escapedText + r'( \([^)]*\))?',
       caseSensitive: false,
     );
     // Same as startingRegExp but with end of sub-definition

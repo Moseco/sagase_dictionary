@@ -323,7 +323,12 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
   }
 
   Future<List<Kanji>> search(String text) async {
-    final cleanedText = RegExp.escape(text).toLowerCase().removeDiacritics();
+    final cleanedText = text
+        .replaceAll('_', '')
+        .replaceAll('%', '')
+        .toLowerCase()
+        .removeDiacritics()
+        .trim();
     if (cleanedText.isEmpty) return [];
 
     // If given a single kanji character return only that
@@ -539,7 +544,10 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
           .get();
 
       // Sort exact matches of the search string to the top
-      final regExp = RegExp(r'\b' + cleanedText, caseSensitive: false);
+      final regExp = RegExp(
+        r'\b' + RegExp.escape(cleanedText),
+        caseSensitive: false,
+      );
 
       final List<Kanji> exactMatchKanjiList = [];
       for (int i = 0; i < unsortedKanjiList.length; i++) {
