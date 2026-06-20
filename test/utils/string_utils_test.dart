@@ -40,5 +40,22 @@ void main() {
         expect('日本語a'.isKanji(), false);
       });
     });
+
+    group('sanitizeName', () {
+      test('Removes new lines and trims whitespace', () {
+        expect(' my\nlist '.sanitizeName(), 'mylist');
+      });
+
+      test('Enforces character limit', () {
+        expect(('a' * 50 + 'b').sanitizeName(), 'a' * 50);
+      });
+
+      test('Does not split a surrogate pair at the cutoff', () {
+        // 𠮟 consists of 2 code units; cutting at 50 code units would
+        // leave an unpaired surrogate
+        final name = ('a' * 49 + '𠮟𠮟').sanitizeName();
+        expect(name, 'a' * 49 + '𠮟');
+      });
+    });
   });
 }

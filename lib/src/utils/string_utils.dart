@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:diacritic/diacritic.dart' as diacritic;
 
 extension JapaneseTextHelpers on String {
@@ -46,7 +45,8 @@ extension JapaneseTextHelpers on String {
     // Remove new line characters
     String name = replaceAll('\n', '');
     // Enforce character length and trim whitespace
-    return name.substring(0, min(50, name.length)).trim();
+    // Operates on runes to avoid splitting a surrogate pair at the cutoff
+    return String.fromCharCodes(name.runes.take(50)).trim();
   }
 
   static final splitWordsRegExp = RegExp(r'\b[^\s]+\b');
