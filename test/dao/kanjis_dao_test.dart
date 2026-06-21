@@ -577,6 +577,10 @@ void main() {
       final deletedNote =
           await database.kanjisDao.getNote('亜'.kanjiCodePoint());
       expect(deletedNote, null);
+
+      await database.kanjisDao.deleteAllNotes();
+      final remainingNotes = await database.kanjisDao.getAllNotes();
+      expect(remainingNotes.length, 0);
     });
   });
 }

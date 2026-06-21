@@ -702,4 +702,8 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
     await (db.delete(db.vocabNotes)..where((note) => note.id.equals(vocabId)))
         .go();
   }
+
+  Future<void> deleteAllNotes() async {
+    await db.delete(db.vocabNotes).go();
+  }
 }

@@ -519,6 +519,10 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
         .go();
   }
 
+  Future<void> deleteAllNotes() async {
+    await db.delete(db.kanjiNotes).go();
+  }
+
   // Inverse of String.kanjiCodePoint()
   String _kanjiFromCodePoint(int codePoint) {
     if (codePoint <= 0xFFFF) return String.fromCharCode(codePoint);

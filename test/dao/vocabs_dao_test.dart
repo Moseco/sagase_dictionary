@@ -488,6 +488,10 @@ void main() {
       await database.vocabsDao.deleteNote(1000220);
       final deletedNote = await database.vocabsDao.getNote(1000220);
       expect(deletedNote, null);
+
+      await database.vocabsDao.deleteAllNotes();
+      final remainingNotes = await database.vocabsDao.getAllNotes();
+      expect(remainingNotes.length, 0);
     });
   });
 }
