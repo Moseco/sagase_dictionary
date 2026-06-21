@@ -3,6 +3,7 @@ import 'package:kana_kit/kana_kit.dart';
 import 'package:sagase_dictionary/src/database.dart';
 import 'package:sagase_dictionary/src/datamodels/vocab/vocab_notes.dart';
 import 'package:sagase_dictionary/src/datamodels/vocabs.dart';
+import 'package:sagase_dictionary/src/utils/dao_utils.dart';
 import 'package:sagase_dictionary/src/utils/enums.dart';
 import 'package:sagase_dictionary/src/utils/string_utils.dart';
 
@@ -73,7 +74,7 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
     final baseQuery = db.select(db.vocabs)
       ..where((vocab) => vocab.id.isIn(idList));
 
-    late Map<int, Vocab> vocabMap = {};
+    final Map<int, Vocab> vocabMap;
     if (frontType == null) {
       // Get vocab only
       vocabMap = {for (var vocab in (await baseQuery.get())) vocab.id: vocab};
@@ -108,23 +109,9 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
           ..orderBy([(reading) => OrderingTerm.asc(reading.id)]))
         .get();
 
-    if (writings.isNotEmpty) {
-      int currentVocabId = writings[0].vocabId;
-      List<VocabWriting> currentWritings = [];
-      for (final writing in writings) {
-        // If id does not match got to new vocab, add current writings and clear list
-        if (writing.vocabId != currentVocabId) {
-          vocabMap[currentVocabId]!.writings =
-              currentWritings.isEmpty ? null : currentWritings;
-          currentVocabId = writing.vocabId;
-          currentWritings = [];
-        }
-        currentWritings.add(writing);
-      }
-      // Add remaining writings
-      vocabMap[currentVocabId]!.writings =
-          currentWritings.isEmpty ? null : currentWritings;
-    }
+    groupRowsById(writings, (writing) => writing.vocabId, (id, rows) {
+      vocabMap[id]?.writings = rows;
+    });
 
     final readings = await readingsFuture;
     // Start loading definitions while processing readings
@@ -133,42 +120,18 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
           ..orderBy([(definition) => OrderingTerm.asc(definition.id)]))
         .get();
 
-    if (readings.isNotEmpty) {
-      int currentVocabId = readings[0].vocabId;
-      List<VocabReading> currentReadings = [];
-      for (final reading in readings) {
-        // If id does not match got to new vocab, add current readings and clear list
-        if (reading.vocabId != currentVocabId) {
-          vocabMap[currentVocabId]!.readings = currentReadings;
-          currentVocabId = reading.vocabId;
-          currentReadings = [];
-        }
-        currentReadings.add(reading);
-      }
-      // Add remaining readings
-      vocabMap[currentVocabId]!.readings = currentReadings;
-    }
+    groupRowsById(readings, (reading) => reading.vocabId, (id, rows) {
+      vocabMap[id]?.readings = rows;
+    });
 
     final definitions = await definitionFuture;
     // Start loading notes while processing definitions
     final noteFuture =
         (db.select(db.vocabNotes)..where((note) => note.id.isIn(idList))).get();
 
-    if (definitions.isNotEmpty) {
-      int currentVocabId = definitions[0].vocabId;
-      List<VocabDefinition> currentDefinitions = [];
-      for (final definition in definitions) {
-        // If id does not match got to new vocab, add current definitions and clear list
-        if (definition.vocabId != currentVocabId) {
-          vocabMap[currentVocabId]!.definitions = currentDefinitions;
-          currentVocabId = definition.vocabId;
-          currentDefinitions = [];
-        }
-        currentDefinitions.add(definition);
-      }
-      // Add remaining definitions
-      vocabMap[currentVocabId]!.definitions = currentDefinitions;
-    }
+    groupRowsById(definitions, (definition) => definition.vocabId, (id, rows) {
+      vocabMap[id]?.definitions = rows;
+    });
 
     final notes = await noteFuture;
     for (final note in notes) {
@@ -201,23 +164,9 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
           ..orderBy([(reading) => OrderingTerm.asc(reading.id)]))
         .get();
 
-    if (writings.isNotEmpty) {
-      int currentVocabId = writings[0].vocabId;
-      List<VocabWriting> currentWritings = [];
-      for (final writing in writings) {
-        // If id does not match got to new vocab, add current writings and clear list
-        if (writing.vocabId != currentVocabId) {
-          vocabMap[currentVocabId]!.writings =
-              currentWritings.isEmpty ? null : currentWritings;
-          currentVocabId = writing.vocabId;
-          currentWritings = [];
-        }
-        currentWritings.add(writing);
-      }
-      // Add remaining writings
-      vocabMap[currentVocabId]!.writings =
-          currentWritings.isEmpty ? null : currentWritings;
-    }
+    groupRowsById(writings, (writing) => writing.vocabId, (id, rows) {
+      vocabMap[id]!.writings = rows;
+    });
 
     final readings = await readingsFuture;
     // Start loading definitions while processing readings
@@ -226,21 +175,9 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
           ..orderBy([(definition) => OrderingTerm.asc(definition.id)]))
         .get();
 
-    if (readings.isNotEmpty) {
-      int currentVocabId = readings[0].vocabId;
-      List<VocabReading> currentReadings = [];
-      for (final reading in readings) {
-        // If id does not match got to new vocab, add current readings and clear list
-        if (reading.vocabId != currentVocabId) {
-          vocabMap[currentVocabId]!.readings = currentReadings;
-          currentVocabId = reading.vocabId;
-          currentReadings = [];
-        }
-        currentReadings.add(reading);
-      }
-      // Add remaining readings
-      vocabMap[currentVocabId]!.readings = currentReadings;
-    }
+    groupRowsById(readings, (reading) => reading.vocabId, (id, rows) {
+      vocabMap[id]!.readings = rows;
+    });
 
     final definitions = await definitionFuture;
     // Start loading notes while processing definitions
@@ -248,21 +185,9 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
           ..where((note) => note.id.isIn(vocabMap.keys)))
         .get();
 
-    if (definitions.isNotEmpty) {
-      int currentVocabId = definitions[0].vocabId;
-      List<VocabDefinition> currentDefinitions = [];
-      for (final definition in definitions) {
-        // If id does not match got to new vocab, add current definitions and clear list
-        if (definition.vocabId != currentVocabId) {
-          vocabMap[currentVocabId]!.definitions = currentDefinitions;
-          currentVocabId = definition.vocabId;
-          currentDefinitions = [];
-        }
-        currentDefinitions.add(definition);
-      }
-      // Add remaining definitions
-      vocabMap[currentVocabId]!.definitions = currentDefinitions;
-    }
+    groupRowsById(definitions, (definition) => definition.vocabId, (id, rows) {
+      vocabMap[id]!.definitions = rows;
+    });
 
     final notes = await noteFuture;
     for (final note in notes) {

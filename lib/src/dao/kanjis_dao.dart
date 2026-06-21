@@ -5,6 +5,7 @@ import 'package:sagase_dictionary/src/datamodels/kanji/kanji_notes.dart';
 import 'package:sagase_dictionary/src/datamodels/kanji_component_connections.dart';
 import 'package:sagase_dictionary/src/datamodels/kanjis.dart';
 import 'package:sagase_dictionary/src/datamodels/spaced_repetition_datas.dart';
+import 'package:sagase_dictionary/src/utils/dao_utils.dart';
 import 'package:sagase_dictionary/src/utils/enums.dart';
 import 'package:sagase_dictionary/src/utils/string_utils.dart';
 
@@ -51,14 +52,22 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
 
     if (kanji == null) return null;
 
-    List<KanjiReading> onReadings = [];
-    List<KanjiReading> kunReadings = [];
-    List<KanjiReading> nanori = [];
-
     final readings = await (db.select(db.kanjiReadings)
           ..where((reading) => reading.kanjiId.equals(kanji!.id))
           ..orderBy([(reading) => OrderingTerm.asc(reading.id)]))
         .get();
+
+    _setReadings(kanji, readings);
+
+    final note = await getNote(kanji.id);
+
+    return kanji..note = note?.note;
+  }
+
+  void _setReadings(Kanji kanji, List<KanjiReading> readings) {
+    List<KanjiReading> onReadings = [];
+    List<KanjiReading> kunReadings = [];
+    List<KanjiReading> nanori = [];
 
     for (final reading in readings) {
       switch (reading.type) {
@@ -74,13 +83,10 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
       }
     }
 
-    final note = await getNote(kanji.id);
-
-    return kanji
+    kanji
       ..onReadings = onReadings.isEmpty ? null : onReadings
       ..kunReadings = kunReadings.isEmpty ? null : kunReadings
-      ..nanori = nanori.isEmpty ? null : nanori
-      ..note = note?.note;
+      ..nanori = nanori.isEmpty ? null : nanori;
   }
 
   Future<Kanji?> getKanji(String kanji, {FrontType? frontType}) async {
@@ -92,7 +98,7 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
 
     final baseQuery = db.select(db.kanjis)..where((row) => row.id.isIn(idList));
 
-    late Map<int, Kanji> kanjiMap = {};
+    final Map<int, Kanji> kanjiMap;
     if (frontType == null) {
       // Get kanji only
       kanjiMap = {for (var kanji in (await baseQuery.get())) kanji.id: kanji};
@@ -121,41 +127,10 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
           ..orderBy([(reading) => OrderingTerm.asc(reading.id)]))
         .get();
 
-    if (readings.isNotEmpty) {
-      int currentKanjiId = readings[0].kanjiId;
-      List<KanjiReading> onReadings = [];
-      List<KanjiReading> kunReadings = [];
-      List<KanjiReading> nanori = [];
-      for (final reading in readings) {
-        // If id does not match got to new kanji, add current readings and clear lists
-        if (reading.kanjiId != currentKanjiId) {
-          kanjiMap[currentKanjiId]!
-            ..onReadings = onReadings.isEmpty ? null : onReadings
-            ..kunReadings = kunReadings.isEmpty ? null : kunReadings
-            ..nanori = nanori.isEmpty ? null : nanori;
-          currentKanjiId = reading.kanjiId;
-          onReadings = [];
-          kunReadings = [];
-          nanori = [];
-        }
-        switch (reading.type) {
-          case KanjiReadingType.on:
-            onReadings.add(reading);
-            break;
-          case KanjiReadingType.kun:
-            kunReadings.add(reading);
-            break;
-          case KanjiReadingType.nanori:
-            nanori.add(reading);
-            break;
-        }
-      }
-      // Add remaining readings
-      kanjiMap[currentKanjiId]!
-        ..onReadings = onReadings.isEmpty ? null : onReadings
-        ..kunReadings = kunReadings.isEmpty ? null : kunReadings
-        ..nanori = nanori.isEmpty ? null : nanori;
-    }
+    groupRowsById(readings, (reading) => reading.kanjiId, (id, rows) {
+      final kanji = kanjiMap[id];
+      if (kanji != null) _setReadings(kanji, rows);
+    });
 
     final notes = await (db.select(db.kanjiNotes)
           ..where((note) => note.id.isIn(idList)))
@@ -184,41 +159,9 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
           ..orderBy([(reading) => OrderingTerm.asc(reading.id)]))
         .get();
 
-    if (readings.isNotEmpty) {
-      int currentKanjiId = readings[0].kanjiId;
-      List<KanjiReading> onReadings = [];
-      List<KanjiReading> kunReadings = [];
-      List<KanjiReading> nanori = [];
-      for (final reading in readings) {
-        // If id does not match got to new kanji, add current readings and clear lists
-        if (reading.kanjiId != currentKanjiId) {
-          kanjiMap[currentKanjiId]!
-            ..onReadings = onReadings.isEmpty ? null : onReadings
-            ..kunReadings = kunReadings.isEmpty ? null : kunReadings
-            ..nanori = nanori.isEmpty ? null : nanori;
-          currentKanjiId = reading.kanjiId;
-          onReadings = [];
-          kunReadings = [];
-          nanori = [];
-        }
-        switch (reading.type) {
-          case KanjiReadingType.on:
-            onReadings.add(reading);
-            break;
-          case KanjiReadingType.kun:
-            kunReadings.add(reading);
-            break;
-          case KanjiReadingType.nanori:
-            nanori.add(reading);
-            break;
-        }
-      }
-      // Add remaining readings
-      kanjiMap[currentKanjiId]!
-        ..onReadings = onReadings.isEmpty ? null : onReadings
-        ..kunReadings = kunReadings.isEmpty ? null : kunReadings
-        ..nanori = nanori.isEmpty ? null : nanori;
-    }
+    groupRowsById(readings, (reading) => reading.kanjiId, (id, rows) {
+      _setReadings(kanjiMap[id]!, rows);
+    });
 
     final notes = await (db.select(db.kanjiNotes)
           ..where((note) => note.id.isIn(kanjiMap.keys)))
