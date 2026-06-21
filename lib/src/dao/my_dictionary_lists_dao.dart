@@ -55,9 +55,18 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<List<MyDictionaryList>> getAllFromList(List<int> ids) async {
+    if (ids.isEmpty) return [];
+
+    final lists = await (db.select(db.myDictionaryLists)
+          ..where((list) => list.id.isIn(ids)))
+        .get();
+
+    // Put the results in the same order as the input
+    final listMap = {for (var list in lists) list.id: list};
     List<MyDictionaryList> dictionaryLists = [];
     for (final id in ids) {
-      dictionaryLists.add(await get(id));
+      final list = listMap[id];
+      if (list != null) dictionaryLists.add(list);
     }
     return dictionaryLists;
   }
@@ -336,8 +345,8 @@ class MyDictionaryListsDao extends DatabaseAccessor<AppDatabase>
 
   Future<void> deleteAll() async {
     await db.transaction(() async {
-    await db.delete(db.myDictionaryLists).go();
-    await db.delete(db.myDictionaryListItems).go();
+      await db.delete(db.myDictionaryLists).go();
+      await db.delete(db.myDictionaryListItems).go();
     });
   }
 }
