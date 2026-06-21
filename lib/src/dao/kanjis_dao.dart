@@ -270,32 +270,6 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
     final selectedCodePoints =
         components.map((c) => c.kanjiCodePoint()).toSet();
 
-    final kanji = await (db.select(db.kanjis).join([
-      innerJoin(
-        db.kanjiComponentConnections,
-        db.kanjiComponentConnections.kanjiCodePoint.equalsExp(db.kanjis.id),
-        useColumns: false,
-      ),
-    ])
-          ..where(db.kanjiComponentConnections.componentCodePoint
-              .isIn(selectedCodePoints))
-          ..groupBy(
-            [db.kanjis.id],
-            having: db.kanjiComponentConnections.componentCodePoint
-                .count(distinct: true)
-                .equals(selectedCodePoints.length),
-          )
-          ..orderBy([
-            OrderingTerm.asc(db.kanjis.strokeCount),
-            OrderingTerm.asc(db.kanjis.frequency, nulls: NullsOrder.last),
-          ]))
-        .map((row) => row.readTable(db.kanjis).kanji)
-        .get();
-
-    if (kanji.isEmpty) {
-      return (kanji: const <String>[], validComponents: const <String>[]);
-    }
-
     final matchingIds = db.selectOnly(db.kanjiComponentConnections)
       ..addColumns([db.kanjiComponentConnections.kanjiCodePoint])
       ..where(db.kanjiComponentConnections.componentCodePoint
@@ -306,6 +280,20 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
             .count(distinct: true)
             .equals(selectedCodePoints.length),
       );
+
+    final kanji = await (db.select(db.kanjis)
+          ..where((kanji) => kanji.id.isInQuery(matchingIds))
+          ..orderBy([
+            (kanji) => OrderingTerm.asc(kanji.strokeCount),
+            (kanji) =>
+                OrderingTerm.asc(kanji.frequency, nulls: NullsOrder.last),
+          ]))
+        .map((kanji) => kanji.kanji)
+        .get();
+
+    if (kanji.isEmpty) {
+      return (kanji: const <String>[], validComponents: const <String>[]);
+    }
 
     final validComponents = await (db.selectOnly(db.kanjiComponentConnections,
             distinct: true)
