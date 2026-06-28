@@ -3277,9 +3277,6 @@ final class Schema5 extends i0.VersionedSchema {
           _column_177,
           _column_141,
           _column_178,
-          _column_179,
-          _column_180,
-          _column_181,
         ],
         attachedDatabase: database,
       ),
@@ -3439,31 +3436,16 @@ class Shape35 extends i0.VersionedTable {
       columnsByName['form']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<String> get meaning =>
       columnsByName['meaning']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get construction =>
-      columnsByName['construction']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<int> get jlptLevel =>
       columnsByName['jlpt_level']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get content =>
-      columnsByName['content']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get practice =>
-      columnsByName['practice']! as i1.GeneratedColumn<String>;
 }
 
 i1.GeneratedColumn<String> _column_177(String aliasedName) =>
     i1.GeneratedColumn<String>('form', aliasedName, false,
         type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_178(String aliasedName) =>
-    i1.GeneratedColumn<String>('construction', aliasedName, true,
-        type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<int> _column_179(String aliasedName) =>
+i1.GeneratedColumn<int> _column_178(String aliasedName) =>
     i1.GeneratedColumn<int>('jlpt_level', aliasedName, false,
         type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_180(String aliasedName) =>
-    i1.GeneratedColumn<String>('content', aliasedName, true,
-        type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<String> _column_181(String aliasedName) =>
-    i1.GeneratedColumn<String>('practice', aliasedName, true,
-        type: i1.DriftSqlType.string, $customConstraints: 'NULL');
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,

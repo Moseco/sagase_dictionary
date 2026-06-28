@@ -2478,21 +2478,12 @@ class DictionaryBuilder {
 
     await db.transaction(() async {
       for (var grammar in grammarList) {
-        final content =
-            grammar['content'] != null ? jsonEncode(grammar['content']) : null;
-        final practice = grammar['practice'] != null
-            ? jsonEncode(grammar['practice'])
-            : null;
-
         await db.into(db.grammars).insert(
               GrammarsCompanion(
                 id: Value(grammar['id']),
                 form: Value(grammar['form']),
                 meaning: Value(grammar['meaning']),
-                construction: Value.absentIfNull(grammar['construction']),
                 jlptLevel: Value(grammar['jlpt_level']),
-                content: Value.absentIfNull(content),
-                practice: Value.absentIfNull(practice),
               ),
             );
 

@@ -2165,40 +2165,10 @@
             "dsl_features": []
           },
           {
-            "name": "construction",
-            "getter_name": "construction",
-            "moor_type": "string",
-            "nullable": true,
-            "customConstraints": null,
-            "default_dart": null,
-            "default_client_dart": null,
-            "dsl_features": []
-          },
-          {
             "name": "jlpt_level",
             "getter_name": "jlptLevel",
             "moor_type": "int",
             "nullable": false,
-            "customConstraints": null,
-            "default_dart": null,
-            "default_client_dart": null,
-            "dsl_features": []
-          },
-          {
-            "name": "content",
-            "getter_name": "content",
-            "moor_type": "string",
-            "nullable": true,
-            "customConstraints": null,
-            "default_dart": null,
-            "default_client_dart": null,
-            "dsl_features": []
-          },
-          {
-            "name": "practice",
-            "getter_name": "practice",
-            "moor_type": "string",
-            "nullable": true,
             "customConstraints": null,
             "default_dart": null,
             "default_client_dart": null,
@@ -3044,7 +3014,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"grammars\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"form\" TEXT NOT NULL, \"meaning\" TEXT NOT NULL, \"construction\" TEXT NULL, \"jlpt_level\" INTEGER NOT NULL, \"content\" TEXT NULL, \"practice\" TEXT NULL);"
+          "sql": "CREATE TABLE IF NOT EXISTS \"grammars\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"form\" TEXT NOT NULL, \"meaning\" TEXT NOT NULL, \"jlpt_level\" INTEGER NOT NULL);"
         }
       ]
     },

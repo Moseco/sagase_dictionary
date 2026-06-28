@@ -936,19 +936,12 @@ void main() {
       expect(grammarList[0].id, 1);
       expect(grammarList[0].form, 'です');
       expect(grammarList[0].meaning, 'to be');
-      expect(grammarList[0].construction, null);
       expect(grammarList[0].jlptLevel, 5);
-      expect(grammarList[0].content, null);
-      expect(grammarList[0].practice, null);
 
       expect(grammarList[1].id, 2);
       expect(grammarList[1].form, 'ほうがいい');
       expect(grammarList[1].meaning, 'It would be better to...');
-      expect(grammarList[1].construction,
-          'Verb (past tense or negative present) + ほうがいい');
       expect(grammarList[1].jlptLevel, 5);
-      expect(grammarList[1].content, isNotNull);
-      expect(grammarList[1].practice, isNotNull);
     });
   });
 }

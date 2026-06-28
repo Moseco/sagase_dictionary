@@ -28,10 +28,7 @@ void main() {
       expect(grammar.id, 1);
       expect(grammar.form, 'です');
       expect(grammar.meaning, 'to be');
-      expect(grammar.construction, null);
       expect(grammar.jlptLevel, 5);
-      expect(grammar.content, null);
-      expect(grammar.practice, null);
     });
 
     group('getAll', () {

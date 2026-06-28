@@ -1634,26 +1634,7 @@ const shortGrammarInput = '''[
         "id": 2,
         "form": "ほうがいい",
         "meaning": "It would be better to...",
-        "construction": "Verb (past tense or negative present) + ほうがいい",
-        "jlpt_level": 5,
-        "content": [
-            {
-                "type": "paragraph",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": "In Japanese, the grammar point ほうがいい is the go-to expression for giving advice or suggestions. In English, it translates most closely to \\"it's better to...\\" or \\"you should.\\""
-                    }
-                ]
-            }
-        ],
-        "practice": [
-            {
-                "text": "喉が痛いなら、飴を{}ほうがいいですよ。",
-                "answer": "食べた",
-                "answer_romaji": "tabeta"
-            }
-        ]
+        "jlpt_level": 5
     }
 ]
 ''';

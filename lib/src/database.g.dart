@@ -5678,33 +5678,14 @@ class $GrammarsTable extends Grammars with TableInfo<$GrammarsTable, Grammar> {
   late final GeneratedColumn<String> meaning = GeneratedColumn<String>(
       'meaning', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _constructionMeta =
-      const VerificationMeta('construction');
-  @override
-  late final GeneratedColumn<String> construction = GeneratedColumn<String>(
-      'construction', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _jlptLevelMeta =
       const VerificationMeta('jlptLevel');
   @override
   late final GeneratedColumn<int> jlptLevel = GeneratedColumn<int>(
       'jlpt_level', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _contentMeta =
-      const VerificationMeta('content');
   @override
-  late final GeneratedColumn<String> content = GeneratedColumn<String>(
-      'content', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _practiceMeta =
-      const VerificationMeta('practice');
-  @override
-  late final GeneratedColumn<String> practice = GeneratedColumn<String>(
-      'practice', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, form, meaning, construction, jlptLevel, content, practice];
+  List<GeneratedColumn> get $columns => [id, form, meaning, jlptLevel];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -5730,25 +5711,11 @@ class $GrammarsTable extends Grammars with TableInfo<$GrammarsTable, Grammar> {
     } else if (isInserting) {
       context.missing(_meaningMeta);
     }
-    if (data.containsKey('construction')) {
-      context.handle(
-          _constructionMeta,
-          construction.isAcceptableOrUnknown(
-              data['construction']!, _constructionMeta));
-    }
     if (data.containsKey('jlpt_level')) {
       context.handle(_jlptLevelMeta,
           jlptLevel.isAcceptableOrUnknown(data['jlpt_level']!, _jlptLevelMeta));
     } else if (isInserting) {
       context.missing(_jlptLevelMeta);
-    }
-    if (data.containsKey('content')) {
-      context.handle(_contentMeta,
-          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
-    }
-    if (data.containsKey('practice')) {
-      context.handle(_practiceMeta,
-          practice.isAcceptableOrUnknown(data['practice']!, _practiceMeta));
     }
     return context;
   }
@@ -5765,14 +5732,8 @@ class $GrammarsTable extends Grammars with TableInfo<$GrammarsTable, Grammar> {
           .read(DriftSqlType.string, data['${effectivePrefix}form'])!,
       meaning: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}meaning'])!,
-      construction: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}construction']),
       jlptLevel: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}jlpt_level'])!,
-      content: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}content']),
-      practice: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}practice']),
     );
   }
 
@@ -5786,27 +5747,18 @@ class GrammarsCompanion extends UpdateCompanion<Grammar> {
   final Value<int> id;
   final Value<String> form;
   final Value<String> meaning;
-  final Value<String?> construction;
   final Value<int> jlptLevel;
-  final Value<String?> content;
-  final Value<String?> practice;
   const GrammarsCompanion({
     this.id = const Value.absent(),
     this.form = const Value.absent(),
     this.meaning = const Value.absent(),
-    this.construction = const Value.absent(),
     this.jlptLevel = const Value.absent(),
-    this.content = const Value.absent(),
-    this.practice = const Value.absent(),
   });
   GrammarsCompanion.insert({
     this.id = const Value.absent(),
     required String form,
     required String meaning,
-    this.construction = const Value.absent(),
     required int jlptLevel,
-    this.content = const Value.absent(),
-    this.practice = const Value.absent(),
   })  : form = Value(form),
         meaning = Value(meaning),
         jlptLevel = Value(jlptLevel);
@@ -5814,19 +5766,13 @@ class GrammarsCompanion extends UpdateCompanion<Grammar> {
     Expression<int>? id,
     Expression<String>? form,
     Expression<String>? meaning,
-    Expression<String>? construction,
     Expression<int>? jlptLevel,
-    Expression<String>? content,
-    Expression<String>? practice,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (form != null) 'form': form,
       if (meaning != null) 'meaning': meaning,
-      if (construction != null) 'construction': construction,
       if (jlptLevel != null) 'jlpt_level': jlptLevel,
-      if (content != null) 'content': content,
-      if (practice != null) 'practice': practice,
     });
   }
 
@@ -5834,18 +5780,12 @@ class GrammarsCompanion extends UpdateCompanion<Grammar> {
       {Value<int>? id,
       Value<String>? form,
       Value<String>? meaning,
-      Value<String?>? construction,
-      Value<int>? jlptLevel,
-      Value<String?>? content,
-      Value<String?>? practice}) {
+      Value<int>? jlptLevel}) {
     return GrammarsCompanion(
       id: id ?? this.id,
       form: form ?? this.form,
       meaning: meaning ?? this.meaning,
-      construction: construction ?? this.construction,
       jlptLevel: jlptLevel ?? this.jlptLevel,
-      content: content ?? this.content,
-      practice: practice ?? this.practice,
     );
   }
 
@@ -5861,17 +5801,8 @@ class GrammarsCompanion extends UpdateCompanion<Grammar> {
     if (meaning.present) {
       map['meaning'] = Variable<String>(meaning.value);
     }
-    if (construction.present) {
-      map['construction'] = Variable<String>(construction.value);
-    }
     if (jlptLevel.present) {
       map['jlpt_level'] = Variable<int>(jlptLevel.value);
-    }
-    if (content.present) {
-      map['content'] = Variable<String>(content.value);
-    }
-    if (practice.present) {
-      map['practice'] = Variable<String>(practice.value);
     }
     return map;
   }
@@ -5882,10 +5813,7 @@ class GrammarsCompanion extends UpdateCompanion<Grammar> {
           ..write('id: $id, ')
           ..write('form: $form, ')
           ..write('meaning: $meaning, ')
-          ..write('construction: $construction, ')
-          ..write('jlptLevel: $jlptLevel, ')
-          ..write('content: $content, ')
-          ..write('practice: $practice')
+          ..write('jlptLevel: $jlptLevel')
           ..write(')'))
         .toString();
   }
@@ -10689,19 +10617,13 @@ typedef $$GrammarsTableCreateCompanionBuilder = GrammarsCompanion Function({
   Value<int> id,
   required String form,
   required String meaning,
-  Value<String?> construction,
   required int jlptLevel,
-  Value<String?> content,
-  Value<String?> practice,
 });
 typedef $$GrammarsTableUpdateCompanionBuilder = GrammarsCompanion Function({
   Value<int> id,
   Value<String> form,
   Value<String> meaning,
-  Value<String?> construction,
   Value<int> jlptLevel,
-  Value<String?> content,
-  Value<String?> practice,
 });
 
 class $$GrammarsTableFilterComposer
@@ -10722,17 +10644,8 @@ class $$GrammarsTableFilterComposer
   ColumnFilters<String> get meaning => $composableBuilder(
       column: $table.meaning, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get construction => $composableBuilder(
-      column: $table.construction, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<int> get jlptLevel => $composableBuilder(
       column: $table.jlptLevel, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get content => $composableBuilder(
-      column: $table.content, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get practice => $composableBuilder(
-      column: $table.practice, builder: (column) => ColumnFilters(column));
 }
 
 class $$GrammarsTableOrderingComposer
@@ -10753,18 +10666,8 @@ class $$GrammarsTableOrderingComposer
   ColumnOrderings<String> get meaning => $composableBuilder(
       column: $table.meaning, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get construction => $composableBuilder(
-      column: $table.construction,
-      builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<int> get jlptLevel => $composableBuilder(
       column: $table.jlptLevel, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get content => $composableBuilder(
-      column: $table.content, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get practice => $composableBuilder(
-      column: $table.practice, builder: (column) => ColumnOrderings(column));
 }
 
 class $$GrammarsTableAnnotationComposer
@@ -10785,17 +10688,8 @@ class $$GrammarsTableAnnotationComposer
   GeneratedColumn<String> get meaning =>
       $composableBuilder(column: $table.meaning, builder: (column) => column);
 
-  GeneratedColumn<String> get construction => $composableBuilder(
-      column: $table.construction, builder: (column) => column);
-
   GeneratedColumn<int> get jlptLevel =>
       $composableBuilder(column: $table.jlptLevel, builder: (column) => column);
-
-  GeneratedColumn<String> get content =>
-      $composableBuilder(column: $table.content, builder: (column) => column);
-
-  GeneratedColumn<String> get practice =>
-      $composableBuilder(column: $table.practice, builder: (column) => column);
 }
 
 class $$GrammarsTableTableManager extends RootTableManager<
@@ -10824,37 +10718,25 @@ class $$GrammarsTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<String> form = const Value.absent(),
             Value<String> meaning = const Value.absent(),
-            Value<String?> construction = const Value.absent(),
             Value<int> jlptLevel = const Value.absent(),
-            Value<String?> content = const Value.absent(),
-            Value<String?> practice = const Value.absent(),
           }) =>
               GrammarsCompanion(
             id: id,
             form: form,
             meaning: meaning,
-            construction: construction,
             jlptLevel: jlptLevel,
-            content: content,
-            practice: practice,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String form,
             required String meaning,
-            Value<String?> construction = const Value.absent(),
             required int jlptLevel,
-            Value<String?> content = const Value.absent(),
-            Value<String?> practice = const Value.absent(),
           }) =>
               GrammarsCompanion.insert(
             id: id,
             form: form,
             meaning: meaning,
-            construction: construction,
             jlptLevel: jlptLevel,
-            content: content,
-            practice: practice,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
