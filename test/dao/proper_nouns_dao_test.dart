@@ -47,7 +47,7 @@ void main() {
       // Import proper noun database
       await db.properNounsDao.importProperNouns(properNounDatabaseFile.path);
 
-      expect(await db.properNouns.count().getSingle(), 6);
+      expect(await db.properNouns.count().getSingle(), 7);
 
       // Cleanup
       await db.close();

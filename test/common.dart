@@ -1621,7 +1621,8 @@ const shortEnamdict = '''さくら /(f) Sakura/
 東京 [とうきょう] /(p,s) Tokyo/
 ヴィナス /(u) Venus/
 宇宙機構 [うちゅうきかん] /(o) Japanese Aerospace Exploration Agency (JAXA) (formerly NASDA)/
-安倍晋三 [あべしんぞう] /(h) Shinzō Abe (1954.9.21-2022.7.8; Prime Minister of Japan 2006-2007 and 2012-2020)/''';
+安倍晋三 [あべしんぞう] /(h) Shinzō Abe (1954.9.21-2022.7.8; Prime Minister of Japan 2006-2007 and 2012-2020)/
+イントラスタット /Intrastat (EU system for trade statistics)/''';
 
 const shortGrammarInput = '''[
     {

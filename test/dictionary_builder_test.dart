@@ -908,6 +908,30 @@ void main() {
       expect(properNounRomajiWords[7].word, '2006-2007');
       expect(properNounRomajiWords[8].word, 'and');
       expect(properNounRomajiWords[9].word, '2012-2020');
+
+      // Entry without a type
+      expect(properNouns[6].writing, null);
+      expect(properNouns[6].writingSearchForm, null);
+      expect(properNouns[6].reading, 'イントラスタット');
+      expect(properNouns[6].readingSearchForm, 'いんとらすたっと');
+      expect(properNouns[6].readingRomaji, 'intorasutatto');
+      expect(properNouns[6].readingRomajiSimplified, 'intorasutato');
+      expect(
+        properNouns[6].romaji,
+        'Intrastat (EU system for trade statistics)',
+      );
+      expect(properNouns[6].types, []);
+      properNounRomajiWords =
+          await (database.select(database.properNounRomajiWords)
+                ..where((word) => word.properNounId.equals(properNouns[6].id)))
+              .get();
+      expect(properNounRomajiWords.length, 6);
+      expect(properNounRomajiWords[0].word, 'intrastat');
+      expect(properNounRomajiWords[1].word, 'eu');
+      expect(properNounRomajiWords[2].word, 'system');
+      expect(properNounRomajiWords[3].word, 'for');
+      expect(properNounRomajiWords[4].word, 'trade');
+      expect(properNounRomajiWords[5].word, 'statistics');
     });
 
     test('Kanji component connections', () async {

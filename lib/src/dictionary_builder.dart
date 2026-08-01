@@ -18,6 +18,7 @@ class DictionaryBuilder {
 
   static final _simplifyNonVerbRegex = RegExp(r'(?<=.{1})(う|っ|ッ|ー)');
   static final _simplifyVerbRegex = RegExp(r'(?<=.{1})(ー|っ|ッ|(う(?=.)))');
+  static final _properNounTypesRegex = RegExp(r'^[a-z]+(,[a-z]+)*$');
 
   // Entry point for creating the dictionary
   static Future<void> createDictionary(
@@ -1376,6 +1377,9 @@ class DictionaryBuilder {
       case 'ain':
         languageSource.add(LanguageSource.ain);
         break;
+      case 'alb':
+        languageSource.add(LanguageSource.alb);
+        break;
       case 'alg':
         languageSource.add(LanguageSource.alg);
         break;
@@ -1385,8 +1389,17 @@ class DictionaryBuilder {
       case 'ara':
         languageSource.add(LanguageSource.ara);
         break;
+      case 'arm':
+        languageSource.add(LanguageSource.arm);
+        break;
       case 'arn':
         languageSource.add(LanguageSource.arn);
+        break;
+      case 'aze':
+        languageSource.add(LanguageSource.aze);
+        break;
+      case 'ben':
+        languageSource.add(LanguageSource.ben);
         break;
       case 'bnt':
         languageSource.add(LanguageSource.bnt);
@@ -1411,6 +1424,9 @@ class DictionaryBuilder {
         break;
       case 'dan':
         languageSource.add(LanguageSource.dan);
+        break;
+      case 'div':
+        languageSource.add(LanguageSource.div);
         break;
       case 'dut':
         languageSource.add(LanguageSource.dut);
@@ -1469,14 +1485,23 @@ class DictionaryBuilder {
       case 'ita':
         languageSource.add(LanguageSource.ita);
         break;
+      case 'kaz':
+        languageSource.add(LanguageSource.kaz);
+        break;
       case 'khm':
         languageSource.add(LanguageSource.khm);
+        break;
+      case 'kir':
+        languageSource.add(LanguageSource.kir);
         break;
       case 'kor':
         languageSource.add(LanguageSource.kor);
         break;
       case 'kur':
         languageSource.add(LanguageSource.kur);
+        break;
+      case 'lao':
+        languageSource.add(LanguageSource.lao);
         break;
       case 'lat':
         languageSource.add(LanguageSource.lat);
@@ -1493,6 +1518,9 @@ class DictionaryBuilder {
       case 'may':
         languageSource.add(LanguageSource.may);
         break;
+      case 'mlg':
+        languageSource.add(LanguageSource.mlg);
+        break;
       case 'mnc':
         languageSource.add(LanguageSource.mnc);
         break;
@@ -1501,6 +1529,9 @@ class DictionaryBuilder {
         break;
       case 'mon':
         languageSource.add(LanguageSource.mon);
+        break;
+      case 'nep':
+        languageSource.add(LanguageSource.nep);
         break;
       case 'nor':
         languageSource.add(LanguageSource.nor);
@@ -1532,8 +1563,14 @@ class DictionaryBuilder {
       case 'slv':
         languageSource.add(LanguageSource.slv);
         break;
+      case 'smo':
+        languageSource.add(LanguageSource.smo);
+        break;
       case 'som':
         languageSource.add(LanguageSource.som);
+        break;
+      case 'sot':
+        languageSource.add(LanguageSource.sot);
         break;
       case 'spa':
         languageSource.add(LanguageSource.spa);
@@ -1550,6 +1587,9 @@ class DictionaryBuilder {
       case 'tam':
         languageSource.add(LanguageSource.tam);
         break;
+      case 'tgk':
+        languageSource.add(LanguageSource.tgk);
+        break;
       case 'tgl':
         languageSource.add(LanguageSource.tgl);
         break;
@@ -1558,6 +1598,9 @@ class DictionaryBuilder {
         break;
       case 'tib':
         languageSource.add(LanguageSource.tib);
+        break;
+      case 'tuk':
+        languageSource.add(LanguageSource.tuk);
         break;
       case 'tur':
         languageSource.add(LanguageSource.tur);
@@ -2598,14 +2641,23 @@ class DictionaryBuilder {
         readingRomajiSimplified = null;
       }
 
-      // Get proper noun types
-      String typesString = line.substring(2, line.indexOf(')'));
+      // Get proper noun types if present
+      // Types are enclosed in parenthesis at the start but can be missing
       List<ProperNounType> types = [];
-      for (var typeString in typesString.split(',')) {
-        types.add(_properNounTypeStringToEnum(typeString));
+      line = line.substring(1);
+      if (line.startsWith('(')) {
+        final closingIndex = line.indexOf(')');
+        final typesString = line.substring(1, closingIndex);
+        // Only treat as types if the content looks like a list of type codes
+        // and not like the start of the romaji
+        if (_properNounTypesRegex.hasMatch(typesString)) {
+          for (var typeString in typesString.split(',')) {
+            types.add(_properNounTypeStringToEnum(typeString));
+          }
+          line = line.substring(closingIndex + 2);
+        }
       }
       // Get romaji
-      line = line.substring(typesString.length + 4);
       String romaji = line.substring(0, line.length - 1);
 
       // If romaji contains multiple words or was changed by removing diacritics add them to romaji words
