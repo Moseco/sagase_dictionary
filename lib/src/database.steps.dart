@@ -3276,6 +3276,7 @@ final class Schema5 extends i0.VersionedSchema {
           _column_86,
           _column_177,
           _column_141,
+          _column_92,
           _column_178,
         ],
         attachedDatabase: database,
@@ -3436,6 +3437,8 @@ class Shape35 extends i0.VersionedTable {
       columnsByName['form']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<String> get meaning =>
       columnsByName['meaning']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get reading =>
+      columnsByName['reading']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<int> get jlptLevel =>
       columnsByName['jlpt_level']! as i1.GeneratedColumn<int>;
 }

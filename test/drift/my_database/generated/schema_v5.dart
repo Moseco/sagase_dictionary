@@ -5891,13 +5891,18 @@ class Grammars extends Table with TableInfo<Grammars, GrammarsData> {
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
+  late final GeneratedColumn<String> reading = GeneratedColumn<String>(
+      'reading', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   late final GeneratedColumn<int> jlptLevel = GeneratedColumn<int>(
       'jlpt_level', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
   @override
-  List<GeneratedColumn> get $columns => [id, form, meaning, jlptLevel];
+  List<GeneratedColumn> get $columns => [id, form, meaning, reading, jlptLevel];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -5915,6 +5920,8 @@ class Grammars extends Table with TableInfo<Grammars, GrammarsData> {
           .read(DriftSqlType.string, data['${effectivePrefix}form'])!,
       meaning: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}meaning'])!,
+      reading: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}reading'])!,
       jlptLevel: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}jlpt_level'])!,
     );
@@ -5933,11 +5940,13 @@ class GrammarsData extends DataClass implements Insertable<GrammarsData> {
   final int id;
   final String form;
   final String meaning;
+  final String reading;
   final int jlptLevel;
   const GrammarsData(
       {required this.id,
       required this.form,
       required this.meaning,
+      required this.reading,
       required this.jlptLevel});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5945,6 +5954,7 @@ class GrammarsData extends DataClass implements Insertable<GrammarsData> {
     map['id'] = Variable<int>(id);
     map['form'] = Variable<String>(form);
     map['meaning'] = Variable<String>(meaning);
+    map['reading'] = Variable<String>(reading);
     map['jlpt_level'] = Variable<int>(jlptLevel);
     return map;
   }
@@ -5954,6 +5964,7 @@ class GrammarsData extends DataClass implements Insertable<GrammarsData> {
       id: Value(id),
       form: Value(form),
       meaning: Value(meaning),
+      reading: Value(reading),
       jlptLevel: Value(jlptLevel),
     );
   }
@@ -5965,6 +5976,7 @@ class GrammarsData extends DataClass implements Insertable<GrammarsData> {
       id: serializer.fromJson<int>(json['id']),
       form: serializer.fromJson<String>(json['form']),
       meaning: serializer.fromJson<String>(json['meaning']),
+      reading: serializer.fromJson<String>(json['reading']),
       jlptLevel: serializer.fromJson<int>(json['jlptLevel']),
     );
   }
@@ -5975,16 +5987,22 @@ class GrammarsData extends DataClass implements Insertable<GrammarsData> {
       'id': serializer.toJson<int>(id),
       'form': serializer.toJson<String>(form),
       'meaning': serializer.toJson<String>(meaning),
+      'reading': serializer.toJson<String>(reading),
       'jlptLevel': serializer.toJson<int>(jlptLevel),
     };
   }
 
   GrammarsData copyWith(
-          {int? id, String? form, String? meaning, int? jlptLevel}) =>
+          {int? id,
+          String? form,
+          String? meaning,
+          String? reading,
+          int? jlptLevel}) =>
       GrammarsData(
         id: id ?? this.id,
         form: form ?? this.form,
         meaning: meaning ?? this.meaning,
+        reading: reading ?? this.reading,
         jlptLevel: jlptLevel ?? this.jlptLevel,
       );
   GrammarsData copyWithCompanion(GrammarsCompanion data) {
@@ -5992,6 +6010,7 @@ class GrammarsData extends DataClass implements Insertable<GrammarsData> {
       id: data.id.present ? data.id.value : this.id,
       form: data.form.present ? data.form.value : this.form,
       meaning: data.meaning.present ? data.meaning.value : this.meaning,
+      reading: data.reading.present ? data.reading.value : this.reading,
       jlptLevel: data.jlptLevel.present ? data.jlptLevel.value : this.jlptLevel,
     );
   }
@@ -6002,13 +6021,14 @@ class GrammarsData extends DataClass implements Insertable<GrammarsData> {
           ..write('id: $id, ')
           ..write('form: $form, ')
           ..write('meaning: $meaning, ')
+          ..write('reading: $reading, ')
           ..write('jlptLevel: $jlptLevel')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, form, meaning, jlptLevel);
+  int get hashCode => Object.hash(id, form, meaning, reading, jlptLevel);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -6016,6 +6036,7 @@ class GrammarsData extends DataClass implements Insertable<GrammarsData> {
           other.id == this.id &&
           other.form == this.form &&
           other.meaning == this.meaning &&
+          other.reading == this.reading &&
           other.jlptLevel == this.jlptLevel);
 }
 
@@ -6023,31 +6044,37 @@ class GrammarsCompanion extends UpdateCompanion<GrammarsData> {
   final Value<int> id;
   final Value<String> form;
   final Value<String> meaning;
+  final Value<String> reading;
   final Value<int> jlptLevel;
   const GrammarsCompanion({
     this.id = const Value.absent(),
     this.form = const Value.absent(),
     this.meaning = const Value.absent(),
+    this.reading = const Value.absent(),
     this.jlptLevel = const Value.absent(),
   });
   GrammarsCompanion.insert({
     this.id = const Value.absent(),
     required String form,
     required String meaning,
+    required String reading,
     required int jlptLevel,
   })  : form = Value(form),
         meaning = Value(meaning),
+        reading = Value(reading),
         jlptLevel = Value(jlptLevel);
   static Insertable<GrammarsData> custom({
     Expression<int>? id,
     Expression<String>? form,
     Expression<String>? meaning,
+    Expression<String>? reading,
     Expression<int>? jlptLevel,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (form != null) 'form': form,
       if (meaning != null) 'meaning': meaning,
+      if (reading != null) 'reading': reading,
       if (jlptLevel != null) 'jlpt_level': jlptLevel,
     });
   }
@@ -6056,11 +6083,13 @@ class GrammarsCompanion extends UpdateCompanion<GrammarsData> {
       {Value<int>? id,
       Value<String>? form,
       Value<String>? meaning,
+      Value<String>? reading,
       Value<int>? jlptLevel}) {
     return GrammarsCompanion(
       id: id ?? this.id,
       form: form ?? this.form,
       meaning: meaning ?? this.meaning,
+      reading: reading ?? this.reading,
       jlptLevel: jlptLevel ?? this.jlptLevel,
     );
   }
@@ -6077,6 +6106,9 @@ class GrammarsCompanion extends UpdateCompanion<GrammarsData> {
     if (meaning.present) {
       map['meaning'] = Variable<String>(meaning.value);
     }
+    if (reading.present) {
+      map['reading'] = Variable<String>(reading.value);
+    }
     if (jlptLevel.present) {
       map['jlpt_level'] = Variable<int>(jlptLevel.value);
     }
@@ -6089,6 +6121,7 @@ class GrammarsCompanion extends UpdateCompanion<GrammarsData> {
           ..write('id: $id, ')
           ..write('form: $form, ')
           ..write('meaning: $meaning, ')
+          ..write('reading: $reading, ')
           ..write('jlptLevel: $jlptLevel')
           ..write(')'))
         .toString();

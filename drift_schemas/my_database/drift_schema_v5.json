@@ -2165,6 +2165,16 @@
             "dsl_features": []
           },
           {
+            "name": "reading",
+            "getter_name": "reading",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
             "name": "jlpt_level",
             "getter_name": "jlptLevel",
             "moor_type": "int",
@@ -3014,7 +3024,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"grammars\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"form\" TEXT NOT NULL, \"meaning\" TEXT NOT NULL, \"jlpt_level\" INTEGER NOT NULL);"
+          "sql": "CREATE TABLE IF NOT EXISTS \"grammars\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"form\" TEXT NOT NULL, \"meaning\" TEXT NOT NULL, \"reading\" TEXT NOT NULL, \"jlpt_level\" INTEGER NOT NULL);"
         }
       ]
     },

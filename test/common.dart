@@ -1628,12 +1628,14 @@ const shortGrammarInput = '''[
     {
         "id": 1,
         "form": "です",
+        "reading": "です",
         "meaning": "to be",
         "jlpt_level": 5
     },
     {
         "id": 2,
         "form": "ほうがいい",
+        "reading": "ほうがいい",
         "meaning": "It would be better to...",
         "jlpt_level": 5
     }

@@ -22,6 +22,8 @@ Prepare source files to be placed in ```example/input_files/```
     - Proper nouns
 - [kradfile](https://www.edrdg.org/krad/kradinf.html)
     - Kanji composition file (UTF-8 encoding)
+- [mecab](https://taku910.github.io/mecab/)
+    - Mecab parser zip file
 
 ### Included files
 

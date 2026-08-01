@@ -2525,6 +2525,7 @@ class DictionaryBuilder {
               GrammarsCompanion(
                 id: Value(grammar['id']),
                 form: Value(grammar['form']),
+                reading: Value(grammar['reading']),
                 meaning: Value(grammar['meaning']),
                 jlptLevel: Value(grammar['jlpt_level']),
               ),
