@@ -5933,6 +5933,16 @@ class $FlashcardSetsTable extends FlashcardSets
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("kanji_show_reading" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _grammarShowReadingMeta =
+      const VerificationMeta('grammarShowReading');
+  @override
+  late final GeneratedColumn<bool> grammarShowReading = GeneratedColumn<bool>(
+      'grammar_show_reading', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("grammar_show_reading" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _vocabShowPartsOfSpeechMeta =
       const VerificationMeta('vocabShowPartsOfSpeech');
   @override
@@ -5997,6 +6007,7 @@ class $FlashcardSetsTable extends FlashcardSets
         vocabShowAlternatives,
         vocabShowPitchAccent,
         kanjiShowReading,
+        grammarShowReading,
         vocabShowPartsOfSpeech,
         showNote,
         timestamp,
@@ -6060,6 +6071,12 @@ class $FlashcardSetsTable extends FlashcardSets
           kanjiShowReading.isAcceptableOrUnknown(
               data['kanji_show_reading']!, _kanjiShowReadingMeta));
     }
+    if (data.containsKey('grammar_show_reading')) {
+      context.handle(
+          _grammarShowReadingMeta,
+          grammarShowReading.isAcceptableOrUnknown(
+              data['grammar_show_reading']!, _grammarShowReadingMeta));
+    }
     if (data.containsKey('vocab_show_parts_of_speech')) {
       context.handle(
           _vocabShowPartsOfSpeechMeta,
@@ -6110,6 +6127,8 @@ class $FlashcardSetsTable extends FlashcardSets
           data['${effectivePrefix}vocab_show_pitch_accent'])!,
       kanjiShowReading: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}kanji_show_reading'])!,
+      grammarShowReading: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}grammar_show_reading'])!,
       vocabShowPartsOfSpeech: attachedDatabase.typeMapping.read(
           DriftSqlType.bool,
           data['${effectivePrefix}vocab_show_parts_of_speech'])!,
@@ -6152,6 +6171,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
   final Value<bool> vocabShowAlternatives;
   final Value<bool> vocabShowPitchAccent;
   final Value<bool> kanjiShowReading;
+  final Value<bool> grammarShowReading;
   final Value<bool> vocabShowPartsOfSpeech;
   final Value<bool> showNote;
   final Value<DateTime> timestamp;
@@ -6168,6 +6188,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     this.vocabShowAlternatives = const Value.absent(),
     this.vocabShowPitchAccent = const Value.absent(),
     this.kanjiShowReading = const Value.absent(),
+    this.grammarShowReading = const Value.absent(),
     this.vocabShowPartsOfSpeech = const Value.absent(),
     this.showNote = const Value.absent(),
     this.timestamp = const Value.absent(),
@@ -6185,6 +6206,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     this.vocabShowAlternatives = const Value.absent(),
     this.vocabShowPitchAccent = const Value.absent(),
     this.kanjiShowReading = const Value.absent(),
+    this.grammarShowReading = const Value.absent(),
     this.vocabShowPartsOfSpeech = const Value.absent(),
     this.showNote = const Value.absent(),
     this.timestamp = const Value.absent(),
@@ -6202,6 +6224,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     Expression<bool>? vocabShowAlternatives,
     Expression<bool>? vocabShowPitchAccent,
     Expression<bool>? kanjiShowReading,
+    Expression<bool>? grammarShowReading,
     Expression<bool>? vocabShowPartsOfSpeech,
     Expression<bool>? showNote,
     Expression<DateTime>? timestamp,
@@ -6223,6 +6246,8 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
       if (vocabShowPitchAccent != null)
         'vocab_show_pitch_accent': vocabShowPitchAccent,
       if (kanjiShowReading != null) 'kanji_show_reading': kanjiShowReading,
+      if (grammarShowReading != null)
+        'grammar_show_reading': grammarShowReading,
       if (vocabShowPartsOfSpeech != null)
         'vocab_show_parts_of_speech': vocabShowPartsOfSpeech,
       if (showNote != null) 'show_note': showNote,
@@ -6244,6 +6269,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
       Value<bool>? vocabShowAlternatives,
       Value<bool>? vocabShowPitchAccent,
       Value<bool>? kanjiShowReading,
+      Value<bool>? grammarShowReading,
       Value<bool>? vocabShowPartsOfSpeech,
       Value<bool>? showNote,
       Value<DateTime>? timestamp,
@@ -6263,6 +6289,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
           vocabShowAlternatives ?? this.vocabShowAlternatives,
       vocabShowPitchAccent: vocabShowPitchAccent ?? this.vocabShowPitchAccent,
       kanjiShowReading: kanjiShowReading ?? this.kanjiShowReading,
+      grammarShowReading: grammarShowReading ?? this.grammarShowReading,
       vocabShowPartsOfSpeech:
           vocabShowPartsOfSpeech ?? this.vocabShowPartsOfSpeech,
       showNote: showNote ?? this.showNote,
@@ -6309,6 +6336,9 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     if (kanjiShowReading.present) {
       map['kanji_show_reading'] = Variable<bool>(kanjiShowReading.value);
     }
+    if (grammarShowReading.present) {
+      map['grammar_show_reading'] = Variable<bool>(grammarShowReading.value);
+    }
     if (vocabShowPartsOfSpeech.present) {
       map['vocab_show_parts_of_speech'] =
           Variable<bool>(vocabShowPartsOfSpeech.value);
@@ -6347,6 +6377,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
           ..write('vocabShowAlternatives: $vocabShowAlternatives, ')
           ..write('vocabShowPitchAccent: $vocabShowPitchAccent, ')
           ..write('kanjiShowReading: $kanjiShowReading, ')
+          ..write('grammarShowReading: $grammarShowReading, ')
           ..write('vocabShowPartsOfSpeech: $vocabShowPartsOfSpeech, ')
           ..write('showNote: $showNote, ')
           ..write('timestamp: $timestamp, ')
@@ -10809,6 +10840,7 @@ typedef $$FlashcardSetsTableCreateCompanionBuilder = FlashcardSetsCompanion
   Value<bool> vocabShowAlternatives,
   Value<bool> vocabShowPitchAccent,
   Value<bool> kanjiShowReading,
+  Value<bool> grammarShowReading,
   Value<bool> vocabShowPartsOfSpeech,
   Value<bool> showNote,
   Value<DateTime> timestamp,
@@ -10827,6 +10859,7 @@ typedef $$FlashcardSetsTableUpdateCompanionBuilder = FlashcardSetsCompanion
   Value<bool> vocabShowAlternatives,
   Value<bool> vocabShowPitchAccent,
   Value<bool> kanjiShowReading,
+  Value<bool> grammarShowReading,
   Value<bool> vocabShowPartsOfSpeech,
   Value<bool> showNote,
   Value<DateTime> timestamp,
@@ -10877,6 +10910,10 @@ class $$FlashcardSetsTableFilterComposer
 
   ColumnFilters<bool> get kanjiShowReading => $composableBuilder(
       column: $table.kanjiShowReading,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get grammarShowReading => $composableBuilder(
+      column: $table.grammarShowReading,
       builder: (column) => ColumnFilters(column));
 
   ColumnFilters<bool> get vocabShowPartsOfSpeech => $composableBuilder(
@@ -10945,6 +10982,10 @@ class $$FlashcardSetsTableOrderingComposer
       column: $table.kanjiShowReading,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get grammarShowReading => $composableBuilder(
+      column: $table.grammarShowReading,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<bool> get vocabShowPartsOfSpeech => $composableBuilder(
       column: $table.vocabShowPartsOfSpeech,
       builder: (column) => ColumnOrderings(column));
@@ -11003,6 +11044,9 @@ class $$FlashcardSetsTableAnnotationComposer
   GeneratedColumn<bool> get kanjiShowReading => $composableBuilder(
       column: $table.kanjiShowReading, builder: (column) => column);
 
+  GeneratedColumn<bool> get grammarShowReading => $composableBuilder(
+      column: $table.grammarShowReading, builder: (column) => column);
+
   GeneratedColumn<bool> get vocabShowPartsOfSpeech => $composableBuilder(
       column: $table.vocabShowPartsOfSpeech, builder: (column) => column);
 
@@ -11060,6 +11104,7 @@ class $$FlashcardSetsTableTableManager extends RootTableManager<
             Value<bool> vocabShowAlternatives = const Value.absent(),
             Value<bool> vocabShowPitchAccent = const Value.absent(),
             Value<bool> kanjiShowReading = const Value.absent(),
+            Value<bool> grammarShowReading = const Value.absent(),
             Value<bool> vocabShowPartsOfSpeech = const Value.absent(),
             Value<bool> showNote = const Value.absent(),
             Value<DateTime> timestamp = const Value.absent(),
@@ -11077,6 +11122,7 @@ class $$FlashcardSetsTableTableManager extends RootTableManager<
             vocabShowAlternatives: vocabShowAlternatives,
             vocabShowPitchAccent: vocabShowPitchAccent,
             kanjiShowReading: kanjiShowReading,
+            grammarShowReading: grammarShowReading,
             vocabShowPartsOfSpeech: vocabShowPartsOfSpeech,
             showNote: showNote,
             timestamp: timestamp,
@@ -11094,6 +11140,7 @@ class $$FlashcardSetsTableTableManager extends RootTableManager<
             Value<bool> vocabShowAlternatives = const Value.absent(),
             Value<bool> vocabShowPitchAccent = const Value.absent(),
             Value<bool> kanjiShowReading = const Value.absent(),
+            Value<bool> grammarShowReading = const Value.absent(),
             Value<bool> vocabShowPartsOfSpeech = const Value.absent(),
             Value<bool> showNote = const Value.absent(),
             Value<DateTime> timestamp = const Value.absent(),
@@ -11111,6 +11158,7 @@ class $$FlashcardSetsTableTableManager extends RootTableManager<
             vocabShowAlternatives: vocabShowAlternatives,
             vocabShowPitchAccent: vocabShowPitchAccent,
             kanjiShowReading: kanjiShowReading,
+            grammarShowReading: grammarShowReading,
             vocabShowPartsOfSpeech: vocabShowPartsOfSpeech,
             showNote: showNote,
             timestamp: timestamp,

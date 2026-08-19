@@ -82,6 +82,7 @@ class SagaseDictionaryConstants {
   static const backupFlashcardSetVocabShowPitchAccent =
       'vocab_show_pitch_accent';
   static const backupFlashcardSetKanjiShowReading = 'kanji_show_reading';
+  static const backupFlashcardSetGrammarShowReading = 'grammar_show_reading';
   static const backupFlashcardSetVocabShowPartsOfSpeech =
       'vocab_show_parts_of_speech';
   static const backupFlashcardSetShowNote = 'show_note';

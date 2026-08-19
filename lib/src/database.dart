@@ -156,6 +156,9 @@ class AppDatabase extends _$AppDatabase {
           await m.createTable(schema.kanjiComponentConnections);
           await m.createIndex(schema.iXKanjiComponentConnectionsKanji);
 
+          await m.addColumn(
+              schema.flashcardSets, schema.flashcardSets.grammarShowReading);
+
           await m.alterTable(
             TableMigration(
               schema.predefinedDictionaryLists,

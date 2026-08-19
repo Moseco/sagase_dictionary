@@ -6193,6 +6193,13 @@ class FlashcardSets extends Table
       $customConstraints:
           'NOT NULL DEFAULT 0 CHECK (kanji_show_reading IN (0, 1))',
       defaultValue: const CustomExpression('0'));
+  late final GeneratedColumn<int> grammarShowReading = GeneratedColumn<int>(
+      'grammar_show_reading', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints:
+          'NOT NULL DEFAULT 0 CHECK (grammar_show_reading IN (0, 1))',
+      defaultValue: const CustomExpression('0'));
   late final GeneratedColumn<int> vocabShowPartsOfSpeech = GeneratedColumn<int>(
       'vocab_show_parts_of_speech', aliasedName, false,
       type: DriftSqlType.int,
@@ -6243,6 +6250,7 @@ class FlashcardSets extends Table
         vocabShowAlternatives,
         vocabShowPitchAccent,
         kanjiShowReading,
+        grammarShowReading,
         vocabShowPartsOfSpeech,
         showNote,
         timestamp,
@@ -6280,6 +6288,8 @@ class FlashcardSets extends Table
           DriftSqlType.int, data['${effectivePrefix}vocab_show_pitch_accent'])!,
       kanjiShowReading: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}kanji_show_reading'])!,
+      grammarShowReading: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}grammar_show_reading'])!,
       vocabShowPartsOfSpeech: attachedDatabase.typeMapping.read(
           DriftSqlType.int,
           data['${effectivePrefix}vocab_show_parts_of_speech'])!,
@@ -6317,6 +6327,7 @@ class FlashcardSetsData extends DataClass
   final int vocabShowAlternatives;
   final int vocabShowPitchAccent;
   final int kanjiShowReading;
+  final int grammarShowReading;
   final int vocabShowPartsOfSpeech;
   final int showNote;
   final int timestamp;
@@ -6333,6 +6344,7 @@ class FlashcardSetsData extends DataClass
       required this.vocabShowAlternatives,
       required this.vocabShowPitchAccent,
       required this.kanjiShowReading,
+      required this.grammarShowReading,
       required this.vocabShowPartsOfSpeech,
       required this.showNote,
       required this.timestamp,
@@ -6352,6 +6364,7 @@ class FlashcardSetsData extends DataClass
     map['vocab_show_alternatives'] = Variable<int>(vocabShowAlternatives);
     map['vocab_show_pitch_accent'] = Variable<int>(vocabShowPitchAccent);
     map['kanji_show_reading'] = Variable<int>(kanjiShowReading);
+    map['grammar_show_reading'] = Variable<int>(grammarShowReading);
     map['vocab_show_parts_of_speech'] = Variable<int>(vocabShowPartsOfSpeech);
     map['show_note'] = Variable<int>(showNote);
     map['timestamp'] = Variable<int>(timestamp);
@@ -6373,6 +6386,7 @@ class FlashcardSetsData extends DataClass
       vocabShowAlternatives: Value(vocabShowAlternatives),
       vocabShowPitchAccent: Value(vocabShowPitchAccent),
       kanjiShowReading: Value(kanjiShowReading),
+      grammarShowReading: Value(grammarShowReading),
       vocabShowPartsOfSpeech: Value(vocabShowPartsOfSpeech),
       showNote: Value(showNote),
       timestamp: Value(timestamp),
@@ -6399,6 +6413,7 @@ class FlashcardSetsData extends DataClass
       vocabShowPitchAccent:
           serializer.fromJson<int>(json['vocabShowPitchAccent']),
       kanjiShowReading: serializer.fromJson<int>(json['kanjiShowReading']),
+      grammarShowReading: serializer.fromJson<int>(json['grammarShowReading']),
       vocabShowPartsOfSpeech:
           serializer.fromJson<int>(json['vocabShowPartsOfSpeech']),
       showNote: serializer.fromJson<int>(json['showNote']),
@@ -6423,6 +6438,7 @@ class FlashcardSetsData extends DataClass
       'vocabShowAlternatives': serializer.toJson<int>(vocabShowAlternatives),
       'vocabShowPitchAccent': serializer.toJson<int>(vocabShowPitchAccent),
       'kanjiShowReading': serializer.toJson<int>(kanjiShowReading),
+      'grammarShowReading': serializer.toJson<int>(grammarShowReading),
       'vocabShowPartsOfSpeech': serializer.toJson<int>(vocabShowPartsOfSpeech),
       'showNote': serializer.toJson<int>(showNote),
       'timestamp': serializer.toJson<int>(timestamp),
@@ -6443,6 +6459,7 @@ class FlashcardSetsData extends DataClass
           int? vocabShowAlternatives,
           int? vocabShowPitchAccent,
           int? kanjiShowReading,
+          int? grammarShowReading,
           int? vocabShowPartsOfSpeech,
           int? showNote,
           int? timestamp,
@@ -6462,6 +6479,7 @@ class FlashcardSetsData extends DataClass
             vocabShowAlternatives ?? this.vocabShowAlternatives,
         vocabShowPitchAccent: vocabShowPitchAccent ?? this.vocabShowPitchAccent,
         kanjiShowReading: kanjiShowReading ?? this.kanjiShowReading,
+        grammarShowReading: grammarShowReading ?? this.grammarShowReading,
         vocabShowPartsOfSpeech:
             vocabShowPartsOfSpeech ?? this.vocabShowPartsOfSpeech,
         showNote: showNote ?? this.showNote,
@@ -6494,6 +6512,9 @@ class FlashcardSetsData extends DataClass
       kanjiShowReading: data.kanjiShowReading.present
           ? data.kanjiShowReading.value
           : this.kanjiShowReading,
+      grammarShowReading: data.grammarShowReading.present
+          ? data.grammarShowReading.value
+          : this.grammarShowReading,
       vocabShowPartsOfSpeech: data.vocabShowPartsOfSpeech.present
           ? data.vocabShowPartsOfSpeech.value
           : this.vocabShowPartsOfSpeech,
@@ -6521,6 +6542,7 @@ class FlashcardSetsData extends DataClass
           ..write('vocabShowAlternatives: $vocabShowAlternatives, ')
           ..write('vocabShowPitchAccent: $vocabShowPitchAccent, ')
           ..write('kanjiShowReading: $kanjiShowReading, ')
+          ..write('grammarShowReading: $grammarShowReading, ')
           ..write('vocabShowPartsOfSpeech: $vocabShowPartsOfSpeech, ')
           ..write('showNote: $showNote, ')
           ..write('timestamp: $timestamp, ')
@@ -6542,6 +6564,7 @@ class FlashcardSetsData extends DataClass
       vocabShowAlternatives,
       vocabShowPitchAccent,
       kanjiShowReading,
+      grammarShowReading,
       vocabShowPartsOfSpeech,
       showNote,
       timestamp,
@@ -6562,6 +6585,7 @@ class FlashcardSetsData extends DataClass
           other.vocabShowAlternatives == this.vocabShowAlternatives &&
           other.vocabShowPitchAccent == this.vocabShowPitchAccent &&
           other.kanjiShowReading == this.kanjiShowReading &&
+          other.grammarShowReading == this.grammarShowReading &&
           other.vocabShowPartsOfSpeech == this.vocabShowPartsOfSpeech &&
           other.showNote == this.showNote &&
           other.timestamp == this.timestamp &&
@@ -6580,6 +6604,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSetsData> {
   final Value<int> vocabShowAlternatives;
   final Value<int> vocabShowPitchAccent;
   final Value<int> kanjiShowReading;
+  final Value<int> grammarShowReading;
   final Value<int> vocabShowPartsOfSpeech;
   final Value<int> showNote;
   final Value<int> timestamp;
@@ -6596,6 +6621,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSetsData> {
     this.vocabShowAlternatives = const Value.absent(),
     this.vocabShowPitchAccent = const Value.absent(),
     this.kanjiShowReading = const Value.absent(),
+    this.grammarShowReading = const Value.absent(),
     this.vocabShowPartsOfSpeech = const Value.absent(),
     this.showNote = const Value.absent(),
     this.timestamp = const Value.absent(),
@@ -6613,6 +6639,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSetsData> {
     this.vocabShowAlternatives = const Value.absent(),
     this.vocabShowPitchAccent = const Value.absent(),
     this.kanjiShowReading = const Value.absent(),
+    this.grammarShowReading = const Value.absent(),
     this.vocabShowPartsOfSpeech = const Value.absent(),
     this.showNote = const Value.absent(),
     this.timestamp = const Value.absent(),
@@ -6630,6 +6657,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSetsData> {
     Expression<int>? vocabShowAlternatives,
     Expression<int>? vocabShowPitchAccent,
     Expression<int>? kanjiShowReading,
+    Expression<int>? grammarShowReading,
     Expression<int>? vocabShowPartsOfSpeech,
     Expression<int>? showNote,
     Expression<int>? timestamp,
@@ -6651,6 +6679,8 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSetsData> {
       if (vocabShowPitchAccent != null)
         'vocab_show_pitch_accent': vocabShowPitchAccent,
       if (kanjiShowReading != null) 'kanji_show_reading': kanjiShowReading,
+      if (grammarShowReading != null)
+        'grammar_show_reading': grammarShowReading,
       if (vocabShowPartsOfSpeech != null)
         'vocab_show_parts_of_speech': vocabShowPartsOfSpeech,
       if (showNote != null) 'show_note': showNote,
@@ -6672,6 +6702,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSetsData> {
       Value<int>? vocabShowAlternatives,
       Value<int>? vocabShowPitchAccent,
       Value<int>? kanjiShowReading,
+      Value<int>? grammarShowReading,
       Value<int>? vocabShowPartsOfSpeech,
       Value<int>? showNote,
       Value<int>? timestamp,
@@ -6691,6 +6722,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSetsData> {
           vocabShowAlternatives ?? this.vocabShowAlternatives,
       vocabShowPitchAccent: vocabShowPitchAccent ?? this.vocabShowPitchAccent,
       kanjiShowReading: kanjiShowReading ?? this.kanjiShowReading,
+      grammarShowReading: grammarShowReading ?? this.grammarShowReading,
       vocabShowPartsOfSpeech:
           vocabShowPartsOfSpeech ?? this.vocabShowPartsOfSpeech,
       showNote: showNote ?? this.showNote,
@@ -6736,6 +6768,9 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSetsData> {
     if (kanjiShowReading.present) {
       map['kanji_show_reading'] = Variable<int>(kanjiShowReading.value);
     }
+    if (grammarShowReading.present) {
+      map['grammar_show_reading'] = Variable<int>(grammarShowReading.value);
+    }
     if (vocabShowPartsOfSpeech.present) {
       map['vocab_show_parts_of_speech'] =
           Variable<int>(vocabShowPartsOfSpeech.value);
@@ -6771,6 +6806,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSetsData> {
           ..write('vocabShowAlternatives: $vocabShowAlternatives, ')
           ..write('vocabShowPitchAccent: $vocabShowPitchAccent, ')
           ..write('kanjiShowReading: $kanjiShowReading, ')
+          ..write('grammarShowReading: $grammarShowReading, ')
           ..write('vocabShowPartsOfSpeech: $vocabShowPartsOfSpeech, ')
           ..write('showNote: $showNote, ')
           ..write('timestamp: $timestamp, ')

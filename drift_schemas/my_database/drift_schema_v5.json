@@ -2323,6 +2323,20 @@
             "dsl_features": []
           },
           {
+            "name": "grammar_show_reading",
+            "getter_name": "grammarShowReading",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"grammar_show_reading\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"grammar_show_reading\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
             "name": "vocab_show_parts_of_speech",
             "getter_name": "vocabShowPartsOfSpeech",
             "moor_type": "bool",
@@ -3033,7 +3047,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"flashcard_sets\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" TEXT NOT NULL, \"using_spaced_repetition\" INTEGER NOT NULL DEFAULT 1 CHECK (\"using_spaced_repetition\" IN (0, 1)), \"front_type\" INTEGER NOT NULL DEFAULT (0), \"vocab_show_reading\" INTEGER NOT NULL DEFAULT 0 CHECK (\"vocab_show_reading\" IN (0, 1)), \"vocab_show_reading_if_rare_kanji\" INTEGER NOT NULL DEFAULT 1 CHECK (\"vocab_show_reading_if_rare_kanji\" IN (0, 1)), \"vocab_show_alternatives\" INTEGER NOT NULL DEFAULT 0 CHECK (\"vocab_show_alternatives\" IN (0, 1)), \"vocab_show_pitch_accent\" INTEGER NOT NULL DEFAULT 0 CHECK (\"vocab_show_pitch_accent\" IN (0, 1)), \"kanji_show_reading\" INTEGER NOT NULL DEFAULT 0 CHECK (\"kanji_show_reading\" IN (0, 1)), \"vocab_show_parts_of_speech\" INTEGER NOT NULL DEFAULT 0 CHECK (\"vocab_show_parts_of_speech\" IN (0, 1)), \"show_note\" INTEGER NOT NULL DEFAULT 0 CHECK (\"show_note\" IN (0, 1)), \"timestamp\" INTEGER NOT NULL DEFAULT (CAST(strftime('%s', CURRENT_TIMESTAMP) AS INTEGER)), \"predefined_dictionary_lists\" TEXT NOT NULL DEFAULT '[]', \"my_dictionary_lists\" TEXT NOT NULL DEFAULT '[]', \"streak\" INTEGER NOT NULL DEFAULT 0);"
+          "sql": "CREATE TABLE IF NOT EXISTS \"flashcard_sets\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" TEXT NOT NULL, \"using_spaced_repetition\" INTEGER NOT NULL DEFAULT 1 CHECK (\"using_spaced_repetition\" IN (0, 1)), \"front_type\" INTEGER NOT NULL DEFAULT (0), \"vocab_show_reading\" INTEGER NOT NULL DEFAULT 0 CHECK (\"vocab_show_reading\" IN (0, 1)), \"vocab_show_reading_if_rare_kanji\" INTEGER NOT NULL DEFAULT 1 CHECK (\"vocab_show_reading_if_rare_kanji\" IN (0, 1)), \"vocab_show_alternatives\" INTEGER NOT NULL DEFAULT 0 CHECK (\"vocab_show_alternatives\" IN (0, 1)), \"vocab_show_pitch_accent\" INTEGER NOT NULL DEFAULT 0 CHECK (\"vocab_show_pitch_accent\" IN (0, 1)), \"kanji_show_reading\" INTEGER NOT NULL DEFAULT 0 CHECK (\"kanji_show_reading\" IN (0, 1)), \"grammar_show_reading\" INTEGER NOT NULL DEFAULT 0 CHECK (\"grammar_show_reading\" IN (0, 1)), \"vocab_show_parts_of_speech\" INTEGER NOT NULL DEFAULT 0 CHECK (\"vocab_show_parts_of_speech\" IN (0, 1)), \"show_note\" INTEGER NOT NULL DEFAULT 0 CHECK (\"show_note\" IN (0, 1)), \"timestamp\" INTEGER NOT NULL DEFAULT (CAST(strftime('%s', CURRENT_TIMESTAMP) AS INTEGER)), \"predefined_dictionary_lists\" TEXT NOT NULL DEFAULT '[]', \"my_dictionary_lists\" TEXT NOT NULL DEFAULT '[]', \"streak\" INTEGER NOT NULL DEFAULT 0);"
         }
       ]
     },
