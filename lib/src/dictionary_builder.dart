@@ -2527,6 +2527,8 @@ class DictionaryBuilder {
                 form: Value(grammar['form']),
                 meaning: Value(grammar['meaning']),
                 jlptLevel: Value(grammar['jlpt_level']),
+                exampleJapanese: Value(grammar['example_ja']),
+                exampleEnglish: Value(grammar['example_en']),
               ),
             );
 

@@ -5684,8 +5684,21 @@ class $GrammarsTable extends Grammars with TableInfo<$GrammarsTable, Grammar> {
   late final GeneratedColumn<int> jlptLevel = GeneratedColumn<int>(
       'jlpt_level', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _exampleJapaneseMeta =
+      const VerificationMeta('exampleJapanese');
   @override
-  List<GeneratedColumn> get $columns => [id, form, meaning, jlptLevel];
+  late final GeneratedColumn<String> exampleJapanese = GeneratedColumn<String>(
+      'example_japanese', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _exampleEnglishMeta =
+      const VerificationMeta('exampleEnglish');
+  @override
+  late final GeneratedColumn<String> exampleEnglish = GeneratedColumn<String>(
+      'example_english', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, form, meaning, jlptLevel, exampleJapanese, exampleEnglish];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -5717,6 +5730,22 @@ class $GrammarsTable extends Grammars with TableInfo<$GrammarsTable, Grammar> {
     } else if (isInserting) {
       context.missing(_jlptLevelMeta);
     }
+    if (data.containsKey('example_japanese')) {
+      context.handle(
+          _exampleJapaneseMeta,
+          exampleJapanese.isAcceptableOrUnknown(
+              data['example_japanese']!, _exampleJapaneseMeta));
+    } else if (isInserting) {
+      context.missing(_exampleJapaneseMeta);
+    }
+    if (data.containsKey('example_english')) {
+      context.handle(
+          _exampleEnglishMeta,
+          exampleEnglish.isAcceptableOrUnknown(
+              data['example_english']!, _exampleEnglishMeta));
+    } else if (isInserting) {
+      context.missing(_exampleEnglishMeta);
+    }
     return context;
   }
 
@@ -5734,6 +5763,10 @@ class $GrammarsTable extends Grammars with TableInfo<$GrammarsTable, Grammar> {
           .read(DriftSqlType.string, data['${effectivePrefix}meaning'])!,
       jlptLevel: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}jlpt_level'])!,
+      exampleJapanese: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}example_japanese'])!,
+      exampleEnglish: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}example_english'])!,
     );
   }
 
@@ -5748,31 +5781,43 @@ class GrammarsCompanion extends UpdateCompanion<Grammar> {
   final Value<String> form;
   final Value<String> meaning;
   final Value<int> jlptLevel;
+  final Value<String> exampleJapanese;
+  final Value<String> exampleEnglish;
   const GrammarsCompanion({
     this.id = const Value.absent(),
     this.form = const Value.absent(),
     this.meaning = const Value.absent(),
     this.jlptLevel = const Value.absent(),
+    this.exampleJapanese = const Value.absent(),
+    this.exampleEnglish = const Value.absent(),
   });
   GrammarsCompanion.insert({
     this.id = const Value.absent(),
     required String form,
     required String meaning,
     required int jlptLevel,
+    required String exampleJapanese,
+    required String exampleEnglish,
   })  : form = Value(form),
         meaning = Value(meaning),
-        jlptLevel = Value(jlptLevel);
+        jlptLevel = Value(jlptLevel),
+        exampleJapanese = Value(exampleJapanese),
+        exampleEnglish = Value(exampleEnglish);
   static Insertable<Grammar> custom({
     Expression<int>? id,
     Expression<String>? form,
     Expression<String>? meaning,
     Expression<int>? jlptLevel,
+    Expression<String>? exampleJapanese,
+    Expression<String>? exampleEnglish,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (form != null) 'form': form,
       if (meaning != null) 'meaning': meaning,
       if (jlptLevel != null) 'jlpt_level': jlptLevel,
+      if (exampleJapanese != null) 'example_japanese': exampleJapanese,
+      if (exampleEnglish != null) 'example_english': exampleEnglish,
     });
   }
 
@@ -5780,12 +5825,16 @@ class GrammarsCompanion extends UpdateCompanion<Grammar> {
       {Value<int>? id,
       Value<String>? form,
       Value<String>? meaning,
-      Value<int>? jlptLevel}) {
+      Value<int>? jlptLevel,
+      Value<String>? exampleJapanese,
+      Value<String>? exampleEnglish}) {
     return GrammarsCompanion(
       id: id ?? this.id,
       form: form ?? this.form,
       meaning: meaning ?? this.meaning,
       jlptLevel: jlptLevel ?? this.jlptLevel,
+      exampleJapanese: exampleJapanese ?? this.exampleJapanese,
+      exampleEnglish: exampleEnglish ?? this.exampleEnglish,
     );
   }
 
@@ -5804,6 +5853,12 @@ class GrammarsCompanion extends UpdateCompanion<Grammar> {
     if (jlptLevel.present) {
       map['jlpt_level'] = Variable<int>(jlptLevel.value);
     }
+    if (exampleJapanese.present) {
+      map['example_japanese'] = Variable<String>(exampleJapanese.value);
+    }
+    if (exampleEnglish.present) {
+      map['example_english'] = Variable<String>(exampleEnglish.value);
+    }
     return map;
   }
 
@@ -5813,7 +5868,9 @@ class GrammarsCompanion extends UpdateCompanion<Grammar> {
           ..write('id: $id, ')
           ..write('form: $form, ')
           ..write('meaning: $meaning, ')
-          ..write('jlptLevel: $jlptLevel')
+          ..write('jlptLevel: $jlptLevel, ')
+          ..write('exampleJapanese: $exampleJapanese, ')
+          ..write('exampleEnglish: $exampleEnglish')
           ..write(')'))
         .toString();
   }
@@ -5907,6 +5964,16 @@ class $FlashcardSetsTable extends FlashcardSets
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("kanji_show_reading" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _grammarShowReadingMeta =
+      const VerificationMeta('grammarShowReading');
+  @override
+  late final GeneratedColumn<bool> grammarShowReading = GeneratedColumn<bool>(
+      'grammar_show_reading', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("grammar_show_reading" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _vocabShowPartsOfSpeechMeta =
       const VerificationMeta('vocabShowPartsOfSpeech');
   @override
@@ -5971,6 +6038,7 @@ class $FlashcardSetsTable extends FlashcardSets
         vocabShowAlternatives,
         vocabShowPitchAccent,
         kanjiShowReading,
+        grammarShowReading,
         vocabShowPartsOfSpeech,
         showNote,
         timestamp,
@@ -6034,6 +6102,12 @@ class $FlashcardSetsTable extends FlashcardSets
           kanjiShowReading.isAcceptableOrUnknown(
               data['kanji_show_reading']!, _kanjiShowReadingMeta));
     }
+    if (data.containsKey('grammar_show_reading')) {
+      context.handle(
+          _grammarShowReadingMeta,
+          grammarShowReading.isAcceptableOrUnknown(
+              data['grammar_show_reading']!, _grammarShowReadingMeta));
+    }
     if (data.containsKey('vocab_show_parts_of_speech')) {
       context.handle(
           _vocabShowPartsOfSpeechMeta,
@@ -6084,6 +6158,8 @@ class $FlashcardSetsTable extends FlashcardSets
           data['${effectivePrefix}vocab_show_pitch_accent'])!,
       kanjiShowReading: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}kanji_show_reading'])!,
+      grammarShowReading: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}grammar_show_reading'])!,
       vocabShowPartsOfSpeech: attachedDatabase.typeMapping.read(
           DriftSqlType.bool,
           data['${effectivePrefix}vocab_show_parts_of_speech'])!,
@@ -6126,6 +6202,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
   final Value<bool> vocabShowAlternatives;
   final Value<bool> vocabShowPitchAccent;
   final Value<bool> kanjiShowReading;
+  final Value<bool> grammarShowReading;
   final Value<bool> vocabShowPartsOfSpeech;
   final Value<bool> showNote;
   final Value<DateTime> timestamp;
@@ -6142,6 +6219,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     this.vocabShowAlternatives = const Value.absent(),
     this.vocabShowPitchAccent = const Value.absent(),
     this.kanjiShowReading = const Value.absent(),
+    this.grammarShowReading = const Value.absent(),
     this.vocabShowPartsOfSpeech = const Value.absent(),
     this.showNote = const Value.absent(),
     this.timestamp = const Value.absent(),
@@ -6159,6 +6237,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     this.vocabShowAlternatives = const Value.absent(),
     this.vocabShowPitchAccent = const Value.absent(),
     this.kanjiShowReading = const Value.absent(),
+    this.grammarShowReading = const Value.absent(),
     this.vocabShowPartsOfSpeech = const Value.absent(),
     this.showNote = const Value.absent(),
     this.timestamp = const Value.absent(),
@@ -6176,6 +6255,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     Expression<bool>? vocabShowAlternatives,
     Expression<bool>? vocabShowPitchAccent,
     Expression<bool>? kanjiShowReading,
+    Expression<bool>? grammarShowReading,
     Expression<bool>? vocabShowPartsOfSpeech,
     Expression<bool>? showNote,
     Expression<DateTime>? timestamp,
@@ -6197,6 +6277,8 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
       if (vocabShowPitchAccent != null)
         'vocab_show_pitch_accent': vocabShowPitchAccent,
       if (kanjiShowReading != null) 'kanji_show_reading': kanjiShowReading,
+      if (grammarShowReading != null)
+        'grammar_show_reading': grammarShowReading,
       if (vocabShowPartsOfSpeech != null)
         'vocab_show_parts_of_speech': vocabShowPartsOfSpeech,
       if (showNote != null) 'show_note': showNote,
@@ -6218,6 +6300,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
       Value<bool>? vocabShowAlternatives,
       Value<bool>? vocabShowPitchAccent,
       Value<bool>? kanjiShowReading,
+      Value<bool>? grammarShowReading,
       Value<bool>? vocabShowPartsOfSpeech,
       Value<bool>? showNote,
       Value<DateTime>? timestamp,
@@ -6237,6 +6320,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
           vocabShowAlternatives ?? this.vocabShowAlternatives,
       vocabShowPitchAccent: vocabShowPitchAccent ?? this.vocabShowPitchAccent,
       kanjiShowReading: kanjiShowReading ?? this.kanjiShowReading,
+      grammarShowReading: grammarShowReading ?? this.grammarShowReading,
       vocabShowPartsOfSpeech:
           vocabShowPartsOfSpeech ?? this.vocabShowPartsOfSpeech,
       showNote: showNote ?? this.showNote,
@@ -6283,6 +6367,9 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
     if (kanjiShowReading.present) {
       map['kanji_show_reading'] = Variable<bool>(kanjiShowReading.value);
     }
+    if (grammarShowReading.present) {
+      map['grammar_show_reading'] = Variable<bool>(grammarShowReading.value);
+    }
     if (vocabShowPartsOfSpeech.present) {
       map['vocab_show_parts_of_speech'] =
           Variable<bool>(vocabShowPartsOfSpeech.value);
@@ -6321,6 +6408,7 @@ class FlashcardSetsCompanion extends UpdateCompanion<FlashcardSet> {
           ..write('vocabShowAlternatives: $vocabShowAlternatives, ')
           ..write('vocabShowPitchAccent: $vocabShowPitchAccent, ')
           ..write('kanjiShowReading: $kanjiShowReading, ')
+          ..write('grammarShowReading: $grammarShowReading, ')
           ..write('vocabShowPartsOfSpeech: $vocabShowPartsOfSpeech, ')
           ..write('showNote: $showNote, ')
           ..write('timestamp: $timestamp, ')
@@ -10618,12 +10706,16 @@ typedef $$GrammarsTableCreateCompanionBuilder = GrammarsCompanion Function({
   required String form,
   required String meaning,
   required int jlptLevel,
+  required String exampleJapanese,
+  required String exampleEnglish,
 });
 typedef $$GrammarsTableUpdateCompanionBuilder = GrammarsCompanion Function({
   Value<int> id,
   Value<String> form,
   Value<String> meaning,
   Value<int> jlptLevel,
+  Value<String> exampleJapanese,
+  Value<String> exampleEnglish,
 });
 
 class $$GrammarsTableFilterComposer
@@ -10646,6 +10738,14 @@ class $$GrammarsTableFilterComposer
 
   ColumnFilters<int> get jlptLevel => $composableBuilder(
       column: $table.jlptLevel, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get exampleJapanese => $composableBuilder(
+      column: $table.exampleJapanese,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get exampleEnglish => $composableBuilder(
+      column: $table.exampleEnglish,
+      builder: (column) => ColumnFilters(column));
 }
 
 class $$GrammarsTableOrderingComposer
@@ -10668,6 +10768,14 @@ class $$GrammarsTableOrderingComposer
 
   ColumnOrderings<int> get jlptLevel => $composableBuilder(
       column: $table.jlptLevel, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get exampleJapanese => $composableBuilder(
+      column: $table.exampleJapanese,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get exampleEnglish => $composableBuilder(
+      column: $table.exampleEnglish,
+      builder: (column) => ColumnOrderings(column));
 }
 
 class $$GrammarsTableAnnotationComposer
@@ -10690,6 +10798,12 @@ class $$GrammarsTableAnnotationComposer
 
   GeneratedColumn<int> get jlptLevel =>
       $composableBuilder(column: $table.jlptLevel, builder: (column) => column);
+
+  GeneratedColumn<String> get exampleJapanese => $composableBuilder(
+      column: $table.exampleJapanese, builder: (column) => column);
+
+  GeneratedColumn<String> get exampleEnglish => $composableBuilder(
+      column: $table.exampleEnglish, builder: (column) => column);
 }
 
 class $$GrammarsTableTableManager extends RootTableManager<
@@ -10719,24 +10833,32 @@ class $$GrammarsTableTableManager extends RootTableManager<
             Value<String> form = const Value.absent(),
             Value<String> meaning = const Value.absent(),
             Value<int> jlptLevel = const Value.absent(),
+            Value<String> exampleJapanese = const Value.absent(),
+            Value<String> exampleEnglish = const Value.absent(),
           }) =>
               GrammarsCompanion(
             id: id,
             form: form,
             meaning: meaning,
             jlptLevel: jlptLevel,
+            exampleJapanese: exampleJapanese,
+            exampleEnglish: exampleEnglish,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String form,
             required String meaning,
             required int jlptLevel,
+            required String exampleJapanese,
+            required String exampleEnglish,
           }) =>
               GrammarsCompanion.insert(
             id: id,
             form: form,
             meaning: meaning,
             jlptLevel: jlptLevel,
+            exampleJapanese: exampleJapanese,
+            exampleEnglish: exampleEnglish,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -10768,6 +10890,7 @@ typedef $$FlashcardSetsTableCreateCompanionBuilder = FlashcardSetsCompanion
   Value<bool> vocabShowAlternatives,
   Value<bool> vocabShowPitchAccent,
   Value<bool> kanjiShowReading,
+  Value<bool> grammarShowReading,
   Value<bool> vocabShowPartsOfSpeech,
   Value<bool> showNote,
   Value<DateTime> timestamp,
@@ -10786,6 +10909,7 @@ typedef $$FlashcardSetsTableUpdateCompanionBuilder = FlashcardSetsCompanion
   Value<bool> vocabShowAlternatives,
   Value<bool> vocabShowPitchAccent,
   Value<bool> kanjiShowReading,
+  Value<bool> grammarShowReading,
   Value<bool> vocabShowPartsOfSpeech,
   Value<bool> showNote,
   Value<DateTime> timestamp,
@@ -10836,6 +10960,10 @@ class $$FlashcardSetsTableFilterComposer
 
   ColumnFilters<bool> get kanjiShowReading => $composableBuilder(
       column: $table.kanjiShowReading,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get grammarShowReading => $composableBuilder(
+      column: $table.grammarShowReading,
       builder: (column) => ColumnFilters(column));
 
   ColumnFilters<bool> get vocabShowPartsOfSpeech => $composableBuilder(
@@ -10904,6 +11032,10 @@ class $$FlashcardSetsTableOrderingComposer
       column: $table.kanjiShowReading,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get grammarShowReading => $composableBuilder(
+      column: $table.grammarShowReading,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<bool> get vocabShowPartsOfSpeech => $composableBuilder(
       column: $table.vocabShowPartsOfSpeech,
       builder: (column) => ColumnOrderings(column));
@@ -10962,6 +11094,9 @@ class $$FlashcardSetsTableAnnotationComposer
   GeneratedColumn<bool> get kanjiShowReading => $composableBuilder(
       column: $table.kanjiShowReading, builder: (column) => column);
 
+  GeneratedColumn<bool> get grammarShowReading => $composableBuilder(
+      column: $table.grammarShowReading, builder: (column) => column);
+
   GeneratedColumn<bool> get vocabShowPartsOfSpeech => $composableBuilder(
       column: $table.vocabShowPartsOfSpeech, builder: (column) => column);
 
@@ -11019,6 +11154,7 @@ class $$FlashcardSetsTableTableManager extends RootTableManager<
             Value<bool> vocabShowAlternatives = const Value.absent(),
             Value<bool> vocabShowPitchAccent = const Value.absent(),
             Value<bool> kanjiShowReading = const Value.absent(),
+            Value<bool> grammarShowReading = const Value.absent(),
             Value<bool> vocabShowPartsOfSpeech = const Value.absent(),
             Value<bool> showNote = const Value.absent(),
             Value<DateTime> timestamp = const Value.absent(),
@@ -11036,6 +11172,7 @@ class $$FlashcardSetsTableTableManager extends RootTableManager<
             vocabShowAlternatives: vocabShowAlternatives,
             vocabShowPitchAccent: vocabShowPitchAccent,
             kanjiShowReading: kanjiShowReading,
+            grammarShowReading: grammarShowReading,
             vocabShowPartsOfSpeech: vocabShowPartsOfSpeech,
             showNote: showNote,
             timestamp: timestamp,
@@ -11053,6 +11190,7 @@ class $$FlashcardSetsTableTableManager extends RootTableManager<
             Value<bool> vocabShowAlternatives = const Value.absent(),
             Value<bool> vocabShowPitchAccent = const Value.absent(),
             Value<bool> kanjiShowReading = const Value.absent(),
+            Value<bool> grammarShowReading = const Value.absent(),
             Value<bool> vocabShowPartsOfSpeech = const Value.absent(),
             Value<bool> showNote = const Value.absent(),
             Value<DateTime> timestamp = const Value.absent(),
@@ -11070,6 +11208,7 @@ class $$FlashcardSetsTableTableManager extends RootTableManager<
             vocabShowAlternatives: vocabShowAlternatives,
             vocabShowPitchAccent: vocabShowPitchAccent,
             kanjiShowReading: kanjiShowReading,
+            grammarShowReading: grammarShowReading,
             vocabShowPartsOfSpeech: vocabShowPartsOfSpeech,
             showNote: showNote,
             timestamp: timestamp,

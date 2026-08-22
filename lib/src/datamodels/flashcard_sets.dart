@@ -25,6 +25,8 @@ class FlashcardSets extends Table {
       boolean().withDefault(const Constant(false))();
   BoolColumn get kanjiShowReading =>
       boolean().withDefault(const Constant(false))();
+  BoolColumn get grammarShowReading =>
+      boolean().withDefault(const Constant(false))();
   BoolColumn get vocabShowPartsOfSpeech =>
       boolean().withDefault(const Constant(false))();
   BoolColumn get showNote => boolean().withDefault(const Constant(false))();
@@ -49,6 +51,7 @@ class FlashcardSet implements Insertable<FlashcardSet> {
   bool vocabShowAlternatives;
   bool vocabShowPitchAccent;
   bool kanjiShowReading;
+  bool grammarShowReading;
   bool vocabShowPartsOfSpeech;
   bool showNote;
   DateTime timestamp;
@@ -68,6 +71,7 @@ class FlashcardSet implements Insertable<FlashcardSet> {
     required this.vocabShowAlternatives,
     required this.vocabShowPitchAccent,
     required this.kanjiShowReading,
+    required this.grammarShowReading,
     required this.vocabShowPartsOfSpeech,
     required this.showNote,
     required this.timestamp,
@@ -89,6 +93,7 @@ class FlashcardSet implements Insertable<FlashcardSet> {
       vocabShowAlternatives: Value.absentIfNull(vocabShowAlternatives),
       vocabShowPitchAccent: Value.absentIfNull(vocabShowPitchAccent),
       kanjiShowReading: Value.absentIfNull(kanjiShowReading),
+      grammarShowReading: Value.absentIfNull(grammarShowReading),
       vocabShowPartsOfSpeech: Value.absentIfNull(vocabShowPartsOfSpeech),
       showNote: Value.absentIfNull(showNote),
       timestamp: Value.absentIfNull(timestamp),
@@ -116,6 +121,8 @@ class FlashcardSet implements Insertable<FlashcardSet> {
             vocabShowPitchAccent,
         SagaseDictionaryConstants.backupFlashcardSetKanjiShowReading:
             kanjiShowReading,
+        SagaseDictionaryConstants.backupFlashcardSetGrammarShowReading:
+            grammarShowReading,
         SagaseDictionaryConstants.backupFlashcardSetVocabShowPartsOfSpeech:
             vocabShowPartsOfSpeech,
         SagaseDictionaryConstants.backupFlashcardSetShowNote: showNote,
@@ -149,6 +156,9 @@ class FlashcardSet implements Insertable<FlashcardSet> {
           map[SagaseDictionaryConstants.backupFlashcardSetVocabShowPitchAccent],
       kanjiShowReading:
           map[SagaseDictionaryConstants.backupFlashcardSetKanjiShowReading],
+      grammarShowReading:
+          map[SagaseDictionaryConstants.backupFlashcardSetGrammarShowReading] ??
+              false,
       vocabShowPartsOfSpeech: map[
           SagaseDictionaryConstants.backupFlashcardSetVocabShowPartsOfSpeech],
       showNote:

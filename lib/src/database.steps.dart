@@ -3277,11 +3277,13 @@ final class Schema5 extends i0.VersionedSchema {
           _column_177,
           _column_141,
           _column_178,
+          _column_179,
+          _column_180,
         ],
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape30 flashcardSets = Shape30(
+  late final Shape36 flashcardSets = Shape36(
       source: i0.VersionedTable(
         entityName: 'flashcard_sets',
         withoutRowId: false,
@@ -3297,6 +3299,7 @@ final class Schema5 extends i0.VersionedSchema {
           _column_159,
           _column_160,
           _column_161,
+          _column_181,
           _column_162,
           _column_163,
           _column_152,
@@ -3438,6 +3441,10 @@ class Shape35 extends i0.VersionedTable {
       columnsByName['meaning']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<int> get jlptLevel =>
       columnsByName['jlpt_level']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get exampleJapanese =>
+      columnsByName['example_japanese']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get exampleEnglish =>
+      columnsByName['example_english']! as i1.GeneratedColumn<String>;
 }
 
 i1.GeneratedColumn<String> _column_177(String aliasedName) =>
@@ -3446,6 +3453,57 @@ i1.GeneratedColumn<String> _column_177(String aliasedName) =>
 i1.GeneratedColumn<int> _column_178(String aliasedName) =>
     i1.GeneratedColumn<int>('jlpt_level', aliasedName, false,
         type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
+i1.GeneratedColumn<String> _column_179(String aliasedName) =>
+    i1.GeneratedColumn<String>('example_japanese', aliasedName, false,
+        type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
+i1.GeneratedColumn<String> _column_180(String aliasedName) =>
+    i1.GeneratedColumn<String>('example_english', aliasedName, false,
+        type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
+
+class Shape36 extends i0.VersionedTable {
+  Shape36({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get usingSpacedRepetition =>
+      columnsByName['using_spaced_repetition']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get frontType =>
+      columnsByName['front_type']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get vocabShowReading =>
+      columnsByName['vocab_show_reading']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get vocabShowReadingIfRareKanji =>
+      columnsByName['vocab_show_reading_if_rare_kanji']!
+          as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get vocabShowAlternatives =>
+      columnsByName['vocab_show_alternatives']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get vocabShowPitchAccent =>
+      columnsByName['vocab_show_pitch_accent']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get kanjiShowReading =>
+      columnsByName['kanji_show_reading']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get grammarShowReading =>
+      columnsByName['grammar_show_reading']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get vocabShowPartsOfSpeech =>
+      columnsByName['vocab_show_parts_of_speech']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get showNote =>
+      columnsByName['show_note']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get timestamp =>
+      columnsByName['timestamp']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get predefinedDictionaryLists =>
+      columnsByName['predefined_dictionary_lists']!
+          as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get myDictionaryLists =>
+      columnsByName['my_dictionary_lists']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get streak =>
+      columnsByName['streak']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<int> _column_181(String aliasedName) =>
+    i1.GeneratedColumn<int>('grammar_show_reading', aliasedName, false,
+        type: i1.DriftSqlType.int,
+        $customConstraints:
+            'NOT NULL DEFAULT 0 CHECK (grammar_show_reading IN (0, 1))',
+        defaultValue: const i1.CustomExpression('0'));
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
