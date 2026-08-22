@@ -3276,8 +3276,9 @@ final class Schema5 extends i0.VersionedSchema {
           _column_86,
           _column_177,
           _column_141,
-          _column_92,
           _column_178,
+          _column_179,
+          _column_180,
         ],
         attachedDatabase: database,
       ),
@@ -3298,7 +3299,7 @@ final class Schema5 extends i0.VersionedSchema {
           _column_159,
           _column_160,
           _column_161,
-          _column_179,
+          _column_181,
           _column_162,
           _column_163,
           _column_152,
@@ -3438,10 +3439,12 @@ class Shape35 extends i0.VersionedTable {
       columnsByName['form']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<String> get meaning =>
       columnsByName['meaning']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get reading =>
-      columnsByName['reading']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<int> get jlptLevel =>
       columnsByName['jlpt_level']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get exampleJapanese =>
+      columnsByName['example_japanese']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get exampleEnglish =>
+      columnsByName['example_english']! as i1.GeneratedColumn<String>;
 }
 
 i1.GeneratedColumn<String> _column_177(String aliasedName) =>
@@ -3450,6 +3453,12 @@ i1.GeneratedColumn<String> _column_177(String aliasedName) =>
 i1.GeneratedColumn<int> _column_178(String aliasedName) =>
     i1.GeneratedColumn<int>('jlpt_level', aliasedName, false,
         type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
+i1.GeneratedColumn<String> _column_179(String aliasedName) =>
+    i1.GeneratedColumn<String>('example_japanese', aliasedName, false,
+        type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
+i1.GeneratedColumn<String> _column_180(String aliasedName) =>
+    i1.GeneratedColumn<String>('example_english', aliasedName, false,
+        type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
 
 class Shape36 extends i0.VersionedTable {
   Shape36({required super.source, required super.alias}) : super.aliased();
@@ -3489,7 +3498,7 @@ class Shape36 extends i0.VersionedTable {
       columnsByName['streak']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<int> _column_179(String aliasedName) =>
+i1.GeneratedColumn<int> _column_181(String aliasedName) =>
     i1.GeneratedColumn<int>('grammar_show_reading', aliasedName, false,
         type: i1.DriftSqlType.int,
         $customConstraints:
