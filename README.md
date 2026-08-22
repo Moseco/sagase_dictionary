@@ -24,6 +24,21 @@ Prepare source files to be placed in ```example/input_files/```
     - Kanji composition file (UTF-8 encoding)
 - [mecab](https://taku910.github.io/mecab/)
     - Mecab parser zip file
+- grammar_list.json
+    - Grammar list as a JSON array of objects, all fields required like the example below
+
+    ```json
+    [
+        {
+            "id": 5064,
+            "form": "もう",
+            "meaning": "already; anymore",
+            "jlpt_level": 5,
+            "example_ja": "もう 昼[ひる]ご 飯[はん]を 食[た]べました。",
+            "example_en": "I already ate lunch."
+        }
+    ]
+    ```
 
 ### Included files
 
