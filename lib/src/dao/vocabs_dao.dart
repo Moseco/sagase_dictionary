@@ -358,7 +358,8 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
         .replaceAll('_', '')
         .replaceAll('%', '')
         .toLowerCase()
-        .removeDiacritics();
+        .removeDiacritics()
+        .trim();
 
     if (cleanedText.isEmpty) return [];
 
