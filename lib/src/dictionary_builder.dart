@@ -286,7 +286,10 @@ class DictionaryBuilder {
           }
         }
 
-        List<String> parts = pitchLines[i].split('\t');
+        final line = pitchLines[i].trim();
+        if (line.isEmpty) continue;
+        List<String> parts = line.split('\t');
+        if (parts.length < 3) continue;
         // Get info for pitch accent
         String? writing;
         String reading = parts[1].trim();
@@ -352,7 +355,10 @@ class DictionaryBuilder {
             );
           }
         }
-        List<String> parts = frequencyLines[i].split('\t');
+        final line = frequencyLines[i].trim();
+        if (line.isEmpty) continue;
+        List<String> parts = line.split('\t');
+        if (parts.length < 2) continue;
 
         int score = int.parse(parts[0].trim());
         String lemma = parts[1].trim();
