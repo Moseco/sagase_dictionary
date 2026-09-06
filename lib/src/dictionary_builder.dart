@@ -2609,7 +2609,8 @@ class DictionaryBuilder {
         }
       }
 
-      var line = lines[i];
+      var line = lines[i].trim();
+      if (line.isEmpty) continue;
 
       // Set initial writing
       String? writing = line.substring(0, line.indexOf(' '));
@@ -2643,24 +2644,33 @@ class DictionaryBuilder {
         readingRomajiSimplified = null;
       }
 
-      // Get proper noun types if present
-      // Types are enclosed in parenthesis at the start but can be missing
+      // The rest of the line holds one or more senses enclosed in slashes
+      // Each sense can start with a comma separated list of type codes in
+      // parenthesis but they can be missing
+      if (line.startsWith('/')) line = line.substring(1);
+      if (line.endsWith('/')) line = line.substring(0, line.length - 1);
       List<ProperNounType> types = [];
-      line = line.substring(1);
-      if (line.startsWith('(')) {
-        final closingIndex = line.indexOf(')');
-        final typesString = line.substring(1, closingIndex);
+      List<String> senses = [];
+      for (var sense in line.split('/')) {
+        if (sense.startsWith('(')) {
+          final closingIndex = sense.indexOf(')');
         // Only treat as types if the content looks like a list of type codes
         // and not like the start of the romaji
-        if (_properNounTypesRegex.hasMatch(typesString)) {
-          for (var typeString in typesString.split(',')) {
-            types.add(_properNounTypeStringToEnum(typeString));
+          if (closingIndex != -1 &&
+              _properNounTypesRegex
+                  .hasMatch(sense.substring(1, closingIndex))) {
+            for (var typeString
+                in sense.substring(1, closingIndex).split(',')) {
+              final type = _properNounTypeStringToEnum(typeString);
+              if (!types.contains(type)) types.add(type);
           }
-          line = line.substring(closingIndex + 2);
+            sense = sense.substring(closingIndex + 1).trimLeft();
         }
+        }
+        if (sense.isNotEmpty) senses.add(sense);
       }
-      // Get romaji
-      String romaji = line.substring(0, line.length - 1);
+      // Combine the romaji of all senses
+      String romaji = senses.join('; ');
 
       // If romaji contains multiple words or was changed by removing diacritics add them to romaji words
       final words =
