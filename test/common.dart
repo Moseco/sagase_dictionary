@@ -620,6 +620,33 @@ const shortJMdict = '''
 </example>
 </sense>
 </entry>
+<entry>
+<ent_seq>1006450</ent_seq>
+<r_ele>
+<reb>ずれ</reb>
+<re_pri>news2</re_pri>
+<re_pri>nf26</re_pri>
+</r_ele>
+<r_ele>
+<reb>ズレ</reb>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<gloss>gap</gloss>
+<gloss>lag</gloss>
+<gloss>slippage</gloss>
+</sense>
+<sense>
+<pos>&n;</pos>
+<gloss>difference</gloss>
+<gloss>discrepancy</gloss>
+</sense>
+<sense>
+<pos>&n;</pos>
+<field>&physics;</field>
+<gloss>shear (e.g. shear stress)</gloss>
+</sense>
+</entry>
 </JMdict>
 ''';
 

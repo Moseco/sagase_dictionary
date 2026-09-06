@@ -522,6 +522,9 @@ void main() {
       expect(vocab9.definitions[0].antonyms!.length, 1);
       expect(vocab9.definitions[0].antonyms![0].ids, null);
       expect(vocab9.definitions[0].antonyms![0].text, '活語');
+
+      final vocab10 = await database.vocabsDao.get(1006450);
+      expect(vocab10.common, true);
     });
 
     test('Radicals', () async {

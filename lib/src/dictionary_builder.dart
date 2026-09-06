@@ -681,7 +681,7 @@ class DictionaryBuilder {
           info.add(_handleReadingInfo(readingElement.innerText)!);
           break;
         case 're_pri':
-          common = _handleVocabPriorityInfo(readingElement.innerText);
+          common = common || _handleVocabPriorityInfo(readingElement.innerText);
           break;
       }
     }
@@ -2660,8 +2660,8 @@ class DictionaryBuilder {
       for (var sense in line.split('/')) {
         if (sense.startsWith('(')) {
           final closingIndex = sense.indexOf(')');
-        // Only treat as types if the content looks like a list of type codes
-        // and not like the start of the romaji
+          // Only treat as types if the content looks like a list of type codes
+          // and not like the start of the romaji
           if (closingIndex != -1 &&
               _properNounTypesRegex
                   .hasMatch(sense.substring(1, closingIndex))) {
@@ -2669,9 +2669,9 @@ class DictionaryBuilder {
                 in sense.substring(1, closingIndex).split(',')) {
               final type = _properNounTypeStringToEnum(typeString);
               if (!types.contains(type)) types.add(type);
-          }
+            }
             sense = sense.substring(closingIndex + 1).trimLeft();
-        }
+          }
         }
         if (sense.isNotEmpty) senses.add(sense);
       }
