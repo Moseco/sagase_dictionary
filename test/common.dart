@@ -1459,6 +1459,53 @@ const shortKanjidic2 = '''
 </rmgroup>
 </reading_meaning>
 </character>
+<!-- Entry for Kanji: 亟 -->
+<character>
+<literal>亟</literal>
+<codepoint>
+<cp_value cp_type="ucs">4e9f</cp_value>
+<cp_value cp_type="jis208">1-48-20</cp_value>
+</codepoint>
+<radical>
+<rad_value rad_type="classical">7</rad_value>
+</radical>
+<misc>
+<stroke_count>8</stroke_count>
+<stroke_count>9</stroke_count>
+<variant var_type="jis212">1-41-73</variant>
+<!-- Fake frequency entry for test -->
+<freq>1509</freq>
+</misc>
+<dic_number>
+<dic_ref dr_type="nelson_n">83</dic_ref>
+<dic_ref dr_type="moro" m_vol="1" m_page="0528">279</dic_ref>
+</dic_number>
+<query_code>
+<q_code qc_type="skip">2-7-1</q_code>
+<q_code qc_type="sh_desc">3d5.16</q_code>
+<q_code qc_type="four_corner">1010.4</q_code>
+</query_code>
+<reading_meaning>
+<rmgroup>
+<reading r_type="pinyin">ji2</reading>
+<reading r_type="pinyin">qi4</reading>
+<reading r_type="korean_r">geug</reading>
+<reading r_type="korean_r">gi</reading>
+<reading r_type="korean_h">극</reading>
+<reading r_type="korean_h">기</reading>
+<reading r_type="vietnam">Cức</reading>
+<reading r_type="vietnam">Khí</reading>
+<reading r_type="ja_on">キョク</reading>
+<reading r_type="ja_on">キ</reading>
+<reading r_type="ja_on">ケ</reading>
+<reading r_type="ja_kun">しばしば</reading>
+<reading r_type="ja_kun">すみやか</reading>
+<meaning>fast</meaning>
+<meaning>quick</meaning>
+<meaning>sudden</meaning>
+</rmgroup>
+</reading_meaning>
+</character>
 </kanjidic2>
 ''';
 

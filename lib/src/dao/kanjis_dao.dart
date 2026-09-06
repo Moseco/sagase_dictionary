@@ -197,7 +197,8 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
           ..where((kanji) => kanji.radical.equals(radical))
           ..orderBy([
             (kanji) => OrderingTerm.asc(kanji.strokeCount),
-            (kanji) => OrderingTerm.asc(kanji.frequency),
+            (kanji) =>
+                OrderingTerm.asc(kanji.frequency, nulls: NullsOrder.last),
           ]))
         .get();
 
