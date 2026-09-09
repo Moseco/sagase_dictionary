@@ -46,7 +46,7 @@
             "getter_name": "writing",
             "moor_type": "string",
             "nullable": false,
-            "customConstraints": null,
+            "customConstraints": "NOT NULL COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -56,7 +56,7 @@
             "getter_name": "writingSearchForm",
             "moor_type": "string",
             "nullable": true,
-            "customConstraints": null,
+            "customConstraints": "COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -148,7 +148,7 @@
             "getter_name": "reading",
             "moor_type": "string",
             "nullable": false,
-            "customConstraints": null,
+            "customConstraints": "NOT NULL COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -158,7 +158,7 @@
             "getter_name": "readingSearchForm",
             "moor_type": "string",
             "nullable": true,
-            "customConstraints": null,
+            "customConstraints": "COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -168,7 +168,7 @@
             "getter_name": "readingRomaji",
             "moor_type": "string",
             "nullable": false,
-            "customConstraints": null,
+            "customConstraints": "NOT NULL COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -178,7 +178,7 @@
             "getter_name": "readingRomajiSimplified",
             "moor_type": "string",
             "nullable": true,
-            "customConstraints": null,
+            "customConstraints": "COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -570,7 +570,7 @@
             "getter_name": "word",
             "moor_type": "string",
             "nullable": false,
-            "customConstraints": null,
+            "customConstraints": "NOT NULL COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -913,7 +913,7 @@
             "getter_name": "reading",
             "moor_type": "string",
             "nullable": false,
-            "customConstraints": null,
+            "customConstraints": "NOT NULL COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -923,7 +923,7 @@
             "getter_name": "readingSearchForm",
             "moor_type": "string",
             "nullable": true,
-            "customConstraints": null,
+            "customConstraints": "COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -933,7 +933,7 @@
             "getter_name": "readingRomaji",
             "moor_type": "string",
             "nullable": false,
-            "customConstraints": null,
+            "customConstraints": "NOT NULL COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -943,7 +943,7 @@
             "getter_name": "readingRomajiSimplified",
             "moor_type": "string",
             "nullable": true,
-            "customConstraints": null,
+            "customConstraints": "COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -997,7 +997,7 @@
             "getter_name": "word",
             "moor_type": "string",
             "nullable": false,
-            "customConstraints": null,
+            "customConstraints": "NOT NULL COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -1541,7 +1541,7 @@
             "getter_name": "writing",
             "moor_type": "string",
             "nullable": true,
-            "customConstraints": null,
+            "customConstraints": "COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -1551,7 +1551,7 @@
             "getter_name": "writingSearchForm",
             "moor_type": "string",
             "nullable": true,
-            "customConstraints": null,
+            "customConstraints": "COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -1561,7 +1561,7 @@
             "getter_name": "reading",
             "moor_type": "string",
             "nullable": false,
-            "customConstraints": null,
+            "customConstraints": "NOT NULL COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -1571,7 +1571,7 @@
             "getter_name": "readingSearchForm",
             "moor_type": "string",
             "nullable": true,
-            "customConstraints": null,
+            "customConstraints": "COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -1581,7 +1581,7 @@
             "getter_name": "readingRomaji",
             "moor_type": "string",
             "nullable": false,
-            "customConstraints": null,
+            "customConstraints": "NOT NULL COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -1591,7 +1591,7 @@
             "getter_name": "readingRomajiSimplified",
             "moor_type": "string",
             "nullable": true,
-            "customConstraints": null,
+            "customConstraints": "COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -1601,7 +1601,7 @@
             "getter_name": "romaji",
             "moor_type": "string",
             "nullable": false,
-            "customConstraints": null,
+            "customConstraints": "NOT NULL COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -1655,7 +1655,7 @@
             "getter_name": "word",
             "moor_type": "string",
             "nullable": false,
-            "customConstraints": null,
+            "customConstraints": "NOT NULL COLLATE NOCASE",
             "default_dart": null,
             "default_client_dart": null,
             "dsl_features": []
@@ -1992,25 +1992,6 @@
       "type": "index",
       "data": {
         "on": 36,
-        "name": "IX_my_dictionary_list_items_list_id",
-        "sql": null,
-        "unique": false,
-        "columns": [
-          {
-            "column": "list_id",
-            "order_by": null
-          }
-        ]
-      }
-    },
-    {
-      "id": 38,
-      "references": [
-        36
-      ],
-      "type": "index",
-      "data": {
-        "on": 36,
         "name": "IX_my_dictionary_list_items_item_id_type",
         "sql": null,
         "unique": false,
@@ -2027,7 +2008,7 @@
       }
     },
     {
-      "id": 39,
+      "id": 38,
       "references": [],
       "type": "table",
       "data": {
@@ -2065,13 +2046,13 @@
       }
     },
     {
-      "id": 40,
+      "id": 39,
       "references": [
-        39
+        38
       ],
       "type": "index",
       "data": {
-        "on": 39,
+        "on": 38,
         "name": "IX_kanji_component_connections_kanji",
         "sql": null,
         "unique": false,
@@ -2084,7 +2065,7 @@
       }
     },
     {
-      "id": 41,
+      "id": 40,
       "references": [],
       "type": "table",
       "data": {
@@ -2121,7 +2102,7 @@
       }
     },
     {
-      "id": 42,
+      "id": 41,
       "references": [],
       "type": "table",
       "data": {
@@ -2201,7 +2182,7 @@
       }
     },
     {
-      "id": 43,
+      "id": 42,
       "references": [],
       "type": "table",
       "data": {
@@ -2429,7 +2410,7 @@
       }
     },
     {
-      "id": 44,
+      "id": 43,
       "references": [],
       "type": "table",
       "data": {
@@ -2509,13 +2490,13 @@
       }
     },
     {
-      "id": 45,
+      "id": 44,
       "references": [
-        44
+        43
       ],
       "type": "index",
       "data": {
-        "on": 44,
+        "on": 43,
         "name": "UX_flashcard_set_reports_flashcard_set_id_and_date",
         "sql": null,
         "unique": true,
@@ -2532,7 +2513,7 @@
       }
     },
     {
-      "id": 46,
+      "id": 45,
       "references": [],
       "type": "table",
       "data": {
@@ -2566,7 +2547,7 @@
       }
     },
     {
-      "id": 47,
+      "id": 46,
       "references": [
         29
       ],
@@ -2580,7 +2561,7 @@
       }
     },
     {
-      "id": 48,
+      "id": 47,
       "references": [
         29
       ],
@@ -2594,7 +2575,7 @@
       }
     },
     {
-      "id": 49,
+      "id": 48,
       "references": [
         29
       ],
@@ -2608,7 +2589,7 @@
       }
     },
     {
-      "id": 50,
+      "id": 49,
       "references": [
         29
       ],
@@ -2622,7 +2603,7 @@
       }
     },
     {
-      "id": 51,
+      "id": 50,
       "references": [
         29
       ],
@@ -2630,13 +2611,13 @@
       "data": {
         "on": 29,
         "name": "IX_proper_nouns_romaji",
-        "sql": "CREATE INDEX IX_proper_nouns_romaji\nON proper_nouns(romaji COLLATE NOCASE) WHERE romaji;",
+        "sql": "CREATE INDEX IX_proper_nouns_romaji\nON proper_nouns(romaji);",
         "unique": false,
         "columns": []
       }
     },
     {
-      "id": 52,
+      "id": 51,
       "references": [
         16
       ],
@@ -2650,7 +2631,7 @@
       }
     },
     {
-      "id": 53,
+      "id": 52,
       "references": [
         16
       ],
@@ -2670,7 +2651,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"vocab_writings\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"vocab_id\" INTEGER NOT NULL, \"writing\" TEXT NOT NULL, \"writing_search_form\" TEXT NULL, \"info\" TEXT NULL, \"primary_pair\" INTEGER NOT NULL DEFAULT 0 CHECK (\"primary_pair\" IN (0, 1)));"
+          "sql": "CREATE TABLE IF NOT EXISTS \"vocab_writings\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"vocab_id\" INTEGER NOT NULL, \"writing\" TEXT NOT NULL COLLATE NOCASE, \"writing_search_form\" TEXT COLLATE NOCASE, \"info\" TEXT NULL, \"primary_pair\" INTEGER NOT NULL DEFAULT 0 CHECK (\"primary_pair\" IN (0, 1)));"
         }
       ]
     },
@@ -2688,7 +2669,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"vocab_readings\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"vocab_id\" INTEGER NOT NULL, \"reading\" TEXT NOT NULL, \"reading_search_form\" TEXT NULL, \"reading_romaji\" TEXT NOT NULL, \"reading_romaji_simplified\" TEXT NULL, \"associated_writings\" TEXT NULL, \"info\" TEXT NULL, \"pitch_accents\" TEXT NULL, \"primary_pair\" INTEGER NOT NULL DEFAULT 0 CHECK (\"primary_pair\" IN (0, 1)));"
+          "sql": "CREATE TABLE IF NOT EXISTS \"vocab_readings\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"vocab_id\" INTEGER NOT NULL, \"reading\" TEXT NOT NULL COLLATE NOCASE, \"reading_search_form\" TEXT COLLATE NOCASE, \"reading_romaji\" TEXT NOT NULL COLLATE NOCASE, \"reading_romaji_simplified\" TEXT COLLATE NOCASE, \"associated_writings\" TEXT NULL, \"info\" TEXT NULL, \"pitch_accents\" TEXT NULL, \"primary_pair\" INTEGER NOT NULL DEFAULT 0 CHECK (\"primary_pair\" IN (0, 1)));"
         }
       ]
     },
@@ -2733,7 +2714,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"vocab_definition_words\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"word\" TEXT NOT NULL, \"vocab_id\" INTEGER NOT NULL);"
+          "sql": "CREATE TABLE IF NOT EXISTS \"vocab_definition_words\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"word\" TEXT NOT NULL COLLATE NOCASE, \"vocab_id\" INTEGER NOT NULL);"
         }
       ]
     },
@@ -2814,7 +2795,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"kanji_readings\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"kanji_id\" INTEGER NOT NULL, \"reading\" TEXT NOT NULL, \"reading_search_form\" TEXT NULL, \"reading_romaji\" TEXT NOT NULL, \"reading_romaji_simplified\" TEXT NULL, \"type\" INTEGER NOT NULL);"
+          "sql": "CREATE TABLE IF NOT EXISTS \"kanji_readings\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"kanji_id\" INTEGER NOT NULL, \"reading\" TEXT NOT NULL COLLATE NOCASE, \"reading_search_form\" TEXT COLLATE NOCASE, \"reading_romaji\" TEXT NOT NULL COLLATE NOCASE, \"reading_romaji_simplified\" TEXT COLLATE NOCASE, \"type\" INTEGER NOT NULL);"
         }
       ]
     },
@@ -2823,7 +2804,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"kanji_meaning_words\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"word\" TEXT NOT NULL, \"kanji_id\" INTEGER NOT NULL);"
+          "sql": "CREATE TABLE IF NOT EXISTS \"kanji_meaning_words\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"word\" TEXT NOT NULL COLLATE NOCASE, \"kanji_id\" INTEGER NOT NULL);"
         }
       ]
     },
@@ -2931,7 +2912,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"proper_nouns\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"writing\" TEXT NULL, \"writing_search_form\" TEXT NULL, \"reading\" TEXT NOT NULL, \"reading_search_form\" TEXT NULL, \"reading_romaji\" TEXT NOT NULL, \"reading_romaji_simplified\" TEXT NULL, \"romaji\" TEXT NOT NULL, \"types\" TEXT NOT NULL);"
+          "sql": "CREATE TABLE IF NOT EXISTS \"proper_nouns\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"writing\" TEXT COLLATE NOCASE, \"writing_search_form\" TEXT COLLATE NOCASE, \"reading\" TEXT NOT NULL COLLATE NOCASE, \"reading_search_form\" TEXT COLLATE NOCASE, \"reading_romaji\" TEXT NOT NULL COLLATE NOCASE, \"reading_romaji_simplified\" TEXT COLLATE NOCASE, \"romaji\" TEXT NOT NULL COLLATE NOCASE, \"types\" TEXT NOT NULL);"
         }
       ]
     },
@@ -2940,7 +2921,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"proper_noun_romaji_words\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"word\" TEXT NOT NULL, \"proper_noun_id\" INTEGER NOT NULL);"
+          "sql": "CREATE TABLE IF NOT EXISTS \"proper_noun_romaji_words\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"word\" TEXT NOT NULL COLLATE NOCASE, \"proper_noun_id\" INTEGER NOT NULL);"
         }
       ]
     },
@@ -2995,15 +2976,6 @@
         {
           "dialect": "sqlite",
           "sql": "CREATE TABLE IF NOT EXISTS \"my_dictionary_list_items\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"list_id\" INTEGER NOT NULL, \"item_id\" INTEGER NOT NULL, \"item_type\" INTEGER NOT NULL, UNIQUE (\"list_id\", \"item_id\", \"item_type\"));"
-        }
-      ]
-    },
-    {
-      "name": "IX_my_dictionary_list_items_list_id",
-      "sql": [
-        {
-          "dialect": "sqlite",
-          "sql": "CREATE INDEX IX_my_dictionary_list_items_list_id ON my_dictionary_list_items (list_id)"
         }
       ]
     },
@@ -3129,7 +3101,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE INDEX IX_proper_nouns_romaji ON proper_nouns (romaji COLLATE NOCASE) WHERE romaji"
+          "sql": "CREATE INDEX IX_proper_nouns_romaji ON proper_nouns (romaji)"
         }
       ]
     },

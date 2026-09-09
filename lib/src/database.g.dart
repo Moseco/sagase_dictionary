@@ -29,13 +29,17 @@ class $VocabWritingsTable extends VocabWritings
   @override
   late final GeneratedColumn<String> writing = GeneratedColumn<String>(
       'writing', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   static const VerificationMeta _writingSearchFormMeta =
       const VerificationMeta('writingSearchForm');
   @override
   late final GeneratedColumn<String> writingSearchForm =
       GeneratedColumn<String>('writing_search_form', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          $customConstraints: 'COLLATE NOCASE');
   @override
   late final GeneratedColumnWithTypeConverter<List<WritingInfo>?, String> info =
       GeneratedColumn<String>('info', aliasedName, true,
@@ -381,25 +385,33 @@ class $VocabReadingsTable extends VocabReadings
   @override
   late final GeneratedColumn<String> reading = GeneratedColumn<String>(
       'reading', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   static const VerificationMeta _readingSearchFormMeta =
       const VerificationMeta('readingSearchForm');
   @override
   late final GeneratedColumn<String> readingSearchForm =
       GeneratedColumn<String>('reading_search_form', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          $customConstraints: 'COLLATE NOCASE');
   static const VerificationMeta _readingRomajiMeta =
       const VerificationMeta('readingRomaji');
   @override
   late final GeneratedColumn<String> readingRomaji = GeneratedColumn<String>(
       'reading_romaji', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   static const VerificationMeta _readingRomajiSimplifiedMeta =
       const VerificationMeta('readingRomajiSimplified');
   @override
   late final GeneratedColumn<String> readingRomajiSimplified =
       GeneratedColumn<String>('reading_romaji_simplified', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          $customConstraints: 'COLLATE NOCASE');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>?, String>
       associatedWritings = GeneratedColumn<String>(
@@ -1825,7 +1837,9 @@ class $VocabDefinitionWordsTable extends VocabDefinitionWords
   @override
   late final GeneratedColumn<String> word = GeneratedColumn<String>(
       'word', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   static const VerificationMeta _vocabIdMeta =
       const VerificationMeta('vocabId');
   @override
@@ -2396,25 +2410,33 @@ class $KanjiReadingsTable extends KanjiReadings
   @override
   late final GeneratedColumn<String> reading = GeneratedColumn<String>(
       'reading', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   static const VerificationMeta _readingSearchFormMeta =
       const VerificationMeta('readingSearchForm');
   @override
   late final GeneratedColumn<String> readingSearchForm =
       GeneratedColumn<String>('reading_search_form', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          $customConstraints: 'COLLATE NOCASE');
   static const VerificationMeta _readingRomajiMeta =
       const VerificationMeta('readingRomaji');
   @override
   late final GeneratedColumn<String> readingRomaji = GeneratedColumn<String>(
       'reading_romaji', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   static const VerificationMeta _readingRomajiSimplifiedMeta =
       const VerificationMeta('readingRomajiSimplified');
   @override
   late final GeneratedColumn<String> readingRomajiSimplified =
       GeneratedColumn<String>('reading_romaji_simplified', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          $customConstraints: 'COLLATE NOCASE');
   @override
   late final GeneratedColumnWithTypeConverter<KanjiReadingType, int> type =
       GeneratedColumn<int>('type', aliasedName, false,
@@ -2646,7 +2668,9 @@ class $KanjiMeaningWordsTable extends KanjiMeaningWords
   @override
   late final GeneratedColumn<String> word = GeneratedColumn<String>(
       'word', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   static const VerificationMeta _kanjiIdMeta =
       const VerificationMeta('kanjiId');
   @override
@@ -4222,42 +4246,56 @@ class $ProperNounsTable extends ProperNouns
   @override
   late final GeneratedColumn<String> writing = GeneratedColumn<String>(
       'writing', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'COLLATE NOCASE');
   static const VerificationMeta _writingSearchFormMeta =
       const VerificationMeta('writingSearchForm');
   @override
   late final GeneratedColumn<String> writingSearchForm =
       GeneratedColumn<String>('writing_search_form', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          $customConstraints: 'COLLATE NOCASE');
   static const VerificationMeta _readingMeta =
       const VerificationMeta('reading');
   @override
   late final GeneratedColumn<String> reading = GeneratedColumn<String>(
       'reading', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   static const VerificationMeta _readingSearchFormMeta =
       const VerificationMeta('readingSearchForm');
   @override
   late final GeneratedColumn<String> readingSearchForm =
       GeneratedColumn<String>('reading_search_form', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          $customConstraints: 'COLLATE NOCASE');
   static const VerificationMeta _readingRomajiMeta =
       const VerificationMeta('readingRomaji');
   @override
   late final GeneratedColumn<String> readingRomaji = GeneratedColumn<String>(
       'reading_romaji', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   static const VerificationMeta _readingRomajiSimplifiedMeta =
       const VerificationMeta('readingRomajiSimplified');
   @override
   late final GeneratedColumn<String> readingRomajiSimplified =
       GeneratedColumn<String>('reading_romaji_simplified', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          $customConstraints: 'COLLATE NOCASE');
   static const VerificationMeta _romajiMeta = const VerificationMeta('romaji');
   @override
   late final GeneratedColumn<String> romaji = GeneratedColumn<String>(
       'romaji', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   @override
   late final GeneratedColumnWithTypeConverter<List<ProperNounType>, String>
       types = GeneratedColumn<String>('types', aliasedName, false,
@@ -4528,7 +4566,9 @@ class $ProperNounRomajiWordsTable extends ProperNounRomajiWords
   @override
   late final GeneratedColumn<String> word = GeneratedColumn<String>(
       'word', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   static const VerificationMeta _properNounIdMeta =
       const VerificationMeta('properNounId');
   @override
@@ -6930,9 +6970,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $MyDictionaryListsTable(this);
   late final $MyDictionaryListItemsTable myDictionaryListItems =
       $MyDictionaryListItemsTable(this);
-  late final Index iXMyDictionaryListItemsListId = Index(
-      'IX_my_dictionary_list_items_list_id',
-      'CREATE INDEX IX_my_dictionary_list_items_list_id ON my_dictionary_list_items (list_id)');
   late final Index iXMyDictionaryListItemsItemIdType = Index(
       'IX_my_dictionary_list_items_item_id_type',
       'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)');
@@ -6963,7 +7000,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       'IX_proper_nouns_reading_romaji_simplified',
       'CREATE INDEX IX_proper_nouns_reading_romaji_simplified ON proper_nouns (reading_romaji_simplified) WHERE reading_romaji_simplified IS NOT NULL');
   late final Index iXProperNounsRomaji = Index('IX_proper_nouns_romaji',
-      'CREATE INDEX IX_proper_nouns_romaji ON proper_nouns (romaji COLLATE NOCASE) WHERE romaji');
+      'CREATE INDEX IX_proper_nouns_romaji ON proper_nouns (romaji)');
   late final Index iXKanjiReadingsReadingSearchForm = Index(
       'IX_kanji_readings_reading_search_form',
       'CREATE INDEX IX_kanji_readings_reading_search_form ON kanji_readings (reading_search_form) WHERE reading_search_form IS NOT NULL');
@@ -7032,7 +7069,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         predefinedDictionaryLists,
         myDictionaryLists,
         myDictionaryListItems,
-        iXMyDictionaryListItemsListId,
         iXMyDictionaryListItemsItemIdType,
         kanjiComponentConnections,
         iXKanjiComponentConnectionsKanji,

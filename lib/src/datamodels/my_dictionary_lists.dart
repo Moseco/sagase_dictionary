@@ -114,7 +114,6 @@ class MyDictionaryList extends DictionaryList {
   }
 }
 
-@TableIndex(name: 'IX_my_dictionary_list_items_list_id', columns: {#listId})
 @TableIndex(
   name: 'IX_my_dictionary_list_items_item_id_type',
   columns: {#itemId, #itemType},

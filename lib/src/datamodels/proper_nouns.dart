@@ -4,19 +4,28 @@ import 'package:drift/drift.dart';
 import 'package:sagase_dictionary/src/datamodels/dictionary_item.dart';
 import 'package:sagase_dictionary/src/utils/enums.dart';
 
+// Columns searched with a prefix LIKE use the NOCASE collation so that SQLite
+// can use their indexes for LIKE. Comparisons on these columns are therefore
+// case-insensitive for ASCII letters.
 @UseRowClass(ProperNoun)
 @TableIndex(name: 'IX_proper_nouns_reading', columns: {#reading})
 @TableIndex(name: 'IX_proper_nouns_reading_romaji', columns: {#readingRomaji})
 class ProperNouns extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  TextColumn get writing => text().nullable()();
-  TextColumn get writingSearchForm => text().nullable()();
-  TextColumn get reading => text()();
-  TextColumn get readingSearchForm => text().nullable()();
-  TextColumn get readingRomaji => text()();
-  TextColumn get readingRomajiSimplified => text().nullable()();
-  TextColumn get romaji => text()();
+  TextColumn get writing =>
+      text().nullable().customConstraint('COLLATE NOCASE')();
+  TextColumn get writingSearchForm =>
+      text().nullable().customConstraint('COLLATE NOCASE')();
+  TextColumn get reading =>
+      text().customConstraint('NOT NULL COLLATE NOCASE')();
+  TextColumn get readingSearchForm =>
+      text().nullable().customConstraint('COLLATE NOCASE')();
+  TextColumn get readingRomaji =>
+      text().customConstraint('NOT NULL COLLATE NOCASE')();
+  TextColumn get readingRomajiSimplified =>
+      text().nullable().customConstraint('COLLATE NOCASE')();
+  TextColumn get romaji => text().customConstraint('NOT NULL COLLATE NOCASE')();
 
   TextColumn get types => text().map(const ProperNounTypeConverter())();
 }
@@ -68,6 +77,6 @@ class ProperNounTypeConverter
 @TableIndex(name: 'IX_proper_noun_romaji_words_word', columns: {#word})
 class ProperNounRomajiWords extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get word => text()();
+  TextColumn get word => text().customConstraint('NOT NULL COLLATE NOCASE')();
   IntColumn get properNounId => integer()();
 }

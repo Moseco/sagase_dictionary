@@ -149,6 +149,7 @@ class AppDatabase extends _$AppDatabase {
 
           await m.drop(Index('IX_my_dictionary_list_items_vocab_id', ''));
           await m.drop(Index('IX_my_dictionary_list_items_kanji_id', ''));
+          await m.drop(Index('IX_my_dictionary_list_items_list_id', ''));
           await m.alterTable(TableMigration(schema.myDictionaryListItems));
           await m.createIndex(schema.iXMyDictionaryListItemsItemIdType);
 
@@ -168,6 +169,21 @@ class AppDatabase extends _$AppDatabase {
               newColumns: [schema.predefinedDictionaryLists.grammar],
             ),
           );
+
+          for (final table in <TableInfo>[
+            schema.vocabWritings,
+            schema.vocabReadings,
+            schema.vocabDefinitionWords,
+            schema.kanjiReadings,
+            schema.kanjiMeaningWords,
+            schema.properNouns,
+            schema.properNounRomajiWords,
+          ]) {
+            await m.alterTable(TableMigration(table));
+          }
+
+          await m.drop(schema.iXProperNounsRomaji);
+          await m.createIndex(schema.iXProperNounsRomaji);
         },
       ),
     );

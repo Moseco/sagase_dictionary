@@ -2849,7 +2849,6 @@ final class Schema5 extends i0.VersionedSchema {
     predefinedDictionaryLists,
     myDictionaryLists,
     myDictionaryListItems,
-    iXMyDictionaryListItemsListId,
     iXMyDictionaryListItemsItemIdType,
     kanjiComponentConnections,
     iXKanjiComponentConnectionsKanji,
@@ -2876,8 +2875,8 @@ final class Schema5 extends i0.VersionedSchema {
         columns: [
           _column_86,
           _column_87,
-          _column_88,
-          _column_89,
+          _column_174,
+          _column_175,
           _column_90,
           _column_91,
         ],
@@ -2896,10 +2895,10 @@ final class Schema5 extends i0.VersionedSchema {
         columns: [
           _column_86,
           _column_87,
-          _column_92,
-          _column_93,
-          _column_94,
-          _column_95,
+          _column_176,
+          _column_177,
+          _column_178,
+          _column_179,
           _column_96,
           _column_90,
           _column_97,
@@ -2962,7 +2961,7 @@ final class Schema5 extends i0.VersionedSchema {
         tableConstraints: [],
         columns: [
           _column_86,
-          _column_112,
+          _column_180,
           _column_87,
         ],
         attachedDatabase: database,
@@ -3016,10 +3015,10 @@ final class Schema5 extends i0.VersionedSchema {
         columns: [
           _column_86,
           _column_123,
-          _column_92,
-          _column_93,
-          _column_94,
-          _column_95,
+          _column_176,
+          _column_177,
+          _column_178,
+          _column_179,
           _column_124,
         ],
         attachedDatabase: database,
@@ -3033,7 +3032,7 @@ final class Schema5 extends i0.VersionedSchema {
         tableConstraints: [],
         columns: [
           _column_86,
-          _column_112,
+          _column_180,
           _column_123,
         ],
         attachedDatabase: database,
@@ -3146,13 +3145,13 @@ final class Schema5 extends i0.VersionedSchema {
         tableConstraints: [],
         columns: [
           _column_86,
-          _column_146,
-          _column_89,
-          _column_92,
-          _column_93,
-          _column_94,
-          _column_95,
-          _column_147,
+          _column_181,
+          _column_175,
+          _column_176,
+          _column_177,
+          _column_178,
+          _column_179,
+          _column_182,
           _column_148,
         ],
         attachedDatabase: database,
@@ -3166,7 +3165,7 @@ final class Schema5 extends i0.VersionedSchema {
         tableConstraints: [],
         columns: [
           _column_86,
-          _column_112,
+          _column_180,
           _column_149,
         ],
         attachedDatabase: database,
@@ -3191,7 +3190,7 @@ final class Schema5 extends i0.VersionedSchema {
           _column_150,
           _column_151,
           _column_113,
-          _column_174,
+          _column_183,
         ],
         attachedDatabase: database,
       ),
@@ -3227,9 +3226,6 @@ final class Schema5 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  final i1.Index iXMyDictionaryListItemsListId = i1.Index(
-      'IX_my_dictionary_list_items_list_id',
-      'CREATE INDEX IX_my_dictionary_list_items_list_id ON my_dictionary_list_items (list_id)');
   final i1.Index iXMyDictionaryListItemsItemIdType = i1.Index(
       'IX_my_dictionary_list_items_item_id_type',
       'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)');
@@ -3242,8 +3238,8 @@ final class Schema5 extends i0.VersionedSchema {
           'PRIMARY KEY(component_code_point, kanji_code_point)',
         ],
         columns: [
-          _column_175,
-          _column_176,
+          _column_184,
+          _column_185,
         ],
         attachedDatabase: database,
       ),
@@ -3274,11 +3270,11 @@ final class Schema5 extends i0.VersionedSchema {
         tableConstraints: [],
         columns: [
           _column_86,
-          _column_177,
+          _column_186,
           _column_141,
-          _column_178,
-          _column_179,
-          _column_180,
+          _column_187,
+          _column_188,
+          _column_189,
         ],
         attachedDatabase: database,
       ),
@@ -3299,7 +3295,7 @@ final class Schema5 extends i0.VersionedSchema {
           _column_159,
           _column_160,
           _column_161,
-          _column_181,
+          _column_190,
           _column_162,
           _column_163,
           _column_152,
@@ -3355,7 +3351,7 @@ final class Schema5 extends i0.VersionedSchema {
       'IX_proper_nouns_reading_romaji_simplified',
       'CREATE INDEX IX_proper_nouns_reading_romaji_simplified ON proper_nouns (reading_romaji_simplified) WHERE reading_romaji_simplified IS NOT NULL');
   final i1.Index iXProperNounsRomaji = i1.Index('IX_proper_nouns_romaji',
-      'CREATE INDEX IX_proper_nouns_romaji ON proper_nouns (romaji COLLATE NOCASE) WHERE romaji');
+      'CREATE INDEX IX_proper_nouns_romaji ON proper_nouns (romaji)');
   final i1.Index iXKanjiReadingsReadingSearchForm = i1.Index(
       'IX_kanji_readings_reading_search_form',
       'CREATE INDEX IX_kanji_readings_reading_search_form ON kanji_readings (reading_search_form) WHERE reading_search_form IS NOT NULL');
@@ -3363,6 +3359,32 @@ final class Schema5 extends i0.VersionedSchema {
       'IX_kanji_readings_reading_romaji_simplified',
       'CREATE INDEX IX_kanji_readings_reading_romaji_simplified ON kanji_readings (reading_romaji_simplified) WHERE reading_romaji_simplified IS NOT NULL');
 }
+
+i1.GeneratedColumn<String> _column_174(String aliasedName) =>
+    i1.GeneratedColumn<String>('writing', aliasedName, false,
+        type: i1.DriftSqlType.string,
+        $customConstraints: 'NOT NULL COLLATE NOCASE');
+i1.GeneratedColumn<String> _column_175(String aliasedName) =>
+    i1.GeneratedColumn<String>('writing_search_form', aliasedName, true,
+        type: i1.DriftSqlType.string, $customConstraints: 'COLLATE NOCASE');
+i1.GeneratedColumn<String> _column_176(String aliasedName) =>
+    i1.GeneratedColumn<String>('reading', aliasedName, false,
+        type: i1.DriftSqlType.string,
+        $customConstraints: 'NOT NULL COLLATE NOCASE');
+i1.GeneratedColumn<String> _column_177(String aliasedName) =>
+    i1.GeneratedColumn<String>('reading_search_form', aliasedName, true,
+        type: i1.DriftSqlType.string, $customConstraints: 'COLLATE NOCASE');
+i1.GeneratedColumn<String> _column_178(String aliasedName) =>
+    i1.GeneratedColumn<String>('reading_romaji', aliasedName, false,
+        type: i1.DriftSqlType.string,
+        $customConstraints: 'NOT NULL COLLATE NOCASE');
+i1.GeneratedColumn<String> _column_179(String aliasedName) =>
+    i1.GeneratedColumn<String>('reading_romaji_simplified', aliasedName, true,
+        type: i1.DriftSqlType.string, $customConstraints: 'COLLATE NOCASE');
+i1.GeneratedColumn<String> _column_180(String aliasedName) =>
+    i1.GeneratedColumn<String>('word', aliasedName, false,
+        type: i1.DriftSqlType.string,
+        $customConstraints: 'NOT NULL COLLATE NOCASE');
 
 class Shape31 extends i0.VersionedTable {
   Shape31({required super.source, required super.alias}) : super.aliased();
@@ -3386,6 +3408,14 @@ class Shape31 extends i0.VersionedTable {
       columnsByName['total_wrong_answers']! as i1.GeneratedColumn<int>;
 }
 
+i1.GeneratedColumn<String> _column_181(String aliasedName) =>
+    i1.GeneratedColumn<String>('writing', aliasedName, true,
+        type: i1.DriftSqlType.string, $customConstraints: 'COLLATE NOCASE');
+i1.GeneratedColumn<String> _column_182(String aliasedName) =>
+    i1.GeneratedColumn<String>('romaji', aliasedName, false,
+        type: i1.DriftSqlType.string,
+        $customConstraints: 'NOT NULL COLLATE NOCASE');
+
 class Shape32 extends i0.VersionedTable {
   Shape32({required super.source, required super.alias}) : super.aliased();
   i1.GeneratedColumn<int> get id =>
@@ -3400,7 +3430,7 @@ class Shape32 extends i0.VersionedTable {
       columnsByName['grammar']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_174(String aliasedName) =>
+i1.GeneratedColumn<String> _column_183(String aliasedName) =>
     i1.GeneratedColumn<String>('grammar', aliasedName, false,
         type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
 
@@ -3424,10 +3454,10 @@ class Shape34 extends i0.VersionedTable {
       columnsByName['component_code_point']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<int> _column_175(String aliasedName) =>
+i1.GeneratedColumn<int> _column_184(String aliasedName) =>
     i1.GeneratedColumn<int>('kanji_code_point', aliasedName, false,
         type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<int> _column_176(String aliasedName) =>
+i1.GeneratedColumn<int> _column_185(String aliasedName) =>
     i1.GeneratedColumn<int>('component_code_point', aliasedName, false,
         type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
 
@@ -3447,16 +3477,16 @@ class Shape35 extends i0.VersionedTable {
       columnsByName['example_english']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_177(String aliasedName) =>
+i1.GeneratedColumn<String> _column_186(String aliasedName) =>
     i1.GeneratedColumn<String>('form', aliasedName, false,
         type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<int> _column_178(String aliasedName) =>
+i1.GeneratedColumn<int> _column_187(String aliasedName) =>
     i1.GeneratedColumn<int>('jlpt_level', aliasedName, false,
         type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_179(String aliasedName) =>
+i1.GeneratedColumn<String> _column_188(String aliasedName) =>
     i1.GeneratedColumn<String>('example_japanese', aliasedName, false,
         type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_180(String aliasedName) =>
+i1.GeneratedColumn<String> _column_189(String aliasedName) =>
     i1.GeneratedColumn<String>('example_english', aliasedName, false,
         type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
 
@@ -3498,7 +3528,7 @@ class Shape36 extends i0.VersionedTable {
       columnsByName['streak']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<int> _column_181(String aliasedName) =>
+i1.GeneratedColumn<int> _column_190(String aliasedName) =>
     i1.GeneratedColumn<int>('grammar_show_reading', aliasedName, false,
         type: i1.DriftSqlType.int,
         $customConstraints:

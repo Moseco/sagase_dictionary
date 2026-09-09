@@ -62,6 +62,9 @@ class Kanji extends DictionaryItem {
   DictionaryItemType get type => DictionaryItemType.kanji;
 }
 
+// Columns searched with a prefix LIKE use the NOCASE collation so that SQLite
+// can use their indexes for LIKE. Comparisons on these columns are therefore
+// case-insensitive for ASCII letters.
 @UseRowClass(KanjiReading)
 @TableIndex(name: 'IX_kanji_readings_kanji_id', columns: {#kanjiId})
 @TableIndex(name: 'IX_kanji_readings_reading', columns: {#reading})
@@ -71,10 +74,14 @@ class KanjiReadings extends Table {
 
   IntColumn get kanjiId => integer()();
 
-  TextColumn get reading => text()();
-  TextColumn get readingSearchForm => text().nullable()();
-  TextColumn get readingRomaji => text()();
-  TextColumn get readingRomajiSimplified => text().nullable()();
+  TextColumn get reading =>
+      text().customConstraint('NOT NULL COLLATE NOCASE')();
+  TextColumn get readingSearchForm =>
+      text().nullable().customConstraint('COLLATE NOCASE')();
+  TextColumn get readingRomaji =>
+      text().customConstraint('NOT NULL COLLATE NOCASE')();
+  TextColumn get readingRomajiSimplified =>
+      text().nullable().customConstraint('COLLATE NOCASE')();
 
   IntColumn get type => intEnum<KanjiReadingType>()();
 }
@@ -105,6 +112,6 @@ class KanjiReading {
 @TableIndex(name: 'IX_kanji_meaning_words_word', columns: {#word})
 class KanjiMeaningWords extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get word => text()();
+  TextColumn get word => text().customConstraint('NOT NULL COLLATE NOCASE')();
   IntColumn get kanjiId => integer()();
 }
