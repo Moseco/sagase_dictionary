@@ -522,6 +522,9 @@ void main() {
       expect(vocab9.definitions[0].antonyms!.length, 1);
       expect(vocab9.definitions[0].antonyms![0].ids, null);
       expect(vocab9.definitions[0].antonyms![0].text, '活語');
+
+      final vocab10 = await database.vocabsDao.get(1006450);
+      expect(vocab10.common, true);
     });
 
     test('Radicals', () async {
@@ -932,6 +935,56 @@ void main() {
       expect(properNounRomajiWords[3].word, 'for');
       expect(properNounRomajiWords[4].word, 'trade');
       expect(properNounRomajiWords[5].word, 'statistics');
+
+      // Entry with multiple senses and types
+      expect(properNouns[7].writing, 'ＡＢＣ');
+      expect(properNouns[7].writingSearchForm, 'abc');
+      expect(properNouns[7].reading, 'エービーシー');
+      expect(properNouns[7].readingSearchForm, 'ええびいしい');
+      expect(properNouns[7].readingRomaji, 'eebiishii');
+      expect(properNouns[7].readingRomajiSimplified, 'ebishi');
+      expect(
+        properNouns[7].romaji,
+        'American Broadcasting Company; ABC; Audit Bureau of Circulations; ABC; ABC World Airways Guide',
+      );
+      expect(properNouns[7].types, [
+        ProperNounType.company,
+        ProperNounType.organization,
+        ProperNounType.product,
+      ]);
+      properNounRomajiWords =
+          await (database.select(database.properNounRomajiWords)
+                ..where((word) => word.properNounId.equals(properNouns[7].id)))
+              .get();
+      expect(properNounRomajiWords.length, 11);
+      expect(properNounRomajiWords[0].word, 'american');
+      expect(properNounRomajiWords[1].word, 'broadcasting');
+      expect(properNounRomajiWords[2].word, 'company');
+      expect(properNounRomajiWords[3].word, 'abc');
+      expect(properNounRomajiWords[4].word, 'audit');
+      expect(properNounRomajiWords[5].word, 'bureau');
+      expect(properNounRomajiWords[6].word, 'of');
+      expect(properNounRomajiWords[7].word, 'circulations');
+      expect(properNounRomajiWords[8].word, 'world');
+      expect(properNounRomajiWords[9].word, 'airways');
+      expect(properNounRomajiWords[10].word, 'guide');
+
+      // Entry with multiple senses and one type
+      expect(properNouns[8].writing, '＠ニフティ');
+      expect(properNouns[8].writingSearchForm, '@にふてぃ');
+      expect(properNouns[8].reading, 'アットニフティ');
+      expect(properNouns[8].readingSearchForm, 'あっとにふてぃ');
+      expect(properNouns[8].readingRomaji, 'attonifutei');
+      expect(properNouns[8].readingRomajiSimplified, 'atonifutei');
+      expect(properNouns[8].romaji, '@nifty; at nifty');
+      expect(properNouns[8].types, [ProperNounType.product]);
+      properNounRomajiWords =
+          await (database.select(database.properNounRomajiWords)
+                ..where((word) => word.properNounId.equals(properNouns[8].id)))
+              .get();
+      expect(properNounRomajiWords.length, 2);
+      expect(properNounRomajiWords[0].word, 'nifty');
+      expect(properNounRomajiWords[1].word, 'at');
     });
 
     test('Kanji component connections', () async {

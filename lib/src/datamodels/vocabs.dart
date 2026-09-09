@@ -49,6 +49,9 @@ class Vocab extends DictionaryItem {
   }
 }
 
+// Columns searched with a prefix LIKE use the NOCASE collation so that SQLite
+// can use their indexes for LIKE. Comparisons on these columns are therefore
+// case-insensitive for ASCII letters.
 @TableIndex(name: 'IX_vocab_writings_vocab_id', columns: {#vocabId})
 @TableIndex(name: 'IX_vocab_writings_writing', columns: {#writing})
 class VocabWritings extends Table {
@@ -56,8 +59,10 @@ class VocabWritings extends Table {
 
   IntColumn get vocabId => integer()();
 
-  TextColumn get writing => text()();
-  TextColumn get writingSearchForm => text().nullable()();
+  TextColumn get writing =>
+      text().customConstraint('NOT NULL COLLATE NOCASE')();
+  TextColumn get writingSearchForm =>
+      text().nullable().customConstraint('COLLATE NOCASE')();
   TextColumn get info => text().map(const WritingInfoConverter()).nullable()();
 
   BoolColumn get primaryPair => boolean().withDefault(const Constant(false))();
@@ -71,10 +76,14 @@ class VocabReadings extends Table {
 
   IntColumn get vocabId => integer()();
 
-  TextColumn get reading => text()();
-  TextColumn get readingSearchForm => text().nullable()();
-  TextColumn get readingRomaji => text()();
-  TextColumn get readingRomajiSimplified => text().nullable()();
+  TextColumn get reading =>
+      text().customConstraint('NOT NULL COLLATE NOCASE')();
+  TextColumn get readingSearchForm =>
+      text().nullable().customConstraint('COLLATE NOCASE')();
+  TextColumn get readingRomaji =>
+      text().customConstraint('NOT NULL COLLATE NOCASE')();
+  TextColumn get readingRomajiSimplified =>
+      text().nullable().customConstraint('COLLATE NOCASE')();
 
   TextColumn get associatedWritings =>
       text().map(const StringListConverter()).nullable()();
@@ -115,7 +124,7 @@ class VocabDefinitions extends Table {
 @TableIndex(name: 'IX_vocab_definition_words_word', columns: {#word})
 class VocabDefinitionWords extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get word => text()();
+  TextColumn get word => text().customConstraint('NOT NULL COLLATE NOCASE')();
   IntColumn get vocabId => integer()();
 }
 

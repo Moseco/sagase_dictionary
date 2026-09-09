@@ -25,12 +25,12 @@ class VocabWritings extends Table
       'writing', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   late final GeneratedColumn<String> writingSearchForm =
       GeneratedColumn<String>('writing_search_form', aliasedName, true,
           type: DriftSqlType.string,
           requiredDuringInsert: false,
-          $customConstraints: 'NULL');
+          $customConstraints: 'COLLATE NOCASE');
   late final GeneratedColumn<String> info = GeneratedColumn<String>(
       'info', aliasedName, true,
       type: DriftSqlType.string,
@@ -327,22 +327,22 @@ class VocabReadings extends Table
       'reading', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   late final GeneratedColumn<String> readingSearchForm =
       GeneratedColumn<String>('reading_search_form', aliasedName, true,
           type: DriftSqlType.string,
           requiredDuringInsert: false,
-          $customConstraints: 'NULL');
+          $customConstraints: 'COLLATE NOCASE');
   late final GeneratedColumn<String> readingRomaji = GeneratedColumn<String>(
       'reading_romaji', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   late final GeneratedColumn<String> readingRomajiSimplified =
       GeneratedColumn<String>('reading_romaji_simplified', aliasedName, true,
           type: DriftSqlType.string,
           requiredDuringInsert: false,
-          $customConstraints: 'NULL');
+          $customConstraints: 'COLLATE NOCASE');
   late final GeneratedColumn<String> associatedWritings =
       GeneratedColumn<String>('associated_writings', aliasedName, true,
           type: DriftSqlType.string,
@@ -1622,7 +1622,7 @@ class VocabDefinitionWords extends Table
       'word', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   late final GeneratedColumn<int> vocabId = GeneratedColumn<int>(
       'vocab_id', aliasedName, false,
       type: DriftSqlType.int,
@@ -2294,22 +2294,22 @@ class KanjiReadings extends Table
       'reading', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   late final GeneratedColumn<String> readingSearchForm =
       GeneratedColumn<String>('reading_search_form', aliasedName, true,
           type: DriftSqlType.string,
           requiredDuringInsert: false,
-          $customConstraints: 'NULL');
+          $customConstraints: 'COLLATE NOCASE');
   late final GeneratedColumn<String> readingRomaji = GeneratedColumn<String>(
       'reading_romaji', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   late final GeneratedColumn<String> readingRomajiSimplified =
       GeneratedColumn<String>('reading_romaji_simplified', aliasedName, true,
           type: DriftSqlType.string,
           requiredDuringInsert: false,
-          $customConstraints: 'NULL');
+          $customConstraints: 'COLLATE NOCASE');
   late final GeneratedColumn<int> type = GeneratedColumn<int>(
       'type', aliasedName, false,
       type: DriftSqlType.int,
@@ -2642,7 +2642,7 @@ class KanjiMeaningWords extends Table
       'word', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   late final GeneratedColumn<int> kanjiId = GeneratedColumn<int>(
       'kanji_id', aliasedName, false,
       type: DriftSqlType.int,
@@ -4214,37 +4214,37 @@ class ProperNouns extends Table with TableInfo<ProperNouns, ProperNounsData> {
       'writing', aliasedName, true,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      $customConstraints: 'NULL');
+      $customConstraints: 'COLLATE NOCASE');
   late final GeneratedColumn<String> writingSearchForm =
       GeneratedColumn<String>('writing_search_form', aliasedName, true,
           type: DriftSqlType.string,
           requiredDuringInsert: false,
-          $customConstraints: 'NULL');
+          $customConstraints: 'COLLATE NOCASE');
   late final GeneratedColumn<String> reading = GeneratedColumn<String>(
       'reading', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   late final GeneratedColumn<String> readingSearchForm =
       GeneratedColumn<String>('reading_search_form', aliasedName, true,
           type: DriftSqlType.string,
           requiredDuringInsert: false,
-          $customConstraints: 'NULL');
+          $customConstraints: 'COLLATE NOCASE');
   late final GeneratedColumn<String> readingRomaji = GeneratedColumn<String>(
       'reading_romaji', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   late final GeneratedColumn<String> readingRomajiSimplified =
       GeneratedColumn<String>('reading_romaji_simplified', aliasedName, true,
           type: DriftSqlType.string,
           requiredDuringInsert: false,
-          $customConstraints: 'NULL');
+          $customConstraints: 'COLLATE NOCASE');
   late final GeneratedColumn<String> romaji = GeneratedColumn<String>(
       'romaji', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   late final GeneratedColumn<String> types = GeneratedColumn<String>(
       'types', aliasedName, false,
       type: DriftSqlType.string,
@@ -4639,7 +4639,7 @@ class ProperNounRomajiWords extends Table
       'word', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
+      $customConstraints: 'NOT NULL COLLATE NOCASE');
   late final GeneratedColumn<int> properNounId = GeneratedColumn<int>(
       'proper_noun_id', aliasedName, false,
       type: DriftSqlType.int,
@@ -7427,9 +7427,6 @@ class DatabaseAtV5 extends GeneratedDatabase {
   late final MyDictionaryLists myDictionaryLists = MyDictionaryLists(this);
   late final MyDictionaryListItems myDictionaryListItems =
       MyDictionaryListItems(this);
-  late final Index iXMyDictionaryListItemsListId = Index(
-      'IX_my_dictionary_list_items_list_id',
-      'CREATE INDEX IX_my_dictionary_list_items_list_id ON my_dictionary_list_items (list_id)');
   late final Index iXMyDictionaryListItemsItemIdType = Index(
       'IX_my_dictionary_list_items_item_id_type',
       'CREATE INDEX IX_my_dictionary_list_items_item_id_type ON my_dictionary_list_items (item_id, item_type)');
@@ -7459,7 +7456,7 @@ class DatabaseAtV5 extends GeneratedDatabase {
       'IX_proper_nouns_reading_romaji_simplified',
       'CREATE INDEX IX_proper_nouns_reading_romaji_simplified ON proper_nouns (reading_romaji_simplified) WHERE reading_romaji_simplified IS NOT NULL');
   late final Index iXProperNounsRomaji = Index('IX_proper_nouns_romaji',
-      'CREATE INDEX IX_proper_nouns_romaji ON proper_nouns (romaji COLLATE NOCASE) WHERE romaji');
+      'CREATE INDEX IX_proper_nouns_romaji ON proper_nouns (romaji)');
   late final Index iXKanjiReadingsReadingSearchForm = Index(
       'IX_kanji_readings_reading_search_form',
       'CREATE INDEX IX_kanji_readings_reading_search_form ON kanji_readings (reading_search_form) WHERE reading_search_form IS NOT NULL');
@@ -7508,7 +7505,6 @@ class DatabaseAtV5 extends GeneratedDatabase {
         predefinedDictionaryLists,
         myDictionaryLists,
         myDictionaryListItems,
-        iXMyDictionaryListItemsListId,
         iXMyDictionaryListItemsItemIdType,
         kanjiComponentConnections,
         iXKanjiComponentConnectionsKanji,

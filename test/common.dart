@@ -620,6 +620,33 @@ const shortJMdict = '''
 </example>
 </sense>
 </entry>
+<entry>
+<ent_seq>1006450</ent_seq>
+<r_ele>
+<reb>ずれ</reb>
+<re_pri>news2</re_pri>
+<re_pri>nf26</re_pri>
+</r_ele>
+<r_ele>
+<reb>ズレ</reb>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<gloss>gap</gloss>
+<gloss>lag</gloss>
+<gloss>slippage</gloss>
+</sense>
+<sense>
+<pos>&n;</pos>
+<gloss>difference</gloss>
+<gloss>discrepancy</gloss>
+</sense>
+<sense>
+<pos>&n;</pos>
+<field>&physics;</field>
+<gloss>shear (e.g. shear stress)</gloss>
+</sense>
+</entry>
 </JMdict>
 ''';
 
@@ -1432,6 +1459,53 @@ const shortKanjidic2 = '''
 </rmgroup>
 </reading_meaning>
 </character>
+<!-- Entry for Kanji: 亟 -->
+<character>
+<literal>亟</literal>
+<codepoint>
+<cp_value cp_type="ucs">4e9f</cp_value>
+<cp_value cp_type="jis208">1-48-20</cp_value>
+</codepoint>
+<radical>
+<rad_value rad_type="classical">7</rad_value>
+</radical>
+<misc>
+<stroke_count>8</stroke_count>
+<stroke_count>9</stroke_count>
+<variant var_type="jis212">1-41-73</variant>
+<!-- Fake frequency entry for test -->
+<freq>1509</freq>
+</misc>
+<dic_number>
+<dic_ref dr_type="nelson_n">83</dic_ref>
+<dic_ref dr_type="moro" m_vol="1" m_page="0528">279</dic_ref>
+</dic_number>
+<query_code>
+<q_code qc_type="skip">2-7-1</q_code>
+<q_code qc_type="sh_desc">3d5.16</q_code>
+<q_code qc_type="four_corner">1010.4</q_code>
+</query_code>
+<reading_meaning>
+<rmgroup>
+<reading r_type="pinyin">ji2</reading>
+<reading r_type="pinyin">qi4</reading>
+<reading r_type="korean_r">geug</reading>
+<reading r_type="korean_r">gi</reading>
+<reading r_type="korean_h">극</reading>
+<reading r_type="korean_h">기</reading>
+<reading r_type="vietnam">Cức</reading>
+<reading r_type="vietnam">Khí</reading>
+<reading r_type="ja_on">キョク</reading>
+<reading r_type="ja_on">キ</reading>
+<reading r_type="ja_on">ケ</reading>
+<reading r_type="ja_kun">しばしば</reading>
+<reading r_type="ja_kun">すみやか</reading>
+<meaning>fast</meaning>
+<meaning>quick</meaning>
+<meaning>sudden</meaning>
+</rmgroup>
+</reading_meaning>
+</character>
 </kanjidic2>
 ''';
 
@@ -1622,7 +1696,10 @@ const shortEnamdict = '''さくら /(f) Sakura/
 ヴィナス /(u) Venus/
 宇宙機構 [うちゅうきかん] /(o) Japanese Aerospace Exploration Agency (JAXA) (formerly NASDA)/
 安倍晋三 [あべしんぞう] /(h) Shinzō Abe (1954.9.21-2022.7.8; Prime Minister of Japan 2006-2007 and 2012-2020)/
-イントラスタット /Intrastat (EU system for trade statistics)/''';
+イントラスタット /Intrastat (EU system for trade statistics)/
+ＡＢＣ [エービーシー] /(c) American Broadcasting Company/ABC/(o) Audit Bureau of Circulations/ABC/(pr) ABC World Airways Guide/
+＠ニフティ [アットニフティ] /(pr) @nifty/at nifty/
+''';
 
 const shortGrammarInput = '''[
     {

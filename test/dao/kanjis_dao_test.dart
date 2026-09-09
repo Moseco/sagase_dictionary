@@ -307,10 +307,12 @@ void main() {
 
     test('getAllWithRadical', () async {
       final kanjiList = await database.kanjisDao.getAllWithRadical('二');
-      expect(kanjiList.length, 3);
+      expect(kanjiList.length, 4);
       expect(kanjiList[0].kanji, '二');
       expect(kanjiList[1].kanji, '亜');
-      expect(kanjiList[2].kanji, '亞');
+      // This kanji's source frequency was changed to create this result
+      expect(kanjiList[2].kanji, '亟');
+      expect(kanjiList[3].kanji, '亞');
     });
 
     group('getAllWithComponents', () {
@@ -463,15 +465,17 @@ void main() {
       test('Reading partial', () async {
         // On reading
         var results = await database.kanjisDao.search('し');
-        expect(results.length, 2);
+        expect(results.length, 3);
         expect(results[0].kanji, '心');
         expect(results[1].kanji, '𠮟');
+        expect(results[2].kanji, '亟');
 
         // On reading katakana
         results = await database.kanjisDao.search('シ');
-        expect(results.length, 2);
+        expect(results.length, 3);
         expect(results[0].kanji, '心');
         expect(results[1].kanji, '𠮟');
+        expect(results[2].kanji, '亟');
 
         // Kun reading
         results = await database.kanjisDao.search('ここ');
@@ -528,9 +532,10 @@ void main() {
       test('Reading romaji partial', () async {
         // On reading
         var results = await database.kanjisDao.search('sh');
-        expect(results.length, 2);
+        expect(results.length, 3);
         expect(results[0].kanji, '心');
         expect(results[1].kanji, '𠮟');
+        expect(results[2].kanji, '亟');
 
         // Kun reading
         results = await database.kanjisDao.search('koko');

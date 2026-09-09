@@ -93,28 +93,23 @@ class ProperNounsDao extends DatabaseAccessor<AppDatabase>
 
       if (splits.length == 1) {
         final lengthColumn = db.properNouns.romaji.length.iif(
-          db.properNouns.romaji.collate(Collate.noCase).like('$cleanedText%'),
+          db.properNouns.romaji.like('$cleanedText%'),
           db.properNouns.readingRomaji.length,
         );
 
-        return (db.select(db.properNouns).join([
-          leftOuterJoin(
-            db.properNounRomajiWords,
-            db.properNounRomajiWords.properNounId.equalsExp(db.properNouns.id),
-          )
-        ])
-              ..where(Expression.or([
-                db.properNounRomajiWords.word.like('$cleanedText%'),
-                db.properNouns.readingRomaji.like('$cleanedText%'),
-                db.properNouns.readingRomajiSimplified.like('$cleanedText%'),
-                db.properNouns.romaji
-                    .collate(Collate.noCase)
-                    .like('$cleanedText%'),
-              ]))
-              ..orderBy([OrderingTerm.asc(lengthColumn)])
-              ..groupBy([db.properNouns.id])
+        final matchingRomajiWords = db.selectOnly(db.properNounRomajiWords)
+          ..addColumns([db.properNounRomajiWords.properNounId])
+          ..where(db.properNounRomajiWords.word.like('$cleanedText%'));
+
+        return (db.select(db.properNouns)
+              ..where((properNoun) => Expression.or([
+                    properNoun.id.isInQuery(matchingRomajiWords),
+                    properNoun.readingRomaji.like('$cleanedText%'),
+                    properNoun.readingRomajiSimplified.like('$cleanedText%'),
+                    properNoun.romaji.like('$cleanedText%'),
+                  ]))
+              ..orderBy([(properNoun) => OrderingTerm.asc(lengthColumn)])
               ..limit(500))
-            .map((row) => row.readTable(db.properNouns))
             .get();
       } else {
         // Create a join that matches all but the last word and starts with for the last word
