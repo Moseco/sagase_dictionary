@@ -1699,6 +1699,7 @@ const shortEnamdict = '''さくら /(f) Sakura/
 イントラスタット /Intrastat (EU system for trade statistics)/
 ＡＢＣ [エービーシー] /(c) American Broadcasting Company/ABC/(o) Audit Bureau of Circulations/ABC/(pr) ABC World Airways Guide/
 ＠ニフティ [アットニフティ] /(pr) @nifty/at nifty/
+日本英語検定協会 [にほんえいごけんていきょうかい] /(o) Eiken Foundation of Japan/(formerly) Society for Testing English Proficiency (STEP)/
 ''';
 
 const shortGrammarInput = '''[

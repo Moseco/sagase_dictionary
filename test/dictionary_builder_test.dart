@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:sagase_dictionary/src/database.dart';
 import 'package:sagase_dictionary/src/dictionary_builder.dart';
 import 'package:sagase_dictionary/src/utils/constants.dart';
@@ -936,7 +938,7 @@ void main() {
       expect(properNounRomajiWords[4].word, 'trade');
       expect(properNounRomajiWords[5].word, 'statistics');
 
-      // Entry with multiple senses and types
+      // Entry with multiple senses and types where a sense is repeated
       expect(properNouns[7].writing, 'ＡＢＣ');
       expect(properNouns[7].writingSearchForm, 'abc');
       expect(properNouns[7].reading, 'エービーシー');
@@ -945,7 +947,7 @@ void main() {
       expect(properNouns[7].readingRomajiSimplified, 'ebishi');
       expect(
         properNouns[7].romaji,
-        'American Broadcasting Company; ABC; Audit Bureau of Circulations; ABC; ABC World Airways Guide',
+        'American Broadcasting Company; ABC; Audit Bureau of Circulations; ABC World Airways Guide',
       );
       expect(properNouns[7].types, [
         ProperNounType.company,
@@ -985,6 +987,33 @@ void main() {
       expect(properNounRomajiWords.length, 2);
       expect(properNounRomajiWords[0].word, 'nifty');
       expect(properNounRomajiWords[1].word, 'at');
+
+      // Entry with a leading parenthesis in the sense
+      expect(properNouns[9].writing, '日本英語検定協会');
+      expect(properNouns[9].writingSearchForm, null);
+      expect(properNouns[9].reading, 'にほんえいごけんていきょうかい');
+      expect(properNouns[9].readingSearchForm, null);
+      expect(properNouns[9].readingRomaji, 'nihon\'eigokenteikyoukai');
+      expect(properNouns[9].readingRomajiSimplified, 'nihon\'eigokenteikyokai');
+      expect(properNouns[9].romaji,
+          'Eiken Foundation of Japan; (formerly) Society for Testing English Proficiency (STEP)');
+      expect(properNouns[9].types, [ProperNounType.organization]);
+      properNounRomajiWords =
+          await (database.select(database.properNounRomajiWords)
+                ..where((word) => word.properNounId.equals(properNouns[9].id)))
+              .get();
+      expect(properNounRomajiWords.length, 11);
+      expect(properNounRomajiWords[0].word, 'eiken');
+      expect(properNounRomajiWords[1].word, 'foundation');
+      expect(properNounRomajiWords[2].word, 'of');
+      expect(properNounRomajiWords[3].word, 'japan');
+      expect(properNounRomajiWords[4].word, 'formerly');
+      expect(properNounRomajiWords[5].word, 'society');
+      expect(properNounRomajiWords[6].word, 'for');
+      expect(properNounRomajiWords[7].word, 'testing');
+      expect(properNounRomajiWords[8].word, 'english');
+      expect(properNounRomajiWords[9].word, 'proficiency');
+      expect(properNounRomajiWords[10].word, 'step');
     });
 
     test('Kanji component connections', () async {
@@ -1019,6 +1048,55 @@ void main() {
       expect(grammarList[1].form, 'ほうがいい');
       expect(grammarList[1].meaning, 'It would be better to...');
       expect(grammarList[1].jlptLevel, 5);
+    });
+  });
+
+  group('DictionaryBuilderProperNounTypeTest', () {
+    late AppDatabase database;
+    late List<String> logs;
+
+    setUpAll(() async {
+      database = AppDatabase();
+      logs = [];
+
+      await runZoned(
+        () => DictionaryBuilder.createProperNounDictionary(
+          database,
+          '''テスト [てすと] /(u) Foo/(abbr) Bar/
+テストに [てすとに] /(col) Baz/
+テストさん [てすとさん] /(c,zzz) Qux/
+''',
+        ),
+        zoneSpecification: ZoneSpecification(
+          print: (self, parent, zone, line) => logs.add(line),
+        ),
+      );
+    });
+
+    tearDownAll(() async {
+      await database.close();
+    });
+
+    test('Sense starting with an English parenthetical', () async {
+      final properNouns = await database.select(database.properNouns).get();
+
+      // A parenthetical that is not a type list stays part of the romaji
+      expect(properNouns[0].romaji, 'Foo; (abbr) Bar');
+      expect(properNouns[0].types, [ProperNounType.personName]);
+
+      expect(properNouns[1].romaji, '(col) Baz');
+      expect(properNouns[1].types, []);
+
+      // A list containing a known code is still used as types
+      expect(properNouns[2].romaji, 'Qux');
+      expect(properNouns[2].types, [
+        ProperNounType.company,
+        ProperNounType.unknown,
+      ]);
+    });
+
+    test('Unsupported type code warns', () async {
+      expect(logs, ['Unsupported proper noun type: zzz']);
     });
   });
 }

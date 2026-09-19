@@ -2660,20 +2660,21 @@ class DictionaryBuilder {
       for (var sense in line.split('/')) {
         if (sense.startsWith('(')) {
           final closingIndex = sense.indexOf(')');
-          // Only treat as types if the content looks like a list of type codes
-          // and not like the start of the romaji
-          if (closingIndex != -1 &&
-              _properNounTypesRegex
-                  .hasMatch(sense.substring(1, closingIndex))) {
-            for (var typeString
-                in sense.substring(1, closingIndex).split(',')) {
-              final type = _properNounTypeStringToEnum(typeString);
-              if (!types.contains(type)) types.add(type);
+          if (closingIndex != -1) {
+            // Only use as types if the content is a list of type codes and not
+            // the start of the romaji
+            final senseTypes =
+                _parseProperNounTypes(sense.substring(1, closingIndex));
+            if (senseTypes != null) {
+              for (var type in senseTypes) {
+                if (!types.contains(type)) types.add(type);
+              }
+              sense = sense.substring(closingIndex + 1).trimLeft();
             }
-            sense = sense.substring(closingIndex + 1).trimLeft();
           }
         }
-        if (sense.isNotEmpty) senses.add(sense);
+        // Senses can repeat, such as an abbreviation listed with each meaning
+        if (sense.isNotEmpty && !senses.contains(sense)) senses.add(sense);
       }
       // Combine the romaji of all senses
       String romaji = senses.join('; ');
@@ -2711,7 +2712,37 @@ class DictionaryBuilder {
     });
   }
 
-  static ProperNounType _properNounTypeStringToEnum(String type) {
+  // Parses a comma separated list of proper noun type codes
+  // Returns null if the text is not a type list, such as an English
+  // parenthetical starting the romaji
+  static List<ProperNounType>? _parseProperNounTypes(String text) {
+    if (!_properNounTypesRegex.hasMatch(text)) return null;
+
+    List<ProperNounType> types = [];
+    List<String> unsupportedTypes = [];
+    for (var typeString in text.split(',')) {
+      final type = _properNounTypeStringToEnum(typeString);
+      if (type == null) {
+        unsupportedTypes.add(typeString);
+      } else {
+        types.add(type);
+      }
+    }
+
+    // If no code was recognized the text is part of the romaji
+    if (types.isEmpty) return null;
+
+    if (unsupportedTypes.isNotEmpty) {
+      for (var typeString in unsupportedTypes) {
+        print('Unsupported proper noun type: $typeString');
+      }
+      types.add(ProperNounType.unknown);
+    }
+
+    return types;
+  }
+
+  static ProperNounType? _properNounTypeStringToEnum(String type) {
     switch (type) {
       case 's':
         return ProperNounType.surname;
@@ -2764,8 +2795,7 @@ class DictionaryBuilder {
       case 'rel':
         return ProperNounType.religion;
       default:
-        print('Unsupported proper noun type: $type');
-        return ProperNounType.unknown;
+        return null;
     }
   }
 }
