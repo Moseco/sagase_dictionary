@@ -404,6 +404,12 @@ void main() {
           expect(results[1].id, 2759530);
         });
 
+        test('Katakana search text', () async {
+          final results = await database.vocabsDao.search('メイハク');
+          expect(results.length, 1);
+          expect(results[0].id, 1000220);
+        });
+
         test('Iteration mark', () async {
           var results = await database.vocabsDao.search('いすず');
           expect(results.length, 1);

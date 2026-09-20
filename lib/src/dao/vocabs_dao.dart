@@ -453,12 +453,12 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
 
       if (searchByReading) {
         // Search by reading
+        final queryText = _kanaKit.toHiragana('$cleanedText%');
         final searchReading = Subquery(
           db.select(db.vocabReadings)
             ..where((reading) => Expression.or([
-                  reading.reading.like('$cleanedText%'),
-                  reading.readingSearchForm
-                      .like(_kanaKit.toHiragana('$cleanedText%')),
+                  reading.reading.like(queryText),
+                  reading.readingSearchForm.like(queryText),
                 ])),
           'search_reading',
         );

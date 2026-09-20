@@ -144,6 +144,16 @@ void main() {
         expect(results[0].reading, 'さくら');
       });
 
+      test('Reading in the other kana script', () async {
+        var results = await database.properNounsDao.search('サクラ');
+        expect(results.length, 1);
+        expect(results[0].reading, 'さくら');
+
+        results = await database.properNounsDao.search('ゔぃなす');
+        expect(results.length, 1);
+        expect(results[0].reading, 'ヴィナス');
+      });
+
       test('Reading with iteration mark', () async {
         var results = await database.properNounsDao.search('いすず');
         expect(results.length, 2);

@@ -169,11 +169,11 @@ class ProperNounsDao extends DatabaseAccessor<AppDatabase>
       // Japanese text
       if (_kanaKit.isKana(cleanedText.expandIterationMarks())) {
         // Search by reading
+        final queryText = _kanaKit.toHiragana('$cleanedText%');
         return (db.select(db.properNouns)
               ..where((properNoun) => Expression.or([
-                    properNoun.reading.like('$cleanedText%'),
-                    properNoun.readingSearchForm
-                        .like(_kanaKit.toHiragana('$cleanedText%')),
+                    properNoun.reading.like(queryText),
+                    properNoun.readingSearchForm.like(queryText),
                   ]))
               ..orderBy([
                 (properNoun) => OrderingTerm.asc(properNoun.reading.length),
