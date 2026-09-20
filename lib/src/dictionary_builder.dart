@@ -16,6 +16,8 @@ import 'package:sagase_dictionary/src/utils/string_utils.dart';
 class DictionaryBuilder {
   static final _kanaKit = const KanaKit().copyWithConfig(passRomaji: true);
 
+  static final _nonLetterRegex = RegExp(r'[^a-z]');
+
   static final _simplifyNonVerbRegex = RegExp(r'(?<=.{1})(う|っ|ッ|ー)');
   static final _simplifyVerbRegex = RegExp(r'(?<=.{1})(ー|っ|ッ|(う(?=.)))');
   static final _properNounTypesRegex = RegExp(r'^[a-z]+(,[a-z]+)*$');
@@ -184,9 +186,10 @@ class DictionaryBuilder {
 
       // Create search form of writings
       for (int i = 0; i < currentWritings.length; i++) {
+        final writing = currentWritings[i].writing.value;
         final searchForm = _kanaKit.toHiragana(
-            currentWritings[i].writing.value.toLowerCase().romajiToHalfWidth());
-        if (searchForm != currentWritings[i].writing.value) {
+            writing.expandIterationMarks().toLowerCase().romajiToHalfWidth());
+        if (searchForm != writing) {
           currentWritings[i] = currentWritings[i].copyWith(
             writingSearchForm: Value(searchForm),
           );
@@ -195,14 +198,15 @@ class DictionaryBuilder {
 
       // Create search form and romaji versions of readings
       for (int i = 0; i < currentReadings.length; i++) {
+        final reading = currentReadings[i].reading.value;
+
         // Search form
         String? searchForm =
-            _kanaKit.toHiragana(currentReadings[i].reading.value);
-        if (searchForm == currentReadings[i].reading.value) searchForm = null;
+            _kanaKit.toHiragana(reading.expandIterationMarks());
+        if (searchForm == reading) searchForm = null;
 
         // Romaji text
-        final readingRomaji =
-            _kanaKit.toRomaji(currentReadings[i].reading.value).toLowerCase();
+        final readingRomaji = _toRomaji(reading);
 
         // Simplified romaji text (remove based on if verb or not)
         bool isVerb = false;
@@ -223,14 +227,11 @@ class DictionaryBuilder {
           }
         }
 
-        String? romajiSimplified = _kanaKit
-            .toRomaji(currentReadings[i].reading.value.replaceAll(
-                isVerb ? _simplifyVerbRegex : _simplifyNonVerbRegex, ''))
-            .toLowerCase();
-
-        if (romajiSimplified.isEmpty || readingRomaji == romajiSimplified) {
-          romajiSimplified = null;
-        }
+        final romajiSimplified = _toSimplifiedSearchRomaji(
+          reading,
+          readingRomaji,
+          isVerb ? _simplifyVerbRegex : _simplifyNonVerbRegex,
+        );
 
         currentReadings[i] = currentReadings[i].copyWith(
           readingSearchForm: Value.absentIfNull(searchForm),
@@ -1790,11 +1791,11 @@ class DictionaryBuilder {
         final cleanReadingRegExp = RegExp(r'\.|-');
         for (var reading in readingMeaning.onReadings) {
           final cleaned = reading.replaceAll(cleanReadingRegExp, '');
-          final searchForm = _kanaKit.toHiragana(cleaned);
-          final romaji = _kanaKit.toRomaji(cleaned).toLowerCase();
-          final romajiSimplified = _kanaKit
-              .toRomaji(cleaned.replaceAll(_simplifyVerbRegex, ''))
-              .toLowerCase();
+          final searchForm =
+              _kanaKit.toHiragana(cleaned.expandIterationMarks());
+          final romaji = _toRomaji(cleaned);
+          final romajiSimplified =
+              _toSimplifiedSearchRomaji(cleaned, romaji, _simplifyVerbRegex);
           kanjiReadingList.add(
             KanjiReadingsCompanion(
               kanjiId: kanji.id,
@@ -1802,19 +1803,18 @@ class DictionaryBuilder {
               readingSearchForm:
                   Value.absentIfNull(reading == searchForm ? null : searchForm),
               readingRomaji: Value(romaji),
-              readingRomajiSimplified: Value.absentIfNull(
-                  romaji == romajiSimplified ? null : romajiSimplified),
+              readingRomajiSimplified: Value.absentIfNull(romajiSimplified),
               type: Value(KanjiReadingType.on),
             ),
           );
         }
         for (var reading in readingMeaning.kunReadings) {
           final cleaned = reading.replaceAll(cleanReadingRegExp, '');
-          final searchForm = _kanaKit.toHiragana(cleaned);
-          final romaji = _kanaKit.toRomaji(cleaned).toLowerCase();
-          final romajiSimplified = _kanaKit
-              .toRomaji(cleaned.replaceAll(_simplifyVerbRegex, ''))
-              .toLowerCase();
+          final searchForm =
+              _kanaKit.toHiragana(cleaned.expandIterationMarks());
+          final romaji = _toRomaji(cleaned);
+          final romajiSimplified =
+              _toSimplifiedSearchRomaji(cleaned, romaji, _simplifyVerbRegex);
           kanjiReadingList.add(
             KanjiReadingsCompanion(
               kanjiId: kanji.id,
@@ -1822,19 +1822,18 @@ class DictionaryBuilder {
               readingSearchForm:
                   Value.absentIfNull(reading == searchForm ? null : searchForm),
               readingRomaji: Value(romaji),
-              readingRomajiSimplified: Value.absentIfNull(
-                  romaji == romajiSimplified ? null : romajiSimplified),
+              readingRomajiSimplified: Value.absentIfNull(romajiSimplified),
               type: Value(KanjiReadingType.kun),
             ),
           );
         }
         for (var reading in readingMeaning.nanori) {
           final cleaned = reading.replaceAll(cleanReadingRegExp, '');
-          final searchForm = _kanaKit.toHiragana(cleaned);
-          final romaji = _kanaKit.toRomaji(cleaned).toLowerCase();
-          final romajiSimplified = _kanaKit
-              .toRomaji(cleaned.replaceAll(_simplifyVerbRegex, ''))
-              .toLowerCase();
+          final searchForm =
+              _kanaKit.toHiragana(cleaned.expandIterationMarks());
+          final romaji = _toRomaji(cleaned);
+          final romajiSimplified =
+              _toSimplifiedSearchRomaji(cleaned, romaji, _simplifyVerbRegex);
           kanjiReadingList.add(
             KanjiReadingsCompanion(
               kanjiId: kanji.id,
@@ -1842,8 +1841,7 @@ class DictionaryBuilder {
               readingSearchForm:
                   Value.absentIfNull(reading == searchForm ? null : searchForm),
               readingRomaji: Value(romaji),
-              readingRomajiSimplified: Value.absentIfNull(
-                  romaji == romajiSimplified ? null : romajiSimplified),
+              readingRomajiSimplified: Value.absentIfNull(romajiSimplified),
               type: Value(KanjiReadingType.nanori),
             ),
           );
@@ -2629,8 +2627,8 @@ class DictionaryBuilder {
         reading = line.substring(1, line.indexOf(' ') - 1);
         line = line.substring(reading.length + 3);
         // Create writing search form
-        writingSearchForm =
-            _kanaKit.toHiragana(writing.toLowerCase().romajiToHalfWidth());
+        writingSearchForm = _kanaKit.toHiragana(
+            writing.expandIterationMarks().toLowerCase().romajiToHalfWidth());
         if (writing == writingSearchForm) writingSearchForm = null;
       } else {
         // No reading available so set reading to writing and writing to null
@@ -2638,17 +2636,17 @@ class DictionaryBuilder {
         writing = null;
       }
       // Create reading search form
-      String? readingSearchForm = _kanaKit.toHiragana(reading);
+      String? readingSearchForm =
+          _kanaKit.toHiragana(reading.expandIterationMarks());
       if (reading == readingSearchForm) readingSearchForm = null;
 
       // Create reading romaji
-      String readingRomaji = _kanaKit.toRomaji(reading).toLowerCase();
-      String? readingRomajiSimplified = _kanaKit
-          .toRomaji(reading.replaceAll(_simplifyNonVerbRegex, ''))
-          .toLowerCase();
-      if (readingRomaji == readingRomajiSimplified) {
-        readingRomajiSimplified = null;
-      }
+      final readingRomaji = _toRomaji(reading);
+      final readingRomajiSimplified = _toSimplifiedSearchRomaji(
+        reading,
+        readingRomaji,
+        _simplifyNonVerbRegex,
+      );
 
       // The rest of the line holds one or more senses enclosed in slashes
       // Each sense can start with a comma separated list of type codes in
@@ -2710,6 +2708,25 @@ class DictionaryBuilder {
       batch.insertAll(db.properNouns, properNouns);
       batch.insertAll(db.properNounRomajiWords, properNounRomajiWords);
     });
+  }
+
+  // Romaji of the given kana with iteration marks expanded
+  static String _toRomaji(String kana) =>
+      _kanaKit.toRomaji(kana.expandIterationMarks()).toLowerCase();
+
+  // Simplified romaji of the given kana to be used for searching
+  // Only letters are kept so marks that kana kit adds, such as the apostrophe
+  // in nihon'eigo and the slash from ・, do not have to be typed
+  // Returns null if it does not differ from the given romaji
+  static String? _toSimplifiedSearchRomaji(
+    String kana,
+    String romaji,
+    RegExp simplifyRegex,
+  ) {
+    final simplified = _toRomaji(kana.replaceAll(simplifyRegex, ''))
+        .replaceAll(_nonLetterRegex, '');
+    if (simplified.isEmpty || simplified == romaji) return null;
+    return simplified;
   }
 
   // Parses a comma separated list of proper noun type codes

@@ -647,6 +647,26 @@ const shortJMdict = '''
 <gloss>shear (e.g. shear stress)</gloss>
 </sense>
 </entry>
+<entry>
+<ent_seq>1000020</ent_seq>
+<r_ele>
+<reb>ゝ</reb>
+</r_ele>
+<sense>
+<pos>&unc;</pos>
+<gloss g_type="expl">repetition mark in hiragana</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>5000899</ent_seq>
+<r_ele>
+<reb>いすゞ</reb>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<gloss>Isuzu (Japanese automobile manufacturer)</gloss>
+</sense>
+</entry>
 </JMdict>
 ''';
 
@@ -1700,6 +1720,11 @@ const shortEnamdict = '''さくら /(f) Sakura/
 ＡＢＣ [エービーシー] /(c) American Broadcasting Company/ABC/(o) Audit Bureau of Circulations/ABC/(pr) ABC World Airways Guide/
 ＠ニフティ [アットニフティ] /(pr) @nifty/at nifty/
 日本英語検定協会 [にほんえいごけんていきょうかい] /(o) Eiken Foundation of Japan/(formerly) Society for Testing English Proficiency (STEP)/
+ＡＣＭ [エー・シー・エム] /(o) Association for Computing Machinery/ACM/
+いすゞ /(c) Isuzu/
+いすず /(f) Isuzu/
+こゝろ /(wk) Kokoro/
+スヾキ /(s) Suzuki/
 ''';
 
 const shortGrammarInput = '''[

@@ -167,7 +167,7 @@ class ProperNounsDao extends DatabaseAccessor<AppDatabase>
       }
     } else {
       // Japanese text
-      if (_kanaKit.isKana(cleanedText)) {
+      if (_kanaKit.isKana(cleanedText.expandIterationMarks())) {
         // Search by reading
         return (db.select(db.properNouns)
               ..where((properNoun) => Expression.or([
@@ -177,6 +177,8 @@ class ProperNounsDao extends DatabaseAccessor<AppDatabase>
                   ]))
               ..orderBy([
                 (properNoun) => OrderingTerm.asc(properNoun.reading.length),
+                (properNoun) =>
+                    OrderingTerm.desc(properNoun.reading.like('$cleanedText%')),
               ])
               ..limit(500))
             .get();

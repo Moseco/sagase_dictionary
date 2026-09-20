@@ -144,6 +144,23 @@ void main() {
         expect(results[0].reading, 'さくら');
       });
 
+      test('Reading with iteration mark', () async {
+        var results = await database.properNounsDao.search('いすず');
+        expect(results.length, 2);
+        expect(results[0].reading, 'いすず');
+        expect(results[1].reading, 'いすゞ');
+
+        results = await database.properNounsDao.search('すずき');
+        expect(results.length, 1);
+        expect(results[0].reading, 'スヾキ');
+      });
+
+      test('Reading with iteration mark in the search text', () async {
+        final results = await database.properNounsDao.search('いすゞ');
+        expect(results.length, 1);
+        expect(results[0].reading, 'いすゞ');
+      });
+
       test('Reading romaji complete', () async {
         final results = await database.properNounsDao.search('toukyou');
         expect(results.length, 1);

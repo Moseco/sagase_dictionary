@@ -403,6 +403,22 @@ void main() {
           expect(results[0].id, 1001090);
           expect(results[1].id, 2759530);
         });
+
+        test('Iteration mark', () async {
+          var results = await database.vocabsDao.search('いすず');
+          expect(results.length, 1);
+          expect(results[0].id, 5000899);
+
+          results = await database.vocabsDao.search('いすゞ');
+          expect(results.length, 1);
+          expect(results[0].id, 5000899);
+        });
+
+        test('Iteration mark by itself', () async {
+          final results = await database.vocabsDao.search('ゝ');
+          expect(results.length, 1);
+          expect(results[0].id, 1000020);
+        });
       });
 
       group('Reading romaji', () {
@@ -416,6 +432,12 @@ void main() {
           final results = await database.vocabsDao.search('kitt');
           expect(results.length, 1);
           expect(results[0].id, 1003430);
+        });
+
+        test('Reading with iteration mark', () async {
+          final results = await database.vocabsDao.search('isuzu');
+          expect(results.length, 1);
+          expect(results[0].id, 5000899);
         });
 
         test('Simplified', () async {

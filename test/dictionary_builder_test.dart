@@ -527,6 +527,20 @@ void main() {
 
       final vocab10 = await database.vocabsDao.get(1006450);
       expect(vocab10.common, true);
+
+      // Reading with an iteration mark
+      final vocab11 = await database.vocabsDao.get(5000899);
+      expect(vocab11.readings[0].reading, 'いすゞ');
+      expect(vocab11.readings[0].readingSearchForm, 'いすず');
+      expect(vocab11.readings[0].readingRomaji, 'isuzu');
+      expect(vocab11.readings[0].readingRomajiSimplified, null);
+
+      // Entry of an iteration mark itself, which has no kana to repeat
+      final vocab12 = await database.vocabsDao.get(1000020);
+      expect(vocab12.readings[0].reading, 'ゝ');
+      expect(vocab12.readings[0].readingSearchForm, null);
+      expect(vocab12.readings[0].readingRomaji, 'ゝ');
+      expect(vocab12.readings[0].readingRomajiSimplified, null);
     });
 
     test('Radicals', () async {
@@ -993,8 +1007,8 @@ void main() {
       expect(properNouns[9].writingSearchForm, null);
       expect(properNouns[9].reading, 'にほんえいごけんていきょうかい');
       expect(properNouns[9].readingSearchForm, null);
-      expect(properNouns[9].readingRomaji, 'nihon\'eigokenteikyoukai');
-      expect(properNouns[9].readingRomajiSimplified, 'nihon\'eigokenteikyokai');
+      expect(properNouns[9].readingRomaji, "nihon'eigokenteikyoukai");
+      expect(properNouns[9].readingRomajiSimplified, 'nihoneigokenteikyokai');
       expect(properNouns[9].romaji,
           'Eiken Foundation of Japan; (formerly) Society for Testing English Proficiency (STEP)');
       expect(properNouns[9].types, [ProperNounType.organization]);
@@ -1014,6 +1028,46 @@ void main() {
       expect(properNounRomajiWords[8].word, 'english');
       expect(properNounRomajiWords[9].word, 'proficiency');
       expect(properNounRomajiWords[10].word, 'step');
+
+      // Entry with ・ in the reading, which kana kit turns into a slash
+      expect(properNouns[10].writing, 'ＡＣＭ');
+      expect(properNouns[10].writingSearchForm, 'acm');
+      expect(properNouns[10].reading, 'エー・シー・エム');
+      expect(properNouns[10].readingSearchForm, 'ええ・しい・えむ');
+      expect(properNouns[10].readingRomaji, 'ee/shii/emu');
+      expect(properNouns[10].readingRomajiSimplified, 'eshiemu');
+      expect(
+        properNouns[10].romaji,
+        'Association for Computing Machinery; ACM',
+      );
+      expect(properNouns[10].types, [ProperNounType.organization]);
+      properNounRomajiWords =
+          await (database.select(database.properNounRomajiWords)
+                ..where((word) => word.properNounId.equals(properNouns[10].id)))
+              .get();
+      expect(properNounRomajiWords.length, 5);
+      expect(properNounRomajiWords[0].word, 'association');
+      expect(properNounRomajiWords[4].word, 'acm');
+
+      // Entry with an iteration mark, which is expanded in the search form
+      expect(properNouns[11].reading, 'いすゞ');
+      expect(properNouns[11].readingSearchForm, 'いすず');
+      expect(properNouns[11].readingRomaji, 'isuzu');
+      expect(properNouns[11].readingRomajiSimplified, null);
+      expect(properNouns[11].types, [ProperNounType.company]);
+
+      // The same name written without the mark
+      expect(properNouns[12].reading, 'いすず');
+      expect(properNouns[12].readingSearchForm, null);
+      expect(properNouns[12].readingRomaji, 'isuzu');
+
+      expect(properNouns[13].reading, 'こゝろ');
+      expect(properNouns[13].readingSearchForm, 'こころ');
+      expect(properNouns[13].readingRomaji, 'kokoro');
+
+      expect(properNouns[14].reading, 'スヾキ');
+      expect(properNouns[14].readingSearchForm, 'すずき');
+      expect(properNouns[14].readingRomaji, 'suzuki');
     });
 
     test('Kanji component connections', () async {

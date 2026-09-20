@@ -446,7 +446,9 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
       }
     } else {
       // Japanese text
-      final searchByReading = _kanaKit.isKana(cleanedText.replaceAll('*', ''));
+      final kanaText = cleanedText.replaceAll('*', '').expandIterationMarks();
+      final searchByReading =
+          kanaText.isIterationMarks() || _kanaKit.isKana(kanaText);
       cleanedText = cleanedText.replaceAll('*', '_');
 
       if (searchByReading) {

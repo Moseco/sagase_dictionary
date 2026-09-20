@@ -58,4 +58,38 @@ extension JapaneseTextHelpers on String {
   String removeDiacritics() {
     return diacritic.removeDiacritics(this);
   }
+
+  static final iterationMarkRegExp = RegExp(r'[ゝゞヽヾ]');
+  static final onlyIterationMarksRegExp = RegExp(r'^[ゝゞヽヾ]+$');
+  static final voiceableKanaRegExp =
+      RegExp(r'[かきくけこさしすせそたちつてとはひふへほカキクケコサシスセソタチツテトハヒフヘホ]');
+
+  // Replaces kana iteration marks with the kana they repeat so that いすゞ
+  // becomes いすず, which kana kit does not handle
+  String expandIterationMarks() {
+    if (!contains(iterationMarkRegExp)) return this;
+
+    final buffer = StringBuffer();
+    String? previous;
+    for (final rune in runes) {
+      String current = String.fromCharCode(rune);
+      if (previous != null) {
+        if (current == 'ゝ' || current == 'ヽ') {
+          current = previous;
+        } else if (current == 'ゞ' || current == 'ヾ') {
+          // Voiced kana directly follow their unvoiced form in unicode
+          current = voiceableKanaRegExp.hasMatch(previous)
+              ? String.fromCharCode(previous.codeUnitAt(0) + 1)
+              : previous;
+        }
+      }
+      buffer.write(current);
+      previous = current;
+    }
+    return buffer.toString();
+  }
+
+  // Whether the text is only iteration marks, such as when searching for the
+  // entry of a mark itself
+  bool isIterationMarks() => onlyIterationMarksRegExp.hasMatch(this);
 }
