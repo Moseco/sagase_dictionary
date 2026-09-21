@@ -442,8 +442,9 @@ void main() {
 
         test('Reading with iteration mark', () async {
           final results = await database.vocabsDao.search('isuzu');
-          expect(results.length, 1);
+          expect(results.length, 2);
           expect(results[0].id, 5000899);
+          expect(results[1].id, 5000900);
         });
 
         test('Simplified', () async {

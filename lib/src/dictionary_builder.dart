@@ -2723,8 +2723,9 @@ class DictionaryBuilder {
     String romaji,
     RegExp simplifyRegex,
   ) {
-    final simplified = _toRomaji(kana.replaceAll(simplifyRegex, ''))
-        .replaceAll(_nonLetterRegex, '');
+    final simplified = _toRomaji(
+      kana.expandIterationMarks().replaceAll(simplifyRegex, ''),
+    ).replaceAll(_nonLetterRegex, '');
     if (simplified.isEmpty || simplified == romaji) return null;
     return simplified;
   }

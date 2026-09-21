@@ -541,6 +541,20 @@ void main() {
       expect(vocab12.readings[0].readingSearchForm, null);
       expect(vocab12.readings[0].readingRomaji, 'ゝ');
       expect(vocab12.readings[0].readingRomajiSimplified, null);
+
+      // Iteration mark in a writing
+      final vocab13 = await database.vocabsDao.get(5000900);
+      expect(vocab13.writings![0].writing, 'いすゞ自動車');
+      expect(vocab13.writings![0].writingSearchForm, 'いすず自動車');
+      expect(vocab13.readings[0].reading, 'いすずじどうしゃ');
+      expect(vocab13.readings[0].readingSearchForm, null);
+
+      // Iteration mark that repeats a kana which is simplified in romaji
+      final vocab14 = await database.vocabsDao.get(5000901);
+      expect(vocab14.readings[0].reading, 'ゆうゝつ');
+      expect(vocab14.readings[0].readingSearchForm, 'ゆううつ');
+      expect(vocab14.readings[0].readingRomaji, 'yuuutsu');
+      expect(vocab14.readings[0].readingRomajiSimplified, 'yutsu');
     });
 
     test('Radicals', () async {
@@ -1068,6 +1082,17 @@ void main() {
       expect(properNouns[14].reading, 'スヾキ');
       expect(properNouns[14].readingSearchForm, 'すずき');
       expect(properNouns[14].readingRomaji, 'suzuki');
+
+      // Entries with unexpandable repetition marker
+      expect(properNouns[15].writing, '寿ゞ');
+      expect(properNouns[15].writingSearchForm, null);
+      expect(properNouns[15].reading, 'すず');
+      expect(properNouns[15].readingSearchForm, null);
+
+      expect(properNouns[16].writing, 'ゝ泉');
+      expect(properNouns[16].writingSearchForm, null);
+      expect(properNouns[16].reading, 'ちゅせん');
+      expect(properNouns[16].readingSearchForm, null);
     });
 
     test('Kanji component connections', () async {

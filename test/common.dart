@@ -667,6 +667,34 @@ const shortJMdict = '''
 <gloss>Isuzu (Japanese automobile manufacturer)</gloss>
 </sense>
 </entry>
+<entry>
+<ent_seq>5000900</ent_seq>
+<k_ele>
+<keb>いすゞ自動車</keb>
+</k_ele>
+<r_ele>
+<reb>いすずじどうしゃ</reb>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<misc>&company;</misc>
+<gloss>Isuzu Motors Limited</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>5000901</ent_seq>
+<k_ele>
+<keb>憂鬱</keb>
+</k_ele>
+<r_ele>
+<reb>ゆうゝつ</reb>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<gloss>depression</gloss>
+<gloss>melancholy</gloss>
+</sense>
+</entry>
 </JMdict>
 ''';
 
@@ -1725,6 +1753,8 @@ const shortEnamdict = '''さくら /(f) Sakura/
 いすず /(f) Isuzu/
 こゝろ /(wk) Kokoro/
 スヾキ /(s) Suzuki/
+寿ゞ [すず] /(f) Suzu/
+ゝ泉 [ちゅせん] /(g) Chusen/
 ''';
 
 const shortGrammarInput = '''[
