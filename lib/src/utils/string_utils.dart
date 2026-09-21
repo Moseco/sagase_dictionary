@@ -61,11 +61,15 @@ extension JapaneseTextHelpers on String {
 
   static final iterationMarkRegExp = RegExp(r'[ゝゞヽヾ]');
   static final onlyIterationMarksRegExp = RegExp(r'^[ゝゞヽヾ]+$');
-  static final voiceableKanaRegExp =
-      RegExp(r'[かきくけこさしすせそたちつてとはひふへほカキクケコサシスセソタチツテトハヒフヘホ]');
+  static final kanaRegExp = RegExp(r'[\u3041-\u3096\u30a1-\u30fa]');
+
+  static const _plainKana = 'かきくけこさしすせそたちつてとはひふへほう'
+      'カキクケコサシスセソタチツテトハヒフヘホウ';
+  static const _voicedKana = 'がぎぐげござじずぜぞだぢづでどばびぶべぼゔ'
+      'ガギグゲゴザジズゼゾダヂヅデドバビブベボヴ';
 
   // Replaces kana iteration marks with the kana they repeat so that いすゞ
-  // becomes いすず, which kana kit does not handle
+  // becomes いすず
   String expandIterationMarks() {
     if (!contains(iterationMarkRegExp)) return this;
 
@@ -73,14 +77,13 @@ extension JapaneseTextHelpers on String {
     String? previous;
     for (final rune in runes) {
       String current = String.fromCharCode(rune);
-      if (previous != null) {
+      if (previous != null && kanaRegExp.hasMatch(previous)) {
         if (current == 'ゝ' || current == 'ヽ') {
-          current = previous;
+          final voicedIndex = _voicedKana.indexOf(previous);
+          current = voicedIndex == -1 ? previous : _plainKana[voicedIndex];
         } else if (current == 'ゞ' || current == 'ヾ') {
-          // Voiced kana directly follow their unvoiced form in unicode
-          current = voiceableKanaRegExp.hasMatch(previous)
-              ? String.fromCharCode(previous.codeUnitAt(0) + 1)
-              : previous;
+          final plainIndex = _plainKana.indexOf(previous);
+          current = plainIndex == -1 ? previous : _voicedKana[plainIndex];
         }
       }
       buffer.write(current);

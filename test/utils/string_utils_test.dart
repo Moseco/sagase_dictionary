@@ -57,5 +57,56 @@ void main() {
         expect(name, 'a' * 49 + '𠮟');
       });
     });
+
+    group('expandIterationMarks', () {
+      test('Repeats the previous kana unvoiced', () {
+        expect('こゝろ'.expandIterationMarks(), 'こころ');
+        expect('ミヽ'.expandIterationMarks(), 'ミミ');
+        expect('づゝ'.expandIterationMarks(), 'づつ');
+        expect('がゝ'.expandIterationMarks(), 'がか');
+        expect('じゝ'.expandIterationMarks(), 'じし');
+        expect('ゔゝ'.expandIterationMarks(), 'ゔう');
+        expect('ヴヽ'.expandIterationMarks(), 'ヴウ');
+      });
+
+      test('Repeats the previous kana voiced', () {
+        expect('いすゞ'.expandIterationMarks(), 'いすず');
+        expect('みすゞ'.expandIterationMarks(), 'みすず');
+        expect('たゞ'.expandIterationMarks(), 'ただ');
+        expect('つゞく'.expandIterationMarks(), 'つづく');
+        expect('うゞ'.expandIterationMarks(), 'うゔ');
+        expect('ウヾ'.expandIterationMarks(), 'ウヴ');
+        expect('じゞ'.expandIterationMarks(), 'じじ');
+        expect('じゞい'.expandIterationMarks(), 'じじい');
+        expect('なゞ'.expandIterationMarks(), 'なな');
+      });
+
+      test('Work with both hiragana and katakana', () {
+        expect('スゞ'.expandIterationMarks(), 'スズ');
+        expect('すヾ'.expandIterationMarks(), 'すず');
+      });
+
+      test('Leaves a mark that does not follow kana', () {
+        expect('ゝ'.expandIterationMarks(), 'ゝ');
+        expect('寿ゞ'.expandIterationMarks(), '寿ゞ');
+        expect('ゞ寿'.expandIterationMarks(), 'ゞ寿');
+        expect('山上ゝ泉'.expandIterationMarks(), '山上ゝ泉');
+      });
+
+      test('Repeats the kana a previous mark expanded to', () {
+        expect('すゝゝ'.expandIterationMarks(), 'すすす');
+        expect('たゞゝ'.expandIterationMarks(), 'ただた');
+      });
+
+      test('Text without marks is unchanged', () {
+        expect('ひらがな'.expandIterationMarks(), 'ひらがな');
+        expect(''.expandIterationMarks(), '');
+      });
+
+      test('Repeats kana that does not have voiced/unvoiced pair', () {
+        expect('なゝ'.expandIterationMarks(), 'なな');
+        expect('なゞ'.expandIterationMarks(), 'なな');
+      });
+    });
   });
 }
