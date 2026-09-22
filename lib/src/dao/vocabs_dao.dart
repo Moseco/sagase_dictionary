@@ -450,10 +450,11 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
       final searchByReading =
           kanaText.isIterationMarks() || _kanaKit.isKana(kanaText);
       cleanedText = cleanedText.replaceAll('*', '_');
+      final expandedText = cleanedText.expandIterationMarks();
 
       if (searchByReading) {
         // Search by reading
-        final queryText = _kanaKit.toHiragana('$cleanedText%');
+        final queryText = _kanaKit.toHiragana('$expandedText%');
         final searchReading = Subquery(
           db.select(db.vocabReadings)
             ..where((reading) => Expression.or([
@@ -489,12 +490,13 @@ class VocabsDao extends DatabaseAccessor<AppDatabase> with _$VocabsDaoMixin {
         return _getAllFromBase(baseList);
       } else {
         // Search by writing
+        final queryText = _kanaKit
+            .toHiragana('$expandedText%'.toLowerCase().romajiToHalfWidth());
         final searchWriting = Subquery(
           db.select(db.vocabWritings)
             ..where((writing) => Expression.or([
-                  writing.writing.like('$cleanedText%'),
-                  writing.writingSearchForm.like(_kanaKit.toHiragana(
-                      '$cleanedText%'.toLowerCase().romajiToHalfWidth())),
+                  writing.writing.like(queryText),
+                  writing.writingSearchForm.like(queryText),
                 ])),
           'search_writing',
         );

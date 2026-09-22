@@ -350,7 +350,8 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
       }
     } else {
       // Japanese text, search by reading
-      String queryText = _kanaKit.toHiragana('$cleanedText%');
+      String queryText =
+          _kanaKit.toHiragana('${cleanedText.expandIterationMarks()}%');
       final searchReading = Subquery(
         db.select(db.kanjiReadings)
           ..where(

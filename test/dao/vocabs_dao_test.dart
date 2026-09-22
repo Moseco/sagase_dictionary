@@ -412,12 +412,24 @@ void main() {
 
         test('Iteration mark', () async {
           var results = await database.vocabsDao.search('いすず');
-          expect(results.length, 1);
+          expect(results.length, 2);
           expect(results[0].id, 5000899);
+          expect(results[1].id, 5000900);
 
           results = await database.vocabsDao.search('いすゞ');
-          expect(results.length, 1);
+          expect(results.length, 2);
           expect(results[0].id, 5000899);
+          expect(results[1].id, 5000900);
+        });
+
+        test('Iteration mark in a writing', () async {
+          var results = await database.vocabsDao.search('いすゞ自動車');
+          expect(results.length, 1);
+          expect(results[0].id, 5000900);
+
+          results = await database.vocabsDao.search('いすず自動車');
+          expect(results.length, 1);
+          expect(results[0].id, 5000900);
         });
 
         test('Iteration mark by itself', () async {

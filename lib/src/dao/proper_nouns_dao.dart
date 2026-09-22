@@ -167,9 +167,11 @@ class ProperNounsDao extends DatabaseAccessor<AppDatabase>
       }
     } else {
       // Japanese text
-      if (_kanaKit.isKana(cleanedText.expandIterationMarks())) {
+      final expandedText = cleanedText.expandIterationMarks();
+
+      if (_kanaKit.isKana(expandedText)) {
         // Search by reading
-        final queryText = _kanaKit.toHiragana('$cleanedText%');
+        final queryText = _kanaKit.toHiragana('$expandedText%');
         return (db.select(db.properNouns)
               ..where((properNoun) => Expression.or([
                     properNoun.reading.like(queryText),
@@ -184,11 +186,12 @@ class ProperNounsDao extends DatabaseAccessor<AppDatabase>
             .get();
       } else {
         // Search by writing
+        final queryText = _kanaKit
+            .toHiragana('$expandedText%'.toLowerCase().romajiToHalfWidth());
         return (db.select(db.properNouns)
               ..where((properNoun) => Expression.or([
-                    properNoun.writing.like('$cleanedText%'),
-                    properNoun.writingSearchForm.like(_kanaKit.toHiragana(
-                        '$cleanedText%'.toLowerCase().romajiToHalfWidth())),
+                    properNoun.writing.like(queryText),
+                    properNoun.writingSearchForm.like(queryText),
                   ]))
               ..orderBy([
                 (properNoun) => OrderingTerm.asc(properNoun.writing.length),
