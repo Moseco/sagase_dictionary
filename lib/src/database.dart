@@ -179,6 +179,9 @@ class AppDatabase extends _$AppDatabase {
             schema.properNouns,
             schema.properNounRomajiWords,
           ]) {
+            // The dictionary is replaced after an upgrade so the rows are
+            // deleted instead of copying millions of rows into the new table
+            await customStatement('DELETE FROM ${table.actualTableName}');
             await m.alterTable(TableMigration(table));
           }
 
