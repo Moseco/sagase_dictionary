@@ -2737,25 +2737,13 @@ class DictionaryBuilder {
     if (!_properNounTypesRegex.hasMatch(text)) return null;
 
     List<ProperNounType> types = [];
-    List<String> unsupportedTypes = [];
     for (var typeString in text.split(',')) {
       final type = _properNounTypeStringToEnum(typeString);
-      if (type == null) {
-        unsupportedTypes.add(typeString);
-      } else {
-        types.add(type);
-      }
+      if (type != null) types.add(type);
     }
 
     // If no code was recognized the text is part of the romaji
     if (types.isEmpty) return null;
-
-    if (unsupportedTypes.isNotEmpty) {
-      for (var typeString in unsupportedTypes) {
-        print('Unsupported proper noun type: $typeString');
-      }
-      types.add(ProperNounType.unknown);
-    }
 
     return types;
   }

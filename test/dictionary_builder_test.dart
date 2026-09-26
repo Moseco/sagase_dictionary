@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:sagase_dictionary/src/database.dart';
 import 'package:sagase_dictionary/src/dictionary_builder.dart';
 import 'package:sagase_dictionary/src/utils/constants.dart';
@@ -1132,23 +1130,16 @@ void main() {
 
   group('DictionaryBuilderProperNounTypeTest', () {
     late AppDatabase database;
-    late List<String> logs;
 
     setUpAll(() async {
       database = AppDatabase();
-      logs = [];
 
-      await runZoned(
-        () => DictionaryBuilder.createProperNounDictionary(
-          database,
-          '''テスト [てすと] /(u) Foo/(abbr) Bar/
+      await DictionaryBuilder.createProperNounDictionary(
+        database,
+        '''テスト [てすと] /(u) Foo/(abbr) Bar/
 テストに [てすとに] /(col) Baz/
 テストさん [てすとさん] /(c,zzz) Qux/
 ''',
-        ),
-        zoneSpecification: ZoneSpecification(
-          print: (self, parent, zone, line) => logs.add(line),
-        ),
       );
     });
 
@@ -1166,16 +1157,9 @@ void main() {
       expect(properNouns[1].romaji, '(col) Baz');
       expect(properNouns[1].types, []);
 
-      // A list containing a known code is still used as types
+      // A list containing a known code is still used as a type
       expect(properNouns[2].romaji, 'Qux');
-      expect(properNouns[2].types, [
-        ProperNounType.company,
-        ProperNounType.unknown,
-      ]);
-    });
-
-    test('Unsupported type code warns', () async {
-      expect(logs, ['Unsupported proper noun type: zzz']);
+      expect(properNouns[2].types, [ProperNounType.company]);
     });
   });
 }
