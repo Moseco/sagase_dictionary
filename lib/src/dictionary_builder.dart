@@ -2450,7 +2450,11 @@ class DictionaryBuilder {
       final results = await (db.select(db.vocabs)
             ..where((row) => row.id.isIn(vocab)))
           .get();
-      assert(results.length == vocab.length);
+      final missingVocab =
+          vocab.toSet().difference(results.map((e) => e.id).toSet());
+      if (missingVocab.isNotEmpty) {
+        throw Exception('Vocab missing from $name: ${missingVocab.join(', ')}');
+      }
     }
 
     // Confirm all kanji exist in database
@@ -2458,7 +2462,13 @@ class DictionaryBuilder {
       final results = await (db.select(db.kanjis)
             ..where((row) => row.id.isIn(kanji)))
           .get();
-      assert(results.length == kanji.length);
+      final missingKanji =
+          kanji.toSet().difference(results.map((e) => e.id).toSet());
+      if (missingKanji.isNotEmpty) {
+        final missingKanjiText =
+            missingKanji.map(JapaneseTextHelpers.fromKanjiCodePoint).join(', ');
+        throw Exception('Kanji missing from $name: $missingKanjiText');
+      }
     }
 
     await db.into(db.predefinedDictionaryLists).insert(

@@ -41,6 +41,15 @@ void main() {
       });
     });
 
+    group('fromKanjiCodePoint', () {
+      test('Reverses kanjiCodePoint', () {
+        expect(
+            JapaneseTextHelpers.fromKanjiCodePoint('亜'.kanjiCodePoint()), '亜');
+        expect(JapaneseTextHelpers.fromKanjiCodePoint('𠮟'.kanjiCodePoint()),
+            '𠮟');
+      });
+    });
+
     group('sanitizeName', () {
       test('Removes new lines and trims whitespace', () {
         expect(' my\nlist '.sanitizeName(), 'mylist');

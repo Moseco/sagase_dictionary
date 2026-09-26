@@ -247,7 +247,7 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
           ..orderBy([
             OrderingTerm.asc(db.kanjiComponentConnections.componentCodePoint)
           ]))
-        .map((row) => _kanjiFromCodePoint(
+        .map((row) => JapaneseTextHelpers.fromKanjiCodePoint(
             row.read(db.kanjiComponentConnections.componentCodePoint)!))
         .get();
 
@@ -523,12 +523,5 @@ class KanjisDao extends DatabaseAccessor<AppDatabase> with _$KanjisDaoMixin {
 
   Future<void> deleteAllNotes() async {
     await db.delete(db.kanjiNotes).go();
-  }
-
-  // Inverse of String.kanjiCodePoint()
-  String _kanjiFromCodePoint(int codePoint) {
-    if (codePoint <= 0xFFFF) return String.fromCharCode(codePoint);
-    return String.fromCharCodes(
-        [(codePoint >> 16) & 0xFFFF, codePoint & 0xFFFF]);
   }
 }

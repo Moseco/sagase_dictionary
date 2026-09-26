@@ -28,6 +28,13 @@ extension JapaneseTextHelpers on String {
     }
   }
 
+  // Inverse of kanjiCodePoint()
+  static String fromKanjiCodePoint(int codePoint) {
+    if (codePoint <= 0xFFFF) return String.fromCharCode(codePoint);
+    return String.fromCharCodes(
+        [(codePoint >> 16) & 0xFFFF, codePoint & 0xFFFF]);
+  }
+
   // Checks that the string is non-empty and contains only kanji
   bool isKanji() => isNotEmpty && runes.every(_isCodePointKanji);
 
