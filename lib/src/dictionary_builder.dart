@@ -677,7 +677,8 @@ class DictionaryBuilder {
           );
           break;
         case 're_nokanji':
-          // If present, represents that the reading isn't fully associated with the kanji
+          // If present, the reading is not a true reading of any of the kanji
+          associatedWritings = [];
           break;
         case 're_restr':
           associatedWritings ??= [];

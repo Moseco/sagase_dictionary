@@ -156,7 +156,8 @@ void main() {
       expect(vocab2.readings[1].readingSearchForm, 'きっと');
       expect(vocab2.readings[1].readingRomaji, 'kitto');
       expect(vocab2.readings[1].readingRomajiSimplified, 'kito');
-      expect(vocab2.readings[1].associatedWritings, null);
+      // Reading has no kanji so is not associated with any writing
+      expect(vocab2.readings[1].associatedWritings, isEmpty);
       expect(vocab2.readings[1].info, null);
       expect(vocab2.readings[1].pitchAccents, null);
       expect(vocab2.readings[1].primaryPair, false);
