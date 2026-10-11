@@ -553,6 +553,22 @@ void main() {
       expect(vocab14.readings[0].readingSearchForm, 'ゆううつ');
       expect(vocab14.readings[0].readingRomaji, 'yuuutsu');
       expect(vocab14.readings[0].readingRomajiSimplified, 'yutsu');
+
+      // Frequency of a kanji lemma goes to the vocab where it is a regular writing
+      final vocab15 = await database.vocabsDao.get(1502560);
+      expect(vocab15.frequencyScore, 68874);
+      // Not to the vocab where it is a search-only writing
+      final vocab16 = await database.vocabsDao.get(2865888);
+      expect(vocab16.writings![1].info, [WritingInfo.searchOnlyForm]);
+      expect(vocab16.frequencyScore, 0);
+
+      // Frequency of a kana lemma goes to the vocab where it is a regular reading
+      final vocab17 = await database.vocabsDao.get(1099230);
+      expect(vocab17.frequencyScore, 19072);
+      // Not to the vocab where it is a search-only reading
+      final vocab18 = await database.vocabsDao.get(2478630);
+      expect(vocab18.readings[1].info, [ReadingInfo.searchOnlyForm]);
+      expect(vocab18.frequencyScore, 0);
     });
 
     test('Radicals', () async {

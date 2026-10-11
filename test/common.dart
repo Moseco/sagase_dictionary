@@ -695,6 +695,89 @@ const shortJMdict = '''
 <gloss>melancholy</gloss>
 </sense>
 </entry>
+<entry>
+<ent_seq>1502560</ent_seq>
+<k_ele>
+<keb>物質</keb>
+<ke_pri>ichi1</ke_pri>
+<ke_pri>news1</ke_pri>
+<ke_pri>nf03</ke_pri>
+</k_ele>
+<r_ele>
+<reb>ぶっしつ</reb>
+<re_pri>ichi1</re_pri>
+<re_pri>news1</re_pri>
+<re_pri>nf03</re_pri>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<gloss>material</gloss>
+<gloss>substance</gloss>
+<example>
+<ex_srce exsrc_type="tat">206886</ex_srce>
+<ex_text>物質</ex_text>
+<ex_sent xml:lang="jpn">その物質は酸で処理しなければならない。</ex_sent>
+<ex_sent xml:lang="eng">The substance must be treated with acid.</ex_sent>
+</example>
+</sense>
+<sense>
+<pos>&n;</pos>
+<field>&physics;</field>
+<gloss>matter</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>2865888</ent_seq>
+<k_ele>
+<keb>モノ質</keb>
+</k_ele>
+<k_ele>
+<keb>物質</keb>
+<ke_inf>&sK;</ke_inf>
+</k_ele>
+<r_ele>
+<reb>ものしち</reb>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<xref>人質</xref>
+<misc>&joc;</misc>
+<gloss>taking an object hostage</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>1099230</ent_seq>
+<r_ele>
+<reb>バット</reb>
+<re_pri>gai1</re_pri>
+<re_pri>ichi1</re_pri>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<field>&sports;</field>
+<gloss>bat (in baseball, cricket, etc.)</gloss>
+<example>
+<ex_srce exsrc_type="tat">223319</ex_srce>
+<ex_text>バット</ex_text>
+<ex_sent xml:lang="jpn">このバットを使ってよろしいか。</ex_sent>
+<ex_sent xml:lang="eng">May I use this bat?</ex_sent>
+</example>
+</sense>
+</entry>
+<entry>
+<ent_seq>2478630</ent_seq>
+<r_ele>
+<reb>バッド</reb>
+</r_ele>
+<r_ele>
+<reb>バット</reb>
+<re_inf>&sk;</re_inf>
+</r_ele>
+<sense>
+<pos>&adj-f;</pos>
+<gloss>bad</gloss>
+</sense>
+</entry>
 </JMdict>
 ''';
 
@@ -1682,7 +1765,10 @@ const shortPitchAccentData = '''明白	めいはく	0
 御田	おでん	2
 かさかさ		(副)1,(形動)0''';
 
-const shortFrequencyListData = '15145	明白';
+const shortFrequencyListData = '''15145	明白
+100	あっとゆう間に
+68874	物質
+19072	バット''';
 
 const shortVocabListData = '''{
     "jlpt_n5": [
