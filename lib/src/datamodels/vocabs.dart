@@ -85,6 +85,7 @@ class VocabReadings extends Table {
   TextColumn get readingRomajiSimplified =>
       text().nullable().customConstraint('COLLATE NOCASE')();
 
+  // Null if associated with all writings, empty if not associated with any
   TextColumn get associatedWritings =>
       text().map(const StringListConverter()).nullable()();
 

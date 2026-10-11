@@ -376,8 +376,11 @@ class DictionaryBuilder {
           if (_kanaKit.isKana(lemma)) {
             if (vocab.isUsuallyKanaAlone() || vocab.writings == null) {
               // Confirm lemma shows up in readings (prevents kana conversion problems)
+              // Search-only readings are skipped as a lemma matching one usually belongs to a different vocab
               for (var reading in vocab.readings) {
-                if (reading.reading == lemma) {
+                if (reading.reading == lemma &&
+                    !(reading.info?.contains(ReadingInfo.searchOnlyForm) ??
+                        false)) {
                   updateVocab = true;
                   break;
                 }
@@ -385,8 +388,11 @@ class DictionaryBuilder {
             }
           } else {
             // Confirm lemma shows up in writings (prevents kana conversion problems)
+            // Search-only writings are skipped as a lemma matching one usually belongs to a different vocab
             for (var writing in vocab.writings!) {
-              if (writing.writing == lemma) {
+              if (writing.writing == lemma &&
+                  !(writing.info?.contains(WritingInfo.searchOnlyForm) ??
+                      false)) {
                 updateVocab = true;
                 break;
               }
@@ -671,7 +677,8 @@ class DictionaryBuilder {
           );
           break;
         case 're_nokanji':
-          // If present, represents that the reading isn't fully associated with the kanji
+          // If present, the reading is not a true reading of any of the kanji
+          associatedWritings = [];
           break;
         case 're_restr':
           associatedWritings ??= [];
