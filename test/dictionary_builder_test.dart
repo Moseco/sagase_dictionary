@@ -801,9 +801,10 @@ void main() {
       expect(kanji4.frequency, 20);
       expect(kanji4.jlpt, JlptLevel.n5);
       expect(kanji4.strokes, null);
-      expect(kanji4.compounds!.length, 2);
-      expect(kanji4.compounds![0], 1310500);
-      expect(kanji4.compounds![1], 1578850);
+      // Vocab with the kanji only in a search-only writing go last
+      // 1631370 is 行ける (search-only) with a higher frequency than the others
+      // 2752010 is いける口 with 行ける口 as a search-only writing
+      expect(kanji4.compounds, [1310500, 1578850, 1631370, 2752010]);
       expect(kanji4.onReadings!.length, 3);
       expect(kanji4.onReadings![0].reading, 'コウ');
       expect(kanji4.onReadings![0].readingSearchForm, 'こう');

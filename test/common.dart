@@ -1199,6 +1199,62 @@ const shortJMdict = '''
 </example>
 </sense>
 </entry>
+<entry>
+<ent_seq>1631370</ent_seq>
+<k_ele>
+<keb>行ける</keb>
+<ke_inf>&sK;</ke_inf>
+</k_ele>
+<r_ele>
+<reb>いける</reb>
+</r_ele>
+<r_ele>
+<reb>イケる</reb>
+</r_ele>
+<sense>
+<pos>&v1;</pos>
+<pos>&vi;</pos>
+<gloss>to be good (at)</gloss>
+<gloss>to go well</gloss>
+</sense>
+<sense>
+<pos>&v1;</pos>
+<pos>&vi;</pos>
+<gloss>to look (taste, etc.) good</gloss>
+<example>
+<ex_srce exsrc_type="tat">75670</ex_srce>
+<ex_text>イケる</ex_text>
+<ex_sent xml:lang="jpn">落ち目って言うけど、まだイケるよね。</ex_sent>
+<ex_sent xml:lang="eng">They say it's on the wane, but it's still got something, hasn't it?</ex_sent>
+</example>
+</sense>
+<sense>
+<pos>&v1;</pos>
+<pos>&vi;</pos>
+<gloss>to hold one's liquor</gloss>
+<gloss>to be able to hold one's drink</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>2752010</ent_seq>
+<k_ele>
+<keb>いける口</keb>
+</k_ele>
+<k_ele>
+<keb>行ける口</keb>
+<ke_inf>&sK;</ke_inf>
+</k_ele>
+<r_ele>
+<reb>いけるくち</reb>
+</r_ele>
+<sense>
+<pos>&exp;</pos>
+<pos>&n;</pos>
+<xref>いける・3</xref>
+<gloss>drinker</gloss>
+<gloss>person who can hold their drink</gloss>
+</sense>
+</entry>
 </JMdict>
 ''';
 
@@ -2196,6 +2252,7 @@ const shortFrequencyListData = '''15145	明白
 19072	バット
 22186	それから
 35080	バレエ
+5365	いける
 ''';
 
 const shortVocabListData = '''{

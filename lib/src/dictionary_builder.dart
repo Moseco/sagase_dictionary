@@ -1881,19 +1881,27 @@ class DictionaryBuilder {
         List<int> onlyKanji = [];
         List<int> inPrimaryWriting = [];
         List<int> other = [];
+        List<int> searchOnly = [];
 
         for (var vocab in vocabList) {
           // Sort by where in compound kanji appears
-          if (vocab.writings![0].writing == kanji.kanji.value) {
+          // Search-only writings are not shown so vocab with the kanji only in
+          // those go last and are only used if there are not enough other vocab
+          final regularWritings =
+              vocab.writings!.where((e) => !e.isSearchOnlyForm).toList();
+          if (!regularWritings
+              .any((e) => e.writing.contains(kanji.kanji.value))) {
+            searchOnly.add(vocab.id);
+          } else if (regularWritings[0].writing == kanji.kanji.value) {
             onlyKanji.add(vocab.id);
-          } else if (vocab.writings![0].writing.contains(kanji.kanji.value)) {
+          } else if (regularWritings[0].writing.contains(kanji.kanji.value)) {
             inPrimaryWriting.add(vocab.id);
           } else {
             other.add(vocab.id);
           }
         }
 
-        final compounds = onlyKanji + inPrimaryWriting + other;
+        final compounds = onlyKanji + inPrimaryWriting + other + searchOnly;
         kanji = kanji.copyWith(
           compounds: Value(compounds.sublist(0, min(10, compounds.length))),
         );
