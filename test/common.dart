@@ -1162,6 +1162,43 @@ const shortJMdict = '''
 <gloss>ballet</gloss>
 </sense>
 </entry>
+<entry>
+<ent_seq>2509520</ent_seq>
+<k_ele>
+<keb>片</keb>
+<ke_inf>&ateji;</ke_inf>
+<ke_inf>&rK;</ke_inf>
+</k_ele>
+<k_ele>
+<keb>枚</keb>
+<ke_inf>&ateji;</ke_inf>
+<ke_inf>&rK;</ke_inf>
+</k_ele>
+<r_ele>
+<reb>ビラ</reb>
+<re_nokanji/>
+</r_ele>
+<r_ele>
+<reb>びら</reb>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<misc>&uk;</misc>
+<gloss>bill</gloss>
+<gloss>handbill</gloss>
+<gloss>flyer</gloss>
+<gloss>flier</gloss>
+<gloss>leaflet</gloss>
+<gloss>poster</gloss>
+<gloss>placard</gloss>
+<example>
+<ex_srce exsrc_type="tat">109314</ex_srce>
+<ex_text>ビラ</ex_text>
+<ex_sent xml:lang="jpn">彼は価格変更のビラをはり出した。</ex_sent>
+<ex_sent xml:lang="eng">He put up a notice about the change in price.</ex_sent>
+</example>
+</sense>
+</entry>
 </JMdict>
 ''';
 
@@ -2147,14 +2184,19 @@ const shortRadicalData = '''
 const shortPitchAccentData = '''明白	めいはく	0
 屹度	きっと	0,1
 御田	おでん	2
-かさかさ		(副)1,(形動)0''';
+かさかさ		(副)1,(形動)0
+羆	ひぐま	0,1
+片	ビラ	1
+ダブる		2
+''';
 
 const shortFrequencyListData = '''15145	明白
 100	あっとゆう間に
 68874	物質
 19072	バット
 22186	それから
-35080	バレエ''';
+35080	バレエ
+''';
 
 const shortVocabListData = '''{
     "jlpt_n5": [

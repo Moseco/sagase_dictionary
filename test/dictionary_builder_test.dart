@@ -609,6 +609,22 @@ void main() {
       expect(vocab22.readings[1].reading, 'ひぐま');
       expect(vocab22.readings[1].associatedWritings, null);
       expect(vocab22.readings[1].primaryPair, true);
+
+      // Pitch accent goes to the primary reading when it is the one given
+      expect(vocab22.readings[0].pitchAccents, null);
+      expect(vocab22.readings[1].pitchAccents, [0, 1]);
+      // Or to the first reading when that is the one given
+      final vocab25 = await database.vocabsDao.get(2509520);
+      expect(vocab25.readings[0].reading, 'ビラ');
+      expect(vocab25.readings[0].primaryPair, false);
+      expect(vocab25.readings[0].pitchAccents, [1]);
+      expect(vocab25.readings[1].reading, 'びら');
+      expect(vocab25.readings[1].primaryPair, true);
+      expect(vocab25.readings[1].pitchAccents, null);
+      // Kana only pitch accent goes to a vocab whose writings are all search-only
+      expect(vocab24.writings![0].info, [WritingInfo.searchOnlyForm]);
+      expect(vocab24.readings[0].reading, 'ダブる');
+      expect(vocab24.readings[0].pitchAccents, [2]);
     });
 
     test('Radicals', () async {

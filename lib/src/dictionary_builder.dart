@@ -325,12 +325,26 @@ class DictionaryBuilder {
 
         // Add pitch accent info if the vocab writing/reading matches
         for (var result in results) {
-          if ((writing == null &&
-                  result.writings == null &&
-                  result.readings[0].reading == reading) ||
-              (writing != null &&
-                  result.writings?[0].writing == writing &&
-                  result.readings[0].reading == reading)) {
+          VocabReading? matchingReading;
+          if (writing == null) {
+            // Kana only so the vocab can't have a regular writing
+            if (!_hasRegularWriting(result) &&
+                result.readings[0].reading == reading) {
+              matchingReading = result.readings[0];
+            }
+          } else if (result.writings?[0].writing == writing) {
+            // The primary reading may not be the first one (re_nokanji or re_restr)
+            // Still check the first reading as it can be the one given
+            final primaryReading =
+                result.readings.firstWhere((e) => e.primaryPair);
+            if (primaryReading.reading == reading) {
+              matchingReading = primaryReading;
+            } else if (result.readings[0].reading == reading) {
+              matchingReading = result.readings[0];
+            }
+          }
+
+          if (matchingReading != null) {
             List<int> pitchAccents = [];
             for (var pitchAccent in parts[2].split(',')) {
               pitchAccents.add(int.parse(pitchAccent.trim()));
@@ -339,7 +353,7 @@ class DictionaryBuilder {
             if (pitchAccents.isNotEmpty) {
               await (db.update(db.vocabReadings)
                     ..where(
-                      (reading) => reading.id.equals(result.readings[0].id),
+                      (reading) => reading.id.equals(matchingReading!.id),
                     ))
                   .write(
                 VocabReadingsCompanion(
