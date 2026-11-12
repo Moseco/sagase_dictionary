@@ -289,6 +289,13 @@ void main() {
       );
     });
 
+    test('getByReading prefers a primary reading matching the text as given',
+        () async {
+      // バレエ (ballet) has the search form ばれえ like バレー (volleyball) and a higher frequency
+      final vocabList = await database.vocabsDao.getByReading('バレー');
+      expect(vocabList.map((e) => e.id), [1099950, 1099970]);
+    });
+
     group('getByWritingAndReading', () {
       test('Valid', () async {
         final vocabList = await database.vocabsDao.getByWritingAndReading(
@@ -467,12 +474,23 @@ void main() {
 
         test('Sorts by primary pair', () async {
           final results = await database.vocabsDao.search('un');
-          expect(results.length, 4);
+          expect(results.length, 6);
           expect(results[0].id, 1001090);
           expect(results[1].id, 2759530);
           expect(results[2].id, 1003430);
-          expect(results[3].id, 2002400);
+          // Definition matches for "unsun karuta"
+          expect(results[3].id, 1383800);
+          expect(results[4].id, 2679380);
+          expect(results[5].id, 2002400);
         });
+      });
+
+      test('Primary pair ranks the same for kana and romaji', () async {
+        // Both vocab have からす and カラス but only 1171450 is common
+        for (final text in ['からす', 'カラス', 'karasu']) {
+          final results = await database.vocabsDao.search(text);
+          expect(results.map((e) => e.id), [1171450, 2831000], reason: text);
+        }
       });
 
       test('Searching only symbols', () async {

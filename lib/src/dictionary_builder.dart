@@ -142,9 +142,7 @@ class DictionaryBuilder {
             break;
           case 'r_ele':
             final result = _handleReadingElements(xmlVocabChild.childElements);
-            currentReadings.add(result.$1.copyWith(
-                vocabId: vocab.id,
-                primaryPair: Value(currentReadings.isEmpty)));
+            currentReadings.add(result.$1.copyWith(vocabId: vocab.id));
             vocab =
                 vocab.copyWith(common: Value(vocab.common.value || result.$2));
             break;
@@ -155,6 +153,19 @@ class DictionaryBuilder {
             break;
         }
       }
+
+      // The primary reading is the first one associated with the primary writing
+      // The first reading may not be (re_nokanji or re_restr)
+      int primaryReadingIndex = 0;
+      if (currentWritings.isNotEmpty) {
+        final primaryWriting = currentWritings[0].writing.value;
+        final index = currentReadings.indexWhere((reading) =>
+            reading.associatedWritings.value?.contains(primaryWriting) ?? true);
+        if (index != -1) primaryReadingIndex = index;
+      }
+      currentReadings[primaryReadingIndex] =
+          currentReadings[primaryReadingIndex]
+              .copyWith(primaryPair: Value(true));
 
       // Extract pos to general list if shared by all definitions
       if (currentDefinitions[0].pos.value != null) {
@@ -374,13 +385,11 @@ class DictionaryBuilder {
 
           bool updateVocab = false;
           if (_kanaKit.isKana(lemma)) {
-            if (vocab.isUsuallyKanaAlone() || vocab.writings == null) {
+            if (vocab.isUsuallyKanaAlone() || !_hasRegularWriting(vocab)) {
               // Confirm lemma shows up in readings (prevents kana conversion problems)
               // Search-only readings are skipped as a lemma matching one usually belongs to a different vocab
               for (var reading in vocab.readings) {
-                if (reading.reading == lemma &&
-                    !(reading.info?.contains(ReadingInfo.searchOnlyForm) ??
-                        false)) {
+                if (reading.reading == lemma && !reading.isSearchOnlyForm) {
                   updateVocab = true;
                   break;
                 }
@@ -390,9 +399,7 @@ class DictionaryBuilder {
             // Confirm lemma shows up in writings (prevents kana conversion problems)
             // Search-only writings are skipped as a lemma matching one usually belongs to a different vocab
             for (var writing in vocab.writings!) {
-              if (writing.writing == lemma &&
-                  !(writing.info?.contains(WritingInfo.searchOnlyForm) ??
-                      false)) {
+              if (writing.writing == lemma && !writing.isSearchOnlyForm) {
                 updateVocab = true;
                 break;
               }
@@ -434,65 +441,8 @@ class DictionaryBuilder {
         if (definition.crossReferences == null) continue;
         List<VocabReference> newCrossReferences = [];
         for (final crossReference in definition.crossReferences!) {
-          List<String> splits = crossReference.text.split('・');
-          String updatedText = splits[0];
-
-          // Get writing and/or reading
-          String? writing;
-          String? reading;
-          if (_kanaKit.isKana(splits[0])) {
-            reading = splits[0];
-          } else {
-            writing = splits[0];
-          }
-          if (splits.length > 1 && int.tryParse(splits[1]) == null) {
-            if (_kanaKit.isKana(splits[1])) {
-              reading = splits[1];
-            } else {
-              writing = splits[1];
-            }
-          }
-
-          // Search based on what we have
-          late List<Vocab> results;
-          if (writing == null) {
-            results = await db.vocabsDao.getByReading(reading!);
-          } else {
-            if (reading == null) {
-              results = await db.vocabsDao.getByWriting(writing);
-            } else {
-              results =
-                  await db.vocabsDao.getByWritingAndReading(writing, reading);
-            }
-          }
-
-          results.sort(_compareVocab);
-
-          List<int>? ids;
-          if (results.isEmpty) {
-            // Do nothing
-          } else if (results.length == 1) {
-            ids = [results[0].id];
-          } else {
-            List<Vocab> filtered = List.from(results);
-
-            // If only reading given, try to filter
-            if (writing == null) {
-              for (int j = 0; j < filtered.length; j++) {
-                if (filtered[j].writings?[0].writing != null &&
-                    !filtered[j].isUsuallyKanaAlone()) {
-                  filtered.removeAt(j--);
-                }
-              }
-            }
-
-            if (filtered.isNotEmpty) {
-              ids = filtered.map((e) => e.id).toList();
-            } else {
-              ids = results.map((e) => e.id).toList();
-            }
-          }
-          newCrossReferences.add(VocabReference(ids: ids, text: updatedText));
+          newCrossReferences
+              .add(await _resolveVocabReference(db, crossReference));
         }
 
         await (db.update(db.vocabDefinitions)
@@ -527,65 +477,7 @@ class DictionaryBuilder {
         if (definition.antonyms == null) continue;
         List<VocabReference> newAntonyms = [];
         for (final antonym in definition.antonyms!) {
-          List<String> splits = antonym.text.split('・');
-          String updatedText = splits[0];
-
-          // Get writing and/or reading
-          String? writing;
-          String? reading;
-          if (_kanaKit.isKana(splits[0])) {
-            reading = splits[0];
-          } else {
-            writing = splits[0];
-          }
-          if (splits.length > 1 && int.tryParse(splits[1]) == null) {
-            if (_kanaKit.isKana(splits[1])) {
-              reading = splits[1];
-            } else {
-              writing = splits[1];
-            }
-          }
-
-          // Search based on what we have
-          late List<Vocab> results;
-          if (writing == null) {
-            results = await db.vocabsDao.getByReading(reading!);
-          } else {
-            if (reading == null) {
-              results = await db.vocabsDao.getByWriting(writing);
-            } else {
-              results =
-                  await db.vocabsDao.getByWritingAndReading(writing, reading);
-            }
-          }
-
-          results.sort(_compareVocab);
-
-          List<int>? ids;
-          if (results.isEmpty) {
-            // Do nothing
-          } else if (results.length == 1) {
-            ids = [results[0].id];
-          } else {
-            List<Vocab> filtered = List.from(results);
-
-            // If only reading given, try to filter
-            if (writing == null) {
-              for (int i = 0; i < filtered.length; i++) {
-                if (filtered[i].writings?[0].writing != null &&
-                    !filtered[i].isUsuallyKanaAlone()) {
-                  filtered.removeAt(i--);
-                }
-              }
-            }
-
-            if (filtered.isNotEmpty) {
-              ids = filtered.map((e) => e.id).toList();
-            } else {
-              ids = results.map((e) => e.id).toList();
-            }
-          }
-          newAntonyms.add(VocabReference(ids: ids, text: updatedText));
+          newAntonyms.add(await _resolveVocabReference(db, antonym));
         }
 
         await (db.update(db.vocabDefinitions)
@@ -597,6 +489,119 @@ class DictionaryBuilder {
         );
       }
     });
+  }
+
+  // Finds the vocab that a cross reference or antonym refers to
+  static Future<VocabReference> _resolveVocabReference(
+    AppDatabase db,
+    VocabReference reference,
+  ) async {
+    List<String> splits = reference.text.split('・');
+    String updatedText = splits[0];
+
+    // Get writing and/or reading
+    String? writing;
+    String? reading;
+    if (_kanaKit.isKana(splits[0])) {
+      reading = splits[0];
+    } else {
+      writing = splits[0];
+    }
+    if (splits.length > 1 && int.tryParse(splits[1]) == null) {
+      if (_kanaKit.isKana(splits[1])) {
+        reading = splits[1];
+      } else {
+        writing = splits[1];
+      }
+    }
+
+    // Search based on what we have
+    List<Vocab> results;
+    if (writing == null) {
+      results = await db.vocabsDao.getByReading(reading!);
+    } else {
+      if (reading == null) {
+        results = await db.vocabsDao.getByWriting(writing);
+      } else {
+        results = await db.vocabsDao.getByWritingAndReading(writing, reading);
+      }
+    }
+
+    // A trailing number is the sense being referenced so vocab with fewer senses can't be the target
+    final senseNumber = splits.length > 1 ? int.tryParse(splits.last) : null;
+    if (senseNumber != null) {
+      results = _filterUnlessEmpty(
+        results,
+        (vocab) => vocab.definitions.length >= senseNumber,
+      );
+    }
+
+    // Prefer vocab containing the exact text over vocab only matched through the search form
+    // For example, ダブル and ダブる both have the search form だぶる
+    results = _filterUnlessEmpty(
+      results,
+      (vocab) =>
+          (writing == null ||
+              (vocab.writings?.any((e) => e.writing == writing) ?? false)) &&
+          (reading == null || vocab.readings.any((e) => e.reading == reading)),
+    );
+
+    // Skip vocab only matched through a search-only form as the reference usually belongs to a different vocab
+    // Some references only exist as a search-only form so keep them if nothing else matches
+    results = _filterUnlessEmpty(results, (vocab) {
+      final matchingWritings =
+          vocab.writings?.where((e) => e.writing == writing).toList() ?? [];
+      final matchingReadings =
+          vocab.readings.where((e) => e.reading == reading).toList();
+      final onlySearchOnlyWriting = matchingWritings.isNotEmpty &&
+          matchingWritings.every((e) => e.isSearchOnlyForm);
+      final onlySearchOnlyReading = matchingReadings.isNotEmpty &&
+          matchingReadings.every((e) => e.isSearchOnlyForm);
+      return !onlySearchOnlyWriting && !onlySearchOnlyReading;
+    });
+
+    results.sort(_compareVocab);
+
+    List<int>? ids;
+    if (results.isEmpty) {
+      // Do nothing
+    } else if (results.length == 1) {
+      ids = [results[0].id];
+    } else {
+      List<Vocab> filtered = List.from(results);
+
+      // If only reading given, try to filter
+      if (writing == null) {
+        for (int i = 0; i < filtered.length; i++) {
+          if (_hasRegularWriting(filtered[i]) &&
+              !filtered[i].isUsuallyKanaAlone()) {
+            filtered.removeAt(i--);
+          }
+        }
+      }
+
+      if (filtered.isNotEmpty) {
+        ids = filtered.map((e) => e.id).toList();
+      } else {
+        ids = results.map((e) => e.id).toList();
+      }
+    }
+
+    return VocabReference(ids: ids, text: updatedText);
+  }
+
+  // Narrows the list to vocab passing the test, but keeps the list as is if none do
+  static List<Vocab> _filterUnlessEmpty(
+    List<Vocab> vocabs,
+    bool Function(Vocab vocab) test,
+  ) {
+    final filtered = vocabs.where(test).toList();
+    return filtered.isEmpty ? vocabs : filtered;
+  }
+
+  // Vocab whose writings are all search-only forms are effectively kana only
+  static bool _hasRegularWriting(Vocab vocab) {
+    return vocab.writings?.any((writing) => !writing.isSearchOnlyForm) ?? false;
   }
 
   static (VocabWritingsCompanion, bool) _handleWritingElements(
@@ -2834,4 +2839,14 @@ class _KanjiReadingMeaning {
     required this.onReadings,
     required this.kunReadings,
   });
+}
+
+extension on VocabWriting {
+  bool get isSearchOnlyForm =>
+      info?.contains(WritingInfo.searchOnlyForm) ?? false;
+}
+
+extension on VocabReading {
+  bool get isSearchOnlyForm =>
+      info?.contains(ReadingInfo.searchOnlyForm) ?? false;
 }

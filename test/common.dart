@@ -778,6 +778,390 @@ const shortJMdict = '''
 <gloss>bad</gloss>
 </sense>
 </entry>
+<entry>
+<ent_seq>1006980</ent_seq>
+<k_ele>
+<keb>其れから</keb>
+<ke_inf>&sK;</ke_inf>
+</k_ele>
+<r_ele>
+<reb>それから</reb>
+<re_pri>ichi1</re_pri>
+</r_ele>
+<sense>
+<pos>&exp;</pos>
+<gloss>and then</gloss>
+<gloss>after that</gloss>
+<example>
+<ex_srce exsrc_type="tat">205915</ex_srce>
+<ex_text>それから</ex_text>
+<ex_sent xml:lang="jpn">それから長い沈黙が続いた。</ex_sent>
+<ex_sent xml:lang="eng">There followed a long silence.</ex_sent>
+</example>
+</sense>
+</entry>
+<entry>
+<ent_seq>2039580</ent_seq>
+<r_ele>
+<reb>メーメー</reb>
+</r_ele>
+<r_ele>
+<reb>メエメエ</reb>
+</r_ele>
+<sense>
+<pos>&int;</pos>
+<xref>メー</xref>
+<misc>&on-mim;</misc>
+<gloss>baa (sound made by sheep)</gloss>
+<gloss>meh</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>2078440</ent_seq>
+<r_ele>
+<reb>メー</reb>
+</r_ele>
+<r_ele>
+<reb>メエ</reb>
+</r_ele>
+<sense>
+<pos>&int;</pos>
+<misc>&on-mim;</misc>
+<gloss>baa (sound of a sheep)</gloss>
+<gloss>meh</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>2188120</ent_seq>
+<r_ele>
+<reb>メイ</reb>
+</r_ele>
+<r_ele>
+<reb>メー</reb>
+<re_inf>&sk;</re_inf>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<gloss>May</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>1015970</ent_seq>
+<r_ele>
+<reb>アステリ</reb>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<xref>アステリスク</xref>
+<misc>&abbr;</misc>
+<gloss>asterisk</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>1015950</ent_seq>
+<r_ele>
+<reb>アスタリスク</reb>
+</r_ele>
+<r_ele>
+<reb>アステリスク</reb>
+<re_inf>&sk;</re_inf>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<gloss>asterisk</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>2059770</ent_seq>
+<k_ele>
+<keb>羆</keb>
+</k_ele>
+<r_ele>
+<reb>ヒグマ</reb>
+<re_nokanji/>
+</r_ele>
+<r_ele>
+<reb>ひぐま</reb>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<misc>&uk;</misc>
+<gloss>brown bear (Ursus arctos)</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>1383800</ent_seq>
+<k_ele>
+<keb>切り</keb>
+<ke_pri>ichi1</ke_pri>
+<ke_pri>news1</ke_pri>
+<ke_pri>nf10</ke_pri>
+</k_ele>
+<k_ele>
+<keb>限り</keb>
+</k_ele>
+<k_ele>
+<keb>切</keb>
+<ke_inf>&io;</ke_inf>
+</k_ele>
+<k_ele>
+<keb>限</keb>
+<ke_inf>&io;</ke_inf>
+</k_ele>
+<r_ele>
+<reb>きり</reb>
+<re_pri>ichi1</re_pri>
+<re_pri>news1</re_pri>
+<re_pri>nf10</re_pri>
+</r_ele>
+<r_ele>
+<reb>キリ</reb>
+<re_inf>&sk;</re_inf>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<misc>&uk;</misc>
+<gloss>end</gloss>
+<gloss>finish</gloss>
+<gloss>place to stop</gloss>
+</sense>
+<sense>
+<pos>&n;</pos>
+<xref>切りがない・1</xref>
+<misc>&uk;</misc>
+<gloss>bound</gloss>
+<gloss>limit</gloss>
+<gloss>end</gloss>
+</sense>
+<sense>
+<stagk>限り</stagk>
+<stagk>限</stagk>
+<pos>&n;</pos>
+<field>&finc;</field>
+<gloss>delivery date (of a futures contract)</gloss>
+</sense>
+<sense>
+<pos>&n;</pos>
+<gloss>finale (of a noh song)</gloss>
+<gloss>end of an act (in jōruri or kabuki)</gloss>
+<gloss>final performance of the day (in vaudeville)</gloss>
+</sense>
+<sense>
+<pos>&n;</pos>
+<gloss>trump card</gloss>
+</sense>
+<sense>
+<pos>&n;</pos>
+<field>&cards;</field>
+<gloss>king (court card; in mekuri karuta and unsun karuta)</gloss>
+</sense>
+<sense>
+<pos>&n;</pos>
+<field>&go;</field>
+<misc>&uk;</misc>
+<s_inf>usu. キリ</s_inf>
+<gloss>cut</gloss>
+<gloss>separation of two groups</gloss>
+</sense>
+<sense>
+<pos>&ctr;</pos>
+<gloss>counter for slices (esp. thick slices)</gloss>
+<gloss>counter for cuts (of fish, meat, etc.)</gloss>
+</sense>
+<sense>
+<pos>&prt;</pos>
+<xref>っきり・1</xref>
+<misc>&uk;</misc>
+<s_inf>sometimes pronounced ぎり</s_inf>
+<gloss>only</gloss>
+<gloss>just</gloss>
+</sense>
+<sense>
+<pos>&prt;</pos>
+<misc>&uk;</misc>
+<s_inf>usu. in a negative sentence; sometimes pronounced ぎり</s_inf>
+<gloss>(ever) since</gloss>
+<gloss>after</gloss>
+</sense>
+<sense>
+<pos>&prt;</pos>
+<misc>&uk;</misc>
+<s_inf>sometimes pronounced ぎり</s_inf>
+<gloss>continuously</gloss>
+<gloss>remaining (in a particular state)</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>2679380</ent_seq>
+<r_ele>
+<reb>キリ</reb>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<xref>ピンからキリまで</xref>
+<ant>ピン・2</ant>
+<s_inf>orig. from Portuguese "cruz"</s_inf>
+<gloss>end</gloss>
+<gloss>bottom</gloss>
+<gloss>worst</gloss>
+</sense>
+<sense>
+<pos>&n;</pos>
+<field>&cards;</field>
+<gloss>king (court card; in mekuri karuta and unsun karuta)</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>2868815</ent_seq>
+<k_ele>
+<keb>切り違える</keb>
+</k_ele>
+<r_ele>
+<reb>きりちがえる</reb>
+</r_ele>
+<sense>
+<pos>&v1;</pos>
+<pos>&vt;</pos>
+<xref>キリチガイ・2</xref>
+<xref>キリ・7</xref>
+<field>&go;</field>
+<gloss>to cross-cut</gloss>
+<gloss>to play a cross-cut</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>1077110</ent_seq>
+<r_ele>
+<reb>ダブル</reb>
+<re_pri>gai1</re_pri>
+<re_pri>ichi1</re_pri>
+</r_ele>
+<r_ele>
+<reb>ダッブル</reb>
+<re_inf>&sk;</re_inf>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<pos>&adj-no;</pos>
+<xref>シングル・1</xref>
+<s_inf>sometimes written as "Ｗ"</s_inf>
+<gloss>double</gloss>
+</sense>
+<sense>
+<pos>&n;</pos>
+<xref>ダブルベッド</xref>
+<misc>&abbr;</misc>
+<gloss>double bed</gloss>
+<gloss>hotel room with a double bed</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>1077100</ent_seq>
+<k_ele>
+<keb>Ｗる</keb>
+<ke_inf>&sK;</ke_inf>
+</k_ele>
+<r_ele>
+<reb>ダブる</reb>
+</r_ele>
+<r_ele>
+<reb>だぶる</reb>
+<re_inf>&sk;</re_inf>
+</r_ele>
+<sense>
+<pos>&v5r;</pos>
+<pos>&vi;</pos>
+<xref>ダブル・1</xref>
+<gloss>to be duplicated</gloss>
+<gloss>to be repeated</gloss>
+</sense>
+<sense>
+<pos>&v5r;</pos>
+<pos>&vi;</pos>
+<gloss>to overlap</gloss>
+<gloss>to fall together (of dates, etc.)</gloss>
+<gloss>to coincide</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>1171450</ent_seq>
+<k_ele>
+<keb>烏</keb>
+<ke_pri>ichi1</ke_pri>
+<ke_pri>news1</ke_pri>
+<ke_pri>nf22</ke_pri>
+</k_ele>
+<k_ele>
+<keb>鴉</keb>
+</k_ele>
+<r_ele>
+<reb>カラス</reb>
+<re_nokanji/>
+<re_pri>spec1</re_pri>
+</r_ele>
+<r_ele>
+<reb>からす</reb>
+<re_pri>ichi1</re_pri>
+<re_pri>news1</re_pri>
+<re_pri>nf22</re_pri>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<misc>&uk;</misc>
+<gloss>crow (Corvus spp.)</gloss>
+<gloss>raven</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>2831000</ent_seq>
+<k_ele>
+<keb>烏河豚</keb>
+</k_ele>
+<r_ele>
+<reb>からす</reb>
+<re_inf>&gikun;</re_inf>
+</r_ele>
+<r_ele>
+<reb>カラス</reb>
+<re_nokanji/>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<misc>&uk;</misc>
+<gloss>Chinese puffer (Takifugu chinensis)</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>1099950</ent_seq>
+<r_ele>
+<reb>バレー</reb>
+<re_pri>gai1</re_pri>
+<re_pri>ichi1</re_pri>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<xref>バレーボール</xref>
+<misc>&abbr;</misc>
+<gloss>volleyball</gloss>
+</sense>
+</entry>
+<entry>
+<ent_seq>1099970</ent_seq>
+<r_ele>
+<reb>バレエ</reb>
+<re_pri>gai1</re_pri>
+<re_pri>ichi1</re_pri>
+</r_ele>
+<r_ele>
+<reb>バレー</reb>
+<re_inf>&ik;</re_inf>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<lsource xml:lang="fre"/>
+<gloss>ballet</gloss>
+</sense>
+</entry>
 </JMdict>
 ''';
 
@@ -1768,7 +2152,9 @@ const shortPitchAccentData = '''明白	めいはく	0
 const shortFrequencyListData = '''15145	明白
 100	あっとゆう間に
 68874	物質
-19072	バット''';
+19072	バット
+22186	それから
+35080	バレエ''';
 
 const shortVocabListData = '''{
     "jlpt_n5": [

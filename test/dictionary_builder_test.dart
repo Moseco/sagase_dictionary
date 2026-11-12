@@ -343,7 +343,8 @@ void main() {
       expect(vocab4.definitions[0].examples![0].english,
           'Hmm. I have a feeling I\'m going to get lost whichever road I take.');
       expect(vocab4.definitions[0].crossReferences!.length, 1);
-      expect(vocab4.definitions[0].crossReferences![0].ids, [1001090, 2759530]);
+      // Reference is うん・2 and 2759530 only has one sense
+      expect(vocab4.definitions[0].crossReferences![0].ids, [1001090]);
       expect(vocab4.definitions[0].crossReferences![0].text, 'うん');
       expect(vocab4.definitions[0].antonyms, null);
       // Definition 2
@@ -363,7 +364,8 @@ void main() {
       expect(vocab4.definitions[2].definition, 'oof');
       expect(vocab4.definitions[2].pos, null);
       expect(vocab4.definitions[2].crossReferences!.length, 1);
-      expect(vocab4.definitions[2].crossReferences![0].ids, [1001090, 2759530]);
+      // Reference is うん・3 and 2759530 only has one sense
+      expect(vocab4.definitions[2].crossReferences![0].ids, [1001090]);
       expect(vocab4.definitions[2].crossReferences![0].text, 'うん');
       expect(vocab4.definitions[2].antonyms, null);
 
@@ -570,6 +572,43 @@ void main() {
       final vocab18 = await database.vocabsDao.get(2478630);
       expect(vocab18.readings[1].info, [ReadingInfo.searchOnlyForm]);
       expect(vocab18.frequencyScore, 0);
+
+      // Frequency of a kana lemma goes to a vocab whose writings are all search-only
+      final vocab19 = await database.vocabsDao.get(1006980);
+      expect(vocab19.writings![0].info, [WritingInfo.searchOnlyForm]);
+      expect(vocab19.frequencyScore, 22186);
+
+      // Cross reference skips vocab where it only matches a search-only form
+      final vocab20 = await database.vocabsDao.get(2039580);
+      expect(vocab20.definitions[0].crossReferences!.length, 1);
+      expect(vocab20.definitions[0].crossReferences![0].ids, [2078440]);
+      expect(vocab20.definitions[0].crossReferences![0].text, 'メー');
+      // Unless only search-only forms match
+      final vocab21 = await database.vocabsDao.get(1015970);
+      expect(vocab21.definitions[0].crossReferences!.length, 1);
+      expect(vocab21.definitions[0].crossReferences![0].ids, [1015950]);
+      expect(vocab21.definitions[0].crossReferences![0].text, 'アステリスク');
+      // Sense number excludes vocab without that many senses even if the target is search-only
+      final vocab23 = await database.vocabsDao.get(2868815);
+      expect(vocab23.definitions[0].crossReferences!.length, 2);
+      expect(vocab23.definitions[0].crossReferences![1].ids, [1383800]);
+      expect(vocab23.definitions[0].crossReferences![1].text, 'キリ');
+      // Exact matches are preferred over matches through the search form (ダブル and ダブる both become だぶる)
+      final vocab24 = await database.vocabsDao.get(1077100);
+      expect(vocab24.definitions[0].crossReferences!.length, 1);
+      expect(vocab24.definitions[0].crossReferences![0].ids, [1077110]);
+      expect(vocab24.definitions[0].crossReferences![0].text, 'ダブル');
+
+      // Primary pair uses the first reading associated with the first writing
+      final vocab22 = await database.vocabsDao.get(2059770);
+      expect(vocab22.writings![0].writing, '羆');
+      expect(vocab22.writings![0].primaryPair, true);
+      expect(vocab22.readings[0].reading, 'ヒグマ');
+      expect(vocab22.readings[0].associatedWritings, isEmpty);
+      expect(vocab22.readings[0].primaryPair, false);
+      expect(vocab22.readings[1].reading, 'ひぐま');
+      expect(vocab22.readings[1].associatedWritings, null);
+      expect(vocab22.readings[1].primaryPair, true);
     });
 
     test('Radicals', () async {
