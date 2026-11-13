@@ -1255,6 +1255,27 @@ const shortJMdict = '''
 <gloss>person who can hold their drink</gloss>
 </sense>
 </entry>
+<entry>
+<ent_seq>1662980</ent_seq>
+<k_ele>
+<keb>泣き面</keb>
+</k_ele>
+<k_ele>
+<keb>泣きっ面</keb>
+</k_ele>
+<r_ele>
+<reb>なきっつら</reb>
+<re_restr>泣きっ面</re_restr>
+</r_ele>
+<r_ele>
+<reb>なきつら</reb>
+<re_restr>泣き面</re_restr>
+</r_ele>
+<sense>
+<pos>&n;</pos>
+<gloss>tearful face</gloss>
+</sense>
+</entry>
 </JMdict>
 ''';
 
@@ -2244,6 +2265,9 @@ const shortPitchAccentData = '''明白	めいはく	0
 羆	ひぐま	0,1
 片	ビラ	1
 ダブる		2
+泣き面	なきつら	0
+烏	からす	1
+烏	カラス	0
 ''';
 
 const shortFrequencyListData = '''15145	明白

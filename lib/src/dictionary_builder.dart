@@ -332,14 +332,25 @@ class DictionaryBuilder {
             continue;
           }
 
-          // Only one reading per vocab has its pitch accent shown so only match the primary reading
-          // or the first reading when it is not the primary one (re_nokanji or re_restr)
-          final matchingReading = result.readings
+          // Only the primary reading or the first reading has its pitch accent shown
+          // (they differ with re_nokanji or re_restr) so only those two are considered
+          final candidates = result.readings
               .where((e) => e.primaryPair || e == result.readings[0])
-              .where((e) => e.reading == reading)
-              .firstOrNull;
+              .toList();
+          final matchingReading =
+              candidates.where((e) => e.reading == reading).firstOrNull;
 
           if (matchingReading != null) {
+            // The other candidate shares the pitch accent when it is the same kana in the other script
+            // unless it already has one from a line with its own reading
+            final matchingIds = candidates
+                .where((e) =>
+                    e == matchingReading ||
+                    (e.pitchAccents == null &&
+                        e.searchForm == matchingReading.searchForm))
+                .map((e) => e.id)
+                .toList();
+
             List<int> pitchAccents = [];
             for (var pitchAccent in parts[2].split(',')) {
               pitchAccents.add(int.parse(pitchAccent.trim()));
@@ -347,9 +358,7 @@ class DictionaryBuilder {
 
             if (pitchAccents.isNotEmpty) {
               await (db.update(db.vocabReadings)
-                    ..where(
-                      (reading) => reading.id.equals(matchingReading.id),
-                    ))
+                    ..where((reading) => reading.id.isIn(matchingIds)))
                   .write(
                 VocabReadingsCompanion(
                   pitchAccents: Value(pitchAccents),
@@ -2866,4 +2875,7 @@ extension on VocabWriting {
 extension on VocabReading {
   bool get isSearchOnlyForm =>
       info?.contains(ReadingInfo.searchOnlyForm) ?? false;
+
+  // Hiragana form of the reading (only stored separately when it differs)
+  String get searchForm => readingSearchForm ?? reading;
 }

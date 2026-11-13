@@ -610,17 +610,32 @@ void main() {
       expect(vocab22.readings[1].associatedWritings, null);
       expect(vocab22.readings[1].primaryPair, true);
 
-      // Pitch accent goes to the primary reading when it is the one given
-      expect(vocab22.readings[0].pitchAccents, null);
+      // Pitch accent given for the primary reading is shared with the first reading
+      // when it is the same kana in the other script
+      expect(vocab22.readings[0].pitchAccents, [0, 1]);
       expect(vocab22.readings[1].pitchAccents, [0, 1]);
-      // Or to the first reading when that is the one given
+      // And the other way around when it is given for the first reading
       final vocab25 = await database.vocabsDao.get(2509520);
       expect(vocab25.readings[0].reading, 'ビラ');
       expect(vocab25.readings[0].primaryPair, false);
       expect(vocab25.readings[0].pitchAccents, [1]);
       expect(vocab25.readings[1].reading, 'びら');
       expect(vocab25.readings[1].primaryPair, true);
-      expect(vocab25.readings[1].pitchAccents, null);
+      expect(vocab25.readings[1].pitchAccents, [1]);
+      // Each reading keeps its own pitch accent when both are given
+      final vocab26 = await database.vocabsDao.get(1171450);
+      expect(vocab26.readings[0].reading, 'カラス');
+      expect(vocab26.readings[0].pitchAccents, [0]);
+      expect(vocab26.readings[1].reading, 'からす');
+      expect(vocab26.readings[1].pitchAccents, [1]);
+      // Pitch accent is not shared when the first reading is different kana
+      final vocab27 = await database.vocabsDao.get(1662980);
+      expect(vocab27.readings[0].reading, 'なきっつら');
+      expect(vocab27.readings[0].primaryPair, false);
+      expect(vocab27.readings[0].pitchAccents, null);
+      expect(vocab27.readings[1].reading, 'なきつら');
+      expect(vocab27.readings[1].primaryPair, true);
+      expect(vocab27.readings[1].pitchAccents, [0]);
       // Kana only pitch accent goes to a vocab whose writings are all search-only
       expect(vocab24.writings![0].info, [WritingInfo.searchOnlyForm]);
       expect(vocab24.readings[0].reading, 'ダブる');
