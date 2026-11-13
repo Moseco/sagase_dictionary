@@ -156,7 +156,8 @@ void main() {
       expect(vocab2.readings[1].readingSearchForm, 'きっと');
       expect(vocab2.readings[1].readingRomaji, 'kitto');
       expect(vocab2.readings[1].readingRomajiSimplified, 'kito');
-      expect(vocab2.readings[1].associatedWritings, null);
+      // Reading has no kanji so is not associated with any writing
+      expect(vocab2.readings[1].associatedWritings, isEmpty);
       expect(vocab2.readings[1].info, null);
       expect(vocab2.readings[1].pitchAccents, null);
       expect(vocab2.readings[1].primaryPair, false);
@@ -342,7 +343,8 @@ void main() {
       expect(vocab4.definitions[0].examples![0].english,
           'Hmm. I have a feeling I\'m going to get lost whichever road I take.');
       expect(vocab4.definitions[0].crossReferences!.length, 1);
-      expect(vocab4.definitions[0].crossReferences![0].ids, [1001090, 2759530]);
+      // Reference is うん・2 and 2759530 only has one sense
+      expect(vocab4.definitions[0].crossReferences![0].ids, [1001090]);
       expect(vocab4.definitions[0].crossReferences![0].text, 'うん');
       expect(vocab4.definitions[0].antonyms, null);
       // Definition 2
@@ -362,7 +364,8 @@ void main() {
       expect(vocab4.definitions[2].definition, 'oof');
       expect(vocab4.definitions[2].pos, null);
       expect(vocab4.definitions[2].crossReferences!.length, 1);
-      expect(vocab4.definitions[2].crossReferences![0].ids, [1001090, 2759530]);
+      // Reference is うん・3 and 2759530 only has one sense
+      expect(vocab4.definitions[2].crossReferences![0].ids, [1001090]);
       expect(vocab4.definitions[2].crossReferences![0].text, 'うん');
       expect(vocab4.definitions[2].antonyms, null);
 
@@ -553,6 +556,90 @@ void main() {
       expect(vocab14.readings[0].readingSearchForm, 'ゆううつ');
       expect(vocab14.readings[0].readingRomaji, 'yuuutsu');
       expect(vocab14.readings[0].readingRomajiSimplified, 'yutsu');
+
+      // Frequency of a kanji lemma goes to the vocab where it is a regular writing
+      final vocab15 = await database.vocabsDao.get(1502560);
+      expect(vocab15.frequencyScore, 68874);
+      // Not to the vocab where it is a search-only writing
+      final vocab16 = await database.vocabsDao.get(2865888);
+      expect(vocab16.writings![1].info, [WritingInfo.searchOnlyForm]);
+      expect(vocab16.frequencyScore, 0);
+
+      // Frequency of a kana lemma goes to the vocab where it is a regular reading
+      final vocab17 = await database.vocabsDao.get(1099230);
+      expect(vocab17.frequencyScore, 19072);
+      // Not to the vocab where it is a search-only reading
+      final vocab18 = await database.vocabsDao.get(2478630);
+      expect(vocab18.readings[1].info, [ReadingInfo.searchOnlyForm]);
+      expect(vocab18.frequencyScore, 0);
+
+      // Frequency of a kana lemma goes to a vocab whose writings are all search-only
+      final vocab19 = await database.vocabsDao.get(1006980);
+      expect(vocab19.writings![0].info, [WritingInfo.searchOnlyForm]);
+      expect(vocab19.frequencyScore, 22186);
+
+      // Cross reference skips vocab where it only matches a search-only form
+      final vocab20 = await database.vocabsDao.get(2039580);
+      expect(vocab20.definitions[0].crossReferences!.length, 1);
+      expect(vocab20.definitions[0].crossReferences![0].ids, [2078440]);
+      expect(vocab20.definitions[0].crossReferences![0].text, 'メー');
+      // Unless only search-only forms match
+      final vocab21 = await database.vocabsDao.get(1015970);
+      expect(vocab21.definitions[0].crossReferences!.length, 1);
+      expect(vocab21.definitions[0].crossReferences![0].ids, [1015950]);
+      expect(vocab21.definitions[0].crossReferences![0].text, 'アステリスク');
+      // Sense number excludes vocab without that many senses even if the target is search-only
+      final vocab23 = await database.vocabsDao.get(2868815);
+      expect(vocab23.definitions[0].crossReferences!.length, 2);
+      expect(vocab23.definitions[0].crossReferences![1].ids, [1383800]);
+      expect(vocab23.definitions[0].crossReferences![1].text, 'キリ');
+      // Exact matches are preferred over matches through the search form (ダブル and ダブる both become だぶる)
+      final vocab24 = await database.vocabsDao.get(1077100);
+      expect(vocab24.definitions[0].crossReferences!.length, 1);
+      expect(vocab24.definitions[0].crossReferences![0].ids, [1077110]);
+      expect(vocab24.definitions[0].crossReferences![0].text, 'ダブル');
+
+      // Primary pair uses the first reading associated with the first writing
+      final vocab22 = await database.vocabsDao.get(2059770);
+      expect(vocab22.writings![0].writing, '羆');
+      expect(vocab22.writings![0].primaryPair, true);
+      expect(vocab22.readings[0].reading, 'ヒグマ');
+      expect(vocab22.readings[0].associatedWritings, isEmpty);
+      expect(vocab22.readings[0].primaryPair, false);
+      expect(vocab22.readings[1].reading, 'ひぐま');
+      expect(vocab22.readings[1].associatedWritings, null);
+      expect(vocab22.readings[1].primaryPair, true);
+
+      // Pitch accent given for the primary reading is shared with the first reading
+      // when it is the same kana in the other script
+      expect(vocab22.readings[0].pitchAccents, [0, 1]);
+      expect(vocab22.readings[1].pitchAccents, [0, 1]);
+      // And the other way around when it is given for the first reading
+      final vocab25 = await database.vocabsDao.get(2509520);
+      expect(vocab25.readings[0].reading, 'ビラ');
+      expect(vocab25.readings[0].primaryPair, false);
+      expect(vocab25.readings[0].pitchAccents, [1]);
+      expect(vocab25.readings[1].reading, 'びら');
+      expect(vocab25.readings[1].primaryPair, true);
+      expect(vocab25.readings[1].pitchAccents, [1]);
+      // Each reading keeps its own pitch accent when both are given
+      final vocab26 = await database.vocabsDao.get(1171450);
+      expect(vocab26.readings[0].reading, 'カラス');
+      expect(vocab26.readings[0].pitchAccents, [0]);
+      expect(vocab26.readings[1].reading, 'からす');
+      expect(vocab26.readings[1].pitchAccents, [1]);
+      // Pitch accent is not shared when the first reading is different kana
+      final vocab27 = await database.vocabsDao.get(1662980);
+      expect(vocab27.readings[0].reading, 'なきっつら');
+      expect(vocab27.readings[0].primaryPair, false);
+      expect(vocab27.readings[0].pitchAccents, null);
+      expect(vocab27.readings[1].reading, 'なきつら');
+      expect(vocab27.readings[1].primaryPair, true);
+      expect(vocab27.readings[1].pitchAccents, [0]);
+      // Kana only pitch accent goes to a vocab whose writings are all search-only
+      expect(vocab24.writings![0].info, [WritingInfo.searchOnlyForm]);
+      expect(vocab24.readings[0].reading, 'ダブる');
+      expect(vocab24.readings[0].pitchAccents, [2]);
     });
 
     test('Radicals', () async {
@@ -729,9 +816,10 @@ void main() {
       expect(kanji4.frequency, 20);
       expect(kanji4.jlpt, JlptLevel.n5);
       expect(kanji4.strokes, null);
-      expect(kanji4.compounds!.length, 2);
-      expect(kanji4.compounds![0], 1310500);
-      expect(kanji4.compounds![1], 1578850);
+      // Vocab with the kanji only in a search-only writing go last
+      // 1631370 is 行ける (search-only) with a higher frequency than the others
+      // 2752010 is いける口 with 行ける口 as a search-only writing
+      expect(kanji4.compounds, [1310500, 1578850, 1631370, 2752010]);
       expect(kanji4.onReadings!.length, 3);
       expect(kanji4.onReadings![0].reading, 'コウ');
       expect(kanji4.onReadings![0].readingSearchForm, 'こう');

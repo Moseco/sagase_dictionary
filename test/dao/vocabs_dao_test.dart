@@ -289,6 +289,13 @@ void main() {
       );
     });
 
+    test('getByReading prefers a primary reading matching the text as given',
+        () async {
+      // バレエ (ballet) has the search form ばれえ like バレー (volleyball) and a higher frequency
+      final vocabList = await database.vocabsDao.getByReading('バレー');
+      expect(vocabList.map((e) => e.id), [1099950, 1099970]);
+    });
+
     group('getByWritingAndReading', () {
       test('Valid', () async {
         final vocabList = await database.vocabsDao.getByWritingAndReading(
@@ -319,27 +326,35 @@ void main() {
 
     test('getUsingKanji', () async {
       final vocabList = await database.vocabsDao.getUsingKanji('行');
-      expect(vocabList.length, 2);
-      expect(vocabList[0].id, 1310500);
-      expect(vocabList[0].writings!.length, 7);
-      expect(vocabList[0].writings![0].writing, '上手く行く');
-      expect(vocabList[0].readings.length, 1);
-      expect(vocabList[0].readings[0].reading, 'うまくいく');
-      expect(vocabList[0].definitions.length, 1);
-      expect(
-        vocabList[0].definitions[0].definition,
-        'to go smoothly; to turn out well; to do the trick; to have peaceful relations',
-      );
-      expect(vocabList[1].id, 1578850);
-      expect(vocabList[1].writings!.length, 3);
-      expect(vocabList[1].writings![0].writing, '行く');
-      expect(vocabList[1].readings.length, 2);
-      expect(vocabList[1].readings[0].reading, 'いく');
-      expect(vocabList[1].definitions.length, 10);
+      expect(vocabList.length, 4);
+      // Search-only writings are also matched (行ける and 行ける口)
+      expect(vocabList[0].id, 1631370);
+      expect(vocabList[0].writings![0].writing, '行ける');
+      expect(vocabList[0].writings![0].info, [WritingInfo.searchOnlyForm]);
+      expect(vocabList[1].id, 1310500);
+      expect(vocabList[1].writings!.length, 7);
+      expect(vocabList[1].writings![0].writing, '上手く行く');
+      expect(vocabList[1].readings.length, 1);
+      expect(vocabList[1].readings[0].reading, 'うまくいく');
+      expect(vocabList[1].definitions.length, 1);
       expect(
         vocabList[1].definitions[0].definition,
+        'to go smoothly; to turn out well; to do the trick; to have peaceful relations',
+      );
+      expect(vocabList[2].id, 1578850);
+      expect(vocabList[2].writings!.length, 3);
+      expect(vocabList[2].writings![0].writing, '行く');
+      expect(vocabList[2].readings.length, 2);
+      expect(vocabList[2].readings[0].reading, 'いく');
+      expect(vocabList[2].definitions.length, 10);
+      expect(
+        vocabList[2].definitions[0].definition,
         'to go; to move (in a direction or towards a specific location); to head (towards); to be transported (towards); to reach',
       );
+      expect(vocabList[3].id, 2752010);
+      expect(vocabList[3].writings![0].writing, 'いける口');
+      expect(vocabList[3].writings![1].writing, '行ける口');
+      expect(vocabList[3].writings![1].info, [WritingInfo.searchOnlyForm]);
     });
 
     group('search', () {
@@ -379,8 +394,10 @@ void main() {
 
         test('Partial', () async {
           final results = await database.vocabsDao.search('行');
-          expect(results.length, 1);
+          expect(results.length, 3);
           expect(results[0].id, 1578850);
+          expect(results[1].id, 1631370);
+          expect(results[2].id, 2752010);
         });
       });
 
@@ -467,12 +484,23 @@ void main() {
 
         test('Sorts by primary pair', () async {
           final results = await database.vocabsDao.search('un');
-          expect(results.length, 4);
+          expect(results.length, 6);
           expect(results[0].id, 1001090);
           expect(results[1].id, 2759530);
           expect(results[2].id, 1003430);
-          expect(results[3].id, 2002400);
+          // Definition matches for "unsun karuta"
+          expect(results[3].id, 1383800);
+          expect(results[4].id, 2679380);
+          expect(results[5].id, 2002400);
         });
+      });
+
+      test('Primary pair ranks the same for kana and romaji', () async {
+        // Both vocab have からす and カラス but only 1171450 is common
+        for (final text in ['からす', 'カラス', 'karasu']) {
+          final results = await database.vocabsDao.search(text);
+          expect(results.map((e) => e.id), [1171450, 2831000], reason: text);
+        }
       });
 
       test('Searching only symbols', () async {
