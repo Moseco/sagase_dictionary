@@ -325,24 +325,19 @@ class DictionaryBuilder {
 
         // Add pitch accent info if the vocab writing/reading matches
         for (var result in results) {
-          VocabReading? matchingReading;
           if (writing == null) {
             // Kana only so the vocab can't have a regular writing
-            if (!_hasRegularWriting(result) &&
-                result.readings[0].reading == reading) {
-              matchingReading = result.readings[0];
-            }
-          } else if (result.writings?[0].writing == writing) {
-            // The primary reading may not be the first one (re_nokanji or re_restr)
-            // Still check the first reading as it can be the one given
-            final primaryReading =
-                result.readings.firstWhere((e) => e.primaryPair);
-            if (primaryReading.reading == reading) {
-              matchingReading = primaryReading;
-            } else if (result.readings[0].reading == reading) {
-              matchingReading = result.readings[0];
-            }
+            if (_hasRegularWriting(result)) continue;
+          } else if (result.writings?[0].writing != writing) {
+            continue;
           }
+
+          // Only one reading per vocab has its pitch accent shown so only match the primary reading
+          // or the first reading when it is not the primary one (re_nokanji or re_restr)
+          final matchingReading = result.readings
+              .where((e) => e.primaryPair || e == result.readings[0])
+              .where((e) => e.reading == reading)
+              .firstOrNull;
 
           if (matchingReading != null) {
             List<int> pitchAccents = [];
@@ -353,7 +348,7 @@ class DictionaryBuilder {
             if (pitchAccents.isNotEmpty) {
               await (db.update(db.vocabReadings)
                     ..where(
-                      (reading) => reading.id.equals(matchingReading!.id),
+                      (reading) => reading.id.equals(matchingReading.id),
                     ))
                   .write(
                 VocabReadingsCompanion(
